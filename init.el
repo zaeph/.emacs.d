@@ -1480,9 +1480,10 @@ agenda settings after them."
 	;;  tags "+DEADLINE>=\"<today>\"&DEADLINE<=\"<+2m>\"")
 
 	("w" "Waiting list (-standby)"
-	 ((tags-todo "+TODO={STBY\\|WAIT}-recurring-standby"
+	 ((tags-todo "-standby/!WAIT"
 		     ((org-agenda-overriding-header
-		       (zp/org-agenda-format-header-main "Waiting list")))))
+	  	       (zp/org-agenda-format-header-tasks-waiting))
+		      (org-agenda-skip-function 'bh/skip-non-tasks))))
 	 ((org-agenda-files zp/org-agenda-files-main)
 	  (org-agenda-todo-ignore-scheduled nil)))
 
@@ -1492,6 +1493,7 @@ agenda settings after them."
 		   (org-agenda-dim-blocked-tasks 'dimmed)
 		   (org-agenda-overriding-header
 		    (zp/org-agenda-format-header-main "Reading"))))
+	  ;; Stuck Projects
 	  (tags-todo "-standby"
 	  	     ((org-agenda-overriding-header
 	  	       (zp/org-agenda-format-header-stuck-projects))
@@ -1499,15 +1501,12 @@ agenda settings after them."
 	  	      (org-agenda-skip-function 'zp/skip-non-stuck-projects)
 	  	      (org-agenda-sorting-strategy
 	  	       '(category-keep))))
-	  ;; (tags-todo "+TODO={NEXT\\|STRT}-recurring-standby+reading"
-	  ;; 	     ((org-agenda-overriding-header (zp/org-agenda-format-header-tasks)))))
-	  ;; (tags-todo "+reading+TODO={WAIT}-standby"
-	  ;; 	     ((org-agenda-overriding-header
-	  ;; 	       (zp/org-agenda-format-header-block "Waiting list"))))
+	  ;; Next & Started Tasks
 	  (tags-todo "+reading-recurring-standby/!NEXT|STRT"
 		     ((org-agenda-overriding-header
-		       (zp/org-agenda-format-header-block "Next & Started"))
+		       (zp/org-agenda-format-header-block "Next & Started Tasks"))
 		      ))
+	  ;; Reading List
 	  (tags-todo "+reading-recurring-standby/!-NEXT-STRT"
 		     ((org-agenda-overriding-header
 		       (zp/org-agenda-format-header-block-with-settings "List")))))
@@ -1517,10 +1516,12 @@ agenda settings after them."
 	  ))
 
 	("b" "Media (-standby)"
+	 ;; Agenda
 	 ((agenda ""
 		  ((org-agenda-span 'day)
 		   (org-agenda-overriding-header
 		       (zp/org-agenda-format-header-main "Media"))))
+	  ;; Stuck Projects
 	  (tags-todo "-standby"
 	  	     ((org-agenda-overriding-header
 	  	       (zp/org-agenda-format-header-stuck-projects))
@@ -1529,14 +1530,18 @@ agenda settings after them."
 	  	      (org-agenda-skip-function 'zp/skip-non-stuck-projects)
 	  	      (org-agenda-sorting-strategy
 	  	       '(category-keep))))
-	  (tags-todo "-reading-standby/WAIT"
+	  ;; Waiting Tasks
+	  (tags-todo "-standby/!WAIT"
 		     ((org-agenda-overriding-header
-		       (zp/org-agenda-format-header-block "Waiting list"))))
-	  (tags-todo "-reading-recurring-standby/!NEXT|STRT"
+	  	       (zp/org-agenda-format-header-tasks-waiting))
+		      (org-agenda-skip-function 'bh/skip-non-tasks)))
+	  ;; Started Tasks
+	  (tags-todo "-reading-recurring-standby/!STRT"
 		     ((org-agenda-overriding-header
-		       (zp/org-agenda-format-header-block "Next & Started"))
-		      ))
-	  (tags-todo "-recurring-standby/!-NEXT-STRT-WAIT"
+		       (zp/org-agenda-format-header-tasks-started))
+		      (org-agenda-skip-function 'bh/skip-non-tasks)))
+	  ;; Tasks
+	  (tags-todo "-recurring-standby/!-STRT-WAIT"
 		     ((org-agenda-overriding-header
 		       (zp/org-agenda-format-header-block-with-settings "Tasks")))))
 	 ((org-agenda-files zp/org-agenda-files-media)))
