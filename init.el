@@ -1242,6 +1242,7 @@ return `nil'."
       org-agenda-skip-deadline-if-done 1
       org-agenda-entry-text-maxlines 10
       org-agenda-use-time-grid nil
+      org-agenda-sticky 1
       org-agenda-exporter-settings
       '((ps-print-color-p t)
 	(ps-landscape-mode t)
@@ -2907,9 +2908,9 @@ i.e. change right window to bottom, or change bottom window to right."
 
 (defun zp/switch-to-agenda ()
   (interactive)
-  (if (string-match "*Org Agenda*" (buffer-name))
+  (if (string-match ".*Org Agenda.*" (buffer-name))
       (mode-line-other-buffer)
-    (switch-to-buffer "*Org Agenda*")))
+    (switch-to-buffer "*Org Agenda(n)*")))
 
 (defun zp/switch-to-chronos (arg)
   (interactive "P")
