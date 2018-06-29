@@ -2939,6 +2939,7 @@ i.e. change right window to bottom, or change bottom window to right."
   (if (string-match "*mu4e-.*" (buffer-name))
       (progn
 	(mu4e-quit)
+	(mu4e-update-mail-and-index t)
 	;; (delete-other-windows)
 	(set-window-configuration zp/mu4e-before-config))
     (if (eq (get-buffer "*mu4e-main*") nil)
