@@ -2166,7 +2166,8 @@ on init and them removes itself."
 			     (zp/chronos-edit-quick "-0:05:00" "5 min")))
   (local-set-key (kbd "M-]") (lambda ()
 			     (interactive)
-			     (zp/chronos-edit-quick "+0:05:00" "5 min"))))
+			     (zp/chronos-edit-quick "+0:05:00" "5 min")))
+  (local-set-key (kbd "a") 'helm-chronos-add-timer))
 (setq chronos-mode-hook 'chronos-mode-config)
 
 
@@ -2922,8 +2923,8 @@ i.e. change right window to bottom, or change bottom window to right."
   (if (string-match "*chronos*" (buffer-name))
       (mode-line-other-buffer)  
     (if (or (eq (get-buffer "*chronos*") nil) (not (eq arg nil)))
-	(message "There are no timer running.")
-	;; (call-interactively 'chronos-add-timer)
+	;; (message "There are no timer running.")
+	(call-interactively 'helm-chronos-add-timer)
       (switch-to-buffer "*chronos*"))))
 
 (defun zp/switch-to-mu4e ()
