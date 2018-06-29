@@ -2176,6 +2176,13 @@ on init and them removes itself."
 ;; ============= HTML EXPORT ==============
 ;; ========================================
 
+(require 'org-noter)
+(setq org-noter-hide-other t)
+
+;; ========================================
+;; ============= HTML EXPORT ==============
+;; ========================================
+
 (setq org-html-postamble nil)
 ;; (setq html-validation-link nil)
 
@@ -4274,7 +4281,7 @@ windows."
      ("\\.pdf\\'" . default))))
  '(package-selected-packages
    (quote
-    (interleave magit hydra highlight mu4e-alert ox-hugo org writeroom-mode anzu flycheck spaceline helm-chronos chronos olivetti multiple-cursors expand-region ace-window auto-minor-mode ledger-mode sublimity auctex smooth-scrolling yasnippet pdf-tools htmlize helm-bibtex free-keys fcitx evil color-theme base16-theme)))
+    (org-noter magit hydra highlight mu4e-alert ox-hugo org writeroom-mode anzu flycheck spaceline helm-chronos chronos olivetti multiple-cursors expand-region ace-window auto-minor-mode ledger-mode sublimity auctex smooth-scrolling yasnippet pdf-tools htmlize helm-bibtex free-keys fcitx evil color-theme base16-theme)))
  '(safe-local-variable-values
    (quote
     ((eval add-hook
