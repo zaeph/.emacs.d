@@ -3702,6 +3702,16 @@ Version 2017-08-25"
 	(kill-buffer-and-window))
     (error "There is only one window in the frame.")))
 
+(defun zp/kill-indirect-buffer ()
+  "Kill the current buffer if it is an indirect buffer."
+  (interactive)
+  (if (not (eq (buffer-base-buffer) nil))
+      (progn
+	(kill-buffer-and-window)
+	(message "Killed indirect buffer and window.")
+	(zp/play-sound-turn-page))
+    (message "Not in an indirect buffer.")))
+
 (defun zp/org-agenda-kill-other-buffer-and-window ()
   "Kill the other buffer and window if there is more than one window in `org-agenda’."
   (interactive)
