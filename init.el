@@ -359,6 +359,21 @@ ALL-MAILS are the all the unread emails"
       mu4e-headers-date-format "%Y-%m-%d %H:%M"
       )
 
+(defun zp/rewrite-function (contact)
+  (let ((name (or (plist-get contact :name) ""))
+         (mail (plist-get contact :mail)))
+    (cond
+      ;; jonh smiht --> John Smith
+      ;; ((string= "jonh smiht" name) 
+      ;;   (plist-put contact :name "John C. Smith")
+      ;;   contact) 
+      ;; remove evilspammer from the contacts list
+      ((string= "nic022@hotnail.fr" mail) nil)
+      ;; others stay as the are
+      (t contact))))
+
+(setq mu4e-contact-rewrite-function 'zp/rewrite-function)
+
 (setq mu4e-headers-fields
       '( (:date          .  25)    ;; alternatively, use :human-date
 	 (:flags         .   6)
