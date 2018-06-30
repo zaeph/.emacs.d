@@ -353,7 +353,7 @@ ALL-MAILS are the all the unread emails"
 
 (setq mu4e-maildir (expand-file-name "/home/zaeph/mail")
       mu4e-change-filenames-when-moving   t
-      mu4e-get-mail-command "check-mail inbox"
+      mu4e-get-mail-command "check-mail active"
       mu4e-hide-index-messages t
       mu4e-update-interval nil
       mu4e-headers-date-format "%Y-%m-%d %H:%M"
