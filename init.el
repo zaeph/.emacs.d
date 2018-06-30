@@ -3698,11 +3698,12 @@ windows."
   (other-window 1)
   (org-overview)
   (org-cycle)
+  (widen)
+  (org-reveal)
+  (org-narrow-to-subtree)
   (if (not (eq arg 4))
-      (other-window 1))
-  (zp/play-sound-turn-page)
-  ;; (org-cycle)
-)
+      (other-window -1))
+  (zp/play-sound-turn-page))
 
 ;; ========================================
 ;; ================ FACES =================
