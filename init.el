@@ -857,7 +857,7 @@ return `nil'."
       ;; org-tags-exclude-from-inheritance '("project")
       org-tags-exclude-from-inheritance nil
       org-agenda-hide-tags-regexp "recurring\\|waiting\\|standby"
-      org-catch-invisible-edits "smart"
+      org-catch-invisible-edits 'show
       org-footnote-define-inline 1
       )
 
