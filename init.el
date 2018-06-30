@@ -1082,6 +1082,7 @@ return `nil'."
   (local-set-key (kbd "C-c C-x l") 'zp/org-set-location)
   (local-set-key (kbd "C-c C-x d") 'org-delete-property)
   (local-set-key (kbd "C-c C-x D") 'org-insert-drawer)
+  (local-set-key (kbd "S-<backspace>") 'zp/kill-indirect-buffer)
   (local-set-key (kbd "C-x n u") 'zp/org-narrow-up-heading)
   (local-set-key (kbd "C-x n y") 'zp/org-narrow-previous-heading)
   (local-set-key (kbd "C-x n s") 'zp/org-narrow-to-subtree)
@@ -1896,9 +1897,12 @@ Based on `org-agenda-set-property'."
   (local-set-key (kbd "C-c C-x l") 'zp/org-agenda-set-location)
   (local-set-key (kbd "C-c C-x d") 'zp/org-agenda-delete-property)
   (local-set-key (kbd "Z") 'org-resolve-clocks)
-  (local-set-key (kbd "S-<return>") 'zp/org-agenda-tree-to-indirect-buffer)
-  (local-set-key (kbd "S-<backspace>") 'zp/org-agenda-kill-other-buffer-and-window)
-  )
+  (local-set-key (kbd "C-<return>") 'org-agenda-switch-to)
+  (local-set-key (kbd "<return>") 'zp/org-agenda-tree-to-indirect-buffer)
+  (local-set-key (kbd "S-<return>") (lambda ()
+				      (interactive)
+				      (zp/org-agenda-tree-to-indirect-buffer 4)))
+  (local-set-key (kbd "<backspace>") 'zp/org-agenda-kill-other-buffer-and-window))
 
 (add-hook 'org-agenda-mode-hook 'zp/org-agenda-mode-config)
 
