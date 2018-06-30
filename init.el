@@ -1019,18 +1019,20 @@ return `nil'."
 
 ;; org-narrow movements
 
+(defun zp/org-narrow-to-subtree ()
+  "Move to the next subtree at same level, and narrow the buffer to it."
+  (interactive)
+  (org-narrow-to-subtree)
+  (message "Narrowing to tree at point.")
+  (zp/play-sound-turn-page))
+
 (defun zp/org-narrow-forward ()
   "Move to the next subtree at same level, and narrow the buffer to it."
   (interactive)
   (widen)
   (org-forward-heading-same-level 1)
   (org-narrow-to-subtree)
-  (zp/play-sound-turn-page))
-
-(defun zp/org-narrow-to-subtree ()
-  "Move to the next subtree at same level, and narrow the buffer to it."
-  (interactive)
-  (org-narrow-to-subtree)
+  (message "Narrowing to next tree.")
   (zp/play-sound-turn-page))
 
 (defun zp/org-narrow-backwards ()
@@ -1039,6 +1041,7 @@ return `nil'."
   (widen)
   (org-backward-heading-same-level 1)
   (org-narrow-to-subtree)
+  (message "Narrowing to previous tree.")
   (zp/play-sound-turn-page))
 
 (defun zp/org-narrow-up-heading ()
