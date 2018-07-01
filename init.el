@@ -3643,7 +3643,7 @@ Version 2017-08-25"
 (global-set-key (kbd "C-c x") 'zp/toggle-org-latex-pdf-process)
 ;; (global-set-key (kbd "H-g") 'keyboard-quit)
 (global-set-key (kbd "H-l") 'zp/switch-to-mu4e)
-(global-set-key (kbd "H-g") 'magit-status)
+(global-set-key (kbd "H-m") 'magit-status)
 
 ;; Movements
 (global-set-key (kbd "H-o") 'zp/switch-to-agenda)
@@ -3656,7 +3656,7 @@ Version 2017-08-25"
 (global-set-key (kbd "C-x 4 1") 'zp/kill-other-buffer-and-window)
 
 ;; ace-window & avy-jump
-(global-set-key (kbd "H-m") 'ace-window)
+(global-set-key (kbd "H-M-n") 'ace-window)
 (global-set-key (kbd "H-n") 'avy-goto-word-1)
 ;; (global-set-key (kbd "H-m") 'avy-goto-char)
 (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
