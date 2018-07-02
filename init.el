@@ -2974,6 +2974,12 @@ i.e. change right window to bottom, or change bottom window to right."
 	(call-interactively 'helm-chronos-add-timer)
       (switch-to-buffer "*chronos*"))))
 
+;; (defun zp/switch-to-magit (arg)
+;;   (interactive "P")
+;;   (if (string-match "magit: .*" (buffer-name))
+;;       (magit-mode-bury-buffer arg)
+;;     (magit-status arg)))
+
 (defun zp/switch-to-mu4e ()
   (interactive)
   (if (string-match "*mu4e-.*" (buffer-name))
@@ -3643,6 +3649,7 @@ Version 2017-08-25"
 (global-set-key (kbd "C-c x") 'zp/toggle-org-latex-pdf-process)
 ;; (global-set-key (kbd "H-g") 'keyboard-quit)
 (global-set-key (kbd "H-l") 'zp/switch-to-mu4e)
+;; (global-set-key (kbd "H-m") 'zp/switch-to-magit)
 (global-set-key (kbd "H-m") 'magit-status)
 
 ;; Movements
