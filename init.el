@@ -1471,7 +1471,7 @@ agenda settings after them."
 		      (org-agenda-files zp/org-agenda-files-main))))
 	 ((org-agenda-category-filter-preset (list "-shows"))))
 
-	("N" "Agenda:week (-recurring)"
+	("k" "Agenda:week (-recurring)"
 	 ((agenda "" ((org-agenda-span 'week))))
 	 ((org-agenda-tag-filter-preset '("-recurring"))
 	  (org-agenda-files org-agenda-files)
