@@ -1261,7 +1261,7 @@ return `nil'."
 
 (setq org-agenda-todo-ignore-with-date nil
       org-agenda-todo-ignore-scheduled 'future
-      org-agenda-show-future-repeats 'next
+      ;; org-agenda-show-future-repeats 'next
       org-agenda-show-future-repeats t
       ;; org-agenda-todo-ignore-scheduled 'past
       org-agenda-todo-ignore-deadlines nil
