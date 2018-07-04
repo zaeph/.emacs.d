@@ -1911,10 +1911,8 @@ Based on `org-agenda-set-property'."
   (local-set-key (kbd "C-c C-x d") 'zp/org-agenda-delete-property)
   (local-set-key (kbd "Z") 'org-resolve-clocks)
   (local-set-key (kbd "C-<return>") 'org-agenda-switch-to)
-  (local-set-key (kbd "<return>") 'zp/org-agenda-tree-to-indirect-buffer)
-  (local-set-key (kbd "S-<return>") (lambda ()
-				      (interactive)
-				      (zp/org-agenda-tree-to-indirect-buffer 4)))
+  (local-set-key (kbd "<return>") 'zp/org-agenda-tree-to-indirect-buffer-without-grabbing-focus)
+  (local-set-key (kbd "S-<return>") 'zp/org-agenda-tree-to-indirect-buffer)
   (local-set-key (kbd "<backspace>") 'zp/org-agenda-kill-other-buffer-and-window))
 
 (add-hook 'org-agenda-mode-hook 'zp/org-agenda-mode-config)
@@ -3774,8 +3772,10 @@ Version 2017-08-25"
 (defun zp/org-agenda-tree-to-indirect-buffer (arg)
   "Open current tasks in other window, narrow it, and balance
 windows."
-  (interactive "p")
-  (call-interactively 'org-agenda-tree-to-indirect-buffer arg)
+  (interactive "P")
+  (call-interactively 'org-agenda-tree-to-indirect-buffer current-prefix-arg)
+  (if current-prefix-arg
+      (setq org-last-indirect-buffer nil))
   (balance-windows)
   (other-window 1)
   (org-overview)
@@ -3783,9 +3783,12 @@ windows."
   (widen)
   (org-reveal)
   (org-narrow-to-subtree)
-  (if (not (eq arg 4))
-      (other-window -1))
   (zp/play-sound-turn-page))
+
+(defun zp/org-agenda-tree-to-indirect-buffer-without-grabbing-focus (arg)
+  (interactive "P")
+  (zp/org-agenda-tree-to-indirect-buffer arg)
+  (other-window -1))
 
 ;; ========================================
 ;; ================ FACES =================
