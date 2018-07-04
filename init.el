@@ -1027,6 +1027,13 @@ return `nil'."
   (message "Narrowing to tree at point.")
   (zp/play-sound-turn-page))
 
+(defun zp/org-widen ()
+  "Move to the next subtree at same level, and narrow the buffer to it."
+  (interactive)
+  (widen)
+  (message "Removing narrowing.")
+  (zp/play-sound-turn-page))
+
 (defun zp/org-narrow-forward ()
   "Move to the next subtree at same level, and narrow the buffer to it."
   (interactive)
@@ -1088,7 +1095,8 @@ return `nil'."
   (local-set-key (kbd "C-x n y") 'zp/org-narrow-previous-heading)
   (local-set-key (kbd "C-x n s") 'zp/org-narrow-to-subtree)
   (local-set-key (kbd "C-x n f") 'zp/org-narrow-forward)
-  (local-set-key (kbd "C-x n b") 'zp/org-narrow-backwards))
+  (local-set-key (kbd "C-x n b") 'zp/org-narrow-backwards)
+  (local-set-key (kbd "C-x n w") 'zp/org-widen))
 (setq org-mode-hook 'org-mode-config)
 (add-hook 'org-mode-hook #'electric-quote-local-mode)
 (define-key mode-specific-map (kbd "a") 'org-agenda)
