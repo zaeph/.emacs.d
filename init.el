@@ -2230,6 +2230,23 @@ on init and them removes itself."
 
 
 ;; ========================================
+;; =========== WHITESPACE-MODE ============
+;; ========================================
+
+(defun zp/whitespace-mode-lines-tail ()
+  (interactive)
+  (if (bound-and-true-p whitespace-mode)
+      (progn
+	(whitespace-mode -1)
+	(message "Whitespace mode disabled in current buffer"))
+    (let ((whitespace-style '(face lines-tail))
+	  (whitespace-line-column 80))
+      (whitespace-mode t)
+      (message "Whitespace mode enabled in current buffer"))))
+
+
+
+;; ========================================
 ;; ============= HTML EXPORT ==============
 ;; ========================================
 
@@ -3627,8 +3644,10 @@ Version 2017-08-25"
 (global-set-key (kbd "C-c r") 'helm-regexp)
 (global-set-key (kbd "C-c i") 'toggle-truncate-lines)
 (global-set-key (kbd "C-c f") 'flyspell-mode)
-(global-set-key (kbd "M-O") 'olivetti-mode)
-(global-set-key (kbd "M-W") 'writeroom-mode)
+(global-set-key (kbd "M-O")   'olivetti-mode)
+(global-set-key (kbd "M-W")   'writeroom-mode)
+(global-set-key (kbd "C-c w") 'zp/whitespace-mode-lines-tail)
+(global-set-key (kbd "C-c W") 'whitespace-mode)
 
 ;; Prototype
 ;; Doesn't toggle, just turns on
