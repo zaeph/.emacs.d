@@ -1089,7 +1089,7 @@ return `nil'."
   (local-set-key (kbd "C-c [") 'nil)
   (local-set-key (kbd "C-c ]") 'nil)
   (local-set-key (kbd "C-c C-.") 'org-time-stamp)
-  (local-set-key (kbd "C-c C-g") 'zp/org-overview)
+  (local-set-key (kbd "C-c O") 'zp/org-overview)
   (local-set-key (kbd "C-c C-x r") 'zp/org-set-appt-warntime)
   (local-set-key (kbd "C-c C-x l") 'zp/org-set-location)
   (local-set-key (kbd "C-c C-x d") 'org-delete-property)
