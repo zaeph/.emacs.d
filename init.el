@@ -1015,7 +1015,8 @@ return `nil'."
   (widen)
   (org-overview)
   (if (not (eq arg 4))
-      (beginning-of-buffer)))
+      (beginning-of-buffer))
+  (zp/play-sound-turn-page))
 
 ;; org-narrow movements
 
