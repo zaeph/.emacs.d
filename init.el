@@ -3643,7 +3643,7 @@ Version 2017-08-25"
 (global-set-key (kbd "C-c c") 'calendar)
 (global-set-key (kbd "C-c n") 'org-capture)
 (global-set-key (kbd "C-c C-w") 'org-refile)
-(global-set-key (kbd "C-c w") 'zp/org-refile-with-paths)
+(global-set-key (kbd "C-c C-W") 'zp/org-refile-with-paths)
 (global-set-key (kbd "C-c C-=") 'increment-integer-at-point)
 (global-set-key (kbd "C-c C--") 'decrement-integer-at-point)
 (global-set-key (kbd "C-c d") 'zp/ispell-switch-dictionary)
