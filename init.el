@@ -1032,6 +1032,8 @@ return `nil'."
 (defun zp/org-widen ()
   "Move to the next subtree at same level, and narrow the buffer to it."
   (interactive)
+  (let ((pos-before (point)))
+    (setq-local zp/org-narrow-previous-position pos-before))
   (widen)
   (message "Removing narrowing.")
   (zp/play-sound-turn-page))
