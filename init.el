@@ -2060,8 +2060,27 @@ Based on `org-agenda-set-property'."
 
 (defun zp/org-refile-with-paths (&optional arg default-buffer rfloc msg)
   (interactive "P")
-  (let ((org-refile-use-outline-path 1))
+  (let ((org-refile-use-outline-path 1)
+	(org-refile-targets
+	 '((nil :maxlevel . 9)
+	   (org-agenda-files :maxlevel . 3))))
     (org-refile arg default-buffer rfloc msg)))
+
+(defun zp/org-agenda-refile (&optional arg default-buffer rfloc msg goto rfloc no-update)
+  (interactive "P")
+  (if current-prefix-arg
+      (org-refile arg default-buffer rfloc msg)
+    (org-agenda-refile goto rfloc no-update)))
+
+(defun zp/org-agenda-refile-with-paths (&optional arg default-buffer rfloc msg goto rfloc no-update)
+  (interactive "P")
+  (let ((org-refile-use-outline-path 1)
+	(org-refile-targets
+	 '((nil :maxlevel . 9)
+	   (org-agenda-files :maxlevel . 3))))
+    (if current-prefix-arg
+	(org-refile arg default-buffer rfloc msg)
+      (org-agenda-refile goto rfloc no-update))))
 
 
 
