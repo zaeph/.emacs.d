@@ -2056,7 +2056,9 @@ Based on `org-agenda-set-property'."
 (setq org-refile-targets '(
 			   (nil :maxlevel . 9)
 			   (org-agenda-files :maxlevel . 1)
-			   ))
+			   (zp/org-agenda-files-life :maxlevel . 3)
+			   )
+      org-refile-use-cache t)
 
 
 (setq org-outline-path-complete-in-steps nil
