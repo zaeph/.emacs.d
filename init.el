@@ -4398,6 +4398,8 @@ windows."
      ("reg" "%(binary) -f %(ledger-file) reg")
      ("payee" "%(binary) -f %(ledger-file) reg @%(payee)")
      ("account" "%(binary) -f %(ledger-file) reg %(account)"))))
+ '(magit-log-arguments (quote ("--graph" "--decorate" "-n256")))
+ '(magit-submodule-arguments (quote ("--recursive")))
  '(org-emphasis-alist
    (quote
     (("*" bold)
