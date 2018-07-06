@@ -1914,6 +1914,7 @@ Based on `org-agenda-set-property'."
 
 (defun zp/org-agenda-mode-config ()
   "For use with `org-agenda-mode'."
+  (local-set-key (kbd "k") 'zp/org-agenda-capture)
   (local-set-key (kbd "M-k") 'zp/toggle-org-habit-show-all-today)
   (local-set-key (kbd "M-t") 'org-agenda-todo-yesterday)
   (local-set-key (kbd "D") 'zp/toggle-org-agenda-include-deadlines)
@@ -1988,16 +1989,6 @@ Based on `org-agenda-set-property'."
 	("D" "Date + Context" entry (file+headline "/home/zaeph/org/life.org.gpg" "Calendar")
 	 "* %?\n%a")
 
-	("k" "Agenda")
-	("kt" "Todo" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
-	 "* TODO %?\n%t")
-	("kT" "Todo + Time" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
-	 "* TODO %?\n%^T")
-	("kd" "Date" entry (file+headline "/home/zaeph/org/life.org.gpg" "Calendar")
-	 "* %?\n%t")
-	("kD" "Date + Time" entry (file+headline "/home/zaeph/org/life.org.gpg" "Calendar")
-	 "* %?\n%^T")
-
 	;; ("D" "Date + Reminder" entry (file+headline "/home/zaeph/org/life.org.gpg" "Calendar")
 	;;  "* %?\n%^T\n\n%^{APPT_WARNTIME}p")
 	;; ("R" "Reminder" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
@@ -2023,6 +2014,32 @@ Based on `org-agenda-set-property'."
       	;; ("s" "Swimming workout" entry (file+olp "/home/zaeph/org/life.org.gpg" "Sports" "Swimming" "Records" "Current")
 	("s" "Swimming workout" entry (file+weektree+prompt "/home/zaeph/org/sports/swimming/swimming.org.gpg")
 	 "* DONE Training%^{SWIM_DISTANCE}p%^{SWIM_DURATION}p\n%t\n|--+-------|\n| %? |       |\n|--+-------|")))
+
+(setq zp/org-agenda-capture-templates
+      '(("f" "Todo" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
+	 "* TODO %?\n%t")
+	("r" "Todo (+time)" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
+	 "* TODO %?\n%^T")
+
+	("d" "Date" entry (file+headline "/home/zaeph/org/life.org.gpg" "Calendar")
+	 "* %?\n%t")
+	("e" "Date (+time)" entry (file+headline "/home/zaeph/org/life.org.gpg" "Calendar")
+	 "* %?\n%^T")
+
+	("s" "Todo & Scheduled" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
+	 "* TODO %?\nSCHEDULED: %t")
+	("w" "Todo & Scheduled (+time)" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
+	 "* TODO %?\nSCHEDULED: %^T")
+
+	("g" "Todo + Deadline" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
+	 "* TODO %?\nDEADLINE: %t")
+	("t" "Todo & Deadline (+time)" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
+	 "* TODO %?\nDEADLINE: %^T")))
+
+(defun zp/org-agenda-capture (&optional arg)
+  (interactive "P")
+  (let ((org-capture-templates zp/org-agenda-capture-templates))
+    (org-agenda-capture arg)))
 
 
 
