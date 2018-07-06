@@ -1970,9 +1970,9 @@ Based on `org-agenda-set-property'."
 (setq org-capture-templates
       '(("n" "Note" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
 	 "* %?")
-	("t" "Todo" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
+	("f" "Todo" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
 	 "* TODO %?")
-	("T" "Todo + Context" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
+	("r" "Todo + Context" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
 	 "* TODO %?\n%a")
 	;; ("r" "Todo + Reminder" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
 	;;  "* TODO %?\nSCHEDULED: %^T\n:PROPERTIES:\n:APPT_WARNTIME:  %^{APPT_WARNTIME|5|15|30|60}\n:END:")
@@ -1986,7 +1986,7 @@ Based on `org-agenda-set-property'."
 	;;  "* %^{State|TODO|NEXT} %?" :clock-in t)
 	("d" "Date" entry (file+headline "/home/zaeph/org/life.org.gpg" "Calendar")
 	 "* %?\n")
-	("D" "Date + Context" entry (file+headline "/home/zaeph/org/life.org.gpg" "Calendar")
+	("e" "Date + Context" entry (file+headline "/home/zaeph/org/life.org.gpg" "Calendar")
 	 "* %?\n%a")
 
 	;; ("D" "Date + Reminder" entry (file+headline "/home/zaeph/org/life.org.gpg" "Calendar")
