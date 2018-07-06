@@ -1496,7 +1496,9 @@ agenda settings after them."
 		     ((org-agenda-overriding-header
 		       (zp/org-agenda-format-header-block-with-settings "Tasks"))
 		      (org-agenda-files zp/org-agenda-files-main))))
-	 ((org-agenda-category-filter-preset (list "-shows"))))
+	 (
+	  ;; (org-agenda-category-filter-preset (list "-shows"))
+	  ))
 
 	("k" "Agenda:week (-recurring)"
 	 ((agenda "" ((org-agenda-span 'week))))
@@ -1511,7 +1513,7 @@ agenda settings after them."
 	  ;; (org-agenda-show-all-dates nil)
 	  (org-agenda-overriding-header
 		    (zp/org-agenda-format-header-main "Agenda"))
-	  (org-agenda-category-filter-preset (list "-shows"))
+	  ;; (org-agenda-category-filter-preset (list "-shows"))
 	  ;; (org-agenda-entry-types '(:deadline :timestamp :sexp)) ;Excludes scheduled item
 	  ))
 
