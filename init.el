@@ -1293,6 +1293,7 @@ return `nil'."
       ;; org-agenda-todo-ignore-scheduled 'past
       org-agenda-todo-ignore-deadlines nil
       org-agenda-include-deadlines 'all
+      zp/org-agenda-include-scheduled 'all
       org-agenda-window-setup 'current-window
       org-deadline-warning-days 7
       org-agenda-tags-todo-honor-ignore-options 1
@@ -1777,6 +1778,20 @@ agenda settings after them."
 	 (org-agenda-redo)
 	 (message "Deadlines: Visible"))))
 
+(defun zp/toggle-org-agenda-include-scheduled ()
+  "Toggle the inclusion of deadlines in the agenda."
+  (interactive)
+  (cond ((eq zp/org-agenda-include-scheduled 'all)
+         (setq org-agenda-entry-types '(:deadline :timestamp :sexp))
+	 (setq zp/org-agenda-include-scheduled nil)
+	 (org-agenda-redo)
+	 (message "Scheduled: Hidden"))
+        (t
+         (setq org-agenda-entry-types '(:deadline :scheduled :timestamp :sexp))
+	 (setq zp/org-agenda-include-scheduled 'all)
+	 (org-agenda-redo)
+	 (message "Scheduled: Visible"))))
+
 (defun zp/toggle-org-deadline-warning-days-range ()
   "Toggle the range of days for deadline to show up on the agenda."
   (interactive)
@@ -1915,9 +1930,11 @@ Based on `org-agenda-set-property'."
 (defun zp/org-agenda-mode-config ()
   "For use with `org-agenda-mode'."
   (local-set-key (kbd "k") 'zp/org-agenda-capture)
+  (local-set-key (kbd "C-,") 'sunrise-sunset)
   (local-set-key (kbd "M-k") 'zp/toggle-org-habit-show-all-today)
   (local-set-key (kbd "M-t") 'org-agenda-todo-yesterday)
   (local-set-key (kbd "D") 'zp/toggle-org-agenda-include-deadlines)
+  (local-set-key (kbd "S") 'zp/toggle-org-agenda-include-scheduled)
   (local-set-key (kbd "M-d") 'zp/toggle-org-deadline-warning-days-range)
   (local-set-key (kbd "h") 'zp/toggle-org-agenda-dim-blocked-tasks)
   (local-set-key (kbd "H") 'zp/toggle-org-agenda-hide-blocked-tasks)
