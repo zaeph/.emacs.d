@@ -1442,6 +1442,23 @@ agenda settings after them."
       (concat
        header-formatted word-list-formatted "\n"))))
 
+(defun zp/org-agenda-format-header-tasks-scheduled ()
+  "Format headers of ‘Waiting’ in org-agenda, and display important
+agenda settings after them."
+  (let* ((tags-column org-agenda-tags-column)
+	 (header "Scheduled Tasks")
+	 (header-formatted (zp/org-agenda-format-align header))
+	 (word-list ()))
+
+    (if (eq org-agenda-todo-ignore-scheduled nil)
+    	(add-to-list 'word-list "+future" t))
+
+    (let ((word-list-formatted (s-join ";" word-list)))
+      (if (not (eq word-list nil))
+	  (setq word-list-formatted (concat " " "(" word-list-formatted ")")))
+      (concat
+       header-formatted word-list-formatted "\n"))))
+
 
 
 (setq org-agenda-custom-commands
@@ -1480,6 +1497,7 @@ agenda settings after them."
 		     ((org-agenda-overriding-header
 	  	       (zp/org-agenda-format-header-tasks-waiting))
 		      (org-agenda-skip-function 'bh/skip-non-tasks)
+		      (org-agenda-sorting-strategy '(timestamp-up priority-down))
 		      (org-agenda-files zp/org-agenda-files-main)))
 	  ;; Started Tasks
 	  (tags-todo "-standby/!STRT"
@@ -1487,16 +1505,21 @@ agenda settings after them."
 		       (zp/org-agenda-format-header-tasks-started))
 		      (org-agenda-skip-function 'bh/skip-non-tasks)
 		      (org-agenda-files zp/org-agenda-files-main)))
-	  ;; (tags-todo "+TODO={STRT}-standby"
-	  ;; 	     ((org-agenda-overriding-header
-	  ;; 	       (zp/org-agenda-format-header-block "Started"))
-	  ;; 	      (org-agenda-files zp/org-agenda-files-main)))
-	  ;; (tags-todo "-TODO={STBY\\|STRT\\|WAIT}-recurring-standby-reading"
+	  ;; Scheduled Tasks
+	  (tags-todo "-recurring-reading/!-WAIT"
+		     ((org-agenda-overriding-header
+		       (zp/org-agenda-format-header-tasks-scheduled))
+		      (org-agenda-skip-function
+		       '(org-agenda-skip-entry-if 'notscheduled))
+		      (org-agenda-sorting-strategy '(timestamp-up priority-down))
+		      (org-agenda-files zp/org-agenda-files-main)))
 	  ;; Tasks
 	  (tags-todo "-recurring-standby-reading/!-WAIT"
 		     ((org-agenda-overriding-header
 		       (zp/org-agenda-format-header-block-with-settings "Tasks"))
-		      (org-agenda-files zp/org-agenda-files-main))))
+		      (org-agenda-files zp/org-agenda-files-main)
+		      (org-agenda-skip-function
+		       '(org-agenda-skip-entry-if 'scheduled)))))
 	 (
 	  ;; (org-agenda-category-filter-preset (list "-shows"))
 	  ))
@@ -1644,12 +1667,20 @@ agenda settings after them."
 	  (tags-todo "-standby/!WAIT"
 		     ((org-agenda-overriding-header
 	  	       (zp/org-agenda-format-header-tasks-waiting))
-		      (org-agenda-skip-function 'bh/skip-non-tasks)))
+		      (org-agenda-skip-function 'bh/skip-non-tasks)
+		      (org-agenda-sorting-strategy '(timestamp-up priority-down))))
 	  ;; Started Tasks
 	  (tags-todo "-standby/!STRT"
 		     ((org-agenda-overriding-header
 		       (zp/org-agenda-format-header-tasks-started))
 		      (org-agenda-skip-function 'bh/skip-non-tasks)))
+	  ;; Scheduled Tasks
+	  (tags-todo "-recurring-reading/!-WAIT"
+		     ((org-agenda-overriding-header
+		       (zp/org-agenda-format-header-tasks-scheduled))
+		      (org-agenda-skip-function
+		       '(org-agenda-skip-entry-if 'notscheduled))
+		      (org-agenda-sorting-strategy '(timestamp-up priority-down))))
 	  ;; Tasks
 	  (tags-todo "-recurring-standby/!-STRT-WAIT"
 		     ((org-agenda-overriding-header
