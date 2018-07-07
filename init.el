@@ -1783,10 +1783,10 @@ important agenda settings after them."
   "Toggle the range of days for deadline to show up on the agenda."
   (interactive)
   (cond ((eq org-deadline-warning-days 7)
-	 (setq org-deadline-warning-days 14)
+	 (setq org-deadline-warning-days 31)
 	 (org-agenda-redo)
-	 (message "Deadline range: 2 weeks"))
-	((eq org-deadline-warning-days 14)
+	 (message "Deadline range: 1 month"))
+	((eq org-deadline-warning-days 31)
 	 (setq org-deadline-warning-days 7)
 	 (org-agenda-redo)
 	 (message "Deadline range: 1 week"))))
