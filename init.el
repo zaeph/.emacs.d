@@ -1325,8 +1325,7 @@ return `nil'."
 
 (setq org-agenda-files (append zp/org-agenda-files-main
 			       zp/org-agenda-files-tools
-			       zp/org-agenda-files-media
-			       ))
+			       zp/org-agenda-files-media))
 
 
 
