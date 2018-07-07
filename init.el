@@ -160,8 +160,27 @@
 (advice-add #'ispell-parse-output :filter-args
             #'endless/replace-quote)
 
-;; (setq ispell-local-dictionary "british")
-(setq ispell-dictionary "british")
+;; Helm-Ispell
+(setq ispell-dictionary "british"
+      zp/ispell-completion-data '(("English" . "british")
+				 ("French" . "french")))
+
+(defun zp/ispell-switch-dictionary (candidate)
+  (interactive)
+  (if (eq candidate ispell-local-dictionary)
+      (message "Dictionary is already loaded for this language")
+    (ispell-change-dictionary candidate)))
+
+      '(("Change dictionary" . zp/ispell-switch-dictionary)))
+
+(setq zp/helm-source-ispell
+      '((name . "*HELM Ispell - Dictionary selection*")
+        (candidates . zp/ispell-completion-data)
+        (action . zp/helm-ispell-actions)))
+
+(defun zp/helm-ispell ()
+  (interactive)
+  (helm :sources '(zp/helm-source-ispell)))
 
 
 
@@ -3736,7 +3755,7 @@ Version 2017-08-25"
 (global-set-key (kbd "C-c n") 'org-capture)
 (global-set-key (kbd "C-c C-=") 'increment-integer-at-point)
 (global-set-key (kbd "C-c C--") 'decrement-integer-at-point)
-(global-set-key (kbd "C-c d") 'zp/ispell-switch-dictionary)
+(global-set-key (kbd "C-c d") 'zp/helm-ispell)
 (global-set-key (kbd "C-c R") 'org-display-inline-images)
 (global-set-key (kbd "C-c P") 'package-list-packages)
 (global-set-key (kbd "H-h") 'er/expand-region)
