@@ -1329,23 +1329,31 @@ return `nil'."
 
 
 
-;; Header format
-(defun zp/org-agenda-format-align (string)
+;; ========================================
+;; =============== HEADERS ================
+;; ========================================
+
+(defun zp/org-agenda-format-header-align (header)
   (let ((tags-column org-agenda-tags-column))
     (format
      (concat
       "%"
       (number-to-string
-       (/ (+ (- tags-column) (length string)) 2))
+       (/ (+ (- tags-column) (length header)) 2))
       "s")
-     string)))
+     header)))
+
+(defun zp/org-agenda-format-word-list (word-list)
+  (let ((word-list-linked (s-join ";" word-list)))
+    (if (not (eq word-list nil))
+	(concat " " "(" word-list-linked ")"))))
 
 (defun zp/org-agenda-format-header-main (header)
   "Format the main header block in org-agenda."
   (let* ((tags-column org-agenda-tags-column)
 	 (flanking-symbol "~")
 	 (header-formatted
-	  (zp/org-agenda-format-align
+	  (zp/org-agenda-format-header-align
 	   (concat flanking-symbol " " header " " flanking-symbol)))
 	 (word-list ()))
 
@@ -1362,198 +1370,264 @@ return `nil'."
       (if (not (eq word-list nil))
 	  (setq word-list-formatted (concat " " "(" word-list-formatted ")")))
       (concat
-       header-formatted word-list-formatted "\n"))))
+       "\n" header-formatted word-list-formatted "\n"))))
 
 (defun zp/org-agenda-format-header-block (header)
   "Format header blocks in org-agenda."
   (let* ((tags-column org-agenda-tags-column)
-	 (header-formatted (zp/org-agenda-format-align header)))
+	 (header-formatted (zp/org-agenda-format-header-align header)))
     (concat
      header-formatted "\n")))  
 
 (defun zp/org-agenda-format-header-block-with-settings (header)
   "Format header blocks in org-agenda, and display important
 agenda settings after them."
-  (let ((header-formatted (zp/org-agenda-format-align header))
-	(word-list ()))
-
+  (let ((word-list ()))
     (if (eq org-agenda-dim-blocked-tasks 'invisible)
     	(add-to-list 'word-list "-blocked" t))
     (if (eq org-agenda-todo-ignore-scheduled 'future)
     	(add-to-list 'word-list "-future" t))
     (if (eq zp/stuck-projects-include-waiting nil)
     	(add-to-list 'word-list "-SP:waiting" t))
-
-    (let ((word-list-formatted (s-join ";" word-list)))
-      (if (not (eq word-list nil))
-	  (setq word-list-formatted (concat " " "(" word-list-formatted ")")))
-      (concat
-       header-formatted word-list-formatted "\n"))))
+    (let ((header-formatted (zp/org-agenda-format-header-align header))
+	  (word-list-formatted (zp/org-agenda-format-word-list word-list)))
+      (concat header-formatted word-list-formatted "\n"))))
 
 ;; Special blocks
-(defun zp/org-agenda-format-header-stuck-projects ()
+(defun zp/org-agenda-format-header-projects-stuck ()
   "Format headers of ‘Stuck Projects’ in org-agenda, and display important
 agenda settings after them."
   (let* ((tags-column org-agenda-tags-column)
 	 (header "Stuck Projects")
-	 (header-formatted (zp/org-agenda-format-align header))
 	 (word-list ()))
-
     (if (eq zp/stuck-projects-include-waiting t)
     	(add-to-list 'word-list "+waiting" t))
-
-    (let ((word-list-formatted (s-join ";" word-list)))
-      (if (not (eq word-list nil))
-	  (setq word-list-formatted (concat " " "(" word-list-formatted ")")))
-      (concat
-       header-formatted word-list-formatted "\n"))))
+    (let ((header-formatted (zp/org-agenda-format-header-align header))
+	  (word-list-formatted (zp/org-agenda-format-word-list word-list)))
+      (concat header-formatted word-list-formatted "\n"))))
 
 (defun zp/org-agenda-format-header-tasks-waiting ()
   "Format headers of ‘Waiting’ in org-agenda, and display important
 agenda settings after them."
   (let* ((tags-column org-agenda-tags-column)
 	 (header "Waiting Tasks")
-	 (header-formatted (zp/org-agenda-format-align header))
 	 (word-list ()))
-
     (if (eq org-agenda-todo-ignore-scheduled nil)
     	(add-to-list 'word-list "+future" t))
-
-    (let ((word-list-formatted (s-join ";" word-list)))
-      (if (not (eq word-list nil))
-	  (setq word-list-formatted (concat " " "(" word-list-formatted ")")))
-      (concat
-       header-formatted word-list-formatted "\n"))))
+    (let ((header-formatted (zp/org-agenda-format-header-align header))
+	  (word-list-formatted (zp/org-agenda-format-word-list word-list)))
+      (concat header-formatted word-list-formatted "\n"))))
 
 (defun zp/org-agenda-format-header-tasks-started ()
   "Format headers of ‘Started’ in org-agenda, and display important
 agenda settings after them."
   (let* ((tags-column org-agenda-tags-column)
 	 (header "Started Tasks")
-	 (header-formatted (zp/org-agenda-format-align header))
 	 (word-list ()))
-
     ;; (if (eq org-agenda-todo-ignore-scheduled nil)
     ;; 	(add-to-list 'word-list "+future" t))
+    (let ((header-formatted (zp/org-agenda-format-header-align header))
+	  (word-list-formatted (zp/org-agenda-format-word-list word-list)))
+      (concat header-formatted word-list-formatted "\n"))))
 
-    (let ((word-list-formatted (s-join ";" word-list)))
-      (if (not (eq word-list nil))
-	  (setq word-list-formatted (concat " " "(" word-list-formatted ")")))
-      (concat
-       header-formatted word-list-formatted "\n"))))
-
-(defun zp/org-agenda-format-header-tasks-scheduled ()
-  "Format headers of ‘Waiting’ in org-agenda, and display important
-agenda settings after them."
+(defun zp/org-agenda-format-header-scheduled ()
+  "Format headers of ‘Scheduled’ in org-agenda, and display
+important agenda settings after them."
   (let* ((tags-column org-agenda-tags-column)
-	 (header "Scheduled Tasks")
-	 (header-formatted (zp/org-agenda-format-align header))
+	 (header "Scheduled")
 	 (word-list ()))
-
     (if (eq org-agenda-todo-ignore-scheduled nil)
     	(add-to-list 'word-list "+future" t))
+    (let ((header-formatted (zp/org-agenda-format-header-align header))
+	  (word-list-formatted (zp/org-agenda-format-word-list word-list)))
+      (concat header-formatted word-list-formatted "\n"))))
 
-    (let ((word-list-formatted (s-join ";" word-list)))
-      (if (not (eq word-list nil))
-	  (setq word-list-formatted (concat " " "(" word-list-formatted ")")))
-      (concat
-       header-formatted word-list-formatted "\n"))))
+
+
+;; ========================================
+;; ================ BLOCKS ================
+;; ========================================
+
+(defun zp/org-agenda-block-agenda (header &optional file)
+  `(agenda ""
+	   ((org-agenda-overriding-header
+	     (zp/org-agenda-format-header-main ,header))
+	    ,@(if (bound-and-true-p file)
+		  `((org-agenda-files ',file)))
+	    (org-agenda-span 'day)
+	    (org-agenda-dim-blocked-tasks 'dimmed))))
+
+(defun zp/org-agenda-block-agenda-week (header &optional file)
+  `(agenda ""
+	   ((org-agenda-overriding-header
+	     (zp/org-agenda-format-header-main ,header))
+	    ,@(if (bound-and-true-p file)
+		  `((org-agenda-files ',file)))
+	    (org-agenda-span 'week)
+	    (org-agenda-tag-filter-preset '("-recurring"))
+	    (org-agenda-skip-function
+	     '(org-agenda-skip-entry-if
+	       'todo '("CXLD")))
+	    (org-agenda-dim-blocked-tasks 'dimmed))))
+
+(defun zp/org-agenda-block-tasks (&optional file)
+  `(tags-todo "-recurring-standby-reading/!-WAIT"
+	      ((org-agenda-overriding-header
+		(zp/org-agenda-format-header-block-with-settings "Tasks"))
+	       ,@(if (bound-and-true-p file)
+		     `((org-agenda-files ',file)))
+	       (org-agenda-skip-function
+		'(org-agenda-skip-entry-if 'scheduled)))))
+
+(defun zp/org-agenda-block-projects-stuck (&optional file)
+  `(tags-todo "-standby"
+	      ((org-agenda-overriding-header
+		(zp/org-agenda-format-header-projects-stuck))
+	       ,@(if (bound-and-true-p file)
+		     `((org-agenda-files ',file)))
+	       (org-agenda-dim-blocked-tasks 'dimmed)
+	       (org-agenda-skip-function 'zp/skip-non-stuck-projects))))
+
+(defun zp/org-agenda-block-projects-waiting (&optional file)
+  `(tags-todo "-standby/!WAIT"
+	      ((org-agenda-overriding-header
+		(zp/org-agenda-format-header-block "Waiting Projects"))
+	       ,@(if (bound-and-true-p file)
+		     `((org-agenda-files ',file)))
+	       (org-agenda-skip-function 'zp/skip-non-projects)
+	       (org-agenda-dim-blocked-tasks nil))))
+
+(defun zp/org-agenda-block-projects-started (&optional file)
+  `(tags-todo "-standby/!STRT"
+	      ((org-agenda-overriding-header
+		(zp/org-agenda-format-header-block "Started Projects"))
+	       ,@(if (bound-and-true-p file)
+		     `((org-agenda-files ',file)))
+	       (org-agenda-skip-function 'zp/skip-non-projects)
+	       (org-agenda-dim-blocked-tasks nil))))
+
+(defun zp/org-agenda-block-tasks-waiting (&optional file)
+  `(tags-todo "-standby/!WAIT"
+	      ((org-agenda-overriding-header
+		(zp/org-agenda-format-header-tasks-waiting))
+	       ,@(if (bound-and-true-p file)
+		     `((org-agenda-files ',file)))
+	       (org-agenda-skip-function 'bh/skip-non-tasks)
+	       (org-agenda-sorting-strategy '(timestamp-up priority-down)))))
+
+(defun zp/org-agenda-block-tasks-started (&optional file)
+  `(tags-todo "-standby/!STRT"
+	      ((org-agenda-overriding-header
+		(zp/org-agenda-format-header-tasks-started))
+	       ,@(if (bound-and-true-p file)
+		     `((org-agenda-files ',file)))
+	       (org-agenda-skip-function 'bh/skip-non-tasks))))
+
+(defun zp/org-agenda-block-scheduled (&optional file)
+  `(tags-todo "-recurring-reading/!-WAIT"
+	      ((org-agenda-overriding-header
+		(zp/org-agenda-format-header-scheduled))
+	       ,@(if (bound-and-true-p file)
+		     `((org-agenda-files ',file)))
+	       (org-agenda-skip-function
+		'(org-agenda-skip-entry-if 'notscheduled))
+	       (org-agenda-sorting-strategy '(timestamp-up priority-down)))))
+
+(defun zp/org-agenda-block-scheduled (&optional file)
+  `(tags-todo "-recurring-reading/!-WAIT"
+	      ((org-agenda-overriding-header
+		(zp/org-agenda-format-header-scheduled))
+	       ,@(if (bound-and-true-p file)
+		     `((org-agenda-files ',file)))
+	       (org-agenda-skip-function
+		'(org-agenda-skip-entry-if 'notscheduled))
+	       (org-agenda-sorting-strategy '(timestamp-up priority-down)))))
+
+(defun zp/org-agenda-block-deadines ()
+  '(agenda ""
+	   ((org-agenda-span 'day)
+	    (org-agenda-overriding-header
+	     (zp/org-agenda-format-header-main "Deadlines"))
+	    (org-agenda-entry-types '(:deadline))
+	    (org-agenda-include-deadlines t)
+	    (org-agenda-dim-blocked-tasks 'dimmed)
+	    (org-deadline-warning-days 31)
+	    (org-agenda-sorting-strategy
+	     '((agenda habit-down time-up deadline-up priority-down category-keep)
+	       (tags priority-down category-keep)
+	       (todo priority-down category-keep)
+	       (search category-keep))))))
+
+(defun zp/org-agenda-block-reading-next-and-started ()
+  '(tags-todo "+reading-recurring-standby/!NEXT|STRT"
+	      ((org-agenda-overriding-header
+		(zp/org-agenda-format-header-block "Next & Started")))))
+
+(defun zp/org-agenda-block-reading-list ()
+  '(tags-todo "+reading-recurring-standby/!-NEXT-STRT"
+	      ((org-agenda-overriding-header
+		(zp/org-agenda-format-header-block "Next & Started")))))
+
+(defun zp/org-agenda-block-journal ()
+  '(agenda ""
+	   ((org-agenda-overriding-header
+	     (zp/org-agenda-format-header-main "Journal")))))
 
 
 
 (setq org-agenda-custom-commands
-      '(("n" "Agenda (-standby)"
+      `(("n" "Agenda"
 	 ;; Agenda
-	 ((agenda ""
-		  ((org-agenda-span 'day)
-		   (org-agenda-files org-agenda-files)
-		   (org-agenda-dim-blocked-tasks 'dimmed)
-		   (org-agenda-overriding-header
-		    (zp/org-agenda-format-header-main "Agenda"))))
-	  ;; Stuck Projects
-	  (tags-todo "-standby"
-	  	     ((org-agenda-overriding-header
-	  	       (zp/org-agenda-format-header-stuck-projects))
-	  	      (org-agenda-dim-blocked-tasks 'dimmed)
-	  	      (org-agenda-skip-function 'zp/skip-non-stuck-projects)
-	  	      (org-agenda-files zp/org-agenda-files-main)))
-	  ;; Waiting Projects
-	  (tags-todo "-standby/!WAIT"
-	  	     ((org-agenda-overriding-header
-	  	       (zp/org-agenda-format-header-block "Waiting Projects"))
-	  	      (org-agenda-skip-function 'zp/skip-non-projects)
-	  	      (org-agenda-dim-blocked-tasks nil)
-	  	      (org-agenda-files zp/org-agenda-files-main)))
-	  ;; Started Projects
-	  (tags-todo "-standby/!STRT"
-		     ((org-agenda-overriding-header
-		       (zp/org-agenda-format-header-block "Started Projects"))
-		      (org-agenda-skip-function 'zp/skip-non-projects)
-		      (org-agenda-dim-blocked-tasks nil)
-		      (org-agenda-files zp/org-agenda-files-main)))
-	  ;; Waiting Tasks
-	  (tags-todo "-standby/!WAIT"
-		     ((org-agenda-overriding-header
-	  	       (zp/org-agenda-format-header-tasks-waiting))
-		      (org-agenda-skip-function 'bh/skip-non-tasks)
-		      (org-agenda-sorting-strategy '(timestamp-up priority-down))
-		      (org-agenda-files zp/org-agenda-files-main)))
-	  ;; Started Tasks
-	  (tags-todo "-standby/!STRT"
-		     ((org-agenda-overriding-header
-		       (zp/org-agenda-format-header-tasks-started))
-		      (org-agenda-skip-function 'bh/skip-non-tasks)
-		      (org-agenda-files zp/org-agenda-files-main)))
-	  ;; Scheduled Tasks
-	  (tags-todo "-recurring-reading/!-WAIT"
-		     ((org-agenda-overriding-header
-		       (zp/org-agenda-format-header-tasks-scheduled))
-		      (org-agenda-skip-function
-		       '(org-agenda-skip-entry-if 'notscheduled))
-		      (org-agenda-sorting-strategy '(timestamp-up priority-down))
-		      (org-agenda-files zp/org-agenda-files-main)))
-	  ;; Tasks
-	  (tags-todo "-recurring-standby-reading/!-WAIT"
-		     ((org-agenda-overriding-header
-		       (zp/org-agenda-format-header-block-with-settings "Tasks"))
-		      (org-agenda-files zp/org-agenda-files-main)
-		      (org-agenda-skip-function
-		       '(org-agenda-skip-entry-if 'scheduled)))))
-	 (
-	  ;; (org-agenda-category-filter-preset (list "-shows"))
-	  ))
+	 (,(zp/org-agenda-block-agenda "Agenda" 	org-agenda-files)
+	  ,(zp/org-agenda-block-projects-stuck		zp/org-agenda-files-main)
+	  ,(zp/org-agenda-block-projects-waiting	zp/org-agenda-files-main)
+	  ,(zp/org-agenda-block-projects-started	zp/org-agenda-files-main)
+	  ,(zp/org-agenda-block-tasks-waiting		zp/org-agenda-files-main)
+	  ,(zp/org-agenda-block-tasks-started		zp/org-agenda-files-main)
+	  ,(zp/org-agenda-block-scheduled		zp/org-agenda-files-main)
+	  ,(zp/org-agenda-block-tasks			zp/org-agenda-files-main)))
 
 	("k" "Agenda:week (-recurring)"
-	 ((agenda "" ((org-agenda-span 'week))))
-	 ((org-agenda-tag-filter-preset '("-recurring"))
-	  (org-agenda-files org-agenda-files)
-	  (org-agenda-dim-blocked-tasks 'dimmed)
-	  (org-agenda-skip-function
-	   '(org-agenda-skip-entry-if
-	     'todo '("CXLD")))
-	  ;; (org-agenda-skip-timestamp-if-done nil)
-	  ;; (org-agenda-show-all-dates nil)
-	  (org-agenda-overriding-header
-		    (zp/org-agenda-format-header-main "Agenda"))
-	  ;; (org-agenda-category-filter-preset (list "-shows"))
-	  ;; (org-agenda-entry-types '(:deadline :timestamp :sexp)) ;Excludes scheduled item
+	 (,(zp/org-agenda-block-agenda-week "Weekly Agenda")))
+
+	("j" "Journal entries"
+	 (,(zp/org-agenda-block-journal))
+	 ((org-agenda-files zp/org-agenda-files-journals)))
+
+	("r" "Reading (-standby)"
+	 (,(zp/org-agenda-block-agenda "Reading")
+	  ,(zp/org-agenda-block-projects-stuck)
+	  ,(zp/org-agenda-block-reading-next-and-started)
+	  ,(zp/org-agenda-block-reading-list))
+	 ((org-agenda-tag-filter-preset (list "+reading"))
+	  (org-agenda-hide-tags-regexp "reading")
+	  (org-agenda-files zp/org-agenda-files-main)
 	  ))
 
+	("b" "Media"
+	 (,(zp/org-agenda-block-agenda "Media")
+	  ,(zp/org-agenda-block-projects-stuck)
+	  ,(zp/org-agenda-block-projects-waiting)
+	  ,(zp/org-agenda-block-projects-started)
+	  ,(zp/org-agenda-block-tasks-waiting)
+	  ,(zp/org-agenda-block-tasks-started)
+	  ,(zp/org-agenda-block-scheduled)
+	  ,(zp/org-agenda-block-tasks))
+	 ((org-agenda-files zp/org-agenda-files-media)))
+
+	("l" "Arch & Emacs"
+	 (,(zp/org-agenda-block-agenda "Arch & Emacs")
+	  ,(zp/org-agenda-block-projects-stuck)
+	  ,(zp/org-agenda-block-projects-waiting)
+	  ,(zp/org-agenda-block-projects-started)
+	  ,(zp/org-agenda-block-tasks-waiting)
+	  ,(zp/org-agenda-block-tasks-started)
+	  ,(zp/org-agenda-block-scheduled)
+	  ,(zp/org-agenda-block-tasks))
+	 ((org-agenda-files zp/org-agenda-files-tools)))
+
 	("d" "Deadlines"
-	 ((agenda ""
-		  ((org-agenda-span 'day)
-		   (org-agenda-overriding-header
-		    (zp/org-agenda-format-header-main "Deadlines"))
-		   (org-agenda-entry-types '(:deadline))
-		   (org-agenda-include-deadlines t)
-		   (org-deadline-warning-days 31))))
-	 ;; (org-agenda-entry-types '(:deadline :scheduled :timestamp :sexp))))
-	 ((org-agenda-sorting-strategy
-	   '((agenda habit-down time-up deadline-up priority-down category-keep)
-	     (tags priority-down category-keep)
-	     (todo priority-down category-keep)
-	     (search category-keep)))
-	  (org-agenda-dim-blocked-tasks 'dimmed)))
+	 (,(zp/org-agenda-block-deadines)))
 
 	("D" "Deadlines (week)"
 	 ((agenda ""
@@ -1575,122 +1649,6 @@ agenda settings after them."
 	 ((org-agenda-files zp/org-agenda-files-main)
 	  (org-agenda-todo-ignore-scheduled nil)))
 
-	("r" "Reading (-standby)"
-	 ((agenda ""
-		  ((org-agenda-span 'day)
-		   (org-agenda-dim-blocked-tasks 'dimmed)
-		   (org-agenda-overriding-header
-		    (zp/org-agenda-format-header-main "Reading"))))
-	  ;; Stuck Projects
-	  (tags-todo "-standby"
-	  	     ((org-agenda-overriding-header
-	  	       (zp/org-agenda-format-header-stuck-projects))
-	  	      (org-agenda-dim-blocked-tasks 'dimmed)
-	  	      (org-agenda-skip-function 'zp/skip-non-stuck-projects)
-	  	      (org-agenda-sorting-strategy
-	  	       '(category-keep))))
-	  ;; Next & Started Tasks
-	  (tags-todo "+reading-recurring-standby/!NEXT|STRT"
-		     ((org-agenda-overriding-header
-		       (zp/org-agenda-format-header-block "Next & Started Tasks"))
-		      ))
-	  ;; Reading List
-	  (tags-todo "+reading-recurring-standby/!-NEXT-STRT"
-		     ((org-agenda-overriding-header
-		       (zp/org-agenda-format-header-block-with-settings "List")))))
-	 ((org-agenda-tag-filter-preset (list "+reading"))
-	  (org-agenda-hide-tags-regexp "reading")
-	  (org-agenda-files zp/org-agenda-files-main)
-	  ))
-
-	("b" "Media (-standby)"
-	 ;; Agenda
-	 ((agenda ""
-		  ((org-agenda-span 'day)
-		   (org-agenda-overriding-header
-		       (zp/org-agenda-format-header-main "Media"))))
-	  ;; Stuck Projects
-	  (tags-todo "-standby"
-	  	     ((org-agenda-overriding-header
-	  	       (zp/org-agenda-format-header-stuck-projects))
-	  	      (org-agenda-dim-blocked-tasks 'dimmed)
-		      (org-agenda-files zp/org-agenda-files-media)
-	  	      (org-agenda-skip-function 'zp/skip-non-stuck-projects)
-	  	      (org-agenda-sorting-strategy
-	  	       '(category-keep))))
-	  ;; Waiting Tasks
-	  (tags-todo "-standby/!WAIT"
-		     ((org-agenda-overriding-header
-	  	       (zp/org-agenda-format-header-tasks-waiting))
-		      (org-agenda-skip-function 'bh/skip-non-tasks)))
-	  ;; Started Tasks
-	  (tags-todo "-reading-recurring-standby/!STRT"
-		     ((org-agenda-overriding-header
-		       (zp/org-agenda-format-header-tasks-started))
-		      (org-agenda-skip-function 'bh/skip-non-tasks)))
-	  ;; Tasks
-	  (tags-todo "-recurring-standby/!-STRT-WAIT"
-		     ((org-agenda-overriding-header
-		       (zp/org-agenda-format-header-block-with-settings "Tasks")))))
-	 ((org-agenda-files zp/org-agenda-files-media)))
-
-	("l" "Arch & Emacs (-standby)"
-	 (
-	  ;; Agenda
-	  (agenda ""
-		  ((org-agenda-span 'day)
-		   (org-agenda-dim-blocked-tasks 'dimmed)
-		   (org-agenda-overriding-header
-		       (zp/org-agenda-format-header-main "Arch & Emacs"))))
-	  ;; Stuck Projects
-	  (tags-todo "-standby"
-	  	     ((org-agenda-overriding-header
-	  	       (zp/org-agenda-format-header-stuck-projects))
-	  	      (org-agenda-dim-blocked-tasks 'dimmed)
-	  	      (org-agenda-skip-function 'zp/skip-non-stuck-projects)
-	  	      (org-agenda-sorting-strategy
-	  	       '(category-keep))))
-	  ;; Waiting Projects
-	  (tags-todo "-standby/!WAIT"
-		     ((org-agenda-overriding-header
-		       (zp/org-agenda-format-header-block "Waiting Projects"))
-		      (org-agenda-skip-function 'zp/skip-non-projects)
-		      (org-agenda-dim-blocked-tasks nil)))
-	  ;; Started Projects
-	  (tags-todo "-standby/!STRT"
-		     ((org-agenda-overriding-header
-		       (zp/org-agenda-format-header-block "Started Projects"))
-		      (org-agenda-skip-function 'zp/skip-non-projects)
-		      (org-agenda-dim-blocked-tasks nil)))
-	  ;; Waiting Tasks
-	  (tags-todo "-standby/!WAIT"
-		     ((org-agenda-overriding-header
-	  	       (zp/org-agenda-format-header-tasks-waiting))
-		      (org-agenda-skip-function 'bh/skip-non-tasks)
-		      (org-agenda-sorting-strategy '(timestamp-up priority-down))))
-	  ;; Started Tasks
-	  (tags-todo "-standby/!STRT"
-		     ((org-agenda-overriding-header
-		       (zp/org-agenda-format-header-tasks-started))
-		      (org-agenda-skip-function 'bh/skip-non-tasks)))
-	  ;; Scheduled Tasks
-	  (tags-todo "-recurring-reading/!-WAIT"
-		     ((org-agenda-overriding-header
-		       (zp/org-agenda-format-header-tasks-scheduled))
-		      (org-agenda-skip-function
-		       '(org-agenda-skip-entry-if 'notscheduled))
-		      (org-agenda-sorting-strategy '(timestamp-up priority-down))))
-	  ;; Tasks
-	  (tags-todo "-recurring-standby/!-STRT-WAIT"
-		     ((org-agenda-overriding-header
-		       (zp/org-agenda-format-header-block-with-settings "Tasks")))))
-	 ((org-agenda-files zp/org-agenda-files-tools)))
-
-	("j" "Journal entries"
-	 ((agenda ""
-		  ((org-agenda-overriding-header
-		       (zp/org-agenda-format-header-main "Journal")))))
-	 ((org-agenda-files zp/org-agenda-files-journals)))
 	("S" "Swimming schedule"
 	 ((agenda ""
 		  ((org-agenda-files zp/org-agenda-files-sports))))
