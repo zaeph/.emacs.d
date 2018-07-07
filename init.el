@@ -185,7 +185,13 @@
 
 (defun zp/helm-ispell ()
   (interactive)
-  (helm :sources '(zp/helm-source-ispell)))
+  (let ((current ispell-local-dictionary))
+    (helm :sources '(zp/helm-source-ispell)
+	  :preselect (if (or
+			  (eq current nil)
+			  (string-match-p current "british"))
+			 "French"
+		       "English"))))
 
 
 
