@@ -171,6 +171,11 @@
       (message "Dictionary is already loaded for this language")
     (ispell-change-dictionary candidate)))
 
+(defun zp/ispell-query-dictionary ()
+  (if (not (y-or-n-p "Writing in English? "))
+      (ispell-change-dictionary "french")))
+
+(setq zp/helm-ispell-actions
       '(("Change dictionary" . zp/ispell-switch-dictionary)))
 
 (setq zp/helm-source-ispell
@@ -496,7 +501,7 @@ ALL-MAILS are the all the unread emails"
 (add-hook 'message-mode-hook #'flyspell-mode)
 (add-hook 'message-mode-hook #'electric-quote-local-mode)
 (add-hook 'message-mode-hook #'footnote-mode)
-
+(add-hook 'message-mode-hook #'zp/ispell-query-dictionary)
 
 (setq electric-quote-context-sensitive 1)
 ;; -----------------------------------------------------------------------------
