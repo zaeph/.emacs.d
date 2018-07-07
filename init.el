@@ -1328,7 +1328,18 @@ return `nil'."
 			       zp/org-agenda-files-media
 			       ))
 
+
+
 ;; Header format
+(defun zp/org-agenda-format-align (string)
+  (let ((tags-column org-agenda-tags-column))
+    (format
+     (concat
+      "%"
+      (number-to-string
+       (/ (+ (- tags-column) (length string)) 2))
+      "s")
+     string)))
 
 (defun zp/org-agenda-format-header-main (header)
   "Format the main header block in org-agenda."
@@ -1348,26 +1359,15 @@ return `nil'."
 (defun zp/org-agenda-format-header-block (header)
   "Format header blocks in org-agenda."
   (let* ((tags-column org-agenda-tags-column)
-	 (format-align
-	  (concat
-	   "%"
-	   (number-to-string
-	    (/ (+ (- tags-column) (length header)) 2))
-	   "s")))
+	 (header-formatted (zp/org-agenda-format-align header)))
     (concat
-     (format format-align header) "\n")))  
+     header-formatted "\n")))  
 
 (defun zp/org-agenda-format-header-block-with-settings (header)
   "Format header blocks in org-agenda, and display important
 agenda settings after them."
-  (let* ((tags-column org-agenda-tags-column)
-	 (format-align
-	  (concat
-	   "%"
-	   (number-to-string
-	    (/ (+ (- tags-column) (length header)) 2))
-	   "s"))
-	 (word-list ()))
+  (let ((header-formatted (zp/org-agenda-format-align header))
+	(word-list ()))
 
     (if (eq org-agenda-dim-blocked-tasks 'invisible)
     	(add-to-list 'word-list "-blocked" t))
@@ -1379,18 +1379,16 @@ agenda settings after them."
     (let ((word-list-formatted (s-join ";" word-list)))
       (if (not (eq word-list nil))
 	  (setq word-list-formatted (concat " " "(" word-list-formatted ")")))
+      (message header-formatted)
       (concat
-       (format format-align header) word-list-formatted "\n"))))
+       header-formatted word-list-formatted "\n"))))
 
 (defun zp/org-agenda-format-header-stuck-projects ()
   "Format headers of ‘Stuck Projects’ in org-agenda, and display important
 agenda settings after them."
   (let* ((tags-column org-agenda-tags-column)
 	 (header "Stuck Projects")
-	 (format-align (concat
-			"%"
-			(number-to-string (/ (+ (- tags-column) (length header)) 2))
-			"s"))
+	 (header-formatted (zp/org-agenda-format-align header))
 	 (word-list ()))
 
     (if (eq zp/stuck-projects-include-waiting t)
@@ -1400,17 +1398,14 @@ agenda settings after them."
       (if (not (eq word-list nil))
 	  (setq word-list-formatted (concat " " "(" word-list-formatted ")")))
       (concat
-       (format format-align header) word-list-formatted "\n"))))
+       header-formatted word-list-formatted "\n"))))
 
 (defun zp/org-agenda-format-header-tasks-waiting ()
   "Format headers of ‘Waiting’ in org-agenda, and display important
 agenda settings after them."
   (let* ((tags-column org-agenda-tags-column)
 	 (header "Waiting Tasks")
-	 (format-align (concat
-			"%"
-			(number-to-string (/ (+ (- tags-column) (length header)) 2))
-			"s"))
+	 (header-formatted (zp/org-agenda-format-align header))
 	 (word-list ()))
 
     (if (eq org-agenda-todo-ignore-scheduled nil)
@@ -1420,17 +1415,14 @@ agenda settings after them."
       (if (not (eq word-list nil))
 	  (setq word-list-formatted (concat " " "(" word-list-formatted ")")))
       (concat
-       (format format-align header) word-list-formatted "\n"))))
+       header-formatted word-list-formatted "\n"))))
 
 (defun zp/org-agenda-format-header-tasks-started ()
   "Format headers of ‘Started’ in org-agenda, and display important
 agenda settings after them."
   (let* ((tags-column org-agenda-tags-column)
 	 (header "Started Tasks")
-	 (format-align (concat
-			"%"
-			(number-to-string (/ (+ (- tags-column) (length header)) 2))
-			"s"))
+	 (header-formatted (zp/org-agenda-format-align header))
 	 (word-list ()))
 
     ;; (if (eq org-agenda-todo-ignore-scheduled nil)
@@ -1440,7 +1432,7 @@ agenda settings after them."
       (if (not (eq word-list nil))
 	  (setq word-list-formatted (concat " " "(" word-list-formatted ")")))
       (concat
-       (format format-align header) word-list-formatted "\n"))))
+       header-formatted word-list-formatted "\n"))))
 
 
 
