@@ -431,7 +431,7 @@ ALL-MAILS are the all the unread emails"
 
 (setq message-send-mail-function 'smtpmail-send-it
       smtpmail-auth-credentials
-      (expand-file-name "~/.authinfo.gpg")
+      (expand-file-name "/home/zaeph/.authinfo.gpg")
       )
 
 (setq send-mail-function 'sendmail-send-it)
