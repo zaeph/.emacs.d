@@ -186,6 +186,11 @@
 (defun zp/helm-ispell ()
   (interactive)
   (let ((current ispell-local-dictionary))
+    (helm :sources '(zp/helm-source-ispell))))
+
+(defun zp/helm-ispell-preselect ()
+  (interactive)
+  (let ((current ispell-local-dictionary))
     (helm :sources '(zp/helm-source-ispell)
 	  :preselect (if (or
 			  (eq current nil)
@@ -507,7 +512,7 @@ ALL-MAILS are the all the unread emails"
 (add-hook 'message-mode-hook #'flyspell-mode)
 (add-hook 'message-mode-hook #'electric-quote-local-mode)
 (add-hook 'message-mode-hook #'footnote-mode)
-(add-hook 'message-mode-hook #'zp/ispell-query-dictionary)
+(add-hook 'message-mode-hook #'zp/helm-ispell)
 
 (setq electric-quote-context-sensitive 1)
 ;; -----------------------------------------------------------------------------
@@ -3766,7 +3771,7 @@ Version 2017-08-25"
 (global-set-key (kbd "C-c n") 'org-capture)
 (global-set-key (kbd "C-c C-=") 'increment-integer-at-point)
 (global-set-key (kbd "C-c C--") 'decrement-integer-at-point)
-(global-set-key (kbd "C-c d") 'zp/helm-ispell)
+(global-set-key (kbd "C-c d") 'zp/helm-ispell-preselect)
 (global-set-key (kbd "C-c R") 'org-display-inline-images)
 (global-set-key (kbd "C-c P") 'package-list-packages)
 (global-set-key (kbd "H-h") 'er/expand-region)
