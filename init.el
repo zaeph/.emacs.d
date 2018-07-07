@@ -1468,7 +1468,6 @@ agenda settings after them."
 		  ((org-agenda-span 'day)
 		   (org-agenda-files org-agenda-files)
 		   (org-agenda-dim-blocked-tasks 'dimmed)
-		   (org-agenda-files org-agenda-files)
 		   (org-agenda-overriding-header
 		    (zp/org-agenda-format-header-main "Agenda"))))
 	  ;; Stuck Projects
