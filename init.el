@@ -1346,15 +1346,24 @@ return `nil'."
   (let* ((tags-column org-agenda-tags-column)
 	 (flanking-symbol "~")
 	 (header-formatted
-	  (concat flanking-symbol " " header " " flanking-symbol))
-	 (format-align
-	  (concat
-	   "%"
-	   (number-to-string
-	    (/ (+ (- tags-column) (length header-formatted)) 2))
-	   "s")))
-    (concat
-     "\n" (format format-align header-formatted) " " "\n")))
+	  (zp/org-agenda-format-align
+	   (concat flanking-symbol " " header " " flanking-symbol)))
+	 (word-list ()))
+
+    (if (eq org-agenda-include-deadlines nil)
+    	(add-to-list 'word-list "-deadlines" t))
+
+    (if (eq org-habit-show-habits nil)
+    	(add-to-list 'word-list "-habits" t))
+    
+    (if (eq zp/org-agenda-include-scheduled nil)
+    	(add-to-list 'word-list "-scheduled" t))
+
+    (let ((word-list-formatted (s-join ";" word-list)))
+      (if (not (eq word-list nil))
+	  (setq word-list-formatted (concat " " "(" word-list-formatted ")")))
+      (concat
+       header-formatted word-list-formatted "\n"))))
 
 (defun zp/org-agenda-format-header-block (header)
   "Format header blocks in org-agenda."
@@ -1379,10 +1388,10 @@ agenda settings after them."
     (let ((word-list-formatted (s-join ";" word-list)))
       (if (not (eq word-list nil))
 	  (setq word-list-formatted (concat " " "(" word-list-formatted ")")))
-      (message header-formatted)
       (concat
        header-formatted word-list-formatted "\n"))))
 
+;; Special blocks
 (defun zp/org-agenda-format-header-stuck-projects ()
   "Format headers of ‘Stuck Projects’ in org-agenda, and display important
 agenda settings after them."
@@ -1497,7 +1506,6 @@ agenda settings after them."
 	 ((agenda "" ((org-agenda-span 'week))))
 	 ((org-agenda-tag-filter-preset '("-recurring"))
 	  (org-agenda-files org-agenda-files)
-	  (org-agenda-entry-types '(:timestamp :deadline))
 	  (org-agenda-dim-blocked-tasks 'dimmed)
 	  (org-agenda-skip-function
 	   '(org-agenda-skip-entry-if
