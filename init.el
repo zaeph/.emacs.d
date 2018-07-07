@@ -1534,13 +1534,14 @@ important agenda settings after them."
 	       (org-agenda-sorting-strategy '(timestamp-up priority-down)))))
 
 (defun zp/org-agenda-block-scheduled (&optional file)
-  `(tags-todo "-recurring-reading/!-WAIT"
+  `(tags-todo "-reading-recurring/!-WAIT"
 	      ((org-agenda-overriding-header
 		(zp/org-agenda-format-header-scheduled))
 	       ,@(if (bound-and-true-p file)
 		     `((org-agenda-files ',file)))
 	       (org-agenda-skip-function
 		'(org-agenda-skip-entry-if 'notscheduled))
+	       (org-agenda-dim-blocked-tasks 'dimmed)
 	       (org-agenda-sorting-strategy '(timestamp-up priority-down)))))
 
 (defun zp/org-agenda-block-deadines ()
