@@ -1629,18 +1629,6 @@ important agenda settings after them."
 	("d" "Deadlines"
 	 (,(zp/org-agenda-block-deadines)))
 
-	("D" "Deadlines (week)"
-	 ((agenda ""
-		  ((org-agenda-span 'week)
-		   (org-agenda-overriding-header
-		    (zp/org-agenda-format-header-main "Deadlines (week-by-week)"))
-		   (org-agenda-entry-types '(:deadline))
-		   (org-agenda-include-deadlines t)
-		   (org-deadline-warning-days 0))))
-	 ((org-agenda-dim-blocked-tasks 'dimmed)))
-	;; ("D" "Deadlines with times"
-	;;  tags "+DEADLINE>=\"<today>\"&DEADLINE<=\"<+2m>\"")
-
 	("w" "Waiting list (-standby)"
 	 ((tags-todo "-standby/!WAIT"
 		     ((org-agenda-overriding-header
