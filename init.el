@@ -3121,12 +3121,6 @@ i.e. change right window to bottom, or change bottom window to right."
 
 (advice-add #'mu4e-view-message-with-message-id :around #'zp/mu4e-view-message-with-message-id-save-window-config-before)
 
-(defun zp/ispell-switch-dictionary ()
-  (interactive)
-  (if (eq ispell-local-dictionary nil)
-      (ispell-change-dictionary "french")
-    (ispell-change-dictionary nil)))
-
 (defun zp/echo-buffer-name ()
   (interactive)
   (message (concat "Current buffer: " (replace-regexp-in-string "%" "%%" (buffer-name)))))
