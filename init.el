@@ -1635,11 +1635,12 @@ agenda settings after them."
 
 (setq org-agenda-custom-commands
       `(("n" "Agenda"
-	 (,(zp/org-agenda-block-agenda "Agenda" 	org-agenda-files)
-	  ,(zp/org-agenda-block-scheduled		zp/org-agenda-files-main)
-	  ,(zp/org-agenda-block-projects		zp/org-agenda-files-main)
-	  ,(zp/org-agenda-block-projects-stuck		zp/org-agenda-files-main)
-	  ,(zp/org-agenda-block-tasks			zp/org-agenda-files-main)))
+	 (,(zp/org-agenda-block-agenda "Agenda" org-agenda-files)
+	  ,(zp/org-agenda-block-scheduled)
+	  ,(zp/org-agenda-block-projects)
+	  ,(zp/org-agenda-block-projects-stuck)
+	  ,(zp/org-agenda-block-tasks))
+	 ((org-agenda-files zp/org-agenda-files-main)))
 
 	("k" "Agenda:week (-recurring)"
 	 (,(zp/org-agenda-block-agenda-week "Weekly Agenda")))
