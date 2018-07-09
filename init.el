@@ -2257,8 +2257,8 @@ on init and them removes itself."
 ;; ========================================
 
 (require 'chronos)
-;; (require 'helm-chronos)  ;; Doesn't support creating new timers from helm
-(load "/home/zaeph/org/elisp/helm-chronos-patched.el")
+(load "/home/zaeph/.emacs.d/lisp/helm-chronos-patched.el")
+(require 'helm-chronos)  ;; Doesn't support creating new timers from helm
 
 (setq chronos-expiry-functions '(chronos-notify))
 
