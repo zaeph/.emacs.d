@@ -229,7 +229,8 @@
 ;; ================= MU4E =================
 ;; ========================================
 
-(add-to-list 'load-path "/usr/share/emacs/site-lisp/mu4e")
+;; (add-to-list 'load-path "/usr/share/emacs/site-lisp/mu4e")
+(add-to-list 'load-path "/home/zaeph/.emacs.d/pkg/mu/mu4e")
 (require 'mu4e)
 (require 'mu4e-alert)
 (require 'org-mu4e)
