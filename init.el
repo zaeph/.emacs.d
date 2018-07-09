@@ -12,6 +12,7 @@
 ")
 
 (setq debug-on-error nil)
+(defalias 'yes-or-no-p 'y-or-n-p)
 
 ;; ;; outline-minor-mode for viewing init.el
 ;; (add-hook 'emacs-lisp-mode-hook 
