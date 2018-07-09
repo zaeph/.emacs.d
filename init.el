@@ -659,7 +659,7 @@ ALL-MAILS are the all the unread emails"
 (menu-bar-mode -1)
 (tool-bar-mode -1)
 (scroll-bar-mode 0)
-(fringe-mode 10)
+(fringe-mode 15)
 (show-paren-mode 1)
 (yas-global-mode 1)
 (column-number-mode 1)
@@ -4116,6 +4116,8 @@ windows."
   (set-face-attribute 'mu4e-system-face nil :foreground "SlateBlue")
   (set-face-attribute 'mu4e-modeline-face nil :foreground "LightBlue4")
   (set-face-attribute 'line-number nil :foreground "#969996" :background "#3B3B3B")
+  (set-face-attribute 'secondary-selection nil :background "#3B3273")
+
 
   (set-face-attribute 'zp/org-agenda-blocked-tasks-warning-face nil
 		      :foreground "violetred1"
@@ -4156,7 +4158,7 @@ windows."
   ;; (set-face-attribute 'org-todo-box nil :inverse-video t :foreground "white" :height 0.8 :weight 'bold :box nil)
   ;; (set-face-attribute 'default nil :background "cornsilk1") ;fff8dc
   (set-face-attribute 'default nil :foreground "#3c3836" :background "#fbf1c7")
-  (set-face-attribute 'fringe nil :background "cornsilk2")
+  (set-face-attribute 'fringe nil :background "#e6deb8")
   (set-face-attribute 'org-hide nil :foreground "#fbf1c7")
   (set-face-attribute 'org-agenda-dimmed-todo-face nil :foreground "LightSlateBlue")
   (set-face-attribute 'org-scheduled-today nil :foreground "DodgerBlue4")
@@ -4172,7 +4174,13 @@ windows."
   (set-face-attribute 'mu4e-system-face nil :foreground "SlateBlue3")
   (set-face-attribute 'mu4e-modeline-face nil :foreground "LightBlue3")
   (set-face-attribute 'org-agenda-structure nil :foreground "DodgerBlue1" :weight 'bold)
-  (set-face-attribute 'line-number nil :foreground "#707370" :background "#e0d9b4")
+  (set-face-attribute 'line-number nil :foreground "#636663" :background "#ccc6a4")
+  ;; (set-face-attribute 'line-number-current-line nil :foreground "#707370" :background "#ccc6a4")
+  (set-face-attribute 'secondary-selection nil :background "#d3ccff")
+
+  (set-face-attribute 'diff-hl-change nil :foreground "#3a81c3" :background "#3a81c3")
+  (set-face-attribute 'diff-hl-insert nil :foreground "#7ccd7c" :background "#7ccd7c")
+  (set-face-attribute 'diff-hl-delete nil :foreground "#ee6363" :background "#ee6363")
 
   (set-face-attribute 'zp/org-agenda-blocked-tasks-warning-face nil
 		      :foreground "violetred1"
