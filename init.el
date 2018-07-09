@@ -121,7 +121,49 @@
 ;; ox-hugo
 (require 'ox-hugo)
 
+;; duplicate-thing
+(require 'duplicate-thing)
 
+(global-set-key (kbd "M-U") 'universal-argument)
+(define-key universal-argument-map "M-U" 'universal-argument-more)
+(global-set-key (kbd "M-J") 'duplicate-thing)
+
+(require 'volatile-highlights)
+(volatile-highlights-mode)
+
+(require 'clean-aindent-mode)
+(add-hook 'prog-mode-hook 'clean-aindent-mode)
+(add-hook 'prog-mode-hook 'zp/whitespace-mode-lines-tail)
+
+(global-set-key (kbd "M-U") 'universal-argument)
+(global-set-key (kbd "M-SPC") 'delete-horizontal-space)
+(global-set-key (kbd "M-S-SPC") 'just-one-space)
+(define-key universal-argument-map "\M-U" 'universal-argument-more)
+(global-set-key (kbd "M-J") 'duplicate-thing)
+
+(require 'flycheck)
+;; (add-hook 'after-init-hook #'global-flycheck-mode)
+(setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc))
+(setq flycheck-emacs-lisp-load-path 'inherit)
+
+(require 'flycheck-pos-tip)
+(flycheck-pos-tip-mode)
+
+
+;; (add-to-list 'load-path "/home/zaeph/.emacs.d/pkg/emacswiki.org/info+.el")
+;; (load "/home/zaeph/.emacs.d/pkg/emacswiki.org/info+.el")
+(require 'info+)
+
+(setq diredp-hide-details-initially-flag nil)
+(require 'dired+)
+
+
+(require 'recentf-ext)
+
+(require 'diff-hl)
+(global-diff-hl-mode)
+(add-hook 'dired-mode-hook 'diff-hl-dired-mode)
+;; (diff-hl-flydiff-mode nil)
 
 ;; ========================================
 ;; =============== FREE_KEYS ==============
@@ -4584,7 +4626,7 @@ windows."
      ("\\.pdf\\'" . default))))
  '(package-selected-packages
    (quote
-    (org-noter magit hydra highlight mu4e-alert ox-hugo org writeroom-mode anzu flycheck spaceline helm-chronos chronos olivetti multiple-cursors expand-region ace-window auto-minor-mode ledger-mode sublimity auctex smooth-scrolling yasnippet pdf-tools htmlize helm-bibtex free-keys fcitx evil color-theme base16-theme)))
+    (diff-hl recentf-ext flycheck-pos-tip helm-projectile projectile clean-aindent-mode volatile-highlights duplicate-thing org-noter magit hydra highlight mu4e-alert ox-hugo org writeroom-mode anzu flycheck spaceline helm-chronos chronos olivetti multiple-cursors expand-region ace-window auto-minor-mode ledger-mode sublimity auctex smooth-scrolling yasnippet pdf-tools htmlize helm-bibtex free-keys fcitx evil color-theme base16-theme)))
  '(safe-local-variable-values
    (quote
     ((eval add-hook
