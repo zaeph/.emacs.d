@@ -766,7 +766,7 @@ end-of-buffer signals; pass the rest to the default handler."
 ;; (setq auto-minor-mode-alist nil)
 
 ;; Recentf
-(setq recentf-max-menu-items 50)
+(setq recentf-max-menu-items 100)
 
 ;; Anzu
 ;; Display search information in mode-line
