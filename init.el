@@ -2352,7 +2352,7 @@ on init and them removes itself."
       (progn
 	(whitespace-mode -1)
 	(message "Whitespace mode disabled in current buffer"))
-    (let ((whitespace-style '(face lines-tail))
+    (let ((whitespace-style '(face trailing lines-tail))
 	  (whitespace-line-column 80))
       (whitespace-mode t)
       (message "Whitespace mode enabled in current buffer"))))
