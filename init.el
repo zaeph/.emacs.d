@@ -1,3 +1,7 @@
+;;; init.el --- Initialization file for Emacs
+;;; Commentary: Emacs Startup File --- initialization for Emacs
+
+;; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ;; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ;; =============  INIT FILE  ==============
 ;; ================== * ===================
@@ -17,7 +21,7 @@
 (add-to-list 'load-path "/home/zaeph/.emacs.d/lisp")
 
 ;; ;; outline-minor-mode for viewing init.el
-;; (add-hook 'emacs-lisp-mode-hook 
+;; (add-hook 'emacs-lisp-mode-hook
 ;;           (lambda ()
 ;;             (make-local-variable 'outline-regexp)
 ;;             (setq outline-regexp "^;;; ")
@@ -36,7 +40,7 @@
 (setq split-width-threshold 9999)	;Default: 160
 
 ;; Enable disabled commands
-(setq disabled-command-hook nil)
+(setq disabled-command-function nil)
 
 ;; Transparency
 ;; (set-frame-parameter (selected-frame) 'alpha '(95 . 95))
@@ -96,6 +100,10 @@
 ;; (add-to-list 'load-path
 ;;              (expand-file-name "/home/zaeph/builds/ledger/src/ledger-3.1.1/lisp/"))
 (add-to-list 'auto-mode-alist '("\\.ledger$" . ledger-mode))
+
+(defvar ledger-use-iso-dates nil)
+(defvar ledger-reconcile-default-commodity nil)
+(defvar ledger-post-auto-adjust-amounts nil)
 (setq ledger-use-iso-dates t
       ledger-reconcile-default-commodity "EUR"
       ;; Testing
@@ -164,6 +172,7 @@
             #'endless/replace-quote)
 
 ;; Helm-Ispell
+(defvar zp/ispell-completion-data nil)
 (setq ispell-dictionary "british"
       zp/ispell-completion-data '(("English" . "british")
 				 ("French" . "french")))
@@ -178,12 +187,14 @@
   (if (not (y-or-n-p "Writing in English? "))
       (ispell-change-dictionary "french")))
 
+(defvar zp/helm-ispell-actions nil)
 (setq zp/helm-ispell-actions
       '(("Change dictionary" . zp/ispell-switch-dictionary)))
 
+(defvar zp/helm-source-ispell nil)
 (setq zp/helm-source-ispell
       '((name . "*HELM Ispell - Dictionary selection*")
-        (candidates . zp/ispell-completion-data)
+	(candidates . zp/ispell-completion-data)
         (action . zp/helm-ispell-actions)))
 
 (defun zp/helm-ispell ()
@@ -237,7 +248,7 @@
        :char ("d" . "▼")
        :prompt "dtrash"
        :dyn-target (lambda (target msg) (mu4e-get-trash-folder msg))
-       :action (lambda (docid msg target) 
+       :action (lambda (docid msg target)
                  (mu4e~proc-move docid
 				 (mu4e~mark-check-target target) "+S-u-N"))))
 
@@ -2365,7 +2376,8 @@ on init and them removes itself."
 ;; ========================================
 
 ;; Enable LaTeX modes for Orgmode
-(add-hook 'LaTeX-mode-hook 'turn-on-reftex) 
+(add-hook 'LaTeX-mode-hook 'turn-on-reftex)
+
 (eval-after-load "org"
   '(require 'ox-beamer nil t)
   )
