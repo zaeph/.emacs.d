@@ -3876,6 +3876,7 @@ Version 2017-08-25"
 (global-set-key (kbd "C-c x") 'zp/toggle-org-latex-pdf-process)
 ;; (global-set-key (kbd "H-g") 'keyboard-quit)
 (global-set-key (kbd "H-l") 'zp/switch-to-mu4e)
+(global-set-key (kbd "H-M-l") 'mu4e-compose-new)
 ;; (global-set-key (kbd "H-m") 'zp/switch-to-magit)
 (global-set-key (kbd "H-m") 'magit-status)
 
