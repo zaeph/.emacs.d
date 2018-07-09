@@ -3853,6 +3853,7 @@ Version 2017-08-25"
 ;; Actions
 (global-set-key (kbd "C-c c") 'calendar)
 (global-set-key (kbd "C-c n") 'org-capture)
+(global-set-key (kbd "C-c N") 'org-noter)
 (global-set-key (kbd "C-c C-=") 'increment-integer-at-point)
 (global-set-key (kbd "C-c C--") 'decrement-integer-at-point)
 (global-set-key (kbd "C-c d") 'zp/helm-ispell-preselect)
