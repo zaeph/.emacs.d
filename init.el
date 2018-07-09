@@ -1284,6 +1284,11 @@ return `nil'."
 (zp/set-shortcuts-all)
 
 ;; Helm
+(require 'helm)
+
+(define-prefix-command 'zp/helm-map)
+(global-set-key (kbd "C-c h") 'zp/helm-map)
+
 (global-set-key (kbd "M-x") 'helm-M-x)
 (global-set-key (kbd "<menu>") 'helm-M-x)
 (global-set-key (kbd "M-y") 'helm-show-kill-ring)
@@ -1291,8 +1296,39 @@ return `nil'."
 (global-set-key (kbd "C-x C-b") 'helm-mini)
 (global-set-key (kbd "C-x C-f") 'helm-find-files)
 (global-set-key (kbd "M-s M-s") 'helm-occur)
-(global-set-key (kbd "C-c X") 'helm-resume)
 (global-set-key (kbd "C-x r b") 'helm-bookmarks)
+
+(global-set-key (kbd "C-c h o") 'helm-occur)
+(global-set-key (kbd "C-c h f") 'helm-find-files)
+(global-set-key (kbd "C-c h r") 'helm-regexp)
+(global-set-key (kbd "C-c h x") 'helm-register)
+(global-set-key (kbd "C-c h b") 'helm-resume)
+(global-set-key (kbd "C-c h c") 'helm-colors)
+(global-set-key (kbd "C-c h M-:") 'helm-eval-expression-with-eldoc)
+(global-set-key (kbd "C-c h i") 'helm-semantic-or-imenu)
+(global-set-key (kbd "C-h C-SPC") 'helm-all-mark-rings)
+(global-set-key (kbd "C-c h a") 'helm-apropos)
+(global-set-key (kbd "C-c h /") 'helm-find)
+(global-set-key (kbd "C-c h <tab>") 'helm-lisp-completion-at-point)
+
+(setq helm-M-x-fuzzy-match t
+      helm-buffers-fuzzy-matching t
+      helm-recentf-fuzzy-match t
+      helm-semantic-fuzzy-match t
+      helm-imenu-fuzzy-match t
+      helm-mode-fuzzy-match t
+      helm-completion-in-region-fuzzy-match t
+      helm-apropos-fuzzy-match t
+      helm-lisp-fuzzy-completion t)
+
+(define-key helm-map (kbd "C-S-o") 'helm-previous-source)
+
+
+;; Helm Projectile
+
+(global-set-key (kbd "C-c h p") 'helm-projectile)
+
+
 
 ;; Shortcut for opening Keep (not yet implemented: can't find a good key for it)
 ;; (global-set-key (kbd "C-<f1>")
@@ -3772,11 +3808,10 @@ Version 2017-08-25"
 (global-set-key (kbd "C-c u") 'visual-line-mode)
 (global-set-key (kbd "C-c y") 'zp/variable-pitch-mode)
 (global-set-key (kbd "C-c s") 'scroll-bar-mode)
-(global-set-key (kbd "C-c h") 'global-hl-line-mode)
+(global-set-key (kbd "C-c H") 'global-hl-line-mode)
 (global-set-key (kbd "C-c g") 'display-line-numbers-mode)
 (global-set-key (kbd "C-c L") 'org-store-link)
 ;; (global-set-key (kbd "C-c f") 'switch-main-font)
-(global-set-key (kbd "C-c r") 'helm-regexp)
 (global-set-key (kbd "C-c i") 'toggle-truncate-lines)
 (global-set-key (kbd "C-c f") 'flyspell-mode)
 (global-set-key (kbd "M-O")   'olivetti-mode)
