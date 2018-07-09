@@ -423,9 +423,9 @@ ALL-MAILS are the all the unread emails"
          (mail (plist-get contact :mail)))
     (cond
       ;; jonh smiht --> John Smith
-      ;; ((string= "jonh smiht" name) 
+      ;; ((string= "jonh smiht" name)
       ;;   (plist-put contact :name "John C. Smith")
-      ;;   contact) 
+      ;;   contact)
       ;; remove evilspammer from the contacts list
       ((string= "nic022@hotnail.fr" mail) nil)
       ;; others stay as the are
@@ -520,8 +520,8 @@ ALL-MAILS are the all the unread emails"
 (require 'epg-config)
 (setq mml2015-use 'epg
       epg-user-id (zp/get-string-from-file "/home/zaeph/org/pp/gpg/gpg-key-id")
-      mml2015-encrypt-to-self t
-      mml2015-sign-with-sender t)
+      mml-secure-openpgp-sign-with-sender t
+      mml-secure-openpgp-encrypt-to-self t)
 
 (add-hook 'message-mode-hook #'flyspell-mode)
 (add-hook 'message-mode-hook #'electric-quote-local-mode)
