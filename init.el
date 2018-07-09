@@ -2444,15 +2444,15 @@ on init and them removes itself."
 
 
 ;; ========================================
-;; ============= HTML EXPORT ==============
+;; ============== ORG-NOTER ===============
 ;; ========================================
 
+(load "/home/zaeph/.emacs.d/lisp/org-noter-patched.el")
 (require 'org-noter)
 (setq org-noter-hide-other t
       org-noter-auto-save-last-location t)
 
-(add-hook #'org-noter-notes-mode-hook #'visual-line-mode)
-
+(add-hook 'org-noter-notes-mode-hook 'visual-line-mode)
 
 ;;; Fix for visual-line-mode in org-noter
 (defun org-noter--set-notes-scroll (window &rest ignored)
