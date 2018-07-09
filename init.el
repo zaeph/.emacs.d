@@ -4055,7 +4055,6 @@ windows."
 			       :background "#6a182e")
 	   (set-face-attribute 'powerline-active2 nil
 			       :background "#400f1c")
-	   
 	   (set-face-attribute 'powerline-inactive0 nil
 			       :background "#3d4a80" :foreground "#dfe2f1")
 	   (set-face-attribute 'powerline-inactive1 nil
