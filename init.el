@@ -2400,7 +2400,29 @@ on init and them removes itself."
 ;; ========================================
 
 (require 'org-noter)
-(setq org-noter-hide-other t)
+(setq org-noter-hide-other t
+      org-noter-auto-save-last-location t)
+
+(add-hook #'org-noter-notes-mode-hook #'visual-line-mode)
+
+
+;;; Fix for visual-line-mode in org-noter
+(defun org-noter--set-notes-scroll (window &rest ignored)
+  nil)
+
+;;; Default function in org-noter.el
+;; (defun org-noter--set-notes-scroll (window &rest ignored)
+;;   (when window
+;;     (with-selected-window window
+;;       (org-noter--with-valid-session
+;;        (let* ((level (org-noter--session-level session))
+;;               (goal (* (1- level) 2))
+;;               (current-scroll (window-hscroll)))
+;;          (when (and (bound-and-true-p org-indent-mode) (< current-scroll goal))
+;;            (scroll-right current-scroll)
+;;            (scroll-left goal t)))))))
+
+
 
 ;; ========================================
 ;; ============= HTML EXPORT ==============
