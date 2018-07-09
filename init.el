@@ -765,8 +765,10 @@ ALL-MAILS are the all the unread emails"
 
 ;; pdf-tools
 (pdf-tools-install)
-(setq pdf-view-midnight-colors `(,(face-attribute 'default :foreground) .
-				 ,(face-attribute 'default :background)))
+(define-key pdf-view-mode-map (kbd "M") 'pdf-view-midnight-minor-mode)
+(define-key pdf-view-mode-map (kbd "S") 'pdf-view-auto-slice-minor-mode)
+(add-hook #'pdf-view-mode-hook #'pdf-view-midnight-minor-mode)
+(add-hook #'pdf-view-mode-hook #'pdf-view-auto-slice-minor-mode)
 
 ;; Sublimity
 ;; (sublimity-mode 0)
@@ -4032,9 +4034,16 @@ windows."
   (let ((current-prefix-arg '(1)))
     (zp/org-agenda-tree-to-indirect-buffer arg)))
 
+
+
 ;; ========================================
 ;; ================ FACES =================
 ;; ========================================
+
+(defun zp/pdf-view-midnight-mode-theme ()
+  (setq pdf-view-midnight-colors
+	`(,(face-attribute 'default :foreground) .
+	  ,(face-attribute 'default :background))))
 
 (defun zp/spaceline-theme (&optional arg)
   (spaceline-define-segment narrow
@@ -4260,6 +4269,7 @@ windows."
   (zp/org-format-face 'org-tag-french    :weight 'bold :foreground "DodgerBlue1")
 
   (zp/spaceline-theme "dark")
+  (zp/pdf-view-midnight-mode-theme)
   )
 
 (defun zp/light-theme ()
@@ -4323,6 +4333,7 @@ windows."
   (zp/org-format-face 'org-tag-french    :weight 'bold :foreground "DodgerBlue1")
 
   (zp/spaceline-theme "light")
+  (zp/pdf-view-midnight-mode-theme)
   )
 
 (defun zp/switch-theme ()
