@@ -3892,7 +3892,8 @@ Version 2017-08-25"
 
 ;; ace-window & avy-jump
 (global-set-key (kbd "H-M-n") 'ace-window)
-(global-set-key (kbd "H-n") 'avy-goto-word-1)
+;; (global-set-key (kbd "H-n") 'avy-goto-word-1)
+(global-set-key (kbd "H-n") 'avy-goto-char-timer)
 ;; (global-set-key (kbd "H-m") 'avy-goto-char)
 (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
 
