@@ -718,6 +718,7 @@ ALL-MAILS are the all the unread emails"
 
 (setq next-line-add-newlines t)
 (setq-default require-final-newline nil)
+(setq scroll-preserve-screen-position 't)
 
 
 ;; (global-linum-mode 1)
