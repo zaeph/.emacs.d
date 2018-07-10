@@ -1584,7 +1584,7 @@ agenda settings after them."
 	 (word-list ()))
     (if (eq org-agenda-dim-blocked-tasks nil)
     	(add-to-list 'word-list "-dim" t))
-    (if (eq zp/stuck-projects-include-waiting t)
+    (if (eq zp/projects-include-waiting t)
     	(add-to-list 'word-list "+waiting" t))
     (let ((header-formatted (zp/org-agenda-format-header-align header))
 	  (word-list-formatted (zp/org-agenda-format-word-list word-list)))
@@ -1614,8 +1614,8 @@ agenda settings after them."
 	 (word-list ()))
     (if (eq zp/org-agenda-sorting-strategy-user-defined 'priority)
     	(add-to-list 'word-list "+#↓" t))
-    (if (eq zp/stuck-projects-include-waiting nil)
-    	(add-to-list 'word-list "-SP:waiting" t))
+    (if (eq zp/projects-include-waiting nil)
+    	(add-to-list 'word-list "-waiting" t))
     (let ((header-formatted (zp/org-agenda-format-header-align header))
 	  (word-list-formatted (zp/org-agenda-format-word-list word-list)))
       (concat header-formatted word-list-formatted "\n"))))
@@ -1953,15 +1953,15 @@ agenda settings after them."
 	 (org-agenda-redo)
 	 (message "Scheduled: All"))))
 
-(defun zp/toggle-org-agenda-stuck-projects-include-waiting ()
-  "Toggle whether to include stuck projects with a waiting task."
+(defun zp/toggle-org-agenda-projects-include-waiting ()
+  "Toggle whether to include projects with a waiting task."
   (interactive)
-  (cond ((eq zp/stuck-projects-include-waiting nil)
-	 (setq zp/stuck-projects-include-waiting t)
+  (cond ((eq zp/projects-include-waiting nil)
+	 (setq zp/projects-include-waiting t)
 	 (org-agenda-redo)
 	 (message "Stuck Projects: Showing All"))
-	((eq zp/stuck-projects-include-waiting t)
-	 (setq zp/stuck-projects-include-waiting nil)
+	((eq zp/projects-include-waiting t)
+	 (setq zp/projects-include-waiting nil)
 	 (org-agenda-redo)
 	 (message "Stuck Projects: Hiding Waiting"))))
 
@@ -2074,7 +2074,7 @@ Based on `org-agenda-set-property'."
   (local-set-key (kbd "h") 'zp/toggle-org-agenda-cmp-user-defined)
   (local-set-key (kbd "H") 'zp/toggle-org-agenda-dim-blocked-tasks)
   (local-set-key (kbd "F") 'zp/toggle-org-agenda-todo-ignore-future-scheduled)
-  (local-set-key (kbd "W") 'zp/toggle-org-agenda-stuck-projects-include-waiting)
+  (local-set-key (kbd "W") 'zp/toggle-org-agenda-projects-include-waiting)
   (local-set-key (kbd "C-c C-x r") 'zp/org-agenda-set-appt-warntime)
   (local-set-key (kbd "C-c C-x l") 'zp/org-agenda-set-location)
   (local-set-key (kbd "C-c C-x d") 'zp/org-agenda-delete-property)
@@ -3473,12 +3473,12 @@ Callers of this function already widen the buffer view."
     (let ((next-headline (save-excursion (or (outline-next-heading) (point-max)))))
       (if (bh/is-project-p)
           (let* ((subtree-end (save-excursion (org-end-of-subtree t)))
-                 (has-next ))
+                 (has-next))
             (save-excursion
               (forward-line 1)
 	      (while (and (not has-next)
 			  (< (point) subtree-end)
-			  (if zp/stuck-projects-include-waiting
+			  (if zp/projects-include-waiting
 			      (re-search-forward "^\\*+ \\(NEXT\\|STRT\\) " subtree-end t)
 			    (re-search-forward "^\\*+ \\(NEXT\\|STRT\\|WAIT\\) " subtree-end t)))
                 (unless (member "standby" (org-get-tags-at))
@@ -3488,7 +3488,7 @@ Callers of this function already widen the buffer view."
               next-headline)) ; a stuck project, has subtasks but no next task
         nil))))
 
-(defvar zp/stuck-projects-include-waiting nil
+(defvar zp/projects-include-waiting nil
   "When t, includes stuck projects with a waiting task in the
 agenda.")
 
@@ -3505,7 +3505,7 @@ agenda.")
               (forward-line 1)
               (while (and (not has-next)
 			  (< (point) subtree-end)
-			  (if zp/stuck-projects-include-waiting
+			  (if zp/projects-include-waiting
 			      (re-search-forward "^\\*+ \\(NEXT\\|STRT\\) " subtree-end t)
 			    (re-search-forward "^\\*+ \\(NEXT\\|STRT\\|WAIT\\) " subtree-end t)))
                 (unless (member "standby" (org-get-tags-at))
