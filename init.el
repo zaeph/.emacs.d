@@ -766,7 +766,7 @@ ALL-MAILS are the all the unread emails"
 
 ;; pdf-tools
 (pdf-tools-install)
-(define-key pdf-view-mode-map (kbd "M") 'pdf-view-midnight-minor-mode)
+(define-key pdf-view-mode-map (kbd "m") 'pdf-view-midnight-minor-mode)
 (define-key pdf-view-mode-map (kbd "S") 'pdf-view-auto-slice-minor-mode)
 (add-hook #'pdf-view-mode-hook #'pdf-view-midnight-minor-mode)
 (add-hook #'pdf-view-mode-hook #'pdf-view-auto-slice-minor-mode)
