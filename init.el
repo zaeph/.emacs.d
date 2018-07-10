@@ -768,8 +768,20 @@ ALL-MAILS are the all the unread emails"
 (pdf-tools-install)
 (define-key pdf-view-mode-map (kbd "m") 'pdf-view-midnight-minor-mode)
 (define-key pdf-view-mode-map (kbd "S") 'pdf-view-auto-slice-minor-mode)
+(define-key pdf-view-mode-map (kbd "c") 'zp/pdf-view-continuous-toggle)
 (add-hook #'pdf-view-mode-hook #'pdf-view-midnight-minor-mode)
 (add-hook #'pdf-view-mode-hook #'pdf-view-auto-slice-minor-mode)
+
+(setq pdf-view-continuous nil)
+
+(defun zp/pdf-view-continuous-toggle ()
+  (interactive)
+  (cond ((eq pdf-view-continuous nil)
+	 (setq pdf-view-continuous t)
+	 (message "Page scrolling: Continous"))
+	(t
+	 (setq pdf-view-continuous nil)
+	 (message "Page scrolling: Constrained"))))
 
 ;; Sublimity
 ;; (sublimity-mode 0)
