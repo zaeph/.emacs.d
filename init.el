@@ -929,7 +929,8 @@ return `nil'."
 (defun zp/LaTeX-mode-config ()
   "Modify keymaps used by `latex-mode'."
   (local-set-key (kbd "C-c DEL") 'zp/LaTeX-remove-macro)
-  (local-set-key (kbd "C-c <C-backspace>") 'zp/LaTeX-remove-macro))
+  (local-set-key (kbd "C-c <C-backspace>") 'zp/LaTeX-remove-macro)
+  (local-set-key (kbd "C-c C-t C-v") 'zp/tex-view-program-switch))
 (setq LaTeX-mode-hook '(zp/LaTeX-mode-config))
 
 
@@ -2483,7 +2484,7 @@ on init and them removes itself."
 
 
 ;; ========================================
-;; ============= LATEX EXPORT =============
+;; ================ AUCTEX ================
 ;; ========================================
 
 ;; Enable LaTeX modes for Orgmode
@@ -2502,6 +2503,55 @@ on init and them removes itself."
 (setq org-ref-bibliography-notes "/home/zaeph/org/bib/notes.org"
       org-ref-default-bibliography '("/home/zaeph/org/bib/monty-python.bib")
       org-ref-pdf-directory "/home/zaeph/org/bib/pdf")
+
+;; TeX view program
+(defvar zp/tex-view-program nil)
+
+(defun zp/tex-view-program-set-pdf-tools ()
+  (setq TeX-view-program-selection
+	'((output-pdf "PDF Tools"))
+	TeX-source-correlate-start-server t
+	zp/tex-view-program 'pdf-tools)
+  (add-hook #'TeX-after-compilation-finished-functions
+	    #'TeX-revert-document-buffer))
+
+(defun zp/tex-view-program-set-evince ()
+  (setq TeX-view-program-selection
+	'(((output-dvi has-no-display-manager)
+	   "dvi2tty")
+	  ((output-dvi style-pstricks)
+	   "dvips and gv")
+	  (output-dvi "xdvi")
+	  (output-pdf "Evince")
+	  (output-html "xdg-open"))
+	TeX-source-correlate-start-server 'ask
+	zp/tex-view-program 'evince)
+  (remove-hook #'TeX-after-compilation-finished-functions
+	       #'TeX-revert-document-buffer))
+
+(defun zp/tex-view-program-switch ()
+  (interactive)
+  (cond ((eq zp/tex-view-program 'pdf-tools)
+	 (zp/tex-view-program-set-evince)
+	 (message "TeX view program: Evince"))
+	((or (eq zp/tex-view-program 'evince)
+	     (not (bound-and-true-p zp/tex-view-program)))
+	 (zp/tex-view-program-set-pdf-tools)
+	 (message "TeX view program: pdf-tools"))))
+
+(zp/tex-view-program-set-pdf-tools)
+
+(setq TeX-view-program-selection '(((output-dvi has-no-display-manager)
+				    "dvi2tty")
+				   ((output-dvi style-pstricks)
+				    "dvips and gv")
+				   (output-dvi "xdvi")
+				   (output-pdf "Evince")
+				   (output-html "xdg-open"))
+      TeX-source-correlate-start-server 'ask)
+
+;; Update PDF buffers after successful LaTeX runs
+
 
 (setq org-export-default-language "en-gb")
 ;; Loaded on file-basis now
