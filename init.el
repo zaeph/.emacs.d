@@ -425,7 +425,7 @@ ALL-MAILS are the all the unread emails"
 (setq mu4e-alert-set-window-urgency nil
       mu4e-alert-email-notification-types '(subjects)
       mu4e-alert-grouped-mail-notification-formatter 'zp/mu4e-alert-grouped-mail-notification-formatter
-      mu4e-headers-show-threads nil)
+      mu4e-headers-show-threads t)
 
 
 
