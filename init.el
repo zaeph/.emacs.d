@@ -1442,6 +1442,7 @@ return `nil'."
       ;; org-agenda-todo-ignore-scheduled 'past
       org-agenda-todo-ignore-deadlines nil
       org-agenda-include-deadlines 'all
+      zp/projects-include-waiting nil
       zp/org-agenda-include-scheduled 'all
       org-agenda-cmp-user-defined 'zp/org-agenda-sort-special
       zp/org-agenda-sorting-strategy-user-defined 'special
@@ -1584,8 +1585,6 @@ agenda settings after them."
 	 (word-list ()))
     (if (eq org-agenda-dim-blocked-tasks nil)
     	(add-to-list 'word-list "-dim" t))
-    (if (eq zp/projects-include-waiting t)
-    	(add-to-list 'word-list "+waiting" t))
     (let ((header-formatted (zp/org-agenda-format-header-align header))
 	  (word-list-formatted (zp/org-agenda-format-word-list word-list)))
       (concat header-formatted word-list-formatted "\n"))))
@@ -1665,8 +1664,9 @@ agenda settings after them."
 		  (zp/org-agenda-format-header-projects-stuck))
 		 ,@(if (bound-and-true-p file)
 		       `((org-agenda-files ',file)))
-		 (org-agenda-dim-blocked-tasks 'dimmed)
-		 (org-agenda-skip-function 'zp/skip-non-stuck-projects)))))
+		 (org-agenda-skip-function 'zp/skip-non-stuck-projects)
+		 (org-agenda-todo-ignore-scheduled nil)
+		 (org-agenda-dim-blocked-tasks 'dimmed)))))
 
 (defun zp/org-agenda-block-projects (&optional file)
   `(tags-todo "-standby-reading"
@@ -1674,9 +1674,10 @@ agenda settings after them."
 		(zp/org-agenda-format-header-projects))
 	       ,@(if (bound-and-true-p file)
 		     `((org-agenda-files ',file)))
-	       (org-agenda-skip-function 'zp/skip-non-projects)
+	       (org-agenda-skip-function 'zp/skip-non-projects-and-waiting)
 	       (org-agenda-sorting-strategy
 		'(user-defined-down priority-down category-keep))
+	       (org-agenda-todo-ignore-scheduled nil)
 	       (org-agenda-dim-blocked-tasks nil))))
 
 (defun zp/org-agenda-block-tasks-special (&optional file)
@@ -1959,11 +1960,11 @@ agenda settings after them."
   (cond ((eq zp/projects-include-waiting nil)
 	 (setq zp/projects-include-waiting t)
 	 (org-agenda-redo)
-	 (message "Stuck Projects: Showing All"))
+	 (message "Projects: Showing All"))
 	((eq zp/projects-include-waiting t)
 	 (setq zp/projects-include-waiting nil)
 	 (org-agenda-redo)
-	 (message "Stuck Projects: Hiding Waiting"))))
+	 (message "Projects: Hiding Waiting"))))
 
 (defun zp/toggle-org-agenda-dim-blocked-tasks ()
   "Toggle the dimming of blocked tags in the agenda."
@@ -3547,6 +3548,12 @@ agenda.")
            (t
             subtree-end))))
     (save-excursion (org-end-of-subtree t))))
+
+(defun zp/skip-non-projects-and-waiting ()
+  (or
+   (zp/skip-non-projects)
+   (if (not zp/projects-include-waiting)
+      (org-agenda-skip-entry-if 'todo '("WAIT")))))
 
 (defun bh/skip-non-tasks ()
   "Show non-project tasks.
