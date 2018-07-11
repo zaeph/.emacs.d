@@ -824,7 +824,6 @@ end-of-buffer signals; pass the rest to the default handler."
 
 (add-to-list 'auto-minor-mode-alist '("edit-in-emacs.txt" . visual-line-mode))
 (add-to-list 'auto-minor-mode-alist '("edit-in-emacs.txt" . olivetti-mode))
-(add-to-list 'auto-minor-mode-alist '("edit-in-emacs.txt" . electric-quote-local-mode))
 (add-to-list 'auto-minor-mode-alist '("edit-in-emacs.txt" . flyspell-mode))
 ;; (setq auto-minor-mode-alist nil)
 
@@ -1235,7 +1234,6 @@ return `nil'."
   (local-set-key (kbd "C-c C-w") 'org-refile)
   (local-set-key (kbd "C-c C-S-w") 'zp/org-refile-with-paths))
 (setq org-mode-hook 'org-mode-config)
-(add-hook 'org-mode-hook #'electric-quote-local-mode)
 (define-key mode-specific-map (kbd "a") 'org-agenda)
 
 
