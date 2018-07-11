@@ -2554,15 +2554,6 @@ on init and them removes itself."
 
 (zp/tex-view-program-set-pdf-tools)
 
-(setq TeX-view-program-selection '(((output-dvi has-no-display-manager)
-				    "dvi2tty")
-				   ((output-dvi style-pstricks)
-				    "dvips and gv")
-				   (output-dvi "xdvi")
-				   (output-pdf "Evince")
-				   (output-html "xdg-open"))
-      TeX-source-correlate-start-server 'ask)
-
 ;; Update PDF buffers after successful LaTeX runs
 
 
