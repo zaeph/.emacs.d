@@ -167,7 +167,7 @@
 (diff-hl-flydiff-mode)
 
 (require 'eyebrowse)
-(eyebrowse-mode)
+;; (eyebrowse-mode)
 
 ;; ========================================
 ;; =============== FREE_KEYS ==============
