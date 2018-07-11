@@ -746,10 +746,10 @@ ALL-MAILS are the all the unread emails"
       auto-hscroll-mode 'current-line)
 
 ;; Disable side movements
-(global-set-key (kbd "<mouse-6>") 'ignore)
-(global-set-key (kbd "<mouse-7>") 'ignore)
-(global-set-key (kbd "<triple-mouse-7>") 'ignore)
-(global-set-key (kbd "<triple-mouse-6>") 'ignore)
+;; (global-set-key (kbd "<mouse-6>") 'ignore)
+;; (global-set-key (kbd "<mouse-7>") 'ignore)
+;; (global-set-key (kbd "<triple-mouse-7>") 'ignore)
+;; (global-set-key (kbd "<triple-mouse-6>") 'ignore)
 
 ;; Bell
 (setq visible-bell 1)
@@ -772,7 +772,7 @@ ALL-MAILS are the all the unread emails"
 (add-hook #'pdf-view-mode-hook #'pdf-view-midnight-minor-mode)
 (add-hook #'pdf-view-mode-hook #'pdf-view-auto-slice-minor-mode)
 
-(setq pdf-view-continuous nil)
+(setq pdf-view-continuous t)
 
 (defun zp/pdf-view-continuous-toggle ()
   (interactive)
@@ -913,6 +913,9 @@ end-of-buffer signals; pass the rest to the default handler."
 ;; (setq reftex-default-bibliography nil)
 (setq warning-suppress-types nil)
 (add-to-list 'warning-suppress-types '(yasnippet backquote-change))
+
+;; Used to prevent radio tables from having trailing $
+(setq LaTeX-verbatim-environments '("verbatim" "verbatim*" "comment"))
 
 (setq LaTeX-csquotes-close-quote "}"
       LaTeX-csquotes-open-quote "\\enquote{")
