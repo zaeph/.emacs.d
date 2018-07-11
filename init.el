@@ -164,7 +164,7 @@
 (require 'diff-hl)
 (global-diff-hl-mode)
 (add-hook 'dired-mode-hook 'diff-hl-dired-mode)
-;; (diff-hl-flydiff-mode nil)
+(diff-hl-flydiff-mode)
 
 ;; ========================================
 ;; =============== FREE_KEYS ==============
