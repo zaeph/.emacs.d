@@ -1948,13 +1948,11 @@ agenda settings after them."
   "Toggle the range of days for deadline to show up on the agenda."
   (interactive)
   (cond ((eq org-agenda-todo-ignore-scheduled nil)
-	 (setq org-agenda-todo-ignore-scheduled 'future
-	       org-agenda-show-future-repeats 'next)
+	 (setq org-agenda-todo-ignore-scheduled 'future)
 	 (org-agenda-redo)
 	 (message "Scheduled: Only today"))
 	((eq org-agenda-todo-ignore-scheduled 'future)
-	 (setq org-agenda-todo-ignore-scheduled nil
-	       org-agenda-show-future-repeats t)
+	 (setq org-agenda-todo-ignore-scheduled nil)
 	 (org-agenda-redo)
 	 (message "Scheduled: All"))))
 
@@ -2083,7 +2081,7 @@ Based on `org-agenda-set-property'."
   (local-set-key (kbd "C-c C-x r") 'zp/org-agenda-set-appt-warntime)
   (local-set-key (kbd "C-c C-x l") 'zp/org-agenda-set-location)
   (local-set-key (kbd "C-c C-x d") 'zp/org-agenda-delete-property)
-  (local-set-key (kbd "C-c C-w") 'zp/org-agenda-refile)
+  ;; (local-set-key (kbd "C-c C-w") 'zp/org-agenda-refile)
   (local-set-key (kbd "C-c C-S-w") 'zp/org-agenda-refile-with-paths)
   (local-set-key (kbd "Z") 'org-resolve-clocks)
   (local-set-key (kbd "C-<return>") 'org-agenda-switch-to)
