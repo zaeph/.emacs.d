@@ -3498,18 +3498,19 @@ agenda.")
   (save-restriction
     (widen)
     (let ((next-headline (save-excursion (or (outline-next-heading) (point-max)))))
-      (if (and (bh/is-project-p) (not (eq (org-get-todo-state) "WAIT")))
+      (if (bh/is-project-p)
           (let* ((subtree-end (save-excursion (org-end-of-subtree t)))
-                 (has-next ))
+		 (is-waiting (string-match-p "WAIT" (org-get-todo-state)))
+                 (has-next))
             (save-excursion
               (forward-line 1)
               (while (and (not has-next)
 			  (< (point) subtree-end)
-			  (if zp/projects-include-waiting
-			      (re-search-forward "^\\*+ \\(NEXT\\|STRT\\) " subtree-end t)
-			    (re-search-forward "^\\*+ \\(NEXT\\|STRT\\|WAIT\\) " subtree-end t)))
+			  (if is-waiting
+			      (re-search-forward "^\\*+ \\(WAIT\\) " subtree-end t)
+			    (re-search-forward "^\\*+ \\(NEXT\\|STRT\\) " subtree-end t)))
                 (unless (member "standby" (org-get-tags-at))
-                  (setq has-next t))))
+		  (setq has-next t))))
             (if has-next
                 next-headline
               nil)) ; a stuck project, has subtasks but no next task
