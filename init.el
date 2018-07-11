@@ -791,7 +791,7 @@ ALL-MAILS are the all the unread emails"
 ;; (require 'sublimity-scroll)
 
 
-;; Suppress bells for reaching beginning and end of buffer 
+;; Suppress bells for reaching beginning and end of buffer
 (defun my-command-error-function (data context caller)
   "Ignore the buffer-read-only, beginning-of-buffer,
 end-of-buffer signals; pass the rest to the default handler."
@@ -857,7 +857,7 @@ end-of-buffer signals; pass the rest to the default handler."
 ;; 		    (progn
 ;; 		      (set-input-method 'nil)
 ;; 		      (setq lang 'en)))))
-;; ;; Latin		
+;; ;; Latin
 ;; (global-set-key (kbd "C-S-l")
 ;; 		(lambda ()
 ;; 		  (interactive)
@@ -1007,7 +1007,7 @@ return `nil'."
 
 ;; (eval-after-load 'org '(require 'org-pdfview))
 
-(add-to-list 'org-file-apps 
+(add-to-list 'org-file-apps
              '("\\.pdf\\'" . (lambda (file link)
 			       (org-pdfview-open link))))
 
@@ -1046,7 +1046,7 @@ return `nil'."
 			       ("NEXT" :inherit org-todo-next)
 			       ("STRT" :inherit org-todo-strt)
 			       ("DONE" :inherit org-todo-done)
-			       
+
 			       ("STBY" :inherit org-todo-stby)
 			       ("WAIT" :inherit org-todo-wait)
 			       ("CXLD" :inherit org-todo-cxld)))
@@ -1097,7 +1097,7 @@ return `nil'."
       	("waiting"    . org-tag-todo)
       	("recurring"  . org-tag-todo)
       	("assignment" . org-tag-important)
-      	("important"  . org-tag-important)		      
+      	("important"  . org-tag-important)
       	("reading"    . org-tag-reading)
       	("french"     . org-tag-french)))
 
@@ -1288,7 +1288,7 @@ return `nil'."
       	("j s" . "/home/zaeph/org/sports/swimming/journal.org.gpg"))
       zp/org-agenda-files-journals
       (mapcar 'cdr zp/org-agenda-files-journals-alist)
-      
+
       zp/org-agenda-files-projects-alist
       '(("p w" . "/home/zaeph/org/projects/writing/writing.org.gpg")
       	;; ("p t" . "/home/zaeph/org/projects/tavocat/tavocat.org.gpg")
@@ -2157,13 +2157,13 @@ Based on `org-agenda-set-property'."
 	("p" "Phone-call" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
 	 "* TODO Phone-call with %^{Interlocutor|Nicolas|Mum}%?\n:STATES:\n- State \"TODO\"       from              %U\n:END:" :clock-in t)
 	("m" "Meeting" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
-	 "* TODO Meeting with %^{Meeting with}%?" :clock-in t)	
+	 "* TODO Meeting with %^{Meeting with}%?" :clock-in t)
 
 	("j" "Journal")
 	("jj" "Journal" entry (file "/home/zaeph/org/journal.org.gpg")
 	 "* %^{Title|Entry}\n%T\n\n%?" :empty-lines 1)
 	("jw" "Writing" entry (file "/home/zaeph/org/projects/writing/journal.org.gpg")
-	 "* %^{Title|Entry} %^g\n%T\n\n%?" :empty-lines 1)	
+	 "* %^{Title|Entry} %^g\n%T\n\n%?" :empty-lines 1)
 	("jr" "Research" entry (file "/home/zaeph/org/projects/university/research/journal.org.gpg")
 	 "* %^{Title|Entry}\n%T\n\n%?" :empty-lines 1)
 	("ju" "University" entry (file "/home/zaeph/org/projects/university/journal.org.gpg")
@@ -2310,7 +2310,7 @@ on init and them removes itself."
   ;; (if (string< (buffer-file-name) "org.gpg")
   (if (member buffer-file-name org-agenda-files)
       (zp/org-agenda-to-appt)))
-  
+
 
 ;; ----------------------------------------
 ;; Update reminders when...
@@ -2622,7 +2622,7 @@ on init and them removes itself."
 ;;
 ;; microtype:
 ;; #+LATEX_HEADER: \usepackage[activate={true,nocompatibility},final,tracking=true,kerning=true,spacing=true,factor=1100,stretch=10,shrink=10]{microtype}
-;; 
+;;
 ;; (setq org-latex-pdf-process
 ;;       '("pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
 ;; 	"biber %b"
@@ -2632,11 +2632,11 @@ on init and them removes itself."
 ;; LuaTeX
 ;; Not as good as XeTeX, since I can't figure out how to make CJK characters work.
 ;; To investigate.
-;; 
+;;
 ;; # LuaTeXJA
 ;; #+LATEX_HEADER: \usepackage{luatexja-fontspec}
 ;; #+LATEX_HEADER: \setmainjfont{A-OTF Ryumin Pr5}
-;; 
+;;
 ;; (setq org-latex-pdf-process
 ;;       '("lualatex -shell-escape -interaction nonstopmode -output-directory %o %f"
 ;; 	"biber %b"
@@ -2807,7 +2807,7 @@ on init and them removes itself."
 				    ("tags" "Personal tags")
 				    ("file" "Path to file")
 				    ("url" "URL to reference"))
-      
+
       helm-bibtex-additional-search-fields '(keywords tags library))
 
 ;; Define which citation function to use on a buffer basis
@@ -2906,7 +2906,7 @@ commas and space."
 
 ;; ;; (setq bibtex-completion-bibliography '("/home/zaeph/org/uni/phonology/refs.bib"
 ;; ;; 				       "/home/zaeph/org/uni/civ/refs.bib"))
-      
+
 ;; ;; Obsolete with `helm-bibtex-switch'
 ;; ;; (setq helm-bibtex-pdf-open-function 'org-open-file
 ;; ;;       helm-bibtex-full-frame nil)
@@ -3283,7 +3283,7 @@ i.e. change right window to bottom, or change bottom window to right."
 (defun zp/switch-to-chronos (arg)
   (interactive "P")
   (if (string-match "*chronos*" (buffer-name))
-      (mode-line-other-buffer)  
+      (mode-line-other-buffer)
     (if (or (eq (get-buffer "*chronos*") nil) (not (eq arg nil)))
 	;; (message "There are no timer running.")
 	(call-interactively 'helm-chronos-add-timer)
@@ -4213,10 +4213,10 @@ windows."
     (if (bound-and-true-p foreground)
 	(set-face-attribute face nil :foreground foreground)
       (set-face-attribute face nil :foreground nil))
-    (if (bound-and-true-p background)			      
+    (if (bound-and-true-p background)
 	(set-face-attribute face nil :background background)
       (set-face-attribute face nil :background nil))
-    (if (bound-and-true-p weight)			      
+    (if (bound-and-true-p weight)
 	(set-face-attribute face nil :weight weight)
       (set-face-attribute face nil :weight 'normal))))
 
