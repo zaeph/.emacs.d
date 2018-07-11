@@ -1231,8 +1231,9 @@ return `nil'."
   (local-set-key (kbd "C-x n f") 'zp/org-narrow-forward)
   (local-set-key (kbd "C-x n b") 'zp/org-narrow-backwards)
   (local-set-key (kbd "C-x n w") 'zp/org-widen)
-  (local-set-key (kbd "C-c C-w") 'org-refile)
-  (local-set-key (kbd "C-c C-S-w") 'zp/org-refile-with-paths))
+  ;; (local-set-key (kbd "C-c C-w") 'org-refile)
+  ;; (local-set-key (kbd "C-c C-S-w") 'zp/org-refile-with-paths)
+  )
 (setq org-mode-hook 'org-mode-config)
 (define-key mode-specific-map (kbd "a") 'org-agenda)
 
@@ -2272,6 +2273,101 @@ Based on `org-agenda-set-property'."
     (if current-prefix-arg
 	(org-refile arg default-buffer rfloc msg)
       (org-agenda-refile goto rfloc no-update))))
+
+
+
+(defun zp/org-refile-internal (file headline &optional arg)
+  "Refile to a specific location.
+With a 'C-u' ARG argument, we jump to that location (see
+`org-refile').
+Use `org-agenda-refile' in `org-agenda' mode."
+  (let* ((pos (with-current-buffer (or (get-buffer file)	;Is the file open in a buffer already?
+				       (find-file-noselect file)) ;Otherwise, try to find the file by name (Note, default-directory matters here if it isn't absolute)
+		(or (org-find-exact-headline-in-buffer headline)
+		    (error "Can't find headline `%s'" headline))))
+	 (filepath (buffer-file-name (marker-buffer pos)));If we're given a relative name, find absolute path
+	 (rfloc (list headline filepath nil pos)))
+    (if (and (eq major-mode 'org-agenda-mode) (not (and arg (listp arg)))) ;Don't use org-agenda-refile if we're just jumping
+	(org-agenda-refile nil rfloc)
+      (org-refile arg nil rfloc))))
+
+(defun zp/org-refile (file headline &optional arg)
+  "Refile to HEADLINE in FILE. Clean up org-capture if it's activated.
+With a `C-u` ARG, just jump to the headline."
+  (interactive "P")
+  (let ((is-capturing (and (boundp 'org-capture-mode) org-capture-mode)))
+    (cond
+     ((and arg (listp arg))	    ;Are we jumping?
+      (zp/org-refile-internal file headline arg))
+     ;; Are we in org-capture-mode?
+     (is-capturing      	;Minor mode variable that's defined when capturing
+      (zp/org-capture-refile-internal file headline arg))
+     (t
+      (zp/org-refile-internal file headline arg)))
+    (when (or arg is-capturing)
+      (setq hydra-deactivate t))))
+
+(defun zp/org-capture-refile-internal (file headline &optional arg)
+  "Copied from ‘org-capture-refile’ since it doesn't allow passing arguments. This does."
+  (unless (eq (org-capture-get :type 'local) 'entry)
+    (error
+     "Refiling from a capture buffer makes only sense for `entry'-type templates"))
+  (let ((pos (point))
+	(base (buffer-base-buffer (current-buffer)))
+	(org-capture-is-refiling t)
+	(kill-buffer (org-capture-get :kill-buffer 'local)))
+    (org-capture-put :kill-buffer nil)
+    (org-capture-finalize)
+    (save-window-excursion
+      (with-current-buffer (or base (current-buffer))
+	(org-with-wide-buffer
+	 (goto-char pos)
+	 (zp/org-refile-internal file headline arg))))
+    (when kill-buffer (kill-buffer base))))
+
+(defmacro zp/make-hydra-org-refile (hydraname file keyandheadline)
+  "Make a hydra named HYDRANAME with refile targets to FILE.
+KEYANDHEADLINE should be a list of cons cells of the form (\"key\" . \"headline\")"
+  `(defhydra ,hydraname (:color blue :after-exit (unless (or hydra-deactivate
+							     current-prefix-arg) ;If we're just jumping to a location, quit the hydra
+						   (zp/hydra-org-refile/body)))
+     ,file
+     ,@(cl-loop for kv in keyandheadline
+		collect (list (car kv) (list 'zp/org-refile file (cdr kv) 'current-prefix-arg) (cdr kv)))
+     ("q" nil "cancel")))
+
+;;;;;;;;;;
+;; Here we'll define our refile headlines
+;;;;;;;;;;
+
+(zp/make-hydra-org-refile zp/hydra-org-refile-file-life
+			    "/home/zaeph/org/life.org.gpg"
+			    (("i" . "Inbox")
+			     ("t" . "Tasks")))
+
+(zp/make-hydra-org-refile zp/hydra-org-refile-file-emacs
+			    "/home/zaeph/org/projects/emacs/emacs.org.gpg"
+			    (("i" . "Inbox")
+			     ("t" . "Tasks")))
+
+(zp/make-hydra-org-refile zp/hydra-org-refile-file-arch-linux
+			    "/home/zaeph/org/projects/arch-linux/arch-linux.org.gpg"
+			    (("i" . "Inbox")
+			     ("t" . "Tasks")))
+
+(defhydra zp/hydra-org-refile (:foreign-keys run)
+  "Refile"
+  ("o" zp/hydra-org-refile-file-life/body	"Life" :exit t)
+  ("e" zp/hydra-org-refile-file-emacs/body	"Emacs" :exit t)
+  ("l" zp/hydra-org-refile-file-arch-linux/body	"Arch Linux" :exit t)
+  ("j" org-refile-goto-last-stored "Jump to last refile" :exit t)
+  ("w" org-refile "zp/org-refile" :exit t)
+  ("q" nil "cancel"))
+
+;; (global-set-key (kbd "C-c C-w") 'zp/hydra-org-refile/body)
+(define-key org-capture-mode-map (kbd "C-c C-w") 'zp/hydra-org-refile/body)
+(define-key org-mode-map (kbd "C-c C-w") 'zp/hydra-org-refile/body)
+(define-key org-agenda-mode-map (kbd "C-c C-w") 'zp/hydra-org-refile/body)
 
 
 
