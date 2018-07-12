@@ -4154,7 +4154,9 @@ Version 2017-08-25"
   (interactive)
   (if (not (eq (buffer-base-buffer) nil))
       (progn
-	(kill-buffer-and-window)
+	(condition-case nil
+	    (kill-buffer-and-window)
+	  (error nil))
 	(message "Killed indirect buffer and window.")
 	(zp/play-sound-turn-page))
     (message "Not in an indirect buffer.")))
