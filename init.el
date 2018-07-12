@@ -2364,7 +2364,7 @@ KEYANDHEADLINE should be a list of cons cells of the form (\"key\" . \"headline\
   ("w" org-refile "zp/org-refile" :exit t)
   ("q" nil "cancel"))
 
-;; (global-set-key (kbd "C-c C-w") 'zp/hydra-org-refile/body)
+(global-set-key (kbd "C-c C-w") 'zp/hydra-org-refile/body)
 (define-key org-capture-mode-map (kbd "C-c C-w") 'zp/hydra-org-refile/body)
 (define-key org-mode-map (kbd "C-c C-w") 'zp/hydra-org-refile/body)
 (define-key org-agenda-mode-map (kbd "C-c C-w") 'zp/hydra-org-refile/body)
