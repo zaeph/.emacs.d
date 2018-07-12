@@ -2088,7 +2088,7 @@ Based on `org-agenda-set-property'."
   (local-set-key (kbd "C-<return>") 'org-agenda-switch-to)
   (local-set-key (kbd "<return>") 'zp/org-agenda-tree-to-indirect-buffer-without-grabbing-focus)
   (local-set-key (kbd "S-<return>") 'zp/org-agenda-tree-to-indirect-buffer)
-  (local-set-key (kbd "M-<return>") 'zp/org-agenda-tree-to-indirect-buffer-permanent)
+  (local-set-key (kbd "M-<return>") 'zp/org-agenda-tree-to-indirect-buffer-maximise)
   (local-set-key (kbd "<backspace>") 'zp/org-agenda-kill-other-buffer-and-window))
 
 (add-hook 'org-agenda-mode-hook 'zp/org-agenda-mode-config)
@@ -4187,6 +4187,11 @@ windows."
   (interactive "P")
   (zp/org-agenda-tree-to-indirect-buffer arg)
   (other-window -1))
+
+(defun zp/org-agenda-tree-to-indirect-buffer-maximise (arg)
+  (interactive "P")
+  (zp/org-agenda-tree-to-indirect-buffer arg)
+  (delete-other-windows))
 
 (defun zp/org-agenda-tree-to-indirect-buffer-permanent (arg)
   (interactive "P")
