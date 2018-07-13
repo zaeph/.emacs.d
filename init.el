@@ -1704,6 +1704,17 @@ agenda settings after them."
 	       (org-agenda-dim-blocked-tasks 'dimmed)
 	       (org-agenda-sorting-strategy '(timestamp-up user-defined-down priority-down)))))
 
+(defun zp/org-agenda-block-tasks-waiting (&optional file)
+  `(tags-todo "-recurring-reading/!WAIT"
+	      ((org-agenda-overriding-header
+		(zp/org-agenda-format-header-main "Waiting & Stand-by Tasks"))
+	       ,@(if (bound-and-true-p file)
+		     `((org-agenda-files ',file)))
+	       ;; (org-agenda-skip-function
+	       ;; 	'(org-agenda-skip-entry-if 'notscheduled))
+	       (org-agenda-dim-blocked-tasks 'dimmed)
+	       (org-agenda-sorting-strategy '(timestamp-up user-defined-down priority-down)))))
+
 (defun zp/org-agenda-block-deadines ()
   '(agenda ""
 	   ((org-agenda-span 'day)
@@ -1781,11 +1792,8 @@ agenda settings after them."
 	("d" "Deadlines"
 	 (,(zp/org-agenda-block-deadines)))
 
-	("w" "Waiting list (-standby)"
-	 ((tags-todo "-standby/!WAIT"
-		     ((org-agenda-overriding-header
-	  	       (zp/org-agenda-format-header-tasks-waiting))
-		      (org-agenda-skip-function 'bh/skip-non-tasks))))
+	("w" "Waiting list"
+	 (,(zp/org-agenda-block-tasks-waiting))
 	 ((org-agenda-files zp/org-agenda-files-main)
 	  (org-agenda-todo-ignore-scheduled nil)))
 
