@@ -734,8 +734,10 @@ ALL-MAILS are the all the unread emails"
 ;; (desktop-save-mode 1)
 
 ;; Focus follows mouse
-(setq focus-follows-mouse t)
-(setq mouse-autoselect-window t)
+;; (setq focus-follows-mouse t)
+;; (setq mouse-autoselect-window t)
+(setq focus-follows-mouse nil)
+(setq mouse-autoselect-window nil)
 
 ;; Linum parameters
 (require 'linum)
