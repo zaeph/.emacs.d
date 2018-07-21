@@ -19,6 +19,7 @@
 (defalias 'yes-or-no-p 'y-or-n-p)
 
 (add-to-list 'load-path "/home/zaeph/.emacs.d/lisp")
+(add-to-list 'load-path (expand-file-name "/usr/share/emacs/site-lisp"))
 
 ;; ;; outline-minor-mode for viewing init.el
 ;; (add-hook 'emacs-lisp-mode-hook
@@ -172,6 +173,8 @@
 (require 'which-key)
 (which-key-mode)
 (setq which-key-idle-delay 0.5)
+
+(require 'lilypond-mode)
 
 ;; ========================================
 ;; =============== FREE_KEYS ==============
