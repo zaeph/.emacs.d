@@ -4361,9 +4361,9 @@ windows."
 ;;   (set-fontset-font t 'unicode "Symbola" nil 'prepend))
 
 ;; CJK fonts
-;; (set-fontset-font (frame-parameter nil 'font) 'han '("Noto Sans CJK JP"))
-;; (set-fontset-font (frame-parameter nil 'font) 'japanese-jisx0208 '("Noto Sans CJK JP"))
-;; (set-fontset-font (frame-parameter nil 'font) 'hangul '("Noto Sans CJK KR"))
+(set-fontset-font (frame-parameter nil 'font) 'han '("Noto Sans CJK JP"))
+(set-fontset-font (frame-parameter nil 'font) 'japanese-jisx0208 '("Noto Sans CJK JP"))
+(set-fontset-font (frame-parameter nil 'font) 'hangul '("Noto Sans CJK KR"))
 
 ;; Other fonts
 ;; :font "Source Code Pro" :height 100 :weight 'normal
