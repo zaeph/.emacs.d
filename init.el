@@ -1047,7 +1047,7 @@ return `nil'."
 	;; Extra
 	;; (sequence "STBY(s)" "WAIT(w@/!)" "|" "CXLD(x@/!)")
 	(sequence "STBY(s)" "|" "CXLD(x@/!)")
-	(sequence "WAIT(w@/!)" "|" "CXLD(x@/!)")
+	(sequence "WAIT(w!)" "|" "CXLD(x@/!)")
 	))
 (setq org-todo-keyword-faces '(
 			       ("TODO" :inherit org-todo-todo)
