@@ -4827,6 +4827,7 @@ windows."
    (quote
     (("\\.pdf\\'" . "evince %s")
      ("\\.epub\\'" . "ebook-viewer %s")
+     ("\\.mobi\\'" . "ebook-viewer %s")
      ("\\.doc\\'" . "lowriter %s")
      (auto-mode . emacs)
      ("\\.mm\\'" . default)
