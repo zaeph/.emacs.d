@@ -4356,16 +4356,16 @@ windows."
   		      ;; :family "Equity" :height 1.2 :slant 'normal)
   (set-face-attribute 'fixed-pitch-serif nil
 		      :font "Iosevka Prog Slab" :height 1.0)
+
+  ;; CJK fonts
+  (set-fontset-font (frame-parameter nil 'font) 'han '("Noto Sans CJK JP"))
+  (set-fontset-font (frame-parameter nil 'font) 'japanese-jisx0208 '("Noto Sans CJK JP"))
+  (set-fontset-font (frame-parameter nil 'font) 'hangul '("Noto Sans CJK KR"))
   )
 
 ;; Fonts for emoji
 ;; (when (member "Symbola" (font-family-list))
 ;;   (set-fontset-font t 'unicode "Symbola" nil 'prepend))
-
-;; CJK fonts
-(set-fontset-font (frame-parameter nil 'font) 'han '("Noto Sans CJK JP"))
-(set-fontset-font (frame-parameter nil 'font) 'japanese-jisx0208 '("Noto Sans CJK JP"))
-(set-fontset-font (frame-parameter nil 'font) 'hangul '("Noto Sans CJK KR"))
 
 ;; Other fonts
 ;; :font "Source Code Pro" :height 100 :weight 'normal
