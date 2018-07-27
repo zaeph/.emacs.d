@@ -157,6 +157,10 @@
 ;; (add-to-list 'load-path "/home/zaeph/.emacs.d/pkg/emacswiki.org/info+.el")
 ;; (load "/home/zaeph/.emacs.d/pkg/emacswiki.org/info+.el")
 (require 'info+)
+;; (define-key Info-mode-map (kbd "<mouse-4>") 'Info-mouse-scroll-up)
+;; (define-key Info-mode-map (kbd "<mouse-5>") 'Info-mouse-scroll-down)
+(define-key Info-mode-map (kbd "<mouse-4>") 'mwheel-scroll)
+(define-key Info-mode-map (kbd "<mouse-5>") 'mwheel-scroll)
 
 (setq diredp-hide-details-initially-flag nil)
 (require 'dired+)
