@@ -1209,7 +1209,9 @@ return `nil'."
     (outline-up-heading 1)
     (org-narrow-to-subtree)
     (if (eq arg 4)
-	(goto-char pos-before))
+	(progn
+	  (goto-char pos-before)
+	  (recenter-top-bottom)))
     (message "Narrowing to tree above.")
     (zp/play-sound-turn-page)))
 
