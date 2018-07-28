@@ -2513,13 +2513,11 @@ on init and them removes itself."
 (setq helm-chronos-recent-timers-limit 10
       helm-chronos-standard-timers
       '(
-	"Green Tea (mug)       3/Green Tea: Remove tea bag + 27/Green Tea: Close Lid"
-	"Green Tea (pot)       3/Green Tea: Remove tea bag"
-	"Black Tea (mug)       4/Black Tea: Remove tea bag + 26/Black Tea: Close Lid"
-	"Black Tea (pot)       4/Black Tea: Remove tea bag"
-	"Herbal Tea           10/Herbal Tea: Remove tea bag"
-	"Timebox              25/Finish and Reflect + 5/Back to it"
-	"Break                30/Back to it"
+	"Green Tea		3/Green Tea: Remove tea bag"
+	"Black Tea		4/Black Tea: Remove tea bag"
+	"Herbal Tea		10/Herbal Tea: Remove tea bag"
+	"Timebox		25/Finish and Reflect + 5/Back to it"
+	"Break			30/Back to it"
 	))
 
 (defun zp/chronos-edit-selected-line-time (time prefix)
