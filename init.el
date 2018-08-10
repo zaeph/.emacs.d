@@ -1607,12 +1607,16 @@ agenda settings after them."
   "Format headers of ‘Stuck Projects’ in org-agenda, and display important
 agenda settings after them."
   (let* ((tags-column org-agenda-tags-column)
+	 (flanking-symbol-left "[")
+	 (flanking-symbol-right "]")
 	 (header "Stuck Projects")
+	 (header-formatted
+	  (zp/org-agenda-format-header-align
+	   (concat flanking-symbol-left " " header " " flanking-symbol-right)))
 	 (word-list ()))
     (if (eq org-agenda-dim-blocked-tasks nil)
     	(add-to-list 'word-list "-dim" t))
-    (let ((header-formatted (zp/org-agenda-format-header-align header))
-	  (word-list-formatted (zp/org-agenda-format-word-list word-list)))
+    (let ((word-list-formatted (zp/org-agenda-format-word-list word-list)))
       (concat header-formatted word-list-formatted "\n"))))
 
 (defun zp/org-agenda-format-header-scheduled ()
@@ -1894,12 +1898,15 @@ agenda settings after them."
 	(delete-region (point) (1+ (point-at-eol))))))
   (setq buffer-read-only t))
 
-(defface zp/org-agenda-blocked-tasks-warning-face
-  nil
+(defface zp/org-agenda-block-info-face nil
+  "Info for blocked faces in org-agenda.")
+
+(defface zp/org-agenda-block-warning-face nil
   "Warning for blocked faces in org-agenda.")
 
 (defun zp/org-agenda-hi-lock ()
-  (highlight-regexp "([-+].*?)" 'zp/org-agenda-blocked-tasks-warning-face))
+  (highlight-regexp "([-+].*?)" 'zp/org-agenda-block-info-face)
+  (highlight-regexp "^[[:space:]]*? \\[ Stuck Projects \\]$" 'zp/org-agenda-block-warning-face))
 
 (defun zp/org-agenda-remove-mouse-face ()
   "Remove mouse-face from org-agenda."
@@ -4441,11 +4448,12 @@ windows."
   (set-face-attribute 'secondary-selection nil :background "#3B3273")
 
 
-  (set-face-attribute 'zp/org-agenda-blocked-tasks-warning-face nil
+  (set-face-attribute 'zp/org-agenda-block-info-face nil
 		      :foreground "violetred1"
 		      :background "violetred4"
 		      :height 0.8
 		      :weight 'bold)
+  (set-face-attribute 'zp/org-agenda-block-warning-face nil :foreground "red" :weight 'bold)
 
   (zp/org-todo-format-face 'box 'org-todo-todo "darkred")
   (zp/org-todo-format-face 'box 'org-todo-next "DodgerBlue1")
@@ -4505,11 +4513,12 @@ windows."
   (set-face-attribute 'diff-hl-insert nil :foreground "#7ccd7c" :background "#7ccd7c")
   (set-face-attribute 'diff-hl-delete nil :foreground "#ee6363" :background "#ee6363")
 
-  (set-face-attribute 'zp/org-agenda-blocked-tasks-warning-face nil
+  (set-face-attribute 'zp/org-agenda-block-info-face nil
 		      :foreground "violetred1"
 		      :background "thistle2"
 		      :height 0.8
 		      :weight 'bold)
+  (set-face-attribute 'zp/org-agenda-block-warning-face nil :foreground "red" :weight 'bold)
 
   (zp/org-todo-format-face 'normal 'org-todo-todo "red")
   (zp/org-todo-format-face 'normal 'org-todo-next "DodgerBlue1")
