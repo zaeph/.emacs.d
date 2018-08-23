@@ -2216,7 +2216,20 @@ Based on `org-agenda-set-property'."
 	 "* %^{Title|Entry}\n%T\n\n%?" :empty-lines 1)
       	;; ("s" "Swimming workout" entry (file+olp "/home/zaeph/org/life.org.gpg" "Sports" "Swimming" "Records" "Current")
 	("s" "Swimming workout" entry (file+weektree+prompt "/home/zaeph/org/sports/swimming/swimming.org.gpg")
-	 "* DONE Training%^{SWIM_DISTANCE}p%^{SWIM_DURATION}p\n%t\n|--+-------|\n| %? |       |\n|--+-------|")))
+	 "* DONE Training%^{SWIM_DISTANCE}p%^{SWIM_DURATION}p\n%t%(print zp/swimming-workout-default)")))
+
+(defvar zp/swimming-workout-default nil)
+(setq zp/swimming-workout-default "
+|-----+---------------------------|
+| 500 | warmup crawl/fly          |
+| 500 | pull tech                 |
+| 500 | 50 crawl fast / 100 crawl |
+| 500 | 100 pull / 100 pull fast  |
+| 500 | 50 fly / 100 crawl        |
+| 500 | 100 pull / 100 pull fast  |
+| 500 | 50 fly / 100 crawl        |
+| 100 | warmdown                  |
+|-----+---------------------------|")
 
 (setq zp/org-agenda-capture-templates
       '(("f" "Todo" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
