@@ -1139,6 +1139,11 @@ return `nil'."
 ;; (setq org-archive-location "/home/zaeph/org/archive.org.gpg::* From %s")
 
 ;; Babel
+(require 'ob-async)
+(add-hook 'ob-async-pre-execute-src-block-hook
+        '(lambda ()
+           (setq org-ditaa-jar-path "/usr/share/java/ditaa/ditaa-0.11.jar")))
+
 ;; Deactivated since migrated to Linux
 ;; (org-babel-do-load-languages 'org-babel-load-languages
 ;; 			     '((R . t)
@@ -1147,7 +1152,12 @@ return `nil'."
 
 ;; Prototype babel
 (org-babel-do-load-languages 'org-babel-load-languages
-			     '((shell . t)))
+			     '((shell . t)
+			       (ditaa . t)))
+
+(add-hook 'org-babel-after-execute-hook 'org-display-inline-images 'append)
+
+(setq org-ditaa-jar-path "/usr/share/java/ditaa/ditaa-0.11.jar")
 
 
 (add-to-list 'safe-local-variable-values
