@@ -1023,6 +1023,10 @@ return `nil'."
       org-footnote-define-inline 1
       )
 
+;; Add curly quotes to list of pre- and post-matches for emphasis markers
+(setq org-emphasis-regexp-components '("- 	('‘\"“’{" "- 	.,:!?;'’\"”)}\\[" " 	
+" "." 1))
+
 ;; (eval-after-load 'org '(require 'org-pdfview))
 
 (add-to-list 'org-file-apps
