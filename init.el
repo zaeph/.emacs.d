@@ -2381,13 +2381,19 @@ KEYANDHEADLINE should be a list of cons cells of the form (\"key\" . \"headline\
 			    (("i" . "Inbox")
 			     ("t" . "Tasks")))
 
-(zp/make-hydra-org-refile zp/hydra-org-refile-file-emacs
-			    "/home/zaeph/org/projects/emacs/emacs.org.gpg"
+(zp/make-hydra-org-refile zp/hydra-org-refile-file-media
+			    "/home/zaeph/org/media.org.gpg"
 			    (("i" . "Inbox")
 			     ("t" . "Tasks")))
 
-(zp/make-hydra-org-refile zp/hydra-org-refile-file-media
-			    "/home/zaeph/org/media.org.gpg"
+(zp/make-hydra-org-refile zp/hydra-org-refile-file-university
+			    "/home/zaeph/org/projects/university/university.org.gpg"
+			    (("i" . "Inbox")
+			     ("t" . "Tasks")
+			     ("c" . "Calendar")))
+
+(zp/make-hydra-org-refile zp/hydra-org-refile-file-emacs
+			    "/home/zaeph/org/projects/emacs/emacs.org.gpg"
 			    (("i" . "Inbox")
 			     ("t" . "Tasks")))
 
@@ -2396,10 +2402,13 @@ KEYANDHEADLINE should be a list of cons cells of the form (\"key\" . \"headline\
 			    (("i" . "Inbox")
 			     ("t" . "Tasks")))
 
+
+
 (defhydra zp/hydra-org-refile (:foreign-keys run)
   "Refile"
   ("o" zp/hydra-org-refile-file-life/body	"Life" :exit t)
   ("b" zp/hydra-org-refile-file-media/body	"Media" :exit t)
+  ("u" zp/hydra-org-refile-file-university/body	"University" :exit t)
   ("e" zp/hydra-org-refile-file-emacs/body	"Emacs" :exit t)
   ("l" zp/hydra-org-refile-file-arch-linux/body	"Arch Linux" :exit t)
   ("j" org-refile-goto-last-stored "Jump to last refile" :exit t)
