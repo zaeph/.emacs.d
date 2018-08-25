@@ -110,7 +110,8 @@
 (setq ledger-use-iso-dates t
       ledger-reconcile-default-commodity "EUR"
       ;; Testing
-      ledger-post-auto-adjust-amounts 1)
+      ledger-post-auto-adjust-amounts 1
+      ledger-schedule-file "/home/zaeph/org/ledger/main-schedule.ledger.gpg")
 
 (add-hook 'ledger-reconcile-mode-hook #'balance-windows)
 ;; (setq ledger-reconcile-mode-hook nil)
@@ -1303,6 +1304,7 @@ return `nil'."
 	("I" . "/home/zaeph/org/info.org.gpg"))
       zp/ledger-files-alist
       '(("l l" . "/home/zaeph/org/ledger/main.ledger.gpg")
+	("l s" . "/home/zaeph/org/ledger/main-schedule.ledger.gpg")
       	;; ("l f" . "/home/zaeph/org/ledger/french-house.ledger.gpg")
 	)
       zp/research-files-alist
