@@ -125,6 +125,26 @@
 	(delete-other-windows))))
 (define-key ledger-mode-map (kbd "S-<backspace>") 'zp/ledger-close-scheduled)
 
+;; -----------------------------------------------------------------------------
+;; Patch for inserting an empty line after copied transactions
+(defun ledger-copy-transaction-at-point (date)
+  "Ask for a new DATE and copy the transaction under point to that date.  Leave point on the first amount."
+  (interactive  (list
+                 (ledger-read-date "Copy to date: ")))
+  (let* ((extents (ledger-navigate-find-xact-extents (point)))
+         (transaction (buffer-substring-no-properties (car extents) (cadr extents)))
+         (encoded-date (ledger-parse-iso-date date)))
+    (ledger-xact-find-slot encoded-date)
+    (insert transaction "\n\n")		;Patch
+    (beginning-of-line -1)
+    (ledger-navigate-beginning-of-xact)
+    (re-search-forward ledger-iso-date-regexp)
+    (replace-match date)
+    (ledger-next-amount)
+    (if (re-search-forward "[-0-9]")
+        (goto-char (match-beginning 0)))))
+;; -----------------------------------------------------------------------------
+
 ;; zshrc
 (add-to-list 'auto-mode-alist '("\\zshrc\\'" . shell-script-mode))
 
