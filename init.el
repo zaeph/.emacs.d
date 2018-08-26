@@ -116,6 +116,15 @@
 (add-hook 'ledger-reconcile-mode-hook #'balance-windows)
 ;; (setq ledger-reconcile-mode-hook nil)
 
+(defun zp/ledger-close-scheduled ()
+  (interactive)
+  (if (string-match-p (regexp-quote "*Ledger Schedule*") (buffer-name))
+      (progn
+	(kill-buffer)
+	(other-window -1)
+	(delete-other-windows))))
+(define-key ledger-mode-map (kbd "S-<backspace>") 'zp/ledger-close-scheduled)
+
 ;; zshrc
 (add-to-list 'auto-mode-alist '("\\zshrc\\'" . shell-script-mode))
 
