@@ -99,6 +99,7 @@
 
 ;; Ledger
 (autoload 'ledger-mode "ledger-mode" "A major mode for Ledger" t)
+(require 'ledger-mode)
 ;; Using MELPA rather than the one from the built one
 ;; (add-to-list 'load-path
 ;;              (expand-file-name "/home/zaeph/builds/ledger/src/ledger-3.1.1/lisp/"))
