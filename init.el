@@ -206,6 +206,8 @@
 (require 'diff-hl)
 (global-diff-hl-mode)
 (add-hook 'dired-mode-hook 'diff-hl-dired-mode)
+(add-hook 'dired-mode-hook 'turn-on-gnus-dired-mode)
+
 (diff-hl-flydiff-mode)
 
 (require 'eyebrowse)
