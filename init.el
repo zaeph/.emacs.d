@@ -192,6 +192,10 @@
 ;; (define-key Info-mode-map (kbd "<mouse-5>") 'Info-mouse-scroll-down)
 (define-key Info-mode-map (kbd "<mouse-4>") 'mwheel-scroll)
 (define-key Info-mode-map (kbd "<mouse-5>") 'mwheel-scroll)
+(define-key Info-mode-map (kbd "j") 'next-line)
+(define-key Info-mode-map (kbd "k") 'previous-line)
+;; (define-key Info-mode-map (kbd "h") 'Info-history-back)
+;; (define-key Info-mode-map (kbd "l") 'Info-history-forward)
 
 (setq diredp-hide-details-initially-flag nil)
 (require 'dired+)
