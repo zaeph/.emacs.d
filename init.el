@@ -128,6 +128,9 @@
 
 ;; -----------------------------------------------------------------------------
 ;; Patch for inserting an empty line after copied transactions
+(defvar ledger-copy-transaction-insert-blank-line-after nil
+  "Non-nil means insert blank line after a transaction inserted with ‘ledger-copy-transaction-at-point’.")
+
 (defun ledger-copy-transaction-at-point (date)
   "Ask for a new DATE and copy the transaction under point to that date.  Leave point on the first amount."
   (interactive  (list
@@ -136,7 +139,10 @@
          (transaction (buffer-substring-no-properties (car extents) (cadr extents)))
          (encoded-date (ledger-parse-iso-date date)))
     (ledger-xact-find-slot encoded-date)
-    (insert transaction "\n\n")		;Patch
+    (insert transaction
+            (if (bound-and-true-p ledger-copy-transaction-insert-blank-line-after)
+                "\n\n"
+              "\n"))
     (beginning-of-line -1)
     (ledger-navigate-beginning-of-xact)
     (re-search-forward ledger-iso-date-regexp)
@@ -144,6 +150,8 @@
     (ledger-next-amount)
     (if (re-search-forward "[-0-9]")
         (goto-char (match-beginning 0)))))
+
+(setq ledger-copy-transaction-insert-blank-line-after t)
 ;; -----------------------------------------------------------------------------
 
 ;; zshrc
