@@ -322,11 +322,12 @@
   (let ((current ispell-local-dictionary))
     (helm :sources '(zp/helm-source-ispell))))
 
-(defun zp/helm-ispell-preselect ()
+(defun zp/helm-ispell-preselect (&optional lang)
   (interactive)
   (let ((current ispell-local-dictionary))
     (helm :sources '(zp/helm-source-ispell)
 	  :preselect (if (or
+			  (eq lang "French")
 			  (eq current nil)
 			  (string-match-p current "british"))
 			 "French"
@@ -651,7 +652,8 @@ ALL-MAILS are the all the unread emails"
 (add-hook 'message-mode-hook #'flyspell-mode)
 (add-hook 'message-mode-hook #'electric-quote-local-mode)
 (add-hook 'message-mode-hook #'footnote-mode)
-(add-hook 'message-mode-hook #'zp/helm-ispell)
+(add-hook 'message-mode-hook (lambda ()
+				(zp/helm-ispell-preselect "French")))
 
 (setq electric-quote-context-sensitive 1)
 ;; -----------------------------------------------------------------------------
