@@ -421,6 +421,8 @@
       :key ?p)))
 
 (define-key mu4e-main-mode-map (kbd "c") 'mu4e-compose-new)
+(define-key mu4e-headers-mode-map (kbd "c") 'mu4e-compose-new)
+
 
 ;; show images
 ;; (setq mu4e-view-show-images t
