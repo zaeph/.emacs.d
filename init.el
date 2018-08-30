@@ -152,6 +152,16 @@
         (goto-char (match-beginning 0)))))
 
 (setq ledger-copy-transaction-insert-blank-line-after t)
+
+
+;; Patch for killing transaction
+(defun ledger-kill-current-transaction (pos)
+  "Delete the transaction surrounging POS."
+  (interactive "d")
+  (let ((bounds (ledger-navigate-find-xact-extents pos)))
+    (kill-region (car bounds) (cadr bounds))))
+
+(define-key ledger-mode-map (kbd "C-c C-d") 'ledger-kill-current-transaction)
 ;; -----------------------------------------------------------------------------
 
 ;; zshrc
