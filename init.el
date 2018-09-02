@@ -355,6 +355,11 @@
       '(("freenode.net" "#emacs" "#ranger")
 	("myanonamouse.net" "#anonamouse.net" "#am-members")))
 
+;; (add-to-list 'erc-modules 'notify)
+;; (add-to-list 'erc-modules 'notifications)
+;; (add-to-list 'erc-notify-list "toonn")
+;; (setq erc-notify-list nil)
+
 (defun zp/erc-connect ()
   (interactive)
   (erc :server "irc.freenode.net" :port 6667 :nick "zaeph" :password (zp/get-string-from-file "/home/zaeph/org/pp/irc/freenode/pp.gpg"))
