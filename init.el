@@ -353,7 +353,8 @@
 (require 'erc)
 (setq erc-autojoin-channels-alist
       '(("freenode.net" "#emacs" "#ranger")
-	("myanonamouse.net" "#anonamouse.net" "#am-members")))
+	("myanonamouse.net" "#anonamouse.net" "#am-members"))
+      erc-join-buffer 'bury)
 
 ;; (add-to-list 'erc-modules 'notify)
 ;; (add-to-list 'erc-modules 'notifications)
