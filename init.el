@@ -357,9 +357,10 @@
       erc-join-buffer 'bury
       erc-hide-list '("JOIN" "PART" "QUIT"))
 
-;; (add-to-list 'erc-modules 'notify)
-;; (add-to-list 'erc-modules 'notifications)
-;; (add-to-list 'erc-notify-list "toonn")
+(add-to-list 'erc-modules 'notify)
+(add-to-list 'erc-modules 'notifications)
+(erc-update-modules)
+(add-to-list 'erc-notify-list "toonn")
 ;; (setq erc-notify-list nil)
 
 (defun zp/erc-connect ()
