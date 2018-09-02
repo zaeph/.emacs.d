@@ -1409,6 +1409,8 @@ return `nil'."
       	("p r" . "/home/zaeph/org/projects/university/research/research.org.gpg")
       	;; ("p f" . "/home/zaeph/org/projects/university/final-foucault.org.gpg")
       	;; ("p g" . "/home/zaeph/org/projects/university/place-space-memory.org.gpg")
+	;; Languages
+	("p j" . "/home/zaeph/org/projects/lang/ja/ja.org.gpg")
       	;; Activism
       	;; ("p a d"  . "[DATA EXPUNGED]")
       	;; ("p a s"  . "[DATA EXPUNGED]")
