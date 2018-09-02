@@ -354,7 +354,8 @@
 (setq erc-autojoin-channels-alist
       '(("freenode.net" "#emacs" "#ranger")
 	("myanonamouse.net" "#anonamouse.net" "#am-members"))
-      erc-join-buffer 'bury)
+      erc-join-buffer 'bury
+      erc-hide-list '("JOIN" "PART" "QUIT"))
 
 ;; (add-to-list 'erc-modules 'notify)
 ;; (add-to-list 'erc-modules 'notifications)
