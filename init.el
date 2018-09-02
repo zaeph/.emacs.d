@@ -2743,6 +2743,9 @@ on init and them removes itself."
 (defun org-noter--set-notes-scroll (window &rest ignored)
   nil)
 
+(define-key org-noter-doc-mode-map (kbd "j") 'pdf-view-next-line-or-next-page)
+(define-key org-noter-doc-mode-map (kbd "k") 'pdf-view-previous-line-or-previous-page)
+
 ;;; Default function in org-noter.el
 ;; (defun org-noter--set-notes-scroll (window &rest ignored)
 ;;   (when window
