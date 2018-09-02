@@ -347,6 +347,23 @@
 
 
 ;; ========================================
+;; ================= ERC ==================
+;; ========================================
+
+(require 'erc)
+(setq erc-autojoin-channels-alist
+      '(("freenode.net" "#emacs" "#ranger")
+	("myanonamouse.net" "#anonamouse.net" "#am-members")))
+
+(defun zp/erc-connect ()
+  (interactive)
+  (erc :server "irc.freenode.net" :port 6667 :nick "zaeph" :password (zp/get-string-from-file "/home/zaeph/org/pp/irc/freenode/pp.gpg"))
+;; (erc-tls :server "irc.myanonamouse.net" :port 6697 :nick "zaeph" :password (zp/get-string-from-file "/home/zaeph/org/pp/irc/mam/pp.gpg"))
+  )
+
+
+
+;; ========================================
 ;; ================= MU4E =================
 ;; ========================================
 
