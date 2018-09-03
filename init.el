@@ -351,7 +351,7 @@
 ;; ========================================
 
 (require 'erc)
-(setq erc-autojoin-timing 'ident
+(setq erc-autojoin-timing 'connect
       erc-autojoin-channels-alist
       '(("freenode.net" "#emacs" "#ranger")
 	("myanonamouse.net" "#anonamouse.net" "#am-members"))
