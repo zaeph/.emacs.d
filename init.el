@@ -375,8 +375,9 @@
 
 (defun zp/erc-connect ()
   (interactive)
-  (erc :server "irc.freenode.net" :port 6667 :nick "zaeph" :password (zp/get-string-from-file "/home/zaeph/org/pp/irc/freenode/pp.gpg"))
-  (erc-tls :server "irc.myanonamouse.net" :port 6697 :nick "zaeph" :password (zp/get-string-from-file "/home/zaeph/org/pp/irc/mam/pp.gpg"))
+  (erc :server "176.188.242.162" :port 15873 :nick "zaeph" :password (concat "zaeph/freenode:" (zp/get-string-from-file "/home/zaeph/org/pp/irc/freenode/pp.gpg")))
+  ;; (erc :server "irc.freenode.net" :port 6667 :nick "zaeph" :password (zp/get-string-from-file "/home/zaeph/org/pp/irc/freenode/pp.gpg"))
+  ;; (erc-tls :server "irc.myanonamouse.net" :port 6697 :nick "zaeph" :password (zp/get-string-from-file "/home/zaeph/org/pp/irc/mam/pp.gpg"))
   )
 
 
