@@ -1403,6 +1403,8 @@ return `nil'."
   (local-set-key (kbd "C-x n f") 'zp/org-narrow-forward)
   (local-set-key (kbd "C-x n b") 'zp/org-narrow-backwards)
   (local-set-key (kbd "C-x n w") 'zp/org-widen)
+  (local-set-key (kbd "M-p") 'org-metaup)
+  (local-set-key (kbd "M-n") 'org-metadown)
   ;; (local-set-key (kbd "C-c C-w") 'org-refile)
   ;; (local-set-key (kbd "C-c C-S-w") 'zp/org-refile-with-paths)
   )
