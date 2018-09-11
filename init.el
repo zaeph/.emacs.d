@@ -387,6 +387,7 @@
 (require 'circe)
 
 (enable-circe-color-nicks)
+(enable-lui-track-bar)
 
 (setq circe-network-options
       `(("Freenode ZNC"
@@ -4629,6 +4630,7 @@ windows."
   (set-face-attribute 'mu4e-modeline-face nil :foreground "LightBlue4")
   (set-face-attribute 'line-number nil :foreground "#969996" :background "#3B3B3B")
   (set-face-attribute 'secondary-selection nil :background "#3B3273")
+  (set-face-attribute 'lui-track-bar nil :background "RoyalBlue4")
 
 
   (set-face-attribute 'zp/org-agenda-block-info-face nil
@@ -4691,6 +4693,7 @@ windows."
   (set-face-attribute 'line-number nil :foreground "#636663" :background "#ccc6a4")
   ;; (set-face-attribute 'line-number-current-line nil :foreground "#707370" :background "#ccc6a4")
   (set-face-attribute 'secondary-selection nil :background "#d3ccff")
+  (set-face-attribute 'lui-track-bar nil :background "RoyalBlue1")
 
   (set-face-attribute 'diff-hl-change nil :foreground "#3a81c3" :background "#3a81c3")
   (set-face-attribute 'diff-hl-insert nil :foreground "#7ccd7c" :background "#7ccd7c")
