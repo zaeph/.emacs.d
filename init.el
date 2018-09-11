@@ -386,6 +386,8 @@
 
 (require 'circe)
 
+(enable-circe-color-nicks)
+
 (setq circe-network-options
       `(("Freenode ZNC"
 	 :host "176.188.242.162"
