@@ -389,6 +389,22 @@
 (enable-circe-color-nicks)
 (enable-lui-track-bar)
 
+;; (setq circe-format-say "{nick:-10s} {body}")
+(setq circe-format-say "<{nick}> {body}")
+
+(setq circe-reduce-lurker-spam t)
+(setq circe-use-cycle-completion t)
+
+;; (circe-set-display-handler "JOIN" (lambda (&rest ignored) nil))
+
+;; From vifon
+(define-key lui-mode-map (kbd "C-c C-o")
+  (lambda ()
+    (interactive)
+    (ffap-next-url t)))
+
+(setq lui-formatting-list '(("\\[[[:alpha:]][[:alpha:]][[:alpha:]],.*?\\]" 0 font-lock-comment-face)))
+
 (defun zp/circe-get-pp (server)
   (zp/get-string-from-file "/home/zaeph/org/pp/irc/freenode/pp.gpg"))
 
