@@ -389,23 +389,26 @@
 (enable-circe-color-nicks)
 (enable-lui-track-bar)
 
+(defun zp/circe-get-pp (server)
+  (zp/get-string-from-file "/home/zaeph/org/pp/irc/freenode/pp.gpg"))
+
 (setq circe-network-options
-      `(("Freenode ZNC"
+      '(("Freenode ZNC"
 	 :host "176.188.242.162"
 	 :port "15873"
          ;; :server-buffer-name "⇄ Freenode (ZNC)"
 	 ;; :tls t
          :nick "zaeph"
-	 :nickserv-password ,(zp/get-string-from-file "/home/zaeph/org/pp/irc/freenode/pp.gpg")
+	 :nickserv-password zp/circe-get-pp
 	 :user "zaeph/freenode"
-	 :pass ,(zp/get-string-from-file "/home/zaeph/org/pp/irc/freenode/pp.gpg")
+	 :pass zp/circe-get-pp
          :channels ("#ranger")
          )
 	("Freenode Rescue"
          :nick "zaeph_"
 	 :host "chat.freenode.net"
 	 :port 6667
-	 :nickserv-password ,(zp/get-string-from-file "/home/zaeph/org/pp/irc/freenode/pp.gpg")
+	 :nickserv-password zp/circe-get-pp
          :channels ("#ranger")
          )))
 
