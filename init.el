@@ -1621,7 +1621,7 @@ return `nil'."
 ;; ========================================
 
 (setq org-agenda-todo-ignore-with-date nil
-      org-agenda-todo-ignore-scheduled 'future
+      org-agenda-todo-ignore-scheduled 'all
       ;; org-agenda-show-future-repeats 'next
       org-agenda-show-future-repeats t
       ;; org-agenda-todo-ignore-scheduled 'past
@@ -1755,7 +1755,7 @@ agenda settings after them."
     	(add-to-list 'word-list "+#↓" t))
     (if (eq org-agenda-dim-blocked-tasks nil)
     	(add-to-list 'word-list "-dim" t))
-    (if (eq org-agenda-todo-ignore-scheduled 'future)
+    (if (eq org-agenda-todo-ignore-scheduled 'all)
     	(add-to-list 'word-list "-future" t))
     (let ((header-formatted (zp/org-agenda-format-header-align header))
 	  (word-list-formatted (zp/org-agenda-format-word-list word-list)))
@@ -1788,7 +1788,7 @@ important agenda settings after them."
     	(add-to-list 'word-list "+#↓" t))
     (if (eq org-agenda-dim-blocked-tasks nil)
     	(add-to-list 'word-list "-dim" t))
-    (if (eq org-agenda-todo-ignore-scheduled nil)
+    (if (eq org-agenda-todo-ignore-scheduled 'past)
     	(add-to-list 'word-list "+future" t))
     (let ((header-formatted (zp/org-agenda-format-header-align header))
 	  (word-list-formatted (zp/org-agenda-format-word-list word-list)))
@@ -1844,7 +1844,10 @@ agenda settings after them."
 		     `((org-agenda-files ',file)))
 	       (org-agenda-sorting-strategy
 		'(user-defined-down priority-down category-keep))
-	       (org-agenda-skip-function 'zp/skip-non-tasks-and-scheduled))))
+	       ;; (org-agenda-skip-function 'zp/skip-non-tasks-and-scheduled))))
+	       (org-agenda-skip-function 'bh/skip-non-tasks)
+	       (org-agenda-todo-ignore-scheduled 'future)
+	       )))
 
 (defun zp/org-agenda-block-projects-stuck (&optional file)
   (let ((org-agenda-cmp-user-defined 'org-cmp-todo-state-wait))
@@ -1934,9 +1937,9 @@ agenda settings after them."
 (setq org-agenda-custom-commands
       `(("n" "Agenda"
 	 (,(zp/org-agenda-block-agenda "Agenda" org-agenda-files)
-	  ,(zp/org-agenda-block-scheduled)
 	  ,(zp/org-agenda-block-projects)
 	  ,(zp/org-agenda-block-projects-stuck)
+	  ,(zp/org-agenda-block-scheduled)
 	  ,(zp/org-agenda-block-tasks))
 	 ((org-agenda-files zp/org-agenda-files-main)))
 
@@ -1959,17 +1962,17 @@ agenda settings after them."
 
 	("b" "Media"
 	 (,(zp/org-agenda-block-agenda "Media")
-	  ,(zp/org-agenda-block-scheduled)
 	  ,(zp/org-agenda-block-projects)
 	  ,(zp/org-agenda-block-projects-stuck)
+	  ,(zp/org-agenda-block-scheduled)
 	  ,(zp/org-agenda-block-tasks))
 	 ((org-agenda-files zp/org-agenda-files-media)))
 
 	("l" "Arch & Emacs"
 	 (,(zp/org-agenda-block-agenda "Arch & Emacs")
-	  ,(zp/org-agenda-block-scheduled)
 	  ,(zp/org-agenda-block-projects)
 	  ,(zp/org-agenda-block-projects-stuck)
+	  ,(zp/org-agenda-block-scheduled)
 	  ,(zp/org-agenda-block-tasks))
 	 ((org-agenda-files zp/org-agenda-files-tools)))
 
@@ -2143,14 +2146,14 @@ agenda settings after them."
 (defun zp/toggle-org-agenda-todo-ignore-future-scheduled ()
   "Toggle the range of days for deadline to show up on the agenda."
   (interactive)
-  (cond ((eq org-agenda-todo-ignore-scheduled nil)
-	 (setq org-agenda-todo-ignore-scheduled 'future)
+  (cond ((eq org-agenda-todo-ignore-scheduled 'all)
+	 (setq org-agenda-todo-ignore-scheduled 'past)
 	 (org-agenda-redo)
-	 (message "Scheduled: Only today"))
-	((eq org-agenda-todo-ignore-scheduled 'future)
-	 (setq org-agenda-todo-ignore-scheduled nil)
+	 (message "Scheduled: All (Today + Future)"))
+	((eq org-agenda-todo-ignore-scheduled 'past)
+	 (setq org-agenda-todo-ignore-scheduled 'all)
 	 (org-agenda-redo)
-	 (message "Scheduled: All"))))
+	 (message "Scheduled: Only Today"))))
 
 (defun zp/toggle-org-agenda-projects-include-waiting ()
   "Toggle whether to include projects with a waiting task."
