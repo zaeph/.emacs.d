@@ -445,20 +445,36 @@
     (interactive)
     (ffap-next-url t)))
 
-(setq lui-formatting-list '(("\\[[[:alpha:]][[:alpha:]][[:alpha:]],.*?\\]" 0 font-lock-comment-face)))
+(setq lui-formatting-list '(("\\[[[:digit:]][[:digit:]]\\:[[:digit:]][[:digit:]]\\]" 0 font-lock-comment-face)))
 
 (defun zp/circe-get-pp (server)
   (zp/get-string-from-file "/home/zaeph/org/pp/irc/freenode/pp.gpg"))
 
 (setq circe-network-options
-      '(("Freenode ZNC"
-	 :host "176.188.242.162"
+      '(
+	("ZNC SSL"
+	 :host "zaeph.tk"
+	 ;; :host "176.188.242.162"
 	 :port "15873"
-         ;; :server-buffer-name "⇄ Freenode (ZNC)"
-	 ;; :tls t
-         :nick "zaeph"
-	 :nickserv-password zp/circe-get-pp
+	 :tls t
+	 :server-buffer-name "{host} ⇄ ZNC"
+         ;; :nick "zaeph"
+	 ;; :nickserv-password zp/circe-get-pp
+	 :sasl-username "zaeph"
+	 :sasl-password zp/circe-get-pp
 	 :user "zaeph/freenode"
+	 :pass zp/circe-get-pp
+         :channels ("#ranger" "#emacs")
+         )
+	("Weechat Relay"
+	 :host "zaeph.tk"
+	 ;; :host "176.188.242.162"
+	 :port "8443"
+	 :tls t
+	 :server-buffer-name "{host} ⇄ Weechat"
+         :nick "zaeph"
+	 ;; :nickserv-password zp/circe-get-pp
+	 ;; :user "zaeph"
 	 :pass zp/circe-get-pp
          :channels ("#ranger")
          )
