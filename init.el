@@ -241,6 +241,11 @@
 (add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode))
 (add-to-list 'auto-mode-alist '("\\.mobi\\'" . nov-mode))
 
+;; Anki-Editor
+;; (require 'anki-editor)
+
+
+
 ;; ========================================
 ;; =============== FREE_KEYS ==============
 ;; ========================================
