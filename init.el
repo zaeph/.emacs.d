@@ -952,7 +952,7 @@ ALL-MAILS are the all the unread emails"
 (electric-quote-mode 1)
 ;; (global-visible-mark-mode 1)
 
-(setq next-line-add-newlines t)
+(setq next-line-add-newlines nil)
 (setq-default require-final-newline nil)
 (setq scroll-preserve-screen-position 't)
 
