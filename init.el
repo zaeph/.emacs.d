@@ -2035,7 +2035,7 @@ agenda settings after them."
 
 
 
-;; (setq org-agenda-sorting-strategy 
+;; (setq org-agenda-sorting-strategy
 (setq org-agenda-sorting-strategy '((agenda habit-down time-up scheduled-up deadline-up priority-down category-keep)
 				    (tags priority-down category-keep)
 				    ;; (tags category-keep priority-down)
