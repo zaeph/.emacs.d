@@ -389,8 +389,50 @@
 (enable-circe-color-nicks)
 (enable-lui-track-bar)
 
-;; (setq circe-format-say "{nick:-10s} {body}")
-(setq circe-format-say "<{nick}> {body}")
+(setq circe-format-say "{nick:15s} {body}")
+(setq circe-format-server-message "               *** {body}")
+(setq circe-format-self-say "{nick:15s} {body}")
+;; (setq circe-format-say "<{nick}> {body}")
+
+(setq
+ lui-time-stamp-position 'right-margin
+ lui-fill-type nil)
+
+(defun my-lui-setup ()
+  (setq
+   fringes-outside-margins t
+   right-margin-width 5
+   word-wrap t
+   wrap-prefix "                "))
+(add-hook 'lui-mode-hook 'my-lui-setup)
+
+(add-hook 'lui-mode-hook 'olivetti-mode)
+
+(defface circe-prompt-server-face nil
+  "Face used for displaying the name of the server in circe.")
+(set-face-attribute 'circe-prompt-server-face nil
+		    :foreground "purple"
+		    :weight 'normal)
+(set-face-attribute 'circe-prompt-face nil
+		    :foreground "black"
+		    :background "LightSeaGreen")
+
+(defun my-circe-prompt ()
+  (lui-set-prompt
+   (concat
+    "\n"
+    (format "%15s"
+	    (concat
+	     (propertize
+	      (concat (buffer-name) " ")
+	      'face 'circe-prompt-server-face)
+	     (concat
+	      (propertize
+	       ">"
+	       'face 'circe-prompt-face))))
+    " ")))
+(add-hook 'circe-chat-mode-hook 'my-circe-prompt)
+
 
 (setq circe-reduce-lurker-spam t)
 (setq circe-use-cycle-completion t)
