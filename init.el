@@ -486,6 +486,13 @@
          :channels ("#ranger")
          )))
 
+(defun zp/switch-to-circe-ranger ()
+  (interactive)
+  (if (string-match "#ranger" (buffer-name))
+      (mode-line-other-buffer)
+    (switch-to-buffer "#ranger")))
+
+(global-set-key (kbd "H-p") 'zp/switch-to-circe-ranger)
 
 ;; circe-notifications
 (autoload 'enable-circe-notifications "circe-notifications" nil t)
