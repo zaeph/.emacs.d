@@ -1066,9 +1066,9 @@ end-of-buffer signals; pass the rest to the default handler."
 (add-to-list 'auto-minor-mode-alist '("edit-in-emacs.txt" . flyspell-mode))
 (add-to-list 'auto-minor-mode-alist '("edit-in-emacs.txt" . save-silently-mode))
 
-(add-to-list 'auto-minor-mode-alist '("edit-in-emacs.html" . visual-line-mode))
-(add-to-list 'auto-minor-mode-alist '("edit-in-emacs.html" . olivetti-mode))
-(add-to-list 'auto-minor-mode-alist '("edit-in-emacs.html" . flyspell-mode))
+;; (add-to-list 'auto-minor-mode-alist '("edit-in-emacs.html" . visual-line-mode))
+;; (add-to-list 'auto-minor-mode-alist '("edit-in-emacs.html" . olivetti-mode))
+;; (add-to-list 'auto-minor-mode-alist '("edit-in-emacs.html" . flyspell-mode))
 (add-to-list 'auto-minor-mode-alist '("edit-in-emacs.html" . save-silently-mode))
 ;; (setq auto-minor-mode-alist nil)
 
