@@ -1749,7 +1749,7 @@ return `nil'."
       org-agenda-cmp-user-defined 'zp/org-agenda-sort-special
       zp/org-agenda-sorting-strategy-user-defined 'special
       org-agenda-window-setup 'current-window
-      org-deadline-warning-days 7
+      org-deadline-warning-days 14
       org-agenda-tags-todo-honor-ignore-options 1
       org-agenda-compact-blocks nil
       org-agenda-todo-list-sublevels t
