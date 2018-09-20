@@ -1644,7 +1644,7 @@ return `nil'."
   (zp/set-shortcuts zp/org-agenda-files-media-alist)
   (zp/set-shortcuts zp/org-agenda-files-life-alist))
 
-(zp/set-shortcuts-all)
+;; (zp/set-shortcuts-all)
 
 ;; Helm
 (require 'helm)
@@ -1770,14 +1770,19 @@ return `nil'."
 
 
 
-(setq zp/org-agenda-files-main (append zp/org-agenda-files-life
-				       zp/org-agenda-files-projects
-				       zp/org-agenda-files-music
-				       zp/org-agenda-files-sports))
+(defun zp/update-org-agenda-files ()
+  (interactive)
+  (setq zp/org-agenda-files-main (append zp/org-agenda-files-life
+					 zp/org-agenda-files-projects
+					 zp/org-agenda-files-music
+					 zp/org-agenda-files-sports))
 
-(setq org-agenda-files (append zp/org-agenda-files-main
-			       zp/org-agenda-files-tools
-			       zp/org-agenda-files-media))
+  (setq org-agenda-files (append zp/org-agenda-files-main
+				 zp/org-agenda-files-tools
+				 zp/org-agenda-files-media))
+
+  (zp/set-shortcuts-all))
+(zp/update-org-agenda-files)
 
 
 
