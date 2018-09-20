@@ -1072,6 +1072,16 @@ end-of-buffer signals; pass the rest to the default handler."
 (add-to-list 'auto-minor-mode-alist '("edit-in-emacs.html" . save-silently-mode))
 ;; (setq auto-minor-mode-alist nil)
 
+(defun zp/kanji-add-furigana ()
+  "Adds furigana to the kanji at point.
+If text is selected, adds furigana to the selected kanji instead."
+  (interactive)
+  (if (not (region-active-p))
+      (progn
+	(call-interactively 'set-mark-command)
+	(call-interactively 'forward-char)))
+  (yas-expand-snippet (yas-lookup-snippet "anki-ruby")))
+
 (defun zp/save-buffers-kill-terminal-silently ()
   (interactive)
   (save-buffers-kill-terminal t))
@@ -1081,6 +1091,8 @@ end-of-buffer signals; pass the rest to the default handler."
   :lighter " SS"
   :keymap (let ((map (make-sparse-keymap)))
             (define-key map (kbd "C-x C-c") 'zp/save-buffers-kill-terminal-silently)
+            (define-key map (kbd "C-c C-k") 'zp/kanji-add-furigana)
+            (define-key map (kbd "M-n") 'zp/kanji-add-furigana)
             map))
 
 ;; Recentf
