@@ -1585,13 +1585,13 @@ return `nil'."
       	;; University
       	("p u" . "/home/zaeph/org/projects/university/university.org.gpg")
       	("p r" . "/home/zaeph/org/projects/university/research/research.org.gpg")
-	("p c l"	. "/home/zaeph/org/projects/university/classes/university/ling/ling.org.gpg")
-	("p c u"	. "/home/zaeph/org/projects/university/classes/university/civ-us/civ-us.org.gpg")
-	("p c g"	. "/home/zaeph/org/projects/university/classes/university/civ-gb/civ-gb.org.gpg")
-	("p c s"	. "/home/zaeph/org/projects/university/classes/university/space/space.org.gpg")
-	("p c i"	. "/home/zaeph/org/projects/university/classes/university/lit/lit.org.gpg")
-	("p c s"	. "/home/zaeph/org/projects/university/classes/university/syn/syn.org.gpg")
-	("p c t"	. "/home/zaeph/org/projects/university/classes/espe/tronc-commun.org.gpg")
+	;; ("p c l"	. "/home/zaeph/org/projects/university/classes/university/ling/ling.org.gpg")
+	;; ("p c u"	. "/home/zaeph/org/projects/university/classes/university/civ-us/civ-us.org.gpg")
+	;; ("p c g"	. "/home/zaeph/org/projects/university/classes/university/civ-gb/civ-gb.org.gpg")
+	;; ("p c s"	. "/home/zaeph/org/projects/university/classes/university/space/space.org.gpg")
+	;; ("p c i"	. "/home/zaeph/org/projects/university/classes/university/lit/lit.org.gpg")
+	;; ("p c s"	. "/home/zaeph/org/projects/university/classes/university/syn/syn.org.gpg")
+	;; ("p c t"	. "/home/zaeph/org/projects/university/classes/espe/tronc-commun.org.gpg")
 	;; Languages
 	("p j" . "/home/zaeph/org/projects/lang/ja/ja.org.gpg")
       	;; Activism
