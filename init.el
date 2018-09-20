@@ -1348,17 +1348,18 @@ return `nil'."
       ;; Custom colours for specific tags
       ;; Used to cause problem when rescheduling items in the agenda, but it seems to be gone now.
       org-tag-faces
-      '(("@home"      . org-tag-location)
-      	("@work"      . org-tag-location)
-      	("@town"      . org-tag-location)
-      	("standby"    . org-tag-todo)
-      	("cxld"       . org-tag-todo)
-      	("waiting"    . org-tag-todo)
-      	("recurring"  . org-tag-todo)
-      	("assignment" . org-tag-important)
-      	("important"  . org-tag-important)
-      	("reading"    . org-tag-reading)
-      	("french"     . org-tag-french)))
+      '(("@home"	. org-tag-location)
+      	("@work"	. org-tag-location)
+      	("@town"	. org-tag-location)
+      	("standby"	. org-tag-todo)
+      	("cxld"		. org-tag-todo)
+      	("waiting"	. org-tag-todo)
+      	("recurring"	. org-tag-todo)
+      	("assignment"	. org-tag-important)
+      	("exam"		. org-tag-important)
+      	("important"	. org-tag-important)
+      	("reading"	. org-tag-reading)
+      	("french"	. org-tag-french)))
 
 
 
