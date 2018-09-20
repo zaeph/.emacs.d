@@ -453,7 +453,7 @@
 (setq lui-formatting-list '(("\\[[[:digit:]][[:digit:]]\\:[[:digit:]][[:digit:]]\\]" 0 font-lock-comment-face)))
 
 (defun zp/circe-get-pp (server)
-  (zp/get-string-from-file "/home/zaeph/org/pp/irc/freenode/pp.gpg"))
+  (concat "freenode:" (zp/get-string-from-file "/home/zaeph/org/pp/irc/freenode/pp.gpg")))
 
 (setq circe-network-options
       '(
@@ -474,7 +474,7 @@
 	("Weechat Relay"
 	 :host "zaeph.tk"
 	 ;; :host "176.188.242.162"
-	 :port "8443"
+	 :port "15873"
 	 :tls t
 	 :server-buffer-name "{host} ⇄ Weechat"
          :nick "zaeph"
