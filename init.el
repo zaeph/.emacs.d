@@ -1530,8 +1530,14 @@ return `nil'."
 ;; =============== SHORTCUTS ==============
 ;; ========================================
 
+(define-prefix-command 'ledger-map)
+(global-set-key (kbd "C-c l") 'ledger-map)
 (define-prefix-command 'projects-map)
 (global-set-key (kbd "C-c p") 'projects-map)
+(define-prefix-command 'classes-map)
+(global-set-key (kbd "C-c p c") 'classes-map)
+(define-prefix-command 'activism-map)
+(global-set-key (kbd "C-c p a") 'activism-map)
 
 (defun zp/set-shortcuts (alist)
   (mapc
@@ -1544,11 +1550,6 @@ return `nil'."
 			  (find-file ',file-path)))))
    alist))
 
-
-(define-prefix-command 'ledger-map)
-(global-set-key (kbd "C-c l") 'ledger-map)
-(define-prefix-command 'activism-map)
-(global-set-key (kbd "C-c p a") 'activism-map)
 
 (setq zp/shortcut-files-alist
       '(("e" . "/home/zaeph/.emacs.d/init.el")
@@ -1563,8 +1564,9 @@ return `nil'."
       	("p T" . "/home/zaeph/org/projects/university/research/presentation/presentation.tex")
       	("p b" . "/home/zaeph/org/bib/monty-python.bib")
       	("p B" . "/home/zaeph/org/projects/university/research/bibliography/bibliography.tex")
-      	("p c" . "/home/zaeph/org/projects/university/research/sty/zaeph.sty")
-      	("p C" . "/home/zaeph/org/projects/university/research/sty/presentation.sty"))
+      	;; ("p c" . "/home/zaeph/org/projects/university/research/sty/zaeph.sty")
+      	;; ("p C" . "/home/zaeph/org/projects/university/research/sty/presentation.sty")
+	)
 
       zp/org-agenda-files-journals-alist
       '(("j j" . "/home/zaeph/org/journal.org.gpg")
@@ -1583,8 +1585,13 @@ return `nil'."
       	;; University
       	("p u" . "/home/zaeph/org/projects/university/university.org.gpg")
       	("p r" . "/home/zaeph/org/projects/university/research/research.org.gpg")
-      	;; ("p f" . "/home/zaeph/org/projects/university/final-foucault.org.gpg")
-      	;; ("p g" . "/home/zaeph/org/projects/university/place-space-memory.org.gpg")
+	("p c l"	. "/home/zaeph/org/projects/university/classes/university/ling/ling.org.gpg")
+	("p c u"	. "/home/zaeph/org/projects/university/classes/university/civ-us/civ-us.org.gpg")
+	("p c g"	. "/home/zaeph/org/projects/university/classes/university/civ-gb/civ-gb.org.gpg")
+	("p c s"	. "/home/zaeph/org/projects/university/classes/university/space/space.org.gpg")
+	("p c i"	. "/home/zaeph/org/projects/university/classes/university/lit/lit.org.gpg")
+	("p c s"	. "/home/zaeph/org/projects/university/classes/university/syn/syn.org.gpg")
+	("p c t"	. "/home/zaeph/org/projects/university/classes/espe/tronc-commun.org.gpg")
 	;; Languages
 	("p j" . "/home/zaeph/org/projects/lang/ja/ja.org.gpg")
       	;; Activism
