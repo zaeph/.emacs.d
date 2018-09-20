@@ -2074,7 +2074,7 @@ agenda settings after them."
 
 	("r" "Reading (-standby)"
 	 (,(zp/org-agenda-block-agenda "Reading")
-	  ,(zp/org-agenda-block-projects-stuck)
+	  ;; ,(zp/org-agenda-block-projects-stuck)
 	  ,(zp/org-agenda-block-reading-next-and-started)
 	  ,(zp/org-agenda-block-reading-list))
 	 ((org-agenda-tag-filter-preset (list "+reading"))
