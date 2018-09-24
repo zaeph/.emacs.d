@@ -1111,6 +1111,9 @@ If text is selected, adds furigana to the selected kanji instead."
 (global-anzu-mode +1)
 (setq anzu-cons-mode-line-p nil)
 
+;; Tramp
+(setq tramp-default-method "ssh")
+
 
 
 ;; ========================================
