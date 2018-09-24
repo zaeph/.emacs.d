@@ -39,6 +39,7 @@
 
 ;; Force horizontal splitting
 (setq split-width-threshold 9999)	;Default: 160
+(setq split-width-threshold 160)
 
 ;; Enable disabled commands
 (setq disabled-command-function nil)
