@@ -3241,7 +3241,9 @@ on init and them removes itself."
       bibtex-completion-notes-symbol "N")
 
 ;; Additional fields
-(setq bibtex-user-optional-fields '(("langid" "Language to use with BibLaTeX")
+(setq bibtex-user-optional-fields '(("subtitle" "Subtitle")
+				    ("booksubtitle" "Book subtitle")
+				    ("langid" "Language to use with BibLaTeX")
 				    ("library" "Library where the resource is held")
 				    ("shelf" "Shelf number at the library")
 				    ("annote" "Personal annotation (ignored)")
