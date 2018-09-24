@@ -1440,6 +1440,7 @@ return `nil'."
   (org-overview)
   (if (not (eq arg 4))
       (beginning-of-buffer))
+  (recenter-top-bottom)
   (zp/play-sound-turn-page))
 
 ;; org-narrow movements
