@@ -1564,7 +1564,7 @@ return `nil'."
       '(("p t" . "/home/zaeph/org/projects/university/research/thesis/thesis.tex")
       	("p T" . "/home/zaeph/org/projects/university/research/presentation/presentation.tex")
       	("p b" . "/home/zaeph/org/bib/monty-python.bib")
-      	("p B" . "/home/zaeph/org/projects/university/research/bibliography/bibliography.tex")
+      	("p B" . "/home/zaeph/org/projects/university/research/thesis/bibliography.tex")
       	;; ("p c" . "/home/zaeph/org/projects/university/research/sty/zaeph.sty")
       	;; ("p C" . "/home/zaeph/org/projects/university/research/sty/presentation.sty")
 	)
