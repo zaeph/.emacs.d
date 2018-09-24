@@ -1007,10 +1007,17 @@ ALL-MAILS are the all the unread emails"
 ;; DocView
 ;; (add-hook 'doc-view-mode-hook 'auto-revert-mode)
 
+(defun zp/toggle-pdf-view-auto-slice-minor-mode ()
+  (interactive)
+  (call-interactively 'pdf-view-auto-slice-minor-mode)
+  (if (not pdf-view-auto-slice-minor-mode)
+      (progn
+	(pdf-view-reset-slice))))
+
 ;; pdf-tools
 (pdf-tools-install)
 (define-key pdf-view-mode-map (kbd "m") 'pdf-view-midnight-minor-mode)
-(define-key pdf-view-mode-map (kbd "S") 'pdf-view-auto-slice-minor-mode)
+(define-key pdf-view-mode-map (kbd "S") 'zp/toggle-pdf-view-auto-slice-minor-mode)
 (define-key pdf-view-mode-map (kbd "c") 'zp/pdf-view-continuous-toggle)
 (add-hook #'pdf-view-mode-hook #'pdf-view-midnight-minor-mode)
 (add-hook #'pdf-view-mode-hook #'pdf-view-auto-slice-minor-mode)
