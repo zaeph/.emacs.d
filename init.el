@@ -459,20 +459,20 @@
 
 (setq circe-network-options
       '(
-	("ZNC SSL"
-	 :host "zaeph.tk"
-	 ;; :host "176.188.242.162"
-	 :port "15873"
-	 :tls t
-	 :server-buffer-name "{host} ⇄ ZNC"
-         ;; :nick "zaeph"
-	 ;; :nickserv-password zp/circe-get-pp
-	 :sasl-username "zaeph"
-	 :sasl-password zp/circe-get-pp
-	 :user "zaeph/freenode"
-	 :pass zp/circe-get-pp
-         :channels ("#ranger" "#emacs")
-         )
+	;; ("ZNC SSL"
+	;;  :host "zaeph.tk"
+	;;  ;; :host "176.188.242.162"
+	;;  :port "15873"
+	;;  :tls t
+	;;  :server-buffer-name "{host} ⇄ ZNC"
+        ;;  ;; :nick "zaeph"
+	;;  ;; :nickserv-password zp/circe-get-pp
+	;;  :sasl-username "zaeph"
+	;;  :sasl-password zp/circe-get-pp
+	;;  :user "zaeph/freenode"
+	;;  :pass zp/circe-get-pp
+        ;;  :channels ("#ranger" "#emacs")
+        ;;  )
 	("Weechat Relay"
 	 :host "zaeph.tk"
 	 ;; :host "176.188.242.162"
