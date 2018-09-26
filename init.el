@@ -2829,6 +2829,7 @@ on init and them removes itself."
 ;; ========================================
 
 (require 'magit)
+(setq magit-diff-refine-hunk 'all)
 
 
 
