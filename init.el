@@ -1372,6 +1372,7 @@ return `nil'."
 			   (69 . (:inherit org-priority-face-e))))
 (setq org-tags-column -77)		;Default: -77
 (setq org-agenda-tags-column -90)	;Default: auto OR -80
+(setq org-habit-graph-column 50)
 
 (setq org-todo-state-tags-triggers
       '(("CXLD" ("cancelled" . t) ("standby") ("waiting"))
