@@ -1290,7 +1290,7 @@ return `nil'."
       org-image-actual-width nil 	;Ensures that images displayed within emacs can be resized with #+ATTR_ORG:
       org-hide-emphasis-markers nil	;Fontification
       org-ellipsis "…"
-      ;; org-track-ordered-property-with-tag "ordered"
+      org-track-ordered-property-with-tag "ORDERED"
       ;; org-tags-exclude-from-inheritance '("project")
       org-tags-exclude-from-inheritance nil
       org-agenda-hide-tags-regexp "recurring\\|waiting\\|standby"
