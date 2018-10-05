@@ -2703,7 +2703,8 @@ KEYANDHEADLINE should be a list of cons cells of the form (\"key\" . \"headline\
 (zp/make-hydra-org-refile zp/hydra-org-refile-file-life
 			    "/home/zaeph/org/life.org.gpg"
 			    (("i" . "Inbox")
-			     ("t" . "Tasks")))
+			     ("t" . "Tasks")
+			     ("m" . "Maintenance")))
 
 (zp/make-hydra-org-refile zp/hydra-org-refile-file-media
 			    "/home/zaeph/org/media.org.gpg"
@@ -2731,7 +2732,9 @@ KEYANDHEADLINE should be a list of cons cells of the form (\"key\" . \"headline\
 			    (("i" . "Inbox")
 			     ("t" . "Tasks")
 			     ("b" . "Troubleshooting")
-			     ("c" . "Contributing")))
+			     ("c" . "Contributing")
+			     ("u" . "Utilities")
+			     ("a" . "AUR")))
 
 
 
