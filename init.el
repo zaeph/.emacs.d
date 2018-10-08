@@ -169,6 +169,9 @@
 (add-to-list 'auto-mode-alist '("\\zshrc\\'" . shell-script-mode))
 (add-to-list 'auto-mode-alist '("\\prompt_.*_setup\\'" . shell-script-mode))
 
+;; fish
+(add-to-list 'auto-mode-alist '("\\.*.fish\\'" . shell-script-mode))
+
 ;; fcitx
 ;; Disabled because of slow-downs in combination with visual-line-mode
 ;; (fcitx-aggressive-setup)
