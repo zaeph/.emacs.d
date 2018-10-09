@@ -4624,9 +4624,6 @@ windows."
     (when (buffer-narrowed-p)
       "Narrow"))
 
-  (defun zp/spaceline-org-clock-format-function ()
-    (substring (org-clock-get-clock-string) 1 12))
-
   (spaceline-emacs-theme 'narrow)
   (spaceline-helm-mode)
   (spaceline-toggle-hud-off)
@@ -4634,8 +4631,6 @@ windows."
   (spaceline-toggle-buffer-id-on)
   (setq powerline-height 45
 	powerline-default-separator 'arrow)
-  (setq spaceline-org-clock-format-function
-	'zp/spaceline-org-clock-format-function)
 
   (cond ((string= arg "dark")
 	 (progn
