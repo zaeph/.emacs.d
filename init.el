@@ -1492,7 +1492,7 @@ return `nil'."
   (message "Removing narrowing.")
   (zp/play-sound-turn-page))
 
-(defun zp/org-narrow-forward ()
+(defun zp/org-narrow-forwards ()
   "Move to the next subtree at same level, and narrow the buffer to it."
   (interactive)
   (widen)
@@ -1556,7 +1556,7 @@ return `nil'."
   (local-set-key (kbd "C-x n u") 'zp/org-narrow-up-heading)
   (local-set-key (kbd "C-x n y") 'zp/org-narrow-previous-heading)
   (local-set-key (kbd "C-x n s") 'zp/org-narrow-to-subtree)
-  (local-set-key (kbd "C-x n f") 'zp/org-narrow-forward)
+  (local-set-key (kbd "C-x n f") 'zp/org-narrow-forwards)
   (local-set-key (kbd "C-x n b") 'zp/org-narrow-backwards)
   (local-set-key (kbd "C-x n w") 'zp/org-widen)
   (local-set-key (kbd "M-p") 'org-metaup)
