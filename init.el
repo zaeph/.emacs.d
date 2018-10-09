@@ -263,6 +263,18 @@
 ;; Anki-Editor
 ;; (require 'anki-editor)
 
+;; Diminish
+;; Allow minor modes to not have modeline display
+(require 'diminish)
+(diminish 'whitespace-mode)
+(diminish 'helm-mode)
+(diminish 'auto-revert-mode)
+(diminish 'anzu-mode)
+(diminish 'yas-minor-mode)
+(diminish 'which-key-mode)
+(diminish 'volatile-highlights-mode)
+(diminish 'undo-tree-mode)
+
 
 
 ;; ========================================
@@ -5211,7 +5223,7 @@ windows."
      ("\\.pdf\\'" . default))))
  '(package-selected-packages
    (quote
-    (circe-notifications circe ob-async nov which-key eyebrowse diff-hl recentf-ext flycheck-pos-tip helm-projectile projectile clean-aindent-mode volatile-highlights duplicate-thing org-noter magit hydra highlight mu4e-alert ox-hugo org writeroom-mode anzu flycheck spaceline helm-chronos chronos olivetti multiple-cursors expand-region ace-window auto-minor-mode ledger-mode sublimity auctex smooth-scrolling yasnippet pdf-tools htmlize helm-bibtex free-keys evil color-theme base16-theme)))
+    (diminish circe-notifications circe ob-async nov which-key eyebrowse diff-hl recentf-ext flycheck-pos-tip helm-projectile projectile clean-aindent-mode volatile-highlights duplicate-thing org-noter magit hydra highlight mu4e-alert ox-hugo org writeroom-mode anzu flycheck spaceline helm-chronos chronos olivetti multiple-cursors expand-region ace-window auto-minor-mode ledger-mode sublimity auctex smooth-scrolling yasnippet pdf-tools htmlize helm-bibtex free-keys evil color-theme base16-theme)))
  '(safe-local-variable-values
    (quote
     ((eval add-hook
