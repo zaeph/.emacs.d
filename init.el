@@ -2744,7 +2744,9 @@ KEYANDHEADLINE should be a list of cons cells of the form (\"key\" . \"headline\
 (zp/make-hydra-org-refile zp/hydra-org-refile-file-emacs
 			    "/home/zaeph/org/projects/emacs/emacs.org.gpg"
 			    (("i" . "Inbox")
-			     ("t" . "Tasks")))
+			     ("t" . "Tasks")
+			     ("b" . "Troubleshooting")
+			     ("c" . "Contributing")))
 
 (zp/make-hydra-org-refile zp/hydra-org-refile-file-arch-linux
 			    "/home/zaeph/org/projects/arch-linux/arch-linux.org.gpg"
