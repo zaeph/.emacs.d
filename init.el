@@ -130,10 +130,12 @@
 ;; -----------------------------------------------------------------------------
 ;; Patch for inserting an empty line after copied transactions
 (defvar ledger-copy-transaction-insert-blank-line-after nil
-  "Non-nil means insert blank line after a transaction inserted with ‘ledger-copy-transaction-at-point’.")
+  "Non-nil means insert blank line after a transaction inserted
+  with ‘ledger-copy-transaction-at-point’.")
 
 (defun ledger-copy-transaction-at-point (date)
-  "Ask for a new DATE and copy the transaction under point to that date.  Leave point on the first amount."
+  "Ask for a new DATE and copy the transaction under point to
+that date.  Leave point on the first amount."
   (interactive  (list
                  (ledger-read-date "Copy to date: ")))
   (let* ((extents (ledger-navigate-find-xact-extents (point)))
