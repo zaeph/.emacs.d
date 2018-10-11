@@ -1808,6 +1808,7 @@ return `nil'."
       org-agenda-entry-text-maxlines 10
       org-agenda-use-time-grid nil
       org-agenda-sticky 1
+      org-agenda-block-separator 126
       org-agenda-exporter-settings
       '((ps-print-color-p t)
 	(ps-landscape-mode t)
@@ -2243,7 +2244,8 @@ agenda settings after them."
 
 (defun zp/org-agenda-hi-lock ()
   (highlight-regexp "([-+].*?)" 'zp/org-agenda-block-info-face)
-  (highlight-regexp "^[[:space:]]*? \\[ Stuck Projects \\]" 'zp/org-agenda-block-warning-face))
+  (highlight-regexp "^[[:space:]]*? \\[ Stuck Projects \\]" 'zp/org-agenda-block-warning-face)
+  (highlight-regexp "^~~.*~~$" 'font-lock-comment-face))
 
 (defun zp/org-agenda-remove-mouse-face ()
   "Remove mouse-face from org-agenda."
