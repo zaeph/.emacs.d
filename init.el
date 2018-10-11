@@ -4688,7 +4688,28 @@ windows."
   (spaceline-toggle-mu4e-alert-segment-on)
   (spaceline-toggle-buffer-id-on)
   (setq powerline-height 45
+	zp/powerline-text-height 0.95
+	powerline-text-scale-factor 0.88
 	powerline-default-separator 'arrow)
+
+  (set-face-attribute 'powerline-active0 nil
+  		      :height zp/powerline-text-height)
+  (set-face-attribute 'powerline-active1 nil
+  		      :height zp/powerline-text-height)
+  (set-face-attribute 'powerline-active2 nil
+		      :height zp/powerline-text-height)
+  (set-face-attribute 'powerline-inactive0 nil
+		      :height zp/powerline-text-height)
+  (set-face-attribute 'powerline-inactive1 nil
+		      :height zp/powerline-text-height)
+  (set-face-attribute 'powerline-inactive2 nil
+		      :height zp/powerline-text-height)
+  (set-face-attribute 'mode-line nil
+		      :height zp/powerline-text-height)
+  (set-face-attribute 'mode-line-inactive nil
+		      :height zp/powerline-text-height)
+
+
 
   (cond ((string= arg "dark")
 	 (progn
