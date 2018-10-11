@@ -1786,7 +1786,7 @@ return `nil'."
 ;; ========================================
 
 (setq org-agenda-todo-ignore-with-date nil
-      org-agenda-todo-ignore-scheduled 'all
+      org-agenda-todo-ignore-scheduled 'future
       ;; org-agenda-show-future-repeats 'next
       org-agenda-show-future-repeats t
       ;; org-agenda-todo-ignore-scheduled 'past
@@ -1925,7 +1925,7 @@ agenda settings after them."
     	(add-to-list 'word-list "+#↓" t))
     (if (eq org-agenda-dim-blocked-tasks nil)
     	(add-to-list 'word-list "-dim" t))
-    (if (eq org-agenda-todo-ignore-scheduled 'all)
+    (if (eq org-agenda-todo-ignore-scheduled 'future)
     	(add-to-list 'word-list "-future" t))
     (let ((header-formatted (zp/org-agenda-format-header-align header))
 	  (word-list-formatted (zp/org-agenda-format-word-list word-list)))
@@ -1958,7 +1958,9 @@ important agenda settings after them."
     	(add-to-list 'word-list "+#↓" t))
     (if (eq org-agenda-dim-blocked-tasks nil)
     	(add-to-list 'word-list "-dim" t))
-    (if (eq org-agenda-todo-ignore-scheduled 'past)
+    (if (eq org-agenda-todo-ignore-scheduled 'future)
+    	(add-to-list 'word-list "-future" t))
+    (if (eq org-agenda-todo-ignore-scheduled nil)
     	(add-to-list 'word-list "+future" t))
     (let ((header-formatted (zp/org-agenda-format-header-align header))
 	  (word-list-formatted (zp/org-agenda-format-word-list word-list)))
@@ -2016,7 +2018,7 @@ agenda settings after them."
 		'(user-defined-down priority-down category-keep))
 	       ;; (org-agenda-skip-function 'zp/skip-non-tasks-and-scheduled))))
 	       (org-agenda-skip-function 'bh/skip-non-tasks)
-	       (org-agenda-todo-ignore-scheduled 'future)
+	       (org-agenda-todo-ignore-scheduled 'all)
 	       )))
 
 (defun zp/org-agenda-block-projects-stuck (&optional file)
@@ -2316,12 +2318,12 @@ agenda settings after them."
 (defun zp/toggle-org-agenda-todo-ignore-future-scheduled ()
   "Toggle the range of days for deadline to show up on the agenda."
   (interactive)
-  (cond ((eq org-agenda-todo-ignore-scheduled 'all)
-	 (setq org-agenda-todo-ignore-scheduled 'past)
+  (cond ((eq org-agenda-todo-ignore-scheduled 'future)
+	 (setq org-agenda-todo-ignore-scheduled nil)
 	 (org-agenda-redo)
 	 (message "Scheduled: All (Today + Future)"))
-	((eq org-agenda-todo-ignore-scheduled 'past)
-	 (setq org-agenda-todo-ignore-scheduled 'all)
+	((eq org-agenda-todo-ignore-scheduled nil)
+	 (setq org-agenda-todo-ignore-scheduled 'future)
 	 (org-agenda-redo)
 	 (message "Scheduled: Only Today"))))
 
