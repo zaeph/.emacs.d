@@ -2107,9 +2107,12 @@ agenda settings after them."
 
 
 (setq org-agenda-custom-commands
-      `(("n" "Agenda"
-	 (,(zp/org-agenda-block-agenda "Agenda" org-agenda-files)
-	  ,(zp/org-agenda-block-projects)
+      `(("N" "Agenda"
+	 (,(zp/org-agenda-block-agenda "Agenda" org-agenda-files))
+	 ((org-agenda-files zp/org-agenda-files-main)))
+
+	("n" "Task List"
+	 (,(zp/org-agenda-block-projects)
 	  ,(zp/org-agenda-block-projects-stuck)
 	  ,(zp/org-agenda-block-scheduled)
 	  ,(zp/org-agenda-block-tasks))
