@@ -4658,6 +4658,19 @@ windows."
 ;; ================ FACES =================
 ;; ========================================
 
+;;; Truncate long buffer names
+;; (require 'nadvice)
+;; (defun my-truncate-buffer-name (buf-name)
+;;   (let ((len (length buf-name)))
+;;     (cond ((> len 20)
+;;            (concat (substring buf-name 0 19)
+;;                    "…"))
+;;           (t buf-name))))
+;; (advice-add 'powerline-buffer-id :filter-return 'my-truncate-buffer-name)
+
+(defvar zp/powerline-text-height nil
+  "Height of the text to be displayed in the modeline.")
+
 (defun zp/pdf-view-midnight-mode-theme ()
   (setq pdf-view-midnight-colors
 	`(,(face-attribute 'default :foreground) .
