@@ -3981,6 +3981,7 @@ along with effort estimates and total time."
 			   (org-duration-from-minutes clocked-time)
 			   org-clock-heading)))))
     (error "Not currently clocking a task.")))
+    (error "Not currently clocking any task.")))
 
 
 
