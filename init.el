@@ -2978,16 +2978,135 @@ on init and them removes itself."
 ;; ============== ORG-NOTER ===============
 ;; ========================================
 
-(load "/home/zaeph/.emacs.d/lisp/org-noter-patched.el")
+;; (load "/home/zaeph/.emacs.d/lisp/org-noter-patched.el")
+(load "/home/zaeph/.emacs.d/pkg/org-noter/org-noter.el")
 (require 'org-noter)
 (setq org-noter-hide-other t
       org-noter-auto-save-last-location t)
 
-(add-hook 'org-noter-notes-mode-hook 'visual-line-mode)
+(add-hook #'org-noter-notes-mode-hook #'visual-line-mode)
 
-;;; Fix for visual-line-mode in org-noter
+;;; Fix for hiding truncation
 (defun org-noter--set-notes-scroll (window &rest ignored)
   nil)
+
+;; Fix for visual-line-mode with PDF files
+(defun org-noter--note-after-tipping-point (point note-property view)
+  nil)
+
+;; -----------------------------------------------------------------------------
+;;; Fix for truncation indicators in the margins
+(el-patch-feature org-noter)
+(with-eval-after-load 'org-noter
+  (el-patch-defun org-noter--create-session (ast document-property-value notes-file-path)
+		  (let* ((raw-value-not-empty (> (length (org-element-property :raw-value ast)) 0))
+			 (display-name (if raw-value-not-empty
+					   (org-element-property :raw-value ast)
+					 (file-name-nondirectory document-property-value)))
+			 (frame-name (format "Emacs Org-noter - %s" display-name))
+
+			 (document (find-file-noselect document-property-value))
+			 (document-path (expand-file-name document-property-value))
+			 (document-major-mode (buffer-local-value 'major-mode document))
+			 (document-buffer-name
+			  (generate-new-buffer-name (concat (unless raw-value-not-empty "Org-noter: ") display-name)))
+			 (document-buffer
+			  (if (eq document-major-mode 'nov-mode)
+			      document
+			    (make-indirect-buffer document document-buffer-name t)))
+
+			 (notes-buffer
+			  (make-indirect-buffer
+			   (or (buffer-base-buffer) (current-buffer))
+			   (generate-new-buffer-name (concat "Notes of " display-name)) t))
+
+			 (session
+			  (make-org-noter--session
+			   :id (org-noter--get-new-id)
+			   :display-name display-name
+			   :frame
+			   (if (or org-noter-always-create-frame
+				   (catch 'has-session
+				     (dolist (test-session org-noter--sessions)
+				       (when (eq (org-noter--session-frame test-session) (selected-frame))
+					 (throw 'has-session t)))))
+			       (make-frame `((name . ,frame-name) (fullscreen . maximized)))
+			     (set-frame-parameter nil 'name frame-name)
+			     (selected-frame))
+			   :doc-mode document-major-mode
+			   :property-text document-property-value
+			   :notes-file-path notes-file-path
+			   :doc-buffer document-buffer
+			   :notes-buffer notes-buffer
+			   :level (org-element-property :level ast)
+			   :window-behavior (org-noter--property-or-default notes-window-behavior)
+			   :window-location (org-noter--property-or-default notes-window-location)
+			   :doc-split-fraction (org-noter--property-or-default doc-split-fraction)
+			   :auto-save-last-location (org-noter--property-or-default auto-save-last-location)
+			   :hide-other (org-noter--property-or-default hide-other)
+			   :closest-tipping-point (org-noter--property-or-default closest-tipping-point)
+			   :modified-tick -1))
+
+			 (target-location org-noter--start-location-override)
+			 (starting-point (point)))
+
+		    (add-hook 'delete-frame-functions 'org-noter--handle-delete-frame)
+		    (push session org-noter--sessions)
+
+		    (with-current-buffer document-buffer
+		      (cond
+		       ;; NOTE(nox): PDF Tools
+		       ((eq document-major-mode 'pdf-view-mode)
+			(setq buffer-file-name document-path)
+			(pdf-view-mode)
+			(add-hook 'pdf-view-after-change-page-hook 'org-noter--doc-location-change-handler nil t))
+
+		       ;; NOTE(nox): DocView
+		       ((eq document-major-mode 'doc-view-mode)
+			(setq buffer-file-name document-path)
+			(doc-view-mode)
+			(advice-add 'doc-view-goto-page :after 'org-noter--location-change-advice))
+
+		       ;; NOTE(nox): Nov.el
+		       ((eq document-major-mode 'nov-mode)
+			(rename-buffer document-buffer-name)
+			(advice-add 'nov-render-document :after 'org-noter--nov-scroll-handler)
+			(add-hook 'window-scroll-functions 'org-noter--nov-scroll-handler nil t))
+
+		       (t (error "This document handler is not supported :/")))
+
+		      (org-noter-doc-mode 1)
+		      (setq org-noter--session session)
+		      (add-hook 'kill-buffer-hook 'org-noter--handle-kill-buffer nil t))
+
+		    (with-current-buffer notes-buffer
+		      (org-noter-notes-mode 1)
+		      ;; NOTE(nox): This is needed because a session created in an indirect buffer would use the point of
+		      ;; the base buffer (as this buffer is indirect to the base!)
+		      (goto-char starting-point)
+		      (setq buffer-file-name notes-file-path
+			    org-noter--session session
+			    (el-patch-remove fringe-indicator-alist '((truncation . nil)))
+			    ;; fringe-indicator-alist '((truncation . nil))
+			    )
+		      (add-hook 'kill-buffer-hook 'org-noter--handle-kill-buffer nil t)
+		      (add-hook 'window-scroll-functions 'org-noter--set-notes-scroll nil t)
+		      (org-noter--set-text-properties (org-noter--parse-root (vector notes-buffer document-property-value))
+						      (org-noter--session-id session))
+		      (unless target-location
+			(setq target-location (org-noter--location-property (org-noter--get-containing-heading t)))))
+
+		    (org-noter--setup-windows session)
+
+		    ;; NOTE(nox): This timer is for preventing reflowing too soon.
+		    (run-with-idle-timer
+		     0.05 nil
+		     (lambda ()
+		       (with-current-buffer document-buffer
+			 (let ((org-noter--inhibit-location-change-handler t))
+			   (when target-location (org-noter--doc-goto-location target-location)))
+			 (org-noter--doc-location-change-handler)))))))
+;; -----------------------------------------------------------------------------
 
 (define-key org-noter-doc-mode-map (kbd "j") 'pdf-view-next-line-or-next-page)
 (define-key org-noter-doc-mode-map (kbd "k") 'pdf-view-previous-line-or-previous-page)
