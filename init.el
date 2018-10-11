@@ -3960,7 +3960,8 @@ along with effort estimates and total time."
   (interactive)
   (if (org-clocking-p)
       (let ((header "Current clock")
-	    (clocked-time (org-clock-get-clocked-time)))
+	    (clocked-time (org-clock-get-clocked-time))
+	    (org-clock-heading-formatted (replace-regexp-in-string "%" "%%"org-clock-heading)))
 	(if org-clock-effort
 	    (let* ((effort-in-minutes (org-duration-to-minutes org-clock-effort))
 		   (work-done-str
@@ -3974,13 +3975,12 @@ along with effort estimates and total time."
 	      (message (concat
 			header ": "
 			(format (propertize "[%s/%s] (%s)" 'face 'org-meta-line)
-				work-done-str effort-str org-clock-heading))))
+				work-done-str effort-str org-clock-heading-formatted))))
 	  (message (concat
 		    header ": "
 		    (format (propertize "[%s] (%s)" 'face 'org-meta-line)
 			   (org-duration-from-minutes clocked-time)
-			   org-clock-heading)))))
-    (error "Not currently clocking a task.")))
+			   org-clock-heading-formatted)))))
     (error "Not currently clocking any task.")))
 
 
