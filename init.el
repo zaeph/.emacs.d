@@ -3835,6 +3835,34 @@ i.e. change right window to bottom, or change bottom window to right."
   (interactive)
   (message (concat "Current buffer: " (replace-regexp-in-string "%" "%%" (buffer-name)))))
 
+(defun zp/echo-clock-string ()
+  "Echo the tasks being currently clocked in the minibuffer,
+along with effort estimates and total time."
+  (interactive)
+  (if (org-clocking-p)
+      (let ((header "Current clock")
+	    (clocked-time (org-clock-get-clocked-time)))
+	(if org-clock-effort
+	    (let* ((effort-in-minutes (org-duration-to-minutes org-clock-effort))
+		   (work-done-str
+		    (propertize (org-duration-from-minutes clocked-time)
+				'face
+				(if (and org-clock-task-overrun
+					 (not org-clock-task-overrun-text))
+				    'org-mode-line-clock-overrun
+				  'org-meta-line)))
+		   (effort-str (org-duration-from-minutes effort-in-minutes)))
+	      (message (concat
+			header ": "
+			(format (propertize "[%s/%s] (%s)" 'face 'org-meta-line)
+				work-done-str effort-str org-clock-heading))))
+	  (message (concat
+		    header ": "
+		    (format (propertize "[%s] (%s)" 'face 'org-meta-line)
+			   (org-duration-from-minutes clocked-time)
+			   org-clock-heading)))))
+    (error "Not currently clocking a task.")))
+
 
 
 ;; Tag skip
@@ -4497,6 +4525,7 @@ Version 2017-08-25"
 (global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
 (global-set-key (kbd "C-c T") 'zp/switch-theme)
 (global-set-key (kbd "H-.") 'zp/echo-buffer-name)
+(global-set-key (kbd "H-/") 'zp/echo-clock-string)
 (global-set-key (kbd "H-y") 'helm-bibtex-with-local-bibliography)
 (global-set-key (kbd "H-M-y") 'helm-bibtex-select-bib)
 (global-set-key (kbd "C-x F") 'zp/unfill-document)
