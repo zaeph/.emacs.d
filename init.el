@@ -1908,7 +1908,7 @@ return `nil'."
       (if (not (eq word-list nil))
 	  (setq word-list-formatted (concat " " "(" word-list-formatted ")")))
       (concat
-       "\n" header-formatted word-list-formatted "\n"))))
+       header-formatted word-list-formatted "\n"))))
 
 (defun zp/org-agenda-format-header-block (header)
   "Format header blocks in org-agenda."
