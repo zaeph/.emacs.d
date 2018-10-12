@@ -2966,7 +2966,7 @@ on init and them removes itself."
 ;; ========================================
 
 ;; (load "/home/zaeph/.emacs.d/lisp/org-noter-patched.el")
-(load "/home/zaeph/.emacs.d/pkg/org-noter/org-noter.el")
+;; (load "/home/zaeph/.emacs.d/pkg/org-noter/org-noter.el")
 (require 'org-noter)
 (setq org-noter-hide-other t
       org-noter-auto-save-last-location t)
