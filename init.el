@@ -3896,11 +3896,50 @@ i.e. change right window to bottom, or change bottom window to right."
 
 
 
-(defun zp/switch-to-agenda ()
-  (interactive)
-  (if (string-match ".*Org Agenda.*" (buffer-name))
-      (mode-line-other-buffer)
-    (switch-to-buffer "*Org Agenda(n)*")))
+;; (defun zp/switch-to-agenda ()
+;;   (interactive)
+;;   (if (string-match ".*Org Agenda.*" (buffer-name))
+;;       (mode-line-other-buffer)
+;;     (switch-to-buffer "*Org Agenda(n)*")))
+
+(defun zp/create-agenda-view (arg)
+  (interactive "P")
+  (if (get-buffer "*Org Agenda(n)*")
+      (switch-to-buffer "*Org Agenda(n)*")
+    (org-agenda arg "n"))
+  (delete-other-windows)
+  (split-window-right)
+  (if (get-buffer "*Org Agenda(N)*")
+      (switch-to-buffer "*Org Agenda(N)*")
+    (org-agenda arg "N"))
+  (other-window 1)
+  (balance-windows))
+
+(defun zp/switch-to-agenda (arg)
+  (interactive "P")
+  (let* ((current-config (current-window-configuration))
+	 (current-frame (window-configuration-frame current-config)))
+
+    (cond ((and
+	    (frame-parameter current-frame 'zp/org-agenda-session-p)
+	    (not arg))
+	   (set-frame-parameter current-frame 'zp/org-agenda-window-config current-config)
+	   (set-window-configuration
+	    (frame-parameter current-frame 'zp/org-agenda-window-config-before))
+	   (set-frame-parameter current-frame 'zp/org-agenda-session-p nil))
+
+	  (t
+	   (set-frame-parameter
+	    current-frame
+	    'zp/org-agenda-window-config-before current-config)
+	   (if (or arg
+		   (not (frame-parameter current-frame 'zp/org-agenda-window-config)))
+	       (zp/create-agenda-view arg)
+	     (set-window-configuration
+	      (frame-parameter current-frame 'zp/org-agenda-window-config)))
+	   (set-frame-parameter current-frame 'zp/org-agenda-session-p t)))))
+
+
 
 (defun zp/switch-to-chronos (arg)
   (interactive "P")
