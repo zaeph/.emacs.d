@@ -3915,28 +3915,46 @@ i.e. change right window to bottom, or change bottom window to right."
   (balance-windows))
 
 (defun zp/switch-to-agenda (arg)
+  "Toggles a custom org-agenda context, or creates it if it doesn’t
+  exist.
+
+The layout of the org-agenda context is stored as a frame
+parameter, which implies that each frame can have its own
+independent org-agenda context.
+
+With a ‘C-u’ prefix argument, forces the re-creation of the
+org-agenda context."
+
   (interactive "P")
   (let* ((current-config (current-window-configuration))
 	 (current-frame (window-configuration-frame current-config)))
 
     (cond ((and
-	    (frame-parameter current-frame 'zp/org-agenda-session-p)
+	    (frame-parameter current-frame
+			     'zp/org-agenda-session-p)
 	    (not arg))
-	   (set-frame-parameter current-frame 'zp/org-agenda-window-config current-config)
+	   (set-frame-parameter current-frame
+				'zp/org-agenda-window-config
+				current-config)
 	   (set-window-configuration
-	    (frame-parameter current-frame 'zp/org-agenda-window-config-before))
-	   (set-frame-parameter current-frame 'zp/org-agenda-session-p nil))
+	    (frame-parameter current-frame
+			     'zp/org-agenda-window-config-before))
+	   (set-frame-parameter current-frame
+				'zp/org-agenda-session-p nil))
 
 	  (t
-	   (set-frame-parameter
-	    current-frame
-	    'zp/org-agenda-window-config-before current-config)
+	   (set-frame-parameter current-frame
+				'zp/org-agenda-window-config-before
+				current-config)
 	   (if (or arg
-		   (not (frame-parameter current-frame 'zp/org-agenda-window-config)))
+		   (not (frame-parameter current-frame
+					 'zp/org-agenda-window-config)))
 	       (zp/create-agenda-view arg)
 	     (set-window-configuration
-	      (frame-parameter current-frame 'zp/org-agenda-window-config)))
-	   (set-frame-parameter current-frame 'zp/org-agenda-session-p t)))))
+	      (frame-parameter current-frame
+			       'zp/org-agenda-window-config)))
+	   (set-frame-parameter current-frame
+				'zp/org-agenda-session-p t)))))
 
 
 
