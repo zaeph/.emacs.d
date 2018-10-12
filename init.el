@@ -2771,7 +2771,6 @@ KEYANDHEADLINE should be a list of cons cells of the form (\"key\" . \"headline\
   ("q" nil "cancel"))
 
 (global-set-key (kbd "C-c C-w") 'zp/hydra-org-refile/body)
-(global-set-key (kbd "C-c C-x C-j") 'org-clock-goto)
 (define-key org-capture-mode-map (kbd "C-c C-w") 'zp/hydra-org-refile/body)
 (define-key org-mode-map (kbd "C-c C-w") 'zp/hydra-org-refile/body)
 (define-key org-agenda-mode-map (kbd "C-c C-w") 'zp/hydra-org-refile/body)
@@ -4685,6 +4684,12 @@ Version 2017-08-25"
 (global-set-key (kbd "H-M-l") 'mu4e-compose-new)
 ;; (global-set-key (kbd "H-m") 'zp/switch-to-magit)
 (global-set-key (kbd "H-m") 'magit-status)
+
+;; Clocking commands
+(global-set-key (kbd "C-c C-x C-j") 'org-clock-goto)
+(global-set-key (kbd "C-c C-x C-i") 'org-clock-in)
+(global-set-key (kbd "C-c C-x C-o") 'org-clock-out)
+(global-set-key (kbd "C-c C-x C-z") 'org-resolve-clocks)
 
 ;; Movements
 (global-set-key (kbd "H-o") 'zp/switch-to-agenda)
