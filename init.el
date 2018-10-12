@@ -265,18 +265,6 @@ that date.  Leave point on the first amount."
 ;; Anki-Editor
 ;; (require 'anki-editor)
 
-;; Diminish
-;; Allow minor modes to not have modeline display
-(require 'diminish)
-(diminish 'whitespace-mode)
-(diminish 'helm-mode)
-(diminish 'auto-revert-mode)
-(diminish 'anzu-mode)
-(diminish 'yas-minor-mode)
-(diminish 'which-key-mode)
-(diminish 'volatile-highlights-mode)
-(diminish 'undo-tree-mode)
-
 ;; el-patch
 (require 'el-patch)
 
@@ -5362,6 +5350,19 @@ windows."
 ;; expand-region causes weird flicker with repeated tasks if it's at the top
 (require 'expand-region)
 (require 'multiple-cursors)
+
+;; Diminish
+;; Allow minor modes to not have modeline display
+(require 'diminish)
+
+(diminish 'helm-mode)
+(diminish 'auto-revert-mode)
+(diminish 'anzu-mode)
+(diminish 'yas-minor-mode)
+(diminish 'which-key-mode)
+(diminish 'volatile-highlights-mode)
+(diminish 'undo-tree-mode)
+(diminish 'whitespace-mode)
 
 
 
