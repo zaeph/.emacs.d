@@ -1411,7 +1411,7 @@ return `nil'."
 
 
 ;; (setq org-columns-default-format "%TODO(State) %Effort(Effort){:} %CLOCKSUM %70ITEM(Task)")
-(setq org-columns-default-format "%70ITEM(Task) %TODO(State) %Effort(Effort){:} %CLOCKSUM")
+(setq org-columns-default-format "%55ITEM(Task) %TODO(State) %Effort(Effort){:} %CLOCKSUM")
 
 ;; Global values for properties
 (setq org-global-properties (quote (("Effort_ALL" . "0:05 0:10 0:15 0:30 0:45 1:00 1:30 2:00 2:30 3:00 3:30 4:00 4:30 5:00 5:30 6:00 0:00")
