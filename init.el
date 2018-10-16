@@ -3181,8 +3181,17 @@ on init and them removes itself."
 
 ;; Update PDF buffers after successful LaTeX runs
 
+;; Smart quotes
+(setq org-export-default-language "en-gb"
+      org-export-with-smart-quotes t)
+(add-to-list 'org-export-smart-quotes-alist
+             '("en-gb"
+               (primary-opening   :utf-8 "‘" :html "&lsquo;" :latex "\\enquote{"  :texinfo "`")
+               (primary-closing   :utf-8 "’" :html "&rsquo;" :latex "}"           :texinfo "'")
+               (secondary-opening :utf-8 "“" :html "&ldquo;" :latex "\\enquote*{" :texinfo "``")
+               (secondary-closing :utf-8 "”" :html "&rdquo;" :latex "}"           :texinfo "''")
+               (apostrophe        :utf-8 "’" :html "&rsquo;" :latex "'")))
 
-(setq org-export-default-language "en-gb")
 ;; Loaded on file-basis now
 ;; (add-to-list 'org-latex-packages-alist '("frenchb,british" "babel" t))
 (setq org-latex-default-packages-alist '(("" "graphicx" t)
