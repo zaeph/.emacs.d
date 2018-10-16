@@ -3429,7 +3429,7 @@ on init and them removes itself."
 				    ("file" "Path to file")
 				    ("url" "URL to reference"))
 
-      helm-bibtex-additional-search-fields '(keywords tags library))
+      helm-bibtex-additional-search-fields '(subtitle booksubtitle keywords tags library))
 
 ;; Define which citation function to use on a buffer basis
 (setq bibtex-completion-format-citation-functions
