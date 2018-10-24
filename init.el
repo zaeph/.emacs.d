@@ -2934,7 +2934,7 @@ on init and them removes itself."
 				   (message "No timer")
 				 (helm-chronos--parse-string-and-add-timer helm-pattern)))))))
 
-(setq helm-chronos-recent-timers-limit 10
+(setq helm-chronos-recent-timers-limit 100
       helm-chronos-standard-timers
       '(
 	"Green Tea		3/Green Tea: Remove tea bag"
