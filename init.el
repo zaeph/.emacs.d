@@ -2774,6 +2774,8 @@ KEYANDHEADLINE should be a list of cons cells of the form (\"key\" . \"headline\
 			    "/home/zaeph/org/media.org.gpg"
 			    (("i" . "Inbox")
 			     ("t" . "Tasks")
+			     ("b" . "Books")
+			     ("f" . "Films")
 			     ("c" . "Calendar")))
 
 (zp/make-hydra-org-refile zp/hydra-org-refile-file-university
