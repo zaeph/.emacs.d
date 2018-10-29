@@ -99,6 +99,9 @@
 (when (= emacs-major-version 26)
   (setq x-wait-for-event-timeout nil))
 
+;; Auth sources
+(setq auth-sources '("~/.authinfo.gpg" "~/.netrc"))
+
 
 
 ;; ========================================
