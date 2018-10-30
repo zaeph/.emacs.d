@@ -4029,8 +4029,8 @@ org-agenda context."
   (if (string-match "*chronos*" (buffer-name))
       (mode-line-other-buffer)
     (if (or (eq (get-buffer "*chronos*") nil) (not (eq arg nil)))
-	;; (message "There are no timer running.")
-	(call-interactively 'helm-chronos-add-timer)
+	(if (yes-or-no-p "There are no timer running. Would you like to create one?")
+	    (call-interactively 'helm-chronos-add-timer))
       (switch-to-buffer "*chronos*"))))
 
 ;; (defun zp/switch-to-magit (arg)
