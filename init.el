@@ -2978,6 +2978,12 @@ on init and them removes itself."
 ;; Hook
 (defun chronos-mode-config ()
   "Modify keymaps used by `org-mode'."
+  (local-set-key (kbd "U") (lambda ()
+			     (interactive)
+			     (zp/chronos-edit-quick "-0:00:05" "5 s")))
+  (local-set-key (kbd "I") (lambda ()
+			     (interactive)
+			     (zp/chronos-edit-quick "+0:00:05" "5 s")))
   (local-set-key (kbd "u") (lambda ()
 			     (interactive)
 			     (zp/chronos-edit-quick "-0:00:15" "15 s")))
@@ -2996,6 +3002,12 @@ on init and them removes itself."
   (local-set-key (kbd "K") (lambda ()
 			     (interactive)
 			     (zp/chronos-edit-quick "+0:05:00" "5 min")))
+  (local-set-key (kbd "m") (lambda ()
+			     (interactive)
+			     (zp/chronos-edit-quick "-0:10:00" "10 min")))
+  (local-set-key (kbd ",") (lambda ()
+			     (interactive)
+			     (zp/chronos-edit-quick "+0:10:00" "10 min")))
   (local-set-key (kbd "a") 'helm-chronos-add-timer))
 (setq chronos-mode-hook 'chronos-mode-config)
 
