@@ -1665,6 +1665,7 @@ return `nil'."
 
       zp/org-agenda-files-journals-alist
       '(("j j" . "/home/zaeph/org/journal.org.gpg")
+	("j a" . "/home/zaeph/org/projects/awakening/journal.org.gpg")
       	("j w" . "/home/zaeph/org/projects/writing/journal.org.gpg")
       	("j u" . "/home/zaeph/org/projects/university/journal.org.gpg")
       	("j r" . "/home/zaeph/org/projects/university/research/journal.org.gpg")
@@ -1674,7 +1675,9 @@ return `nil'."
       (mapcar 'cdr zp/org-agenda-files-journals-alist)
 
       zp/org-agenda-files-projects-alist
-      '(("p w" . "/home/zaeph/org/projects/writing/writing.org.gpg")
+      '(;; Awakening
+	("p a" . "/home/zaeph/org/projects/awakening/awakening.org.gpg")
+	("p w" . "/home/zaeph/org/projects/writing/writing.org.gpg")
       	;; ("p t" . "/home/zaeph/org/projects/tavocat/tavocat.org.gpg")
       	;; ("p k". "/home/zaeph/org/projects/kendeskiñ/kendeskiñ.org.gpg")
       	;; University
@@ -2581,6 +2584,8 @@ Based on `org-agenda-set-property'."
 
 	("j" "Journal")
 	("jj" "Journal" entry (file "/home/zaeph/org/journal.org.gpg")
+	 "* %^{Title|Entry}\n%T\n\n%?" :empty-lines 1)
+	("ja" "Awakening" entry (file "/home/zaeph/org/projects/awakening/journal.org.gpg")
 	 "* %^{Title|Entry}\n%T\n\n%?" :empty-lines 1)
 	("jw" "Writing" entry (file "/home/zaeph/org/projects/writing/journal.org.gpg")
 	 "* %^{Title|Entry} %^g\n%T\n\n%?" :empty-lines 1)
