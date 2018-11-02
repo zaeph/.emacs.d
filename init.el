@@ -1675,9 +1675,7 @@ return `nil'."
       (mapcar 'cdr zp/org-agenda-files-journals-alist)
 
       zp/org-agenda-files-projects-alist
-      '(;; Awakening
-	("p a" . "/home/zaeph/org/projects/awakening/awakening.org.gpg")
-	("p w" . "/home/zaeph/org/projects/writing/writing.org.gpg")
+      '(("p w" . "/home/zaeph/org/projects/writing/writing.org.gpg")
       	;; ("p t" . "/home/zaeph/org/projects/tavocat/tavocat.org.gpg")
       	;; ("p k". "/home/zaeph/org/projects/kendeskiñ/kendeskiñ.org.gpg")
       	;; University
@@ -1706,9 +1704,13 @@ return `nil'."
       zp/org-agenda-files-music
       (mapcar 'cdr zp/org-agenda-files-music-alist)
 
+      zp/org-agenda-files-awakening-alist
+      '(("p a" . "/home/zaeph/org/projects/awakening/awakening.org.gpg"))
+      zp/org-agenda-files-awakening
+      (mapcar 'cdr zp/org-agenda-files-awakening-alist)
+
       zp/org-agenda-files-sports-alist
-      '(
-      	("p s" . "/home/zaeph/org/sports/swimming/swimming.org.gpg")
+      '(("p s" . "/home/zaeph/org/sports/swimming/swimming.org.gpg")
       	;; ("p R" . "/home/zaeph/org/sports/running/running.org.gpg")
       	)
       zp/org-agenda-files-sports
@@ -1875,6 +1877,7 @@ return `nil'."
   (setq zp/org-agenda-files-main (append zp/org-agenda-files-life
 					 zp/org-agenda-files-projects
 					 zp/org-agenda-files-music
+					 zp/org-agenda-files-awakening
 					 zp/org-agenda-files-sports))
 
   (setq org-agenda-files (append zp/org-agenda-files-main
