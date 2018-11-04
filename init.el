@@ -4751,6 +4751,7 @@ Version 2017-08-25"
     (other-window -1))
 
 ;; Toggle modes
+(global-set-key (kbd "C-c \\") 'picture-mode)
 (global-set-key (kbd "C-c u") 'visual-line-mode)
 (global-set-key (kbd "C-c y") 'zp/variable-pitch-mode)
 (global-set-key (kbd "C-c s") 'scroll-bar-mode)
