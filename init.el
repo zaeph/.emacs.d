@@ -965,7 +965,7 @@ ALL-MAILS are the all the unread emails"
 ;;       smtpmail-smtp-server "smtp.gmail.com"
 ;;       smtpmail-smtp-service 587)
 
-;; Now I set a list of 
+;; Now I set a list of
 ;; (defvar my-mu4e-account-alist
 ;;   '(("personal"
 ;;      (mu4e-sent-folder "/personal/sent")
@@ -3399,7 +3399,7 @@ on init and them removes itself."
 (add-hook 'org-clock-in-prepare-hook 'zp/play-sound-clock-in)
 
 (defun zp/play-sound-clock-out ()
-  (start-process-shell-command "play-sound" nil "notification-sound-org clock-out"))  
+  (start-process-shell-command "play-sound" nil "notification-sound-org clock-out"))
 (add-hook 'org-clock-out-hook 'zp/play-sound-clock-out)
 
 ;;; Extra sounds
@@ -5455,7 +5455,7 @@ windows."
 ;; 	 (set-face-attribute 'default nil
 ;; 			     :family "PragmataPro Mono" :height 100 :weight 'normal)
 ;; 	 (set-face-attribute 'bold nil
-;; 	 		     :weight 'normal)	 
+;; 	 		     :weight 'normal)
 ;; 	 (set-face-attribute 'bold nil
 ;; 	 		     :weight 'bold)
 ;; 	 (setq-default line-spacing nil)
