@@ -1632,8 +1632,8 @@ return `nil'."
 (global-set-key (kbd "C-c p") 'projects-map)
 (define-prefix-command 'classes-map)
 (global-set-key (kbd "C-c p c") 'classes-map)
-(define-prefix-command 'activism-map)
-(global-set-key (kbd "C-c p a") 'activism-map)
+;; (define-prefix-command 'activism-map)
+;; (global-set-key (kbd "C-c p a") 'activism-map)
 
 (defun zp/set-shortcuts (alist)
   (mapc
@@ -1739,6 +1739,7 @@ return `nil'."
   (zp/set-shortcuts zp/research-files-alist)
   (zp/set-shortcuts zp/org-agenda-files-journals-alist)
   (zp/set-shortcuts zp/org-agenda-files-projects-alist)
+  (zp/set-shortcuts zp/org-agenda-files-awakening-alist)
   (zp/set-shortcuts zp/org-agenda-files-music-alist)
   (zp/set-shortcuts zp/org-agenda-files-sports-alist)
   (zp/set-shortcuts zp/org-agenda-files-tools-alist)
