@@ -2617,8 +2617,8 @@ Based on `org-agenda-set-property'."
 (setq zp/swimming-workout-default "
 |-----+---------------------------|
 | 500 | warmup crawl/fly          |
-| 500 | pull tech                 |
-| 500 | 50 crawl fast / 100 crawl |
+| 500 | 100 pull / 100 pull fast  |
+| 500 | 50 fly / 100 crawl        |
 | 500 | 100 pull / 100 pull fast  |
 | 500 | 50 fly / 100 crawl        |
 | 500 | 100 pull / 100 pull fast  |
