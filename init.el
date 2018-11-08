@@ -38,8 +38,7 @@
 (add-hook 'window-setup-hook 'on-after-init)
 
 ;; Force horizontal splitting
-(setq split-width-threshold 9999)	;Default: 160
-(setq split-width-threshold 160)
+;; (setq split-width-threshold 9999)	;Default: 160
 
 ;; Configure ‘display-buffer’ behaviour for some special buffers
 (setq display-buffer-alist
