@@ -40,6 +40,9 @@
 ;; Force horizontal splitting
 ;; (setq split-width-threshold 9999)	;Default: 160
 
+;; Suppress warning when opening large files
+(setq large-file-warning-threshold nil)
+
 ;; Configure ‘display-buffer’ behaviour for some special buffers
 (setq display-buffer-alist
       `(;; Messages, errors, processes, Calendar in the bottom side window
