@@ -1666,6 +1666,8 @@ return `nil'."
       	;; ("p c" . "/home/zaeph/org/projects/university/research/sty/zaeph.sty")
       	;; ("p C" . "/home/zaeph/org/projects/university/research/sty/presentation.sty")
 	)
+      zp/misc-files-alist
+      '(("p d" . "/tmp/asus/home/zaeph/Downloads/Sharing/dl.org"))
 
       zp/org-agenda-files-journals-alist
       '(("j j" . "/home/zaeph/org/journal.org.gpg")
@@ -1740,6 +1742,7 @@ return `nil'."
   (zp/set-shortcuts zp/shortcut-files-alist)
   (zp/set-shortcuts zp/ledger-files-alist)
   (zp/set-shortcuts zp/research-files-alist)
+  (zp/set-shortcuts zp/misc-files-alist)
   (zp/set-shortcuts zp/org-agenda-files-journals-alist)
   (zp/set-shortcuts zp/org-agenda-files-projects-alist)
   (zp/set-shortcuts zp/org-agenda-files-awakening-alist)
