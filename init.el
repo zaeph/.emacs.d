@@ -5280,17 +5280,107 @@ windows."
 	((string= zp/emacs-theme "light")
          (zp/dark-theme))))
 
-;; Switch based on time-of-day
-(defvar zp/night-begin 20
-  "Hour when the night begins (24).")
-(defvar zp/night-end 6
-  "Hour when the night ends (24).")
+;; -----------------------------------------------------------------------------
+;; Switch theme based on time-of-day
+(defun zp/parse-time-string-ampm (time)
+  "Parse time string with AM/PM indicator."
+  (save-match-data
+    (and (string-match
+	  "\\(.*\\):\\(.*\\)\\(.m\\)"
+	  time)
+	 (let* ((ampm (match-string 3 time))
+		(h (if (string= ampm "pm")
+		       (number-to-string
+			(+ (string-to-number (match-string 1 time)) 12))
+		     (match-string 1 time)))
+		(m (match-string 2 time)))
+	   (parse-time-string (concat h ":" m))))))
 
-(if (or
-     (>= (nth 2 (decode-time)) zp/night-begin)
-     (< (nth 2 (decode-time)) zp/night-end))
-    (zp/dark-theme)
-  (zp/light-theme))
+(defun zp/encode-time-hms (time)
+  "Encode time, but only provide HMS data.
+Particularly useful for comparing different times-of-day with
+‘timer-less-p’."
+  (apply 'encode-time
+	 (append (subseq time 0 3)
+		 '(1 1 1970 nil 0))))
+
+(defvar zp/sunrise-string-sunset-string nil
+  "Formatted string containing the sunrise and sunset times for
+  the current day. Requires org.")
+
+(defvar zp/sunrise-string nil
+  "Sunrise time of the current day formatted in ‘HH:MM’ with the
+  AM/PM indication.")
+
+(defvar zp/sunset-string nil
+  "Sunset time of the current day formatted in ‘HH:MM’ with the
+  AM/PM indication.")
+
+(defun zp/is-daytime-p ()
+  "Return t if it’s currently daytime.
+Return nil otherwise."
+  (let* ((inhibit-message t)
+	 (sunrise-sunset (sunrise-sunset)))
+    (save-match-data
+      (and (string-match
+	    "Sunrise \\(.*?\\) (.*?), sunset \\(.*?\\) (.*?)"
+	    (sunrise-sunset))
+	   (setq zp/sunrise-string (match-string 1 sunrise-sunset)
+	   	 zp/sunset-string  (match-string 2 sunrise-sunset)))))
+
+  (let* ((now			(current-time))
+	 (tomorrow		(time-add now (* 24 60 60)))
+	 (now-data		(decode-time now))
+	 (tomorrow-data		(decode-time tomorrow))
+	 (sunrise-hms-data	(zp/parse-time-string-ampm zp/sunrise-string))
+	 (sunset-hms-data	(zp/parse-time-string-ampm zp/sunset-string))
+	 (now-hms		(zp/encode-time-hms now-data))
+	 (sunrise-hms		(zp/encode-time-hms sunrise-hms-data))
+	 (sunset-hms		(zp/encode-time-hms sunset-hms-data)))
+    (setq zp/sunset	(apply 'encode-time
+			       (append
+				(subseq sunset-hms-data 0 3)
+				(subseq now-data 3)))
+	  zp/sunrise	(apply 'encode-time
+			       (append
+				(subseq sunrise-hms-data 0 3)
+				(subseq tomorrow-data 3))))
+    (if (and (time-less-p sunrise-hms now-hms)
+	     (time-less-p now-hms sunset-hms))
+	(setq zp/is-daytime t)
+      (setq zp/is-daytime nil))))
+
+(defvar zp/sunrise-sunset-timer nil
+  "Timer before next sunrise-sunset event.")
+
+(defun zp/sunrise-sunset-set-timer ()
+  "Create timer for next sunrise-sunset event."
+  (if zp/sunrise-sunset-timer
+      (progn
+	(cancel-timer zp/sunrise-sunset-timer)
+	(setq zp/sunrise-sunset-timer nil)))
+  (if zp/is-daytime
+      (setq zp/sunrise-sunset-timer
+	    (run-at-time zp/sunset nil #'zp/switch-theme-auto))
+    (setq zp/sunrise-sunset-timer
+	  (run-at-time zp/sunrise nil #'zp/switch-theme-auto))))
+
+(defun zp/switch-theme-auto ()
+  (let* ((is-daytime-p (zp/is-daytime-p)))
+    (cond ((and
+	    is-daytime-p
+	    (or (string= zp/emacs-theme "dark")
+		(not zp/emacs-theme))
+	    (zp/light-theme)))
+	  ((and
+	    (not is-daytime-p)
+	    (or (string= zp/emacs-theme "light")
+		(not zp/emacs-theme))
+	    (zp/dark-theme))))
+    (zp/sunrise-sunset-set-timer)))
+
+(zp/switch-theme-auto)
+;; -----------------------------------------------------------------------------
 
 
 
