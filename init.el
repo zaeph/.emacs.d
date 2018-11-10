@@ -5142,7 +5142,8 @@ windows."
 	       zp/variable-pitch-mode-toggle 1))))
 
 
-(defvar zp/emacs-theme)
+(defvar zp/emacs-theme nil
+  "Theme currently used by Emacs.")
 
 (defun zp/dark-theme ()
   (interactive)
