@@ -5375,33 +5375,18 @@ See ‘zp/time-of-day-sections’ and ‘zp/daytimep’ for more info."
 	  ((and (not daytime)
 		(or (string= zp/emacs-theme "light")
 		    (not zp/emacs-theme)))
-	   (zp/dark-theme)))))
+	   (zp/dark-theme))
+	  (t
+	   (message "Nothing to do.")))))
 
 (defun zp/switch-theme-auto ()
   "Automatically switch theme based on time-of-day.
 See ‘zp/time-of-day-sections’ and ‘zp/daytimep’ for more info."
+  (zp/parse-time-of-day-sections)
   (zp/switch-theme-dwim)
   (zp/set-daytime-timer))
 
-
-
 ;;; Timers
-
-(defvar zp/parse-time-of-day-sections-timer nil
-  "Timer for parsing time-of-day sections at night.")
-
-(defun zp/set-parse-time-of-day-sections-timer ()
-  "Set timer for parsing time-of-day sections at night.
-See ‘zp/time-of-day-sections’ and ‘zp/parse-time-of-day-sections’
-for more info."
-  (let* ((tod-sections	zp/time-of-day-sections-parsed)
-	 (night		(nth 4 tod-sections)))
-    (unless (not zp/parse-time-of-day-sections-timer)
-	  (cancel-timer zp/parse-time-of-day-sections-timer)
-	  (setq zp/parse-time-of-day-sections-timer nil))
-    (setq zp/parse-time-of-day-sections-timer
-	  (run-at-time night nil #'zp/set-parse-time-of-day-sections-timer))))
-
 (defvar zp/daytime-timer nil
   "Timer before next daytime event.")
 
