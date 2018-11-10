@@ -5344,10 +5344,7 @@ appended to the list to handle next-day timers."
 					after-tomorrow-decoded)
 		 t)))
 
-
-
 ;;; Status
-
 (defun zp/daytimep ()
   "Return t if it’s day-time.
 Based on ‘zp/time-of-day-sections’. A time-of-day is considered
@@ -5402,14 +5399,11 @@ See ‘zp/time-of-day-sections’"
 	  (cancel-timer zp/daytime-timer)
 	  (setq zp/daytime-timer nil))
     (setq zp/daytime-timer
-	  (cond ((time-less-p now day)
-		 (run-at-time day nil #'zp/switch-theme-auto))
-		((time-less-p now evening)
-		 (run-at-time evening nil #'zp/switch-theme-auto))
-		((time-less-p now next-day)
-		 (run-at-time next-day nil #'zp/switch-theme-auto))))))
-
-
+	  (run-at-time (cl-some (lambda (x)
+				  (when (time-less-p now x)
+                                    x))
+				(list day evening next-day))
+                       nil #'zp/switch-theme-auto))))
 
 ;; Init
 (setq zp/time-of-day-sections '("06:00" "08:00" "16:00" "20:00" "00:00"))
