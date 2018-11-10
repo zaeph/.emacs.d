@@ -5282,103 +5282,161 @@ windows."
 
 ;; -----------------------------------------------------------------------------
 ;; Switch theme based on time-of-day
-(defun zp/parse-time-string-ampm (time)
-  "Parse time string with AM/PM indicator."
-  (save-match-data
-    (and (string-match
-	  "\\(.*\\):\\(.*\\)\\(.m\\)"
-	  time)
-	 (let* ((ampm (match-string 3 time))
-		(h (if (string= ampm "pm")
-		       (number-to-string
-			(+ (string-to-number (match-string 1 time)) 12))
-		     (match-string 1 time)))
-		(m (match-string 2 time)))
-	   (parse-time-string (concat h ":" m))))))
+(defvar zp/time-of-day-sections nil
+  "List of time specifications STR to split the day into sections.
+The sections are inferred based on when they begin, and the time
+specifications are processed in order:
+- Pre-day
+- Day
+- Pre-evening
+- Evening
+- Night")
 
-(defun zp/encode-time-hms (time)
-  "Encode time, but only provide HMS data.
-Particularly useful for comparing different times-of-day with
-‘timer-less-p’."
-  (apply 'encode-time
-	 (append (subseq time 0 3)
-		 '(1 1 1970 nil 0))))
 
-(defvar zp/sunrise-string-sunset-string nil
-  "Formatted string containing the sunrise and sunset times for
-  the current day. Requires org.")
 
-(defvar zp/sunrise-string nil
-  "Sunrise time of the current day formatted in ‘HH:MM’ with the
-  AM/PM indication.")
+;;; Parsing time-of-day data
 
-(defvar zp/sunset-string nil
-  "Sunset time of the current day formatted in ‘HH:MM’ with the
-  AM/PM indication.")
+(defun zp/encode-time-of-day (TIME-STR CURRENT-DAY-DECODED NEXT-DAY-DECODED)
+  "Encode time specification from STR to (HIGH LOW)."
+  (let* ((time-string TIME-STR)
+	 (current-day-decoded CURRENT-DAY-DECODED)
+	 (next-day-decoded NEXT-DAY-DECODED))
+    ;; The output of ‘parse-time-string’ cannot be encoded by
+    ;; ‘encode-time’ because of missing data, so we’re using either
+    ;; today’s to fill in the blanks. If ‘time-string’ is between 12am
+    ;; and 1am, use tomorrow’s data instead.
+    (apply 'encode-time
+	   (append
+	    (subseq (parse-time-string time-string) 0 3)
+	    (subseq (if (string-match "^0*:" time-string)
+			next-day-decoded
+		      current-day-decoded)
+		    3)))))
 
-(defun zp/is-daytime-p ()
-  "Return t if it’s currently daytime.
-Return nil otherwise."
-  (let* ((inhibit-message t)
-	 (sunrise-sunset (sunrise-sunset)))
-    (save-match-data
-      (and (string-match
-	    "Sunrise \\(.*?\\) (.*?), sunset \\(.*?\\) (.*?)"
-	    (sunrise-sunset))
-	   (setq zp/sunrise-string (match-string 1 sunrise-sunset)
-	   	 zp/sunset-string  (match-string 2 sunrise-sunset)))))
+(defvar zp/time-of-day-sections-parsed nil
+  "List of time specifications (HIGH LOW) to split the day into sections.
+Parsed by zp/parse-time-of-day-sections.
+See ‘zp/time-of-day-sections’ for more info.")
 
-  (let* ((now			(current-time))
-	 (tomorrow		(time-add now (* 24 60 60)))
-	 (now-data		(decode-time now))
-	 (tomorrow-data		(decode-time tomorrow))
-	 (sunrise-hms-data	(zp/parse-time-string-ampm zp/sunrise-string))
-	 (sunset-hms-data	(zp/parse-time-string-ampm zp/sunset-string))
-	 (now-hms		(zp/encode-time-hms now-data))
-	 (sunrise-hms		(zp/encode-time-hms sunrise-hms-data))
-	 (sunset-hms		(zp/encode-time-hms sunset-hms-data)))
-    (setq zp/sunset	(apply 'encode-time
-			       (append
-				(subseq sunset-hms-data 0 3)
-				(subseq now-data 3)))
-	  zp/sunrise	(apply 'encode-time
-			       (append
-				(subseq sunrise-hms-data 0 3)
-				(subseq tomorrow-data 3))))
-    (if (and (time-less-p sunrise-hms now-hms)
-	     (time-less-p now-hms sunset-hms))
-	(setq zp/is-daytime t)
-      (setq zp/is-daytime nil))))
+(defun zp/parse-time-of-day-sections ()
+  "Parse time-of-day sections in ‘zp/time-of-day-sections’.
+Each string is replaced by the corresponding list of
+integers (HIGH LOW) used by Emacs to compute time. See
+‘current-time’ for more information on (HIGH LOW).
 
-(defvar zp/sunrise-sunset-timer nil
-  "Timer before next sunrise-sunset event.")
+A new time specification ‘next-day’ is computed from ‘day’ and
+appended to the list to handle next-day timers."
+  (let* ((now				(current-time))
+	 (now-decoded			(decode-time now))
+	 (tomorrow			(time-add now (* 24 60 60)))
+	 (tomorrow-decoded		(decode-time tomorrow))
+	 (after-tomorrow		(time-add tomorrow (* 24 60 60)))
+	 (after-tomorrow-decoded	(decode-time after-tomorrow))
+	 (tod-sections			zp/time-of-day-sections)
+	 (tod-day			(nth 1 tod-sections)))
+    (setq zp/time-of-day-sections-parsed
+	  (mapcar (lambda (arg)
+		    (zp/encode-time-of-day arg
+					   now-decoded
+					   tomorrow-decoded))
+		  tod-sections))
+    ;; Add next-day to list
+    (add-to-list 'zp/time-of-day-sections-parsed
+    		 (zp/encode-time-of-day tod-day
+					tomorrow-decoded
+					after-tomorrow-decoded)
+		 t)))
 
-(defun zp/sunrise-sunset-set-timer ()
-  "Create timer for next sunrise-sunset event."
-  (if zp/sunrise-sunset-timer
-      (progn
-	(cancel-timer zp/sunrise-sunset-timer)
-	(setq zp/sunrise-sunset-timer nil)))
-  (if zp/is-daytime
-      (setq zp/sunrise-sunset-timer
-	    (run-at-time zp/sunset nil #'zp/switch-theme-auto))
-    (setq zp/sunrise-sunset-timer
-	  (run-at-time zp/sunrise nil #'zp/switch-theme-auto))))
+
+
+;;; Status
+
+(defun zp/daytimep ()
+  "Return t if it’s day-time.
+Based on ‘zp/time-of-day-sections’. A time-of-day is considered
+as day-time if it’s between pre-day and pre-evening.
+See ‘zp/time-of-day-sections’ for more info."
+  (let* ((tod-sections zp/time-of-day-sections-parsed)
+	 (now		(current-time))
+	 (pre-day	(nth 0 tod-sections))
+	 (pre-evening	(nth 2 tod-sections)))
+    (if (and (time-less-p pre-day now)
+	     (time-less-p now pre-evening))
+	t
+      nil)))
+
+
+
+;;; Switching themes
+
+(defun zp/switch-theme-dwim ()
+  "Switch theme based on time-of-day.
+See ‘zp/time-of-day-sections’ and ‘zp/daytimep’ for more info."
+  (interactive)
+  (let* ((daytime (zp/daytimep)))
+    (cond ((and daytime
+		(or (string= zp/emacs-theme "dark")
+		    (not zp/emacs-theme)))
+	   (zp/light-theme))
+	  ((and (not daytime)
+		(or (string= zp/emacs-theme "light")
+		    (not zp/emacs-theme)))
+	   (zp/dark-theme)))))
 
 (defun zp/switch-theme-auto ()
-  (let* ((is-daytime-p (zp/is-daytime-p)))
-    (cond ((and
-	    is-daytime-p
-	    (or (string= zp/emacs-theme "dark")
-		(not zp/emacs-theme))
-	    (zp/light-theme)))
-	  ((and
-	    (not is-daytime-p)
-	    (or (string= zp/emacs-theme "light")
-		(not zp/emacs-theme))
-	    (zp/dark-theme))))
-    (zp/sunrise-sunset-set-timer)))
+  "Automatically switch theme based on time-of-day.
+See ‘zp/time-of-day-sections’ and ‘zp/daytimep’ for more info."
+  (zp/switch-theme-dwim)
+  (zp/set-daytime-timer))
 
+
+
+;;; Timers
+
+(defvar zp/parse-time-of-day-sections-timer nil
+  "Timer for parsing time-of-day sections at night.")
+
+(defun zp/set-parse-time-of-day-sections-timer ()
+  "Set timer for parsing time-of-day sections at night.
+See ‘zp/time-of-day-sections’ and ‘zp/parse-time-of-day-sections’
+for more info."
+  (let* ((tod-sections	zp/time-of-day-sections-parsed)
+	 (night		(nth 4 tod-sections)))
+    (unless (not zp/parse-time-of-day-sections-timer)
+	  (cancel-timer zp/parse-time-of-day-sections-timer)
+	  (setq zp/parse-time-of-day-sections-timer nil))
+    (setq zp/parse-time-of-day-sections-timer
+	  (run-at-time night nil #'zp/set-parse-time-of-day-sections-timer))))
+
+(defvar zp/daytime-timer nil
+  "Timer before next daytime event.")
+
+(defun zp/set-daytime-timer ()
+  "Set timer for switching theme at ‘day’ and ‘evening’.
+See ‘zp/time-of-day-sections’"
+  (let* ((tod-sections	zp/time-of-day-sections-parsed)
+	 (now		(current-time))
+	 (day		(nth 1 tod-sections))
+	 (evening	(nth 3 tod-sections))
+	 (next-day	(nth 5 tod-sections)))
+    (unless (not zp/daytime-timer)
+	  (cancel-timer zp/daytime-timer)
+	  (setq zp/daytime-timer nil))
+    (setq zp/daytime-timer
+	  (cond ((time-less-p now day)
+		 (run-at-time day nil #'zp/switch-theme-auto))
+		((time-less-p now evening)
+		 (run-at-time evening nil #'zp/switch-theme-auto))
+		((time-less-p now next-day)
+		 (run-at-time next-day nil #'zp/switch-theme-auto))))))
+
+
+
+;; Init
+
+(setq zp/time-of-day-sections '("06:00" "08:00" "16:00" "20:00" "00:00"))
+(zp/parse-time-of-day-sections)
+(zp/set-parse-time-of-day-sections-timer)
 (zp/switch-theme-auto)
 ;; -----------------------------------------------------------------------------
 
