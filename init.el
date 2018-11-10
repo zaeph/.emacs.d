@@ -5292,10 +5292,7 @@ specifications are processed in order:
 - Evening
 - Night")
 
-
-
 ;;; Parsing time-of-day data
-
 (defun zp/encode-time-of-day (TIME-STR CURRENT-DAY-DECODED NEXT-DAY-DECODED)
   "Encode time specification from STR to (HIGH LOW)."
   (let* ((time-string TIME-STR)
@@ -5365,10 +5362,7 @@ See ‘zp/time-of-day-sections’ for more info."
 	t
       nil)))
 
-
-
 ;;; Switching themes
-
 (defun zp/switch-theme-dwim ()
   "Switch theme based on time-of-day.
 See ‘zp/time-of-day-sections’ and ‘zp/daytimep’ for more info."
@@ -5433,10 +5427,7 @@ See ‘zp/time-of-day-sections’"
 
 
 ;; Init
-
 (setq zp/time-of-day-sections '("06:00" "08:00" "16:00" "20:00" "00:00"))
-(zp/parse-time-of-day-sections)
-(zp/set-parse-time-of-day-sections-timer)
 (zp/switch-theme-auto)
 ;; -----------------------------------------------------------------------------
 
