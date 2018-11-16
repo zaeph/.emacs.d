@@ -2570,6 +2570,36 @@ Based on `org-agenda-set-property'."
 ;; ========================================
 
 (setq org-default-notes-file "/home/zaeph/org/life.org.gpg")
+
+;;; Helper functions
+
+(defun zp/format-link-letterboxd (&optional TITLE)
+  (let* ((title (if TITLE
+		    TITLE
+		  (read-string "Title: ")))
+	 (domain "https://letterboxd.com/film/")
+	 (search "https://letterboxd.com/search/films/")
+	 (title-no-symbols (replace-regexp-in-string " *:\\|,\\|’" "" title))
+	 (title-formatted (replace-regexp-in-string
+			   " " "-" (downcase title-no-symbols)))
+	 (url-guessed (concat domain title-formatted))
+	 (url (progn (browse-url-xdg-open url-guessed)
+		     (if (y-or-n-p "Did the link work?")
+			 url-guessed
+		       (browse-url-xdg-open (concat search title))
+		       (read-string "Letterboxd URL: "))))
+	 (url-description "Letterboxd"))
+    ;; (org-insert-link nil url title)))
+    (concat "[[" url "][" url-description "]]")))
+
+(defun zp/org-capture-set-media-link-letterboxd ()
+  (let* ((title (read-string "Title: "))
+	 (title-formatted (zp/format-link-letterboxd title)))
+    (org-set-property "MEDIA_LINK" title-formatted)
+    title))
+
+
+
 (setq org-capture-templates
       '(("n" "Note" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
 	 "* %?")
@@ -2601,6 +2631,9 @@ Based on `org-agenda-set-property'."
 	 "* TODO Phone-call with %^{Interlocutor|Nicolas|Mum}%?\n:STATES:\n- State \"TODO\"       from              %U\n:END:" :clock-in t)
 	("m" "Meeting" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
 	 "* TODO Meeting with %^{Meeting with}%?" :clock-in t)
+
+	("F" "Film recommendation" entry (file+olp "/home/zaeph/org/media.org.gpg" "Films" "List")
+	 "* %(zp/org-capture-set-media-link-letterboxd)%?%^{MEDIA_DIRECTOR}p%^{MEDIA_YEAR}p%^{MEDIA_DURATION}p")
 
 	("j" "Journal")
 	("jj" "Journal" entry (file "/home/zaeph/org/journal.org.gpg")
