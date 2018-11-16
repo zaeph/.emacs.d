@@ -314,6 +314,8 @@ that date.  Leave point on the first amount."
 (add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode))
 (add-to-list 'auto-mode-alist '("\\.mobi\\'" . nov-mode))
 
+(add-hook 'nov-mode-hook #'olivetti-mode)
+
 ;; Anki-Editor
 ;; (require 'anki-editor)
 
