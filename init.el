@@ -2616,9 +2616,10 @@ Based on `org-agenda-set-property'."
 	 "* %^{Title|Entry}\n%T\n\n%?" :empty-lines 1)
 	("js" "Swimming" entry (file "/home/zaeph/org/sports/swimming/journal.org.gpg")
 	 "* %^{Title|Entry}\n%T\n\n%?" :empty-lines 1)
+
       	;; ("s" "Swimming workout" entry (file+olp "/home/zaeph/org/life.org.gpg" "Sports" "Swimming" "Records" "Current")
 	("a" "Meditation session" entry (file+headline "/home/zaeph/org/projects/awakening/awakening.org.gpg" "Sessions")
-	 "* DONE Session%^{SESSION_DURATION}p\n%t\n%?")
+	 "* DONE Session%^{SESSION_DURATION}p\n%t" :immediate-finish t)
 	("s" "Swimming workout" entry (file+weektree+prompt "/home/zaeph/org/sports/swimming/swimming.org.gpg")
 	 "* DONE Training%^{SWIM_DISTANCE}p%^{SWIM_DURATION}p\n%t%(print zp/swimming-workout-default)")))
 
