@@ -224,7 +224,7 @@ that date.  Leave point on the first amount."
 (add-to-list 'auto-mode-alist '("\\prompt_.*_setup\\'" . shell-script-mode))
 
 ;; fish
-(add-to-list 'auto-mode-alist '("\\.*.fish\\'" . shell-script-mode))
+(add-to-list 'auto-mode-alist '("\\.*.fish\\'" . fish-mode))
 
 ;; fcitx
 ;; Disabled because of slow-downs in combination with visual-line-mode
