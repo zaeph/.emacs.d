@@ -5103,8 +5103,7 @@ windows."
   (set-face-attribute 'variable-pitch nil
   		      :font "Bliss Pro Prog" :height 1.3)
   ;; (set-face-attribute 'variable-pitch nil
-  ;; 		      :font "ITC American Typewriter Std" :height 1.2)
-  		      ;; :family "Equity" :height 1.2 :slant 'normal)
+  ;; 		      :family "Equity" :height 1.6 :slant 'normal)
   (set-face-attribute 'fixed-pitch-serif nil
 		      :font "Iosevka Prog Slab" :height 1.0)
 
