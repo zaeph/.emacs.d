@@ -48,7 +48,7 @@
       `(;; Messages, errors, processes, Calendar in the bottom side window
         (,(rx bos (or "*Apropos"		; Apropos buffers
                       "*Man"			; Man buffers
-                      "*Help"			; Help buffers
+                      ;; "*Help"			; Help buffers
                       "*Warnings*"		; Emacs warnings
                       "*Process List*"		; Processes
                       "*Proced"			; Proced processes list
