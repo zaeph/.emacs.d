@@ -5457,6 +5457,29 @@ See ‘zp/time-of-day-sections’"
 
 
 
+(defun zp/terminator-dwim (&optional ARGUMENTS)
+  "Run terminator in the CWD.
+
+Trim unnecessary TRAMP information from the path (e.g. /sudo:…),
+and forward it to terminator. ARGUMENTS can be any argument
+accepted by terminator (e.g. ‘-x command’).
+
+See ‘/home/zaeph/.bin/terminator-dwim’ for more info."
+  (interactive)
+  (let ((client-buffer (current-buffer))
+	(arg ARGUMENTS))
+    (with-current-buffer (window-buffer (selected-window))
+      (let* ((path-emacs default-directory)
+	     (tramp-regex "/sudo:root@.*?:")
+	     (path (replace-regexp-in-string
+		    tramp-regex "" path-emacs)))
+	(set-buffer client-buffer)
+	(shell-command
+	 (concat "terminator --working-dir \"" path "\""
+		 (if arg (concat " " arg))))))))
+
+
+
 ;; DON'T GO THERE
 ;; YOU'LL LOSE YOUR SANITY
 
