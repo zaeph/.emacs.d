@@ -1320,9 +1320,16 @@ return `nil'."
 ;; =============== ORG-MODE ===============
 ;; ========================================
 
+;; Load org-habit
 (require 'org-habit)
 (add-to-list 'org-modules 'org-habit)
 ;; (setq org-habit-show-habits-only-for-today nil)
+
+;; Load org-collector
+(require 'org-collector)
+(add-to-list 'org-modules 'org-collector)
+
+
 
 ;; Experimental way to handle narrowing from org-agenda for my journal
 ;; Couldn't figure out how to limit it to a particular custom-agenda
