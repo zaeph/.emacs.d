@@ -5417,10 +5417,10 @@ See ‘zp/time-of-day-sections’ for more info."
       nil)))
 
 ;;; Switching themes
-(defun zp/switch-theme-dwim ()
+(defun zp/switch-theme-dwim (&optional print-message)
   "Switch theme based on time-of-day.
 See ‘zp/time-of-day-sections’ and ‘zp/daytimep’ for more info."
-  (interactive)
+  (interactive "p")
   (let* ((daytime (zp/daytimep)))
     (cond ((and daytime
 		(or (string= zp/emacs-theme "dark")
@@ -5431,7 +5431,8 @@ See ‘zp/time-of-day-sections’ and ‘zp/daytimep’ for more info."
 		    (not zp/emacs-theme)))
 	   (zp/dark-theme))
 	  (t
-	   (message "Nothing to do.")))))
+	   (when print-message
+	     (message "Nothing to do."))))))
 
 (defun zp/switch-theme-auto ()
   "Automatically switch theme based on time-of-day.
