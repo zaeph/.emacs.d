@@ -4884,7 +4884,7 @@ Version 2017-08-25"
 (global-set-key (kbd "C-x 4 1") 'zp/kill-other-buffer-and-window)
 
 ;; ace-window & avy-jump
-(global-set-key (kbd "H-M-n") 'ace-window)
+(global-set-key (kbd "H-b") 'ace-window)
 ;; (global-set-key (kbd "H-n") 'avy-goto-word-1)
 (global-set-key (kbd "H-n") 'avy-goto-char-timer)
 ;; (global-set-key (kbd "H-m") 'avy-goto-char)
