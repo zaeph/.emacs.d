@@ -2672,6 +2672,10 @@ Based on `org-agenda-set-property'."
 	("js" "Swimming" entry (file "/home/zaeph/org/sports/swimming/journal.org.gpg")
 	 "* %^{Title|Entry}\n%T\n\n%?" :empty-lines 1)
 
+	;; Daily Record of Dysfunctional Thoughts
+	("D" "Record Dysfunctional Thoughts" entry (file "/home/zaeph/org/projects/psychotherapy/journal.org.gpg")
+	 "* Record of Dysfunctional Thoughts\n%T\n** Situation\n%?\n** Emotions\n** Thoughts")
+
       	;; ("s" "Swimming workout" entry (file+olp "/home/zaeph/org/life.org.gpg" "Sports" "Swimming" "Records" "Current")
 	("a" "Meditation session" entry (file+headline "/home/zaeph/org/projects/awakening/awakening.org.gpg" "Sessions")
 	 "* DONE Session%^{SESSION_DURATION}p\n%t" :immediate-finish t)
@@ -2827,7 +2831,8 @@ With a `C-u` ARG, just jump to the headline."
       (setq hydra-deactivate t))))
 
 (defun zp/org-capture-refile-internal (file headline &optional arg)
-  "Copied from ‘org-capture-refile’ since it doesn't allow passing arguments. This does."
+  "Copied from ‘org-capture-refile’ since it doesn't allow
+passing arguments. This does."
   (unless (eq (org-capture-get :type 'local) 'entry)
     (error
      "Refiling from a capture buffer makes only sense for `entry'-type templates"))
@@ -4806,6 +4811,260 @@ Version 2017-08-25"
 
 
 ;; ========================================
+;; ============ PSYCHOTHERAPY =============
+;; ========================================
+
+;;; helm-smbp
+;;; Helm function for Setting Multiple Boolean Properties (SMBP)
+
+;; Helper function
+(defun zp/make-property-alist (name list)
+  "Create property ALIST from LIST designated by SYMBOL.
+
+SYMBOL points to a LIST.
+
+Every ELEM in LIST is formatted as follows:
+- Add the name portion of SYMBOL as a prefix
+- Make the string uppercase
+- Replace spaces and hyphens with underscores"
+  (let* ((alist))
+
+    (dolist (var list)
+      (add-to-list
+       'alist
+       ;; Replace spaces and hyphens with underscores
+       (cons var (replace-regexp-in-string "-\\| " "_" (upcase (concat name "-" var))))
+       t))
+    alist))
+
+
+;; Helm definition
+(defun zp/helm-smbp-set-property (alist candidate)
+  (save-excursion
+    (goto-char (org-end-of-subtree))
+    (newline)
+    (insert "- " (car (rassoc candidate alist))))
+  (org-set-property candidate "t")
+  (org-cycle nil)
+  (org-cycle nil))
+
+(defun zp/helm-smbp-set-properties (alist)
+  (save-excursion
+    (org-mark-subtree)
+    (forward-line)
+    (delete-region (region-beginning) (region-end)))
+  (mapc (lambda (arg)
+	  (zp/helm-smbp-set-property alist arg))
+	(helm-marked-candidates)))
+
+(defun zp/helm-smbp (symbol)
+  (interactive)
+  (let* ((symbol-name (symbol-name symbol))
+	 (list (symbol-value symbol))
+
+	 ;; Separate prefix and name in symbol-name
+	 (prefix-pos	(string-match-p "/" symbol-name))
+	 (prefix	(if prefix-pos
+			    (substring symbol-name 0 prefix-pos)))
+	 (name	(if prefix-pos
+		    (substring symbol-name (1+ prefix-pos))
+		  symbol-name))
+
+	 (property-alist (zp/make-property-alist name list))
+
+	 (set-property (lambda (arg)
+			(zp/helm-smbp-set-properties `,property-alist))))
+    (helm :name "Testing"
+	  :sources `((name . ,(concat "*helm " name "*"))
+    	  	     (candidates . ,property-alist)
+    	  	     (action . (("Set property" . ,set-property)))))))
+
+
+
+;; Init :Variables
+(defvar zp/emotions nil
+  "List of emotions.")
+
+(defvar zp/emotions-alist nil
+  "Alist of emotions where the car of each item is the human
+  name, and the corresponding cdr is the name of the property.")
+
+(defvar zp/cognitive-distortions nil
+  "List of cognitive distortions.")
+
+(defvar zp/cognitive-distortions-alist nil
+  "Alist of cognitive distortions where the car of each item is
+  the human name, and the corresponding cdr is the name of the
+  property.")
+
+
+
+;; Psychotherapy-mode
+
+;; Helper functions
+(defun zp/psychotherapy-thoughts-has-response-p ()
+  "Return t if the current thought has a response."
+  (let ((subtree-end (save-excursion (org-end-of-subtree t))))
+    (save-excursion
+      (unless (org-at-heading-p)
+	(org-previous-visible-heading 1))
+      (re-search-forward "^\\*+ Cognitive Distortions$" subtree-end t))))
+
+(defun zp/psychotherapy-thoughts-clear-response ()
+  (save-excursion
+    (org-mark-subtree)
+    (forward-line)
+    (delete-region (region-beginning) (region-end))))
+
+(defun zp/psychotherapy-thoughts-create-response (arg)
+  (let ((org-insert-heading-respect-content t)
+	(has-response-p (zp/psychotherapy-thoughts-has-response-p)))
+    (if has-response-p
+	(zp/psychotherapy-thoughts-clear-response))
+    (org-insert-heading)
+    (org-demote)
+    (insert "Cognitive Distortions")
+
+    (zp/helm-smbp 'zp/cognitive-distortions)
+
+    (org-insert-heading)
+    (insert "Rational Response")
+    (end-of-line)
+    (open-line 1)
+    (next-line)
+    ))
+
+(setq zp/psychotherapy-headings-alist
+      '(("Situation" .
+	 (lambda (arg)
+	   (if (save-excursion (org-get-next-sibling))
+	       (progn
+		 (org-forward-heading-same-level 1)
+		 (zp/psychotherapy-dwim nil)))))
+
+	("Emotions" .
+	 (lambda (arg)
+	   (let ((org-insert-heading-respect-content t))
+	     (zp/helm-smbp 'zp/emotions)
+	     (if (save-excursion
+		   (org-get-next-sibling))
+		 (org-forward-heading-same-level 1))
+	     (unless (save-excursion
+		       (and (org-get-heading "Thoughts")
+			    (org-goto-first-child)))
+	       (org-insert-heading)
+	       (org-demote)))))
+
+	("Cognitive Distortions" .
+	 (lambda (arg)
+	   (zp/helm-smbp 'zp/cognitive-distortions)
+	   (if (save-excursion (org-get-next-sibling))
+	       (org-forward-heading-same-level 1))
+	   (next-line)))
+
+	("Rational Response" .
+	 (lambda (arg)
+	   (cond ((eq arg 4)
+		  (outline-up-heading 1)
+		  (zp/psychotherapy-thoughts-create-response arg))
+		 ((save-excursion
+		    (outline-up-heading 1)
+		    (org-get-next-sibling))
+		  (outline-up-heading 1)
+		  (org-forward-heading-same-level 1)
+		  (zp/psychotherapy-dwim nil))
+		 (t
+		  (if (y-or-n-p "Finalise?")
+		      (org-capture-finalize)))))))
+
+      zp/psychotherapy-parent-headings-alist
+      '(("Thoughts"	. zp/psychotherapy-thoughts-create-response)))
+
+;; dwim-function
+(defun zp/psychotherapy-dwim (arg)
+  (interactive "p")
+  (let* ((heading (org-get-heading))
+	 (type (cdr (assoc heading zp/psychotherapy-headings-alist)))
+	 (parent (car (last (org-get-outline-path))))
+	 (parent-type (cdr (assoc parent zp/psychotherapy-parent-headings-alist))))
+    (cond (type
+	   (unless (org-at-heading-p)
+	     (org-previous-visible-heading 1))
+	   (funcall type arg))
+
+	  (parent-type
+	   (funcall parent-type arg))
+
+	  (t
+	   (if (y-or-n-p "Finalise?")
+	       (org-capture-finalize))))))
+
+
+
+;; mode definition
+(defvar zp/psychotherapy-mode-map
+  (let ((map (make-sparse-keymap)))
+	(define-key map (kbd "C-c C-c") #'zp/psychotherapy-dwim)
+	map)
+  "Keymap for ‘zp/psychotherapy-mode’.")
+
+(define-minor-mode zp/psychotherapy-mode
+  "Provide bindings for filling psychotherapy forms."
+  :lighter " Psy"
+  :keymap zp/psychotherapy-mode-map)
+
+
+
+;; Loading extra minor-modes with org-capture
+(defvar zp/org-capture-extra-minor-modes-alist nil
+  "Alist of minors modes to load with specific org-capture templates.")
+
+(setq zp/org-capture-extra-minor-modes-alist
+      '(("D" . zp/psychotherapy-mode)))
+
+;; org-capture hook
+(defun zp/org-capture-load-extra-minor-mode ()
+  "Load minor-mode based on based on key."
+  (interactive)
+  (let* ((key (plist-get org-capture-plist :key))
+	 (minor-mode (cdr (assoc key zp/org-capture-extra-minor-modes-alist))))
+    (if minor-mode
+	(funcall minor-mode))))
+
+(add-hook #'org-capture-mode-hook #'zp/org-capture-load-extra-minor-mode)
+
+
+
+;; Setting variables
+(setq zp/cognitive-distortions
+      '("All-or-nothing thinking"
+	"Over-generalisation"
+	"Mental filter"
+	"Disqualifying the positive"
+	"Mind-reading"
+	"Fortune-Teller error"
+	"Magnification or minimisation"
+	"Emotional reasoning"
+	"Should statements"
+	"Labelling and mislabelling"
+	"Personalisation")
+
+      zp/emotions
+      '("Anger"
+	"Anxiety"
+	"Boredom"
+	"Disgust"
+	"Dispirited"
+	"Fear"
+	"Guilt"
+	"Laziness"
+	"Loneliness"
+	"Sadness"
+	"Tiredness"))
+
+
+
+;; ========================================
 ;; ================ MACROS ================
 ;; ========================================
 
@@ -4984,8 +5243,10 @@ windows."
       (setq org-last-indirect-buffer nil))
   (balance-windows)
   (other-window 1)
-  (org-overview)
-  (org-cycle)
+  (unless (string-match-p "Record of Dysfunctional Thoughts" (buffer-name))
+    (org-overview)
+    (org-cycle))
+  (org-backward-heading-same-level 1)
   (widen)
   (org-reveal)
   (org-narrow-to-subtree)
