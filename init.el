@@ -4889,7 +4889,8 @@ Version 2017-08-25"
 ;; (global-set-key (kbd "H-n") 'avy-goto-word-1)
 (global-set-key (kbd "H-n") 'avy-goto-char-timer)
 ;; (global-set-key (kbd "H-m") 'avy-goto-char)
-(setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
+(setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)
+      aw-scope 'frame)
 
 ;; Usual shortcuts
 (defun zp/org-agenda-main (&optional arg)
