@@ -1613,6 +1613,7 @@ return `nil'."
 (defun org-mode-config ()
   "Modify keymaps used by `org-mode'."
   (local-set-key (kbd "C-c i") 'org-indent-mode)
+  (local-set-key (kbd "C-c C-,") 'org-priority)
   (local-set-key (kbd "C-c [") 'nil)
   (local-set-key (kbd "C-c ]") 'nil)
   (local-set-key (kbd "C-c C-.") 'org-time-stamp)
