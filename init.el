@@ -1686,6 +1686,7 @@ return `nil'."
       zp/org-agenda-files-journals-alist
       '(("j j" . "/home/zaeph/org/journal.org.gpg")
 	("j a" . "/home/zaeph/org/projects/awakening/journal.org.gpg")
+	("j p" . "/home/zaeph/org/projects/psychotherapy/journal.org.gpg")
       	("j w" . "/home/zaeph/org/projects/writing/journal.org.gpg")
       	("j u" . "/home/zaeph/org/projects/university/journal.org.gpg")
       	("j r" . "/home/zaeph/org/projects/university/research/journal.org.gpg")
@@ -1720,7 +1721,7 @@ return `nil'."
       (mapcar 'cdr zp/org-agenda-files-projects-alist)
 
       zp/org-agenda-files-music-alist
-      '(("p p" ."/home/zaeph/org/piano.org.gpg"))
+      '(("p P" ."/home/zaeph/org/piano.org.gpg"))
       zp/org-agenda-files-music
       (mapcar 'cdr zp/org-agenda-files-music-alist)
 
@@ -1728,6 +1729,11 @@ return `nil'."
       '(("p a" . "/home/zaeph/org/projects/awakening/awakening.org.gpg"))
       zp/org-agenda-files-awakening
       (mapcar 'cdr zp/org-agenda-files-awakening-alist)
+
+      zp/org-agenda-files-psychotherapy-alist
+      '(("p p" . "/home/zaeph/org/projects/psychotherapy/psychotherapy.org.gpg"))
+      zp/org-agenda-files-psychotherapy
+      (mapcar 'cdr zp/org-agenda-files-psychotherapy-alist)
 
       zp/org-agenda-files-sports-alist
       '(("p s" . "/home/zaeph/org/sports/swimming/swimming.org.gpg")
@@ -1760,6 +1766,7 @@ return `nil'."
   (zp/set-shortcuts zp/org-agenda-files-journals-alist)
   (zp/set-shortcuts zp/org-agenda-files-projects-alist)
   (zp/set-shortcuts zp/org-agenda-files-awakening-alist)
+  (zp/set-shortcuts zp/org-agenda-files-psychotherapy-alist)
   (zp/set-shortcuts zp/org-agenda-files-music-alist)
   (zp/set-shortcuts zp/org-agenda-files-sports-alist)
   (zp/set-shortcuts zp/org-agenda-files-tools-alist)
@@ -1901,6 +1908,7 @@ return `nil'."
 					 zp/org-agenda-files-projects
 					 zp/org-agenda-files-music
 					 zp/org-agenda-files-awakening
+					 zp/org-agenda-files-psychotherapy
 					 zp/org-agenda-files-sports))
 
   (setq org-agenda-files (append zp/org-agenda-files-main
@@ -2652,6 +2660,8 @@ Based on `org-agenda-set-property'."
 	 "* %^{Title|Entry}\n%T\n\n%?" :empty-lines 1)
 	("ja" "Awakening" entry (file "/home/zaeph/org/projects/awakening/journal.org.gpg")
 	 "* %^{Title|Entry}\n%T\n\n%?" :empty-lines 1)
+	("jp" "Psychotherapy" entry (file "/home/zaeph/org/projects/psychotherapy/journal.org.gpg")
+	 "* %^{Title|Entry}\n%T\n\n%?" :empty-lines 1)
 	("jw" "Writing" entry (file "/home/zaeph/org/projects/writing/journal.org.gpg")
 	 "* %^{Title|Entry} %^g\n%T\n\n%?" :empty-lines 1)
 	("jr" "Research" entry (file "/home/zaeph/org/projects/university/research/journal.org.gpg")
@@ -2870,6 +2880,12 @@ KEYANDHEADLINE should be a list of cons cells of the form (\"key\" . \"headline\
 			     ("t" . "Tasks")
 			     ("c" . "Calendar")))
 
+(zp/make-hydra-org-refile zp/hydra-org-refile-file-psychotherapy
+			    "/home/zaeph/org/projects/psychotherapy/psychotherapy.org.gpg"
+			    (("i" . "Inbox")
+			     ("t" . "Tasks")
+			     ("c" . "Calendar")))
+
 (zp/make-hydra-org-refile zp/hydra-org-refile-file-university
 			    "/home/zaeph/org/projects/university/university.org.gpg"
 			    (("i" . "Inbox")
@@ -2902,16 +2918,18 @@ KEYANDHEADLINE should be a list of cons cells of the form (\"key\" . \"headline\
 
 (defhydra zp/hydra-org-refile (:foreign-keys run)
   "Refile"
-  ("o" zp/hydra-org-refile-file-life/body	"Life" :exit t)
-  ("b" zp/hydra-org-refile-file-media/body	"Media" :exit t)
-  ("a" zp/hydra-org-refile-file-awakening/body	"Awakening" :exit t)
-  ("u" zp/hydra-org-refile-file-university/body	"University" :exit t)
-  ("r" zp/hydra-org-refile-file-research/body	"Research" :exit t)
-  ("e" zp/hydra-org-refile-file-emacs/body	"Emacs" :exit t)
-  ("l" zp/hydra-org-refile-file-arch-linux/body	"Arch Linux" :exit t)
-  ("j" org-refile-goto-last-stored "Jump to last refile" :exit t)
-  ("w" org-refile "zp/org-refile" :exit t)
-  ("q" nil "cancel"))
+  ("o" zp/hydra-org-refile-file-life/body		"Life" :exit t)
+  ("b" zp/hydra-org-refile-file-media/body		"Media" :exit t)
+  ("a" zp/hydra-org-refile-file-awakening/body		"Awakening" :exit t)
+  ("p" zp/hydra-org-refile-file-psychotherapy/body	"Psychotherapy" :exit t)
+  ("u" zp/hydra-org-refile-file-university/body		"University" :exit t)
+  ("r" zp/hydra-org-refile-file-research/body		"Research" :exit t)
+  ("e" zp/hydra-org-refile-file-emacs/body		"Emacs" :exit t)
+  ("l" zp/hydra-org-refile-file-arch-linux/body		"Arch Linux" :exit t)
+
+  ("j" org-refile-goto-last-stored	"Jump to last refile" :exit t)
+  ("w" org-refile			"zp/org-refile" :exit t)
+  ("q" nil				"cancel"))
 
 (global-set-key (kbd "C-c C-w") 'zp/hydra-org-refile/body)
 (define-key org-capture-mode-map (kbd "C-c C-w") 'zp/hydra-org-refile/body)
