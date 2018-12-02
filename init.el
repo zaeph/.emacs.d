@@ -1916,6 +1916,18 @@ return `nil'."
 
 
 
+(setq org-agenda-clock-consistency-checks '(:max-duration "10:00"
+					    :min-duration 0
+					    :max-gap "0:05"
+					    :gap-ok-around ("4:00" "13:00" "19:30")
+					    :default-face zp/org-agenda-block-info-face
+					    :gap-face nil
+					    :no-end-time-face nil
+					    :long-face nil
+					    :short-face nil))
+
+
+
 (defun zp/update-org-agenda-files ()
   (interactive)
   (setq zp/org-agenda-files-main (append zp/org-agenda-files-life
