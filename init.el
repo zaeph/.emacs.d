@@ -143,6 +143,9 @@
   (define-key lispy-mode-map (kbd "M-o") nil))
 (lispy-mode-unbind-keys)
 
+;; Change indent-function to handle plists
+(setq lisp-indent-function 'common-lisp-indent-function)
+
 ;; Evil
 (require 'evil)
 (evil-mode 0)
