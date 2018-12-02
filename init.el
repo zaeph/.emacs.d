@@ -1905,6 +1905,7 @@ return `nil'."
       org-agenda-sticky 1
       org-agenda-block-separator 126
       org-clock-report-include-clocking-task t
+      org-clock-out-remove-zero-time-clocks t
       org-agenda-exporter-settings
       '((ps-print-color-p t)
 	(ps-landscape-mode t)
