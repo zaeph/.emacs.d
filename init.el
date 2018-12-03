@@ -5126,6 +5126,16 @@ Every ELEM in LIST is formatted as follows:
     (other-window -1))
 
 ;; Toggle modes
+(define-prefix-command 'zp/toggle-map)
+(define-key ctl-x-map "t" 'zp/toggle-map)
+(define-key zp/toggle-map "c" #'column-number-mode)
+(define-key zp/toggle-map "d" #'toggle-debug-on-error)
+(define-key zp/toggle-map "e" #'toggle-debug-on-error)
+(define-key zp/toggle-map "f" #'auto-fill-mode)
+(define-key zp/toggle-map "l" #'toggle-truncate-lines)
+(define-key zp/toggle-map "q" #'toggle-debug-on-quit)
+(define-key zp/toggle-map "t" #'zp/switch-theme)
+
 (global-set-key (kbd "C-c \\") 'picture-mode)
 (global-set-key (kbd "C-c u") 'visual-line-mode)
 (global-set-key (kbd "C-c y") 'zp/variable-pitch-mode)
@@ -5193,7 +5203,7 @@ Every ELEM in LIST is formatted as follows:
 (global-set-key (kbd "M-o") 'mode-line-other-buffer)
 (global-set-key (kbd "H-j") 'other-window-reverse)
 (global-set-key (kbd "H-k") 'other-window)
-(global-set-key (kbd "C-x t") 'window-toggle-split-direction)
+;; (global-set-key (kbd "C-x t") 'window-toggle-split-direction)
 (global-set-key (kbd "C-x 4 1") 'zp/kill-other-buffer-and-window)
 
 ;; ace-window & avy-jump
