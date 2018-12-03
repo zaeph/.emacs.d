@@ -15,7 +15,9 @@
 
 ")
 
-(setq debug-on-error nil)
+;; (toggle-debug-on)
+;; (toggle-debug-on-quit)
+
 (defalias 'yes-or-no-p 'y-or-n-p)
 
 (add-to-list 'load-path "/home/zaeph/.emacs.d/lisp")
