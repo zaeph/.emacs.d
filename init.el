@@ -136,15 +136,6 @@
 ;; Start server
 (server-start)
 
-;; Lispy
-(add-hook 'emacs-lisp-mode-hook (lambda () (lispy-mode 1)))
-
-(require 'lispy)
-(defun lispy-mode-unbind-keys ()
-  "Modify keymaps used by ‘lispy-mode’."
-  (define-key lispy-mode-map (kbd "M-o") nil))
-(lispy-mode-unbind-keys)
-
 ;; Change indent-function to handle plists
 (setq lisp-indent-function 'common-lisp-indent-function)
 
@@ -353,6 +344,20 @@ that date.  Leave point on the first amount."
 (require 'free-keys)
 
 (setq free-keys-modifiers '("" "C" "M" "C-M" "H"))
+
+
+
+;; ========================================
+;; ================= LISPY ================
+;; ========================================
+
+(add-hook 'emacs-lisp-mode-hook (lambda () (lispy-mode 1)))
+
+(require 'lispy)
+(defun lispy-mode-unbind-keys ()
+  "Modify keymaps used by ‘lispy-mode’."
+  (define-key lispy-mode-map (kbd "M-o") nil))
+(lispy-mode-unbind-keys)
 
 
 
