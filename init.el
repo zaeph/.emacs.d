@@ -2685,6 +2685,9 @@ Based on `org-agenda-set-property'."
 	 "* TODO Meeting with %^{Meeting with}%?" :clock-in t)
 
 	("s" "Special")
+	("ss" "Code Snippet" entry (file "/home/zaeph/org/projects/programming/snippets.org.gpg")
+         ;; Prompt for tag and language
+         "* %?\t%^g\n#+BEGIN_SRC %^{language}\n\n#+END_SRC")
 	("sf" "Film recommendation" entry (file+olp "/home/zaeph/org/media.org.gpg" "Films" "List")
 	 "* %(zp/org-capture-set-media-link-letterboxd)%?%^{MEDIA_DIRECTOR}p%^{MEDIA_YEAR}p%^{MEDIA_DURATION}p")
        	("sw" "Swimming workout" entry (file+weektree+prompt "/home/zaeph/org/sports/swimming/swimming.org.gpg")
