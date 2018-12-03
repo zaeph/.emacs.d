@@ -2653,8 +2653,12 @@ Based on `org-agenda-set-property'."
 	 "* %?")
 	("f" "Todo" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
 	 "* TODO %?")
-	("r" "Todo + Context" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
+	("F" "Todo + Clock" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
+	 "* TODO %?\n" :clock-in t)
+	("r" "Todo with Context" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
 	 "* TODO %?\n%a")
+	("R" "Todo with Context + Clock" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
+	 "* TODO %?\n%a" :clock-in t)
 	;; ("r" "Todo + Reminder" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
 	;;  "* TODO %?\nSCHEDULED: %^T\n:PROPERTIES:\n:APPT_WARNTIME:  %^{APPT_WARNTIME|5|15|30|60}\n:END:")
 	;; ("T" "Todo (with keyword selection)" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
@@ -2680,8 +2684,11 @@ Based on `org-agenda-set-property'."
 	("m" "Meeting" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
 	 "* TODO Meeting with %^{Meeting with}%?" :clock-in t)
 
-	("F" "Film recommendation" entry (file+olp "/home/zaeph/org/media.org.gpg" "Films" "List")
+	("s" "Special")
+	("sf" "Film recommendation" entry (file+olp "/home/zaeph/org/media.org.gpg" "Films" "List")
 	 "* %(zp/org-capture-set-media-link-letterboxd)%?%^{MEDIA_DIRECTOR}p%^{MEDIA_YEAR}p%^{MEDIA_DURATION}p")
+       	("sw" "Swimming workout" entry (file+weektree+prompt "/home/zaeph/org/sports/swimming/swimming.org.gpg")
+	 "* DONE Training%^{SWIM_DISTANCE}p%^{SWIM_DURATION}p\n%t%(print zp/swimming-workout-default)")
 
 	("j" "Journal")
 	("jj" "Journal" entry (file "/home/zaeph/org/journal.org.gpg")
@@ -2704,11 +2711,8 @@ Based on `org-agenda-set-property'."
 	("D" "Record Dysfunctional Thoughts" entry (file "/home/zaeph/org/projects/psychotherapy/journal.org.gpg")
 	 "* Record of Dysfunctional Thoughts\n%T\n** Situation\n%?\n** Emotions\n** Thoughts")
 
-      	;; ("s" "Swimming workout" entry (file+olp "/home/zaeph/org/life.org.gpg" "Sports" "Swimming" "Records" "Current")
 	("a" "Meditation session" entry (file+headline "/home/zaeph/org/projects/awakening/awakening.org.gpg" "Sessions")
-	 "* DONE Session%^{SESSION_DURATION}p\n%t" :immediate-finish t)
-	("s" "Swimming workout" entry (file+weektree+prompt "/home/zaeph/org/sports/swimming/swimming.org.gpg")
-	 "* DONE Training%^{SWIM_DISTANCE}p%^{SWIM_DURATION}p\n%t%(print zp/swimming-workout-default)")))
+	 "* DONE Session%^{SESSION_DURATION}p\n%t" :immediate-finish t)))
 
 (defvar zp/swimming-workout-default nil)
 (setq zp/swimming-workout-default "
