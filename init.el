@@ -2676,9 +2676,9 @@ Based on `org-agenda-set-property'."
 
 ;;; Helper functions
 
-(defun zp/format-link-letterboxd (&optional TITLE)
-  (let* ((title (if TITLE
-		    TITLE
+(defun zp/letterboxd-format-link (&optional title)
+  (let* ((title (if title
+		    title
 		  (read-string "Title: ")))
 	 (domain "https://letterboxd.com/film/")
 	 (search "https://letterboxd.com/search/films/")
@@ -2686,20 +2686,60 @@ Based on `org-agenda-set-property'."
 	 (title-formatted (replace-regexp-in-string
 			   " " "-" (downcase title-no-symbols)))
 	 (url-guessed (concat domain title-formatted))
-	 (url (progn (browse-url-xdg-open url-guessed)
-		     (if (y-or-n-p "Did the link work?")
-			 url-guessed
-		       (browse-url-xdg-open (concat search title))
-		       (read-string "Letterboxd URL: "))))
+	 (verify (y-or-n-p "Would you like to verify the link?"))
+	 (url (if verify
+		  (progn
+		    (browse-url-xdg-open url-guessed)
+		    (if (y-or-n-p "Did the link work?")
+			url-guessed
+		      (browse-url-xdg-open (concat search title))
+		      (read-string "Letterboxd URL: ")))
+		url-guessed))
 	 (url-description "Letterboxd"))
     ;; (org-insert-link nil url title)))
     (concat "[[" url "][" url-description "]]")))
 
-(defun zp/org-capture-set-media-link-letterboxd ()
+(defun zp/letterboxd-set-link ()
   (let* ((title (read-string "Title: "))
-	 (title-formatted (zp/format-link-letterboxd title)))
+	 (title-formatted (zp/letterboxd-format-link title)))
     (org-set-property "MEDIA_LINK" title-formatted)
     title))
+
+(defun zp/convert-m-to-hm (min-str)
+  (let* ((min (string-to-number min-str))
+	 (h (/ min 60))
+	 (m (% min 60)))
+    (format "%1s:%02d" h m)))
+
+(defun zp/letterboxd-set-duration (&optional min-str)
+  "Return duration as a string formated as H:MM from MIN-STR."
+  (let* ((min-str (if min-str min-str (read-string "Duration (min): ")))
+	 (hm-str (if (string= min-str "") "???"
+		   (zp/convert-m-to-hm min-str))))
+    (org-set-property "MEDIA_DURATION" hm-str)))
+
+(defun zp/letterboxd-set-director (&optional director)
+  (let ((director (if director
+		      director
+		    (read-string "Director: "))))
+    (org-set-property "MEDIA_DIRECTOR" director)))
+
+(defun zp/letterboxd-set-year (&optional year)
+  (let ((year (if year
+		  year
+		(read-string "Year: "))))
+    (org-set-property "MEDIA_YEAR" year)))
+
+(defun zp/letterboxd-capture ()
+  (let ((title (zp/letterboxd-set-link)))
+    (zp/letterboxd-set-director)
+    (zp/letterboxd-set-year)
+    (zp/letterboxd-set-duration)
+   title))
+
+(zp/convert-m-to-hm "125")
+
+(zp/convert-m-to-hm "145")
 
 
 
@@ -2740,11 +2780,15 @@ Based on `org-agenda-set-property'."
 	 "* TODO Meeting with %^{Meeting with}%?" :clock-in t)
 
 	("s" "Special")
-	("ss" "Code Snippet" entry (file "/home/zaeph/org/projects/programming/snippets.org.gpg")
+	("ss" "Code Snippet" entry (file "/home/zaeph/org/projects/hacking/snippets.org.gpg")
          ;; Prompt for tag and language
          "* %?\t%^g\n#+BEGIN_SRC %^{language}\n\n#+END_SRC")
+	;; ("sf" "Film recommendation" entry (file+olp "/home/zaeph/org/media.org.gpg" "Films" "List")
+	;;  "* %(zp/org-capture-set-media-link-letterboxd)%?%^{MEDIA_DIRECTOR}p%^{MEDIA_YEAR}p%^{MEDIA_DURATION}p")
+	;; ("sf" "Film recommendation" entry (file+olp "/home/zaeph/org/media.org.gpg" "Films" "List")
+	;;  "* %(zp/letterboxd-set-link)%?%^{MEDIA_DIRECTOR}p%^{MEDIA_YEAR}p%(zp/letterboxd-set-duration)")
 	("sf" "Film recommendation" entry (file+olp "/home/zaeph/org/media.org.gpg" "Films" "List")
-	 "* %(zp/org-capture-set-media-link-letterboxd)%?%^{MEDIA_DIRECTOR}p%^{MEDIA_YEAR}p%^{MEDIA_DURATION}p")
+	 "* %(zp/letterboxd-capture)")
        	("sw" "Swimming workout" entry (file+weektree+prompt "/home/zaeph/org/sports/swimming/swimming.org.gpg")
 	 "* DONE Training%^{SWIM_DISTANCE}p%^{SWIM_DURATION}p\n%t%(print zp/swimming-workout-default)")
 
