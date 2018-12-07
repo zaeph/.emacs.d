@@ -5220,13 +5220,14 @@ Every ELEM in LIST is formatted as follows:
 ;; (global-set-key (kbd "C-x t") 'window-toggle-split-direction)
 (global-set-key (kbd "C-x 4 1") 'zp/kill-other-buffer-and-window)
 
-;; ace-window & avy-jump
+;; ace
 (global-set-key (kbd "H-b") 'ace-window)
 ;; (global-set-key (kbd "H-n") 'avy-goto-word-1)
 (global-set-key (kbd "H-n") 'avy-goto-char-timer)
 ;; (global-set-key (kbd "H-m") 'avy-goto-char)
 (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)
       aw-scope 'frame)
+(ace-link-setup-default)
 
 ;; Usual shortcuts
 (defun zp/org-agenda-main (&optional arg)
@@ -6135,7 +6136,7 @@ See ‘/home/zaeph/.bin/terminator-dwim’ for more info."
      ("\\.pdf\\'" . default))))
  '(package-selected-packages
    (quote
-    (counsel lispy dumb-jump lua-mode fish-mode exwm el-patch diminish circe-notifications circe ob-async nov which-key eyebrowse diff-hl recentf-ext flycheck-pos-tip helm-projectile projectile clean-aindent-mode volatile-highlights duplicate-thing org-noter magit hydra highlight mu4e-alert ox-hugo org writeroom-mode anzu flycheck spaceline helm-chronos chronos olivetti multiple-cursors expand-region ace-window auto-minor-mode ledger-mode sublimity auctex smooth-scrolling yasnippet pdf-tools htmlize helm-bibtex free-keys evil color-theme base16-theme)))
+    (ace-link ivy-hydra counsel lispy dumb-jump lua-mode fish-mode exwm el-patch diminish circe-notifications circe ob-async nov which-key eyebrowse diff-hl recentf-ext flycheck-pos-tip helm-projectile projectile clean-aindent-mode volatile-highlights duplicate-thing org-noter magit hydra highlight mu4e-alert ox-hugo org writeroom-mode anzu flycheck spaceline helm-chronos chronos olivetti multiple-cursors expand-region ace-window auto-minor-mode ledger-mode sublimity auctex smooth-scrolling yasnippet pdf-tools htmlize helm-bibtex free-keys evil color-theme base16-theme)))
  '(safe-local-variable-values
    (quote
     ((eval add-hook
