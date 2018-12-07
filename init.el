@@ -23,6 +23,8 @@
 (add-to-list 'load-path "/home/zaeph/.emacs.d/lisp")
 (add-to-list 'load-path (expand-file-name "/usr/share/emacs/site-lisp"))
 
+(setq source-directory (concat (getenv "HOME") "/.contrib/emacs/src/"))
+
 ;; ;; outline-minor-mode for viewing init.el
 ;; (add-hook 'emacs-lisp-mode-hook
 ;;           (lambda ()
