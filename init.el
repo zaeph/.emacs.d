@@ -2983,29 +2983,33 @@ passing arguments. This does."
 	 (zp/org-refile-internal file headline arg))))
     (when kill-buffer (kill-buffer base))))
 
-(defmacro zp/make-hydra-org-refile (hydraname file keyandheadline)
+(defmacro zp/make-hydra-org-refile (hydraname name file keyandheadline)
   "Make a hydra named HYDRANAME with refile targets to FILE.
 KEYANDHEADLINE should be a list of cons cells of the form (\"key\" . \"headline\")"
   `(defhydra ,hydraname (:color blue :after-exit (unless (or hydra-deactivate
 							     current-prefix-arg) ;If we're just jumping to a location, quit the hydra
 						   (zp/hydra-org-refile/body)))
-     ,file
+     ,name
      ,@(cl-loop for kv in keyandheadline
-		collect (list (car kv) (list 'zp/org-refile file (cdr kv) 'current-prefix-arg) (cdr kv)))
+     	  collect (list (car kv)
+     			(list 'zp/org-refile
+     			      file
+     			      (cdr kv)
+     			      'current-prefix-arg)
+     			(cdr kv)))
      ("q" nil "cancel")))
 
-;;;;;;;;;;
-;; Here we'll define our refile headlines
-;;;;;;;;;;
-
-(zp/make-hydra-org-refile zp/hydra-org-refile-file-life
+(progn
+  (zp/make-hydra-org-refile zp/hydra-org-refile-file-life
+			    "Life"
 			    "/home/zaeph/org/life.org.gpg"
 			    (("i" . "Inbox")
 			     ("t" . "Tasks")
 			     ("c" . "Calendar")
 			     ("m" . "Maintenance")))
 
-(zp/make-hydra-org-refile zp/hydra-org-refile-file-media
+  (zp/make-hydra-org-refile zp/hydra-org-refile-file-media
+			    "Media"
 			    "/home/zaeph/org/media.org.gpg"
 			    (("i" . "Inbox")
 			     ("t" . "Tasks")
@@ -3013,62 +3017,74 @@ KEYANDHEADLINE should be a list of cons cells of the form (\"key\" . \"headline\
 			     ("f" . "Films")
 			     ("c" . "Calendar")))
 
-(zp/make-hydra-org-refile zp/hydra-org-refile-file-awakening
+  (zp/make-hydra-org-refile zp/hydra-org-refile-file-awakening
+			    "Awakening"
 			    "/home/zaeph/org/projects/awakening/awakening.org.gpg"
 			    (("i" . "Inbox")
 			     ("t" . "Tasks")
 			     ("c" . "Calendar")))
 
-(zp/make-hydra-org-refile zp/hydra-org-refile-file-psychotherapy
+  (zp/make-hydra-org-refile zp/hydra-org-refile-file-psychotherapy
+			    "Psychotherapy"
 			    "/home/zaeph/org/projects/psychotherapy/psychotherapy.org.gpg"
 			    (("i" . "Inbox")
 			     ("t" . "Tasks")
 			     ("c" . "Calendar")))
 
-(zp/make-hydra-org-refile zp/hydra-org-refile-file-university
+  (zp/make-hydra-org-refile zp/hydra-org-refile-file-university
+			    "University"
 			    "/home/zaeph/org/projects/university/university.org.gpg"
 			    (("i" . "Inbox")
 			     ("t" . "Tasks")
 			     ("c" . "Calendar")))
 
-(zp/make-hydra-org-refile zp/hydra-org-refile-file-research
+  (zp/make-hydra-org-refile zp/hydra-org-refile-file-research
+			    "Research"
 			    "/home/zaeph/org/projects/university/research/research.org.gpg"
 			    (("i" . "Inbox")
 			     ("t" . "Tasks")
 			     ("c" . "Calendar")))
 
-(zp/make-hydra-org-refile zp/hydra-org-refile-file-emacs
+  (zp/make-hydra-org-refile zp/hydra-org-refile-file-emacs
+			    "Emacs"
 			    "/home/zaeph/org/projects/emacs/emacs.org.gpg"
 			    (("i" . "Inbox")
 			     ("t" . "Tasks")
 			     ("b" . "Troubleshooting")
 			     ("c" . "Contributing")))
 
-(zp/make-hydra-org-refile zp/hydra-org-refile-file-arch-linux
-			    "/home/zaeph/org/projects/arch-linux/arch-linux.org.gpg"
+  (zp/make-hydra-org-refile zp/hydra-org-refile-file-linux
+			    "Linux"
+			    "/home/zaeph/org/projects/linux/linux.org.gpg"
 			    (("i" . "Inbox")
 			     ("t" . "Tasks")
 			     ("b" . "Troubleshooting")
 			     ("c" . "Contributing")
 			     ("u" . "Utilities")
-			     ("a" . "AUR")))
+			     ("a" . "AUR"))))
 
 
+(defhydra zp/hydra-org-refile (:foreign-keys run
+			       :hint nil)
+  "
+^Life^          ^Prog^          ^Uni^           ^Mental^
+^^^^^^^^----------------------------------------------------------
+_o_: Life       _e_: Emacs      _u_: University _a_: Awakening
+_b_: Media      _l_: Linux      _r_: Research   _p_: Psychotherapy
 
-(defhydra zp/hydra-org-refile (:foreign-keys run)
-  "Refile"
-  ("o" zp/hydra-org-refile-file-life/body		"Life" :exit t)
-  ("b" zp/hydra-org-refile-file-media/body		"Media" :exit t)
-  ("a" zp/hydra-org-refile-file-awakening/body		"Awakening" :exit t)
-  ("p" zp/hydra-org-refile-file-psychotherapy/body	"Psychotherapy" :exit t)
-  ("u" zp/hydra-org-refile-file-university/body		"University" :exit t)
-  ("r" zp/hydra-org-refile-file-research/body		"Research" :exit t)
-  ("e" zp/hydra-org-refile-file-emacs/body		"Emacs" :exit t)
-  ("l" zp/hydra-org-refile-file-arch-linux/body		"Arch Linux" :exit t)
+"
+  ("o" zp/hydra-org-refile-file-life/body :exit t)
+  ("b" zp/hydra-org-refile-file-media/body :exit t)
+  ("a" zp/hydra-org-refile-file-awakening/body :exit t)
+  ("p" zp/hydra-org-refile-file-psychotherapy/body :exit t)
+  ("u" zp/hydra-org-refile-file-university/body :exit t)
+  ("r" zp/hydra-org-refile-file-research/body :exit t)
+  ("e" zp/hydra-org-refile-file-emacs/body :exit t)
+  ("l" zp/hydra-org-refile-file-linux/body :exit t)
 
-  ("j" org-refile-goto-last-stored	"Jump to last refile" :exit t)
-  ("w" org-refile			"zp/org-refile" :exit t)
-  ("q" nil				"cancel"))
+  ("j" org-refile-goto-last-stored "Jump to last refile" :exit t)
+  ("w" org-refile "zp/org-refile" :exit t)
+  ("q" nil "cancel"))
 
 (global-set-key (kbd "C-c C-w") 'zp/hydra-org-refile/body)
 (define-key org-capture-mode-map (kbd "C-c C-w") 'zp/hydra-org-refile/body)
