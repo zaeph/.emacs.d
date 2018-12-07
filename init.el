@@ -1672,6 +1672,8 @@ return `nil'."
 
 (define-prefix-command 'ledger-map)
 (global-set-key (kbd "C-c l") 'ledger-map)
+(define-prefix-command 'journal-map)
+(global-set-key (kbd "C-c j") 'journal-map)
 (define-prefix-command 'projects-map)
 (global-set-key (kbd "C-c p") 'projects-map)
 (define-prefix-command 'classes-map)
@@ -1717,7 +1719,7 @@ return `nil'."
       	("j w" . "/home/zaeph/org/projects/writing/journal.org.gpg")
       	("j u" . "/home/zaeph/org/projects/university/journal.org.gpg")
       	("j r" . "/home/zaeph/org/projects/university/research/journal.org.gpg")
-      	("j l" . "/home/zaeph/org/projects/arch-linux/journal.org.gpg")
+      	("j l" . "/home/zaeph/org/projects/linux/journal.org.gpg")
       	("j s" . "/home/zaeph/org/sports/swimming/journal.org.gpg"))
       zp/org-agenda-files-journals
       (mapcar 'cdr zp/org-agenda-files-journals-alist)
@@ -1771,7 +1773,7 @@ return `nil'."
 
       zp/org-agenda-files-tools-alist
       '(("p e" . "/home/zaeph/org/projects/emacs/emacs.org.gpg")
-      	("p l" . "/home/zaeph/org/projects/arch-linux/arch-linux.org.gpg"))
+      	("p l" . "/home/zaeph/org/projects/linux/linux.org.gpg"))
       zp/org-agenda-files-tools
       (mapcar 'cdr zp/org-agenda-files-tools-alist)
 
@@ -2269,8 +2271,8 @@ agenda settings after them."
 	  ,(zp/org-agenda-block-tasks))
 	 ((org-agenda-files zp/org-agenda-files-media)))
 
-	("l" "Arch & Emacs"
-	 (,(zp/org-agenda-block-agenda "Arch & Emacs")
+	("l" "Linux & Emacs"
+	 (,(zp/org-agenda-block-agenda "Linux & Emacs")
 	  ,(zp/org-agenda-block-projects)
 	  ,(zp/org-agenda-block-projects-stuck)
 	  ,(zp/org-agenda-block-scheduled)
@@ -2717,7 +2719,7 @@ Based on `org-agenda-set-property'."
 	("jr" "Research" entry (file "/home/zaeph/org/projects/university/research/journal.org.gpg")
 	 "* %^{Title|Entry}\n%T\n\n%?" :empty-lines 1)
 	("ju" "University" entry (file "/home/zaeph/org/projects/university/journal.org.gpg")
-	 "* %^{Title|Entry}\n%T\n\n%?" :empty-lines 1)	("jl" "Programming" entry (file "/home/zaeph/org/projects/arch-linux/journal.org.gpg")
+	 "* %^{Title|Entry}\n%T\n\n%?" :empty-lines 1)	("jl" "Programming" entry (file "/home/zaeph/org/projects/linux/journal.org.gpg")
 	 "* %^{Title|Entry}\n%T\n\n%?" :empty-lines 1)
 	("js" "Swimming" entry (file "/home/zaeph/org/sports/swimming/journal.org.gpg")
 	 "* %^{Title|Entry}\n%T\n\n%?" :empty-lines 1)
