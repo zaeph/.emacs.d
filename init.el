@@ -6155,6 +6155,7 @@ See ‘/home/zaeph/.bin/terminator-dwim’ for more info."
 ;; Allow minor modes to not have modeline display
 (require 'diminish)
 
+(diminish 'ivy-mode)
 (diminish 'helm-mode)
 (diminish 'auto-revert-mode)
 (diminish 'anzu-mode)
