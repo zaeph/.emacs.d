@@ -1068,7 +1068,7 @@ ALL-MAILS are the all the unread emails"
 (winner-mode 1)
 (set-default 'truncate-lines t)
 (electric-quote-mode 1)
-(dumb-jump-mode)
+;; (dumb-jump-mode)
 ;; (global-visible-mark-mode 1)
 
 (setq next-line-add-newlines nil)
