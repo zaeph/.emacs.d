@@ -1387,13 +1387,13 @@ return `nil'."
       ;; org-log-into-drawer nil
       ;; org-log-state-notes-insert-after-drawers t
       org-log-done 'time
-      org-enforce-todo-dependencies t	;Careful with this one, easy to fuck up
+      org-enforce-todo-dependencies t ;Careful with this one, easy to fuck up
       ;; org-enforce-todo-dependencies nil
       org-adapt-indentation nil
       org-clock-sound t
       org-export-in-background t
       org-export-with-sub-superscripts nil
-      org-image-actual-width nil 	;Ensures that images displayed within emacs can be resized with #+ATTR_ORG:
+      org-image-actual-width nil ;Ensures that images displayed within emacs can be resized with #+ATTR_ORG:
       org-hide-emphasis-markers nil	;Fontification
       org-ellipsis "…"
       org-track-ordered-property-with-tag "ORDERED"
@@ -1401,8 +1401,7 @@ return `nil'."
       org-tags-exclude-from-inheritance nil
       org-agenda-hide-tags-regexp "recurring\\|waiting\\|standby"
       org-catch-invisible-edits 'show
-      org-footnote-define-inline 1
-      )
+      org-footnote-define-inline 1)
 
 ;; Add curly quotes to list of pre- and post-matches for emphasis markers
 (setq org-emphasis-regexp-components '("- 	('‘\"“’{" "- 	.,:!?;'’\"”)}\\[" " 	
