@@ -1507,7 +1507,9 @@ return `nil'."
 			   (68 . (:inherit org-priority-face-d))
 			   (69 . (:inherit org-priority-face-e))))
 (setq org-tags-column -77)		;Default: -77
-(setq org-agenda-tags-column -90)	;Default: auto OR -80
+;; Default: auto OR -80.
+;; 89 and not 90 because of org-agenda-category-icon-alist
+(setq org-agenda-tags-column -89)
 (setq org-habit-graph-column 50)
 
 (setq org-todo-state-tags-triggers
@@ -1555,6 +1557,18 @@ return `nil'."
 ;; (setq org-archive-location "%s.archive.org.gpg::")
 ;; (setq org-archive-location "archive.org.gpg::")
 ;; (setq org-archive-location "/home/zaeph/org/archive.org.gpg::* From %s")
+
+;; Category icons
+(setq org-agenda-category-icon-alist
+      '(("^emacs$" "~/org/svg/icons/spacemacs.svg" nil nil :ascent center)
+	("^elisp$" "~/org/svg/icons/spacemacs.svg" nil nil :ascent center)
+	("^linux$" "~/org/svg/icons/nixos.svg" nil nil :ascent center)
+	("^opsec$" "~/org/svg/icons/shield.svg" nil nil :ascent center)
+	("^python$" "~/org/svg/icons/python.svg" nil nil :ascent center)
+	("^contrib$" "~/org/svg/icons/chill.svg" nil nil :ascent center)
+	("^bug$" "~/org/svg/icons/cross.svg" nil nil :ascent center)
+	("^research$" "~/org/svg/icons/research.svg" nil nil :ascent center)
+	(".*" '(space . (:width (24))) nil nil :ascent center)))
 
 ;; Babel
 (require 'ob-async)
