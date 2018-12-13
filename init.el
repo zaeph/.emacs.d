@@ -264,12 +264,13 @@ that date.  Leave point on the first amount."
 (global-set-key (kbd "M-J") 'duplicate-thing)
 
 (require 'flycheck)
-;; (add-hook 'after-init-hook #'global-flycheck-mode)
+(add-hook 'after-init-hook #'global-flycheck-mode)
 (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc))
-(setq flycheck-emacs-lisp-load-path 'inherit)
+(setq flycheck-emacs-lisp-load-path 'inherit
+      flycheck-display-errors-delay 0.5)
 
-(require 'flycheck-pos-tip)
-(flycheck-pos-tip-mode)
+;; (require 'flycheck-pos-tip)
+;; (flycheck-pos-tip-mode)
 
 
 ;; (add-to-list 'load-path "/home/zaeph/.emacs.d/pkg/emacswiki.org/info+.el")
@@ -5234,6 +5235,7 @@ Every ELEM in LIST is formatted as follows:
 (define-key zp/toggle-map "d" #'toggle-debug-on-error)
 (define-key zp/toggle-map "e" #'toggle-debug-on-error)
 (define-key zp/toggle-map "f" #'auto-fill-mode)
+(define-key zp/toggle-map "F" #'flycheck-mode)
 (define-key zp/toggle-map "l" #'toggle-truncate-lines)
 (define-key zp/toggle-map "q" #'toggle-debug-on-quit)
 (define-key zp/toggle-map "t" #'zp/switch-theme)
