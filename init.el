@@ -1751,7 +1751,7 @@ return `nil'."
       	("j w" . "/home/zaeph/org/projects/writing/journal.org.gpg")
       	("j u" . "/home/zaeph/org/projects/university/journal.org.gpg")
       	("j r" . "/home/zaeph/org/projects/university/research/journal.org.gpg")
-      	("j l" . "/home/zaeph/org/projects/linux/journal.org.gpg")
+      	("j h" . "/home/zaeph/org/projects/hacking/journal.org.gpg")
       	("j s" . "/home/zaeph/org/sports/swimming/journal.org.gpg"))
       zp/org-agenda-files-journals
       (mapcar 'cdr zp/org-agenda-files-journals-alist)
@@ -1803,11 +1803,13 @@ return `nil'."
       zp/org-agenda-files-sports
       (mapcar 'cdr zp/org-agenda-files-sports-alist)
 
-      zp/org-agenda-files-tools-alist
-      '(("p e" . "/home/zaeph/org/projects/emacs/emacs.org.gpg")
-      	("p l" . "/home/zaeph/org/projects/linux/linux.org.gpg"))
-      zp/org-agenda-files-tools
-      (mapcar 'cdr zp/org-agenda-files-tools-alist)
+      zp/org-agenda-files-hacking-alist
+      '(("p h e" . "/home/zaeph/org/projects/hacking/emacs/emacs.org.gpg")
+	("p h l" . "/home/zaeph/org/projects/hacking/linux/linux.org.gpg")
+	("p h h" . "/home/zaeph/org/projects/hacking/hacking.org.gpg")
+      	("p h p" . "/home/zaeph/org/projects/hacking/python/python.org.gpg"))
+      zp/org-agenda-files-hacking
+      (mapcar 'cdr zp/org-agenda-files-hacking-alist)
 
       zp/org-agenda-files-media-alist
       '(("b" . "/home/zaeph/org/media.org.gpg"))
@@ -1830,7 +1832,7 @@ return `nil'."
   (zp/set-shortcuts zp/org-agenda-files-psychotherapy-alist)
   (zp/set-shortcuts zp/org-agenda-files-music-alist)
   (zp/set-shortcuts zp/org-agenda-files-sports-alist)
-  (zp/set-shortcuts zp/org-agenda-files-tools-alist)
+  (zp/set-shortcuts zp/org-agenda-files-hacking-alist)
   (zp/set-shortcuts zp/org-agenda-files-media-alist)
   (zp/set-shortcuts zp/org-agenda-files-life-alist))
 
@@ -2027,7 +2029,7 @@ return `nil'."
 					 zp/org-agenda-files-sports))
 
   (setq org-agenda-files (append zp/org-agenda-files-main
-				 zp/org-agenda-files-tools
+				 zp/org-agenda-files-hacking
 				 zp/org-agenda-files-media))
 
   (zp/set-shortcuts-all))
@@ -2350,7 +2352,7 @@ agenda settings after them."
 	  ,(zp/org-agenda-block-projects-stuck)
 	  ,(zp/org-agenda-block-scheduled)
 	  ,(zp/org-agenda-block-tasks))
-	 ((org-agenda-files zp/org-agenda-files-tools)))
+	 ((org-agenda-files zp/org-agenda-files-hacking)))
 
 	("d" "Deadlines"
 	 (,(zp/org-agenda-block-deadines)))
@@ -2836,7 +2838,8 @@ Based on `org-agenda-set-property'."
 	("jr" "Research" entry (file "/home/zaeph/org/projects/university/research/journal.org.gpg")
 	 "* %^{Title|Entry}\n%T\n\n%?" :empty-lines 1)
 	("ju" "University" entry (file "/home/zaeph/org/projects/university/journal.org.gpg")
-	 "* %^{Title|Entry}\n%T\n\n%?" :empty-lines 1)	("jl" "Programming" entry (file "/home/zaeph/org/projects/linux/journal.org.gpg")
+	 "* %^{Title|Entry}\n%T\n\n%?" :empty-lines 1)
+	("jl" "Hacking" entry (file "/home/zaeph/org/projects/hacking/journal.org.gpg")
 	 "* %^{Title|Entry}\n%T\n\n%?" :empty-lines 1)
 	("js" "Swimming" entry (file "/home/zaeph/org/sports/swimming/journal.org.gpg")
 	 "* %^{Title|Entry}\n%T\n\n%?" :empty-lines 1)
@@ -3079,7 +3082,7 @@ KEYANDHEADLINE should be a list of cons cells of the form (\"key\" . \"headline\
 
   (zp/make-hydra-org-refile zp/hydra-org-refile-file-emacs
 			    "Emacs"
-			    "/home/zaeph/org/projects/emacs/emacs.org.gpg"
+			    "/home/zaeph/org/projects/hacking/emacs/emacs.org.gpg"
 			    (("i" . "Inbox")
 			     ("t" . "Tasks")
 			     ("b" . "Troubleshooting")
@@ -3087,7 +3090,7 @@ KEYANDHEADLINE should be a list of cons cells of the form (\"key\" . \"headline\
 
   (zp/make-hydra-org-refile zp/hydra-org-refile-file-linux
 			    "Linux"
-			    "/home/zaeph/org/projects/linux/linux.org.gpg"
+			    "/home/zaeph/org/projects/hacking/linux/linux.org.gpg"
 			    (("i" . "Inbox")
 			     ("t" . "Tasks")
 			     ("b" . "Troubleshooting")
