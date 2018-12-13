@@ -1704,12 +1704,19 @@ return `nil'."
 
 (define-prefix-command 'ledger-map)
 (global-set-key (kbd "C-c l") 'ledger-map)
+
 (define-prefix-command 'journal-map)
 (global-set-key (kbd "C-c j") 'journal-map)
+
 (define-prefix-command 'projects-map)
 (global-set-key (kbd "C-c p") 'projects-map)
+
+(define-prefix-command 'projects-hacking-map)
+(global-set-key (kbd "C-c p h") 'projects-hacking-map)
+
 (define-prefix-command 'classes-map)
 (global-set-key (kbd "C-c p c") 'classes-map)
+
 ;; (define-prefix-command 'activism-map)
 ;; (global-set-key (kbd "C-c p a") 'activism-map)
 
@@ -2383,11 +2390,6 @@ agenda settings after them."
 				 (timeline . "  % s")
 				 (todo . " %i %-12:c")
 				 (tags . " %i %-12:c")
-				 ;; (tags . " %i %-12:c %?-12t% s")
-				 ;; (tags . " %i %-12:c %-12b ")
-				 ;; (tags . " %i %-12:c %l ")
-				 ;; (tags . " %i %-12:c %-40:(concat \"[\"(org-format-outline-path (org-get-outline-path)) \"]\") ")
-				 ;; (tags . " %i %-12:c %s %(if (not (list (nth 1 (org-get-outline-path)))) (org-format-outline-path(concat \"[\"(org-format-outline-path (list (nth 1 (org-get-outline-path)))) \"]\"))) ")
 				 (search . " %i %-12:c")))
 
 
