@@ -1230,6 +1230,10 @@ If text is selected, adds furigana to the selected kanji instead."
 ;; Tramp
 (setq tramp-default-method "ssh")
 
+;; realGUD
+(require 'realgud)
+(setq realgud-safe-mode nil)
+
 
 
 ;; ========================================
@@ -1293,6 +1297,30 @@ If text is selected, adds furigana to the selected kanji instead."
 ;; ========================================
 
 (setq diary-file "/home/zaeph/diary")
+
+
+
+;; ========================================
+;; =============== PYTHON =================
+;; ========================================
+
+(require 'python)
+
+;; (defun zp/recenter-bottom (arg)
+;;   "Recenter screen at the end of the buffer."
+;;   (interactive "p")
+;;   (let ((inhibit-message t))
+;;     (goto-char (point-max))
+;;     (end-of-buffer)
+;;     (recenter-top-bottom arg)
+;;     (recenter-top-bottom arg)
+;;     (scroll-up-line)))
+
+(defun zp/inferior-python-mode-config ()
+  "Modify keymaps for ‘inferior-python-mode’."
+  (local-set-key (kbd "C-l") #'comint-clear-buffer))
+
+(setq inferior-python-mode-hook 'zp/inferior-python-mode-config)
 
 
 
@@ -1535,10 +1563,11 @@ return `nil'."
            (setq org-ditaa-jar-path "/usr/share/java/ditaa/ditaa-0.11.jar")))
 
 ;; Deactivated since migrated to Linux
-;; (org-babel-do-load-languages 'org-babel-load-languages
-;; 			     '((R . t)
-;; 			       (latex . t)
-;; 			       (ledger . t)))
+(org-babel-do-load-languages 'org-babel-load-languages
+			     '((R . t)
+			       (python . t)
+			       (latex . t)
+			       (ledger . t)))
 
 ;; Prototype babel
 (org-babel-do-load-languages 'org-babel-load-languages
@@ -6184,6 +6213,7 @@ See ‘/home/zaeph/.bin/terminator-dwim’ for more info."
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(auth-source-save-behavior nil)
+ '(gdb-many-windows t)
  '(global-hl-line-mode t)
  '(helm-external-programs-associations
    (quote
@@ -6229,7 +6259,7 @@ See ‘/home/zaeph/.bin/terminator-dwim’ for more info."
      ("\\.pdf\\'" . default))))
  '(package-selected-packages
    (quote
-    (ace-link ivy-hydra counsel lispy dumb-jump lua-mode fish-mode exwm el-patch diminish circe-notifications circe ob-async nov which-key eyebrowse diff-hl recentf-ext flycheck-pos-tip helm-projectile projectile clean-aindent-mode volatile-highlights duplicate-thing org-noter magit hydra highlight mu4e-alert ox-hugo org writeroom-mode anzu flycheck spaceline helm-chronos chronos olivetti multiple-cursors expand-region ace-window auto-minor-mode ledger-mode sublimity auctex smooth-scrolling yasnippet pdf-tools htmlize helm-bibtex free-keys evil color-theme base16-theme)))
+    (company-anaconda anaconda-mode company realgud ace-link ivy-hydra counsel lispy dumb-jump lua-mode fish-mode exwm el-patch diminish circe-notifications circe ob-async nov which-key eyebrowse diff-hl recentf-ext flycheck-pos-tip helm-projectile projectile clean-aindent-mode volatile-highlights duplicate-thing org-noter magit hydra highlight mu4e-alert ox-hugo org writeroom-mode anzu flycheck spaceline helm-chronos chronos olivetti multiple-cursors expand-region ace-window auto-minor-mode ledger-mode sublimity auctex smooth-scrolling yasnippet pdf-tools htmlize helm-bibtex free-keys evil color-theme base16-theme)))
  '(safe-local-variable-values
    (quote
     ((eval add-hook
