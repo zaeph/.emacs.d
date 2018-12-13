@@ -802,6 +802,8 @@ ALL-MAILS are the all the unread emails"
 (add-hook 'mu4e-index-updated-hook 'mu4e~headers-maybe-auto-update)
 (add-hook 'mu4e-index-updated-hook 'zp/mu4e-alert-refresh)
 
+(add-hook 'mu4e-view-mode-hook 'visual-line-mode)
+
 (defun mu4e-headers-config ()
   "Modify keymaps used by `mu4e-mode'."
   (local-set-key (kbd "C-/") 'mu4e-headers-query-prev)
