@@ -2967,7 +2967,7 @@ Based on `org-agenda-set-property'."
 	 "* %^{Title|Entry}\n%T\n\n%?" :empty-lines 1)
 	("ju" "University" entry (file "/home/zaeph/org/projects/university/journal.org.gpg")
 	 "* %^{Title|Entry}\n%T\n\n%?" :empty-lines 1)
-	("jl" "Hacking" entry (file "/home/zaeph/org/projects/hacking/journal.org.gpg")
+	("jh" "Hacking" entry (file "/home/zaeph/org/projects/hacking/journal.org.gpg")
 	 "* %^{Title|Entry}\n%T\n\n%?" :empty-lines 1)
 	("js" "Swimming" entry (file "/home/zaeph/org/sports/swimming/journal.org.gpg")
 	 "* %^{Title|Entry}\n%T\n\n%?" :empty-lines 1)
