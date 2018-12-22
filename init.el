@@ -632,279 +632,469 @@ that date.  Leave point on the first amount."
 (require 'org-mu4e)
 (setq org-mu4e-link-query-in-headers-mode nil)
 
-;; -----------------------------------------------------------------------------
-;; To investigate
-(defun remove-nth-element (nth list)
-  (if (zerop nth) (cdr list)
-    (let ((last (nthcdr (1- nth) list)))
-      (setcdr last (cddr last))
-      list)))
-(setq mu4e-marks (remove-nth-element 5 mu4e-marks))
-(add-to-list 'mu4e-marks
-     '(trash
-       :char ("d" . "▼")
-       :prompt "dtrash"
-       :dyn-target (lambda (target msg) (mu4e-get-trash-folder msg))
-       :action (lambda (docid msg target)
-                 (mu4e~proc-move docid
-				 (mu4e~mark-check-target target) "+S-u-N"))))
+;; ;; -----------------------------------------------------------------------------
+;; ;; To investigate
+;; (defun remove-nth-element (nth list)
+;;   (if (zerop nth) (cdr list)
+;;     (let ((last (nthcdr (1- nth) list)))
+;;       (setcdr last (cddr last))
+;;       list)))
+;; (setq mu4e-marks (remove-nth-element 5 mu4e-marks))
+;; (add-to-list 'mu4e-marks
+;;      '(trash
+;;        :char ("d" . "▼")
+;;        :prompt "dtrash"
+;;        :dyn-target (lambda (target msg) (mu4e-get-trash-folder msg))
+;;        :action (lambda (docid msg target)
+;;                  (mu4e~proc-move docid
+;; 				 (mu4e~mark-check-target target) "+S-u-N"))))
 
-(setq mu4e-alert-interesting-mail-query
-      (concat
-       "flag:unread maildir:/private/inbox"
-       ;; "maildir:/private/inbox"
-       " OR "
-       "flag:unread maildir:/work/inbox"
-       ;; "maildir:/work/inbox"
-       ))
+;; (setq mu4e-alert-interesting-mail-query
+;;       (concat
+;;        "flag:unread maildir:/private/inbox"
+;;        ;; "maildir:/private/inbox"
+;;        " OR "
+;;        "flag:unread maildir:/work/inbox"
+;;        ;; "maildir:/work/inbox"
+;;        ))
 
-(setq mu4e-bookmarks
-  `(,(make-mu4e-bookmark
-      :name  "Inbox"
-      :query "maildir:/private/inbox OR maildir:/work/inbox"
-      :key ?i)
-    ,(make-mu4e-bookmark
-      :name  "Inbox (excluding read)"
-      :query "flag:unread AND (maildir:/private/inbox OR maildir:/work/inbox)"
-      :key ?I)
-    ,(make-mu4e-bookmark
-      :name  "Sent"
-      :query "maildir:/private/sent OR maildir:/work/sent"
-      :key ?s)
-    ,(make-mu4e-bookmark
-      :name  "Drafts"
-      :query "maildir:/private/drafts OR maildir:/work/drafts"
-      :key ?d)
-    ,(make-mu4e-bookmark
-      :name  "Archive (last week)"
-      :query "date:1w.. AND (maildir:/private/archive OR maildir:/work/archive)"
-      :key ?a)
-    ,(make-mu4e-bookmark
-      :name  "Unread messages"
-      :query "flag:unread AND NOT (maildir:/private/trash OR maildir:/work/trash)"
-      :key ?u)
-    ,(make-mu4e-bookmark
-      :name "Today's messages"
-      :query "date:today..now"
-      :key ?t)
-    ,(make-mu4e-bookmark
-      :name "Last 7 days"
-      :query "date:7d..now"
-      :key ?w)
-    ,(make-mu4e-bookmark
-      :name "Messages with images"
-      :query "mime:image/*"
-      :key ?p)))
+;; (setq mu4e-bookmarks
+;;   `(,(make-mu4e-bookmark
+;;       :name  "Inbox"
+;;       :query "maildir:/private/inbox OR maildir:/work/inbox"
+;;       :key ?i)
+;;     ,(make-mu4e-bookmark
+;;       :name  "Inbox (excluding read)"
+;;       :query "flag:unread AND (maildir:/private/inbox OR maildir:/work/inbox)"
+;;       :key ?I)
+;;     ,(make-mu4e-bookmark
+;;       :name  "Sent"
+;;       :query "maildir:/private/sent OR maildir:/work/sent"
+;;       :key ?s)
+;;     ,(make-mu4e-bookmark
+;;       :name  "Drafts"
+;;       :query "maildir:/private/drafts OR maildir:/work/drafts"
+;;       :key ?d)
+;;     ,(make-mu4e-bookmark
+;;       :name  "Archive (last week)"
+;;       :query "date:1w.. AND (maildir:/private/archive OR maildir:/work/archive)"
+;;       :key ?a)
+;;     ,(make-mu4e-bookmark
+;;       :name  "Unread messages"
+;;       :query "flag:unread AND NOT (maildir:/private/trash OR maildir:/work/trash)"
+;;       :key ?u)
+;;     ,(make-mu4e-bookmark
+;;       :name "Today's messages"
+;;       :query "date:today..now"
+;;       :key ?t)
+;;     ,(make-mu4e-bookmark
+;;       :name "Last 7 days"
+;;       :query "date:7d..now"
+;;       :key ?w)
+;;     ,(make-mu4e-bookmark
+;;       :name "Messages with images"
+;;       :query "mime:image/*"
+;;       :key ?p)))
 
-(define-key mu4e-main-mode-map (kbd "c") 'mu4e-compose-new)
-(define-key mu4e-headers-mode-map (kbd "c") 'mu4e-compose-new)
-
-
-;; show images
-;; (setq mu4e-view-show-images t
-;;       mu4e-view-image-max-width 800)
-
-;; use imagemagick, if available
-;; (when (fboundp 'imagemagick-register-types)
-;;   (imagemagick-register-types))
-
-;; IMAP takes care of deletion
-(setq mu4e-sent-messages-behavior 'delete)
-
-;; ;; Add a column to display what email account the email belongs to.
-;; (add-to-list 'mu4e-header-info-custom
-;; 	     '(:account
-;; 	       :name "Account"
-;; 	       :shortname "Account"
-;; 	       :help "Which account this email belongs to"
-;; 	       :function
-;; 	       (lambda (msg)
-;; 		 (let ((maildir (mu4e-message-field msg :maildir)))
-;; 		   (format "%s" (substring maildir 1 (string-match-p "/" maildir 1)))))))
-
-;; -----------------------------------------------------------------------------
+;; (define-key mu4e-main-mode-map (kbd "c") 'mu4e-compose-new)
+;; (define-key mu4e-headers-mode-map (kbd "c") 'mu4e-compose-new)
 
 
+;; ;; show images
+;; ;; (setq mu4e-view-show-images t
+;; ;;       mu4e-view-image-max-width 800)
 
-(defun zp/mu4e-alert-grouped-mail-notification-formatter (mail-group all-mails)
-  "Default function to format MAIL-GROUP for notification.
+;; ;; use imagemagick, if available
+;; ;; (when (fboundp 'imagemagick-register-types)
+;; ;;   (imagemagick-register-types))
 
-ALL-MAILS are the all the unread emails"
-  (let* ((mail-count (length mail-group))
-         (total-mails (length all-mails))
-         (first-mail (car mail-group))
-	 ;; Other possible icon:✉
-         ;; (title-prefix (format "<span foreground='#75d075'><span font_desc='Noto Color Emoji'>💬</span> [%d/%d] New mail%s</span>"
-         (title-prefix (format "[%d/%d] <span foreground='#F04949'>New mail%s</span>"
-                               mail-count
-                               total-mails
-                               (if (> mail-count 1) "s" "")))
-         (field-value (mu4e-alert--get-group first-mail))
-         (title-suffix (format (pcase mu4e-alert-group-by
-                                 (`:from "from %s:")
-                                 (`:to "to %s:")
-                                 (`:maildir "in %s:")
-                                 (`:priority "with %s priority:")
-                                 (`:flags "with %s flags:"))
-                               field-value))
-         (title (format "%s %s" title-prefix title-suffix)))
-    (list :title title
-          :body (concat "• "
-                        (s-join "\n• "
-                                (mapcar (lambda (mail)
-                                          (replace-regexp-in-string "&" "&amp;" (plist-get mail :subject)))
-                                        mail-group))))))
+;; ;; IMAP takes care of deletion
+;; (setq mu4e-sent-messages-behavior 'delete)
 
-;; Redefine default notify function to include icon
-(defun mu4e-alert-notify-unread-messages (mails)
-  "Display desktop notification for given MAILS."
-  (let* ((mail-groups (funcall mu4e-alert-mail-grouper
-                               mails))
-         (sorted-mail-groups (sort mail-groups
-                                   mu4e-alert-grouped-mail-sorter))
-         (notifications (mapcar (lambda (group)
-                                  (funcall mu4e-alert-grouped-mail-notification-formatter
-                                           group
-                                           mails))
-                                sorted-mail-groups)))
-    (dolist (notification (cl-subseq notifications 0 (min 5 (length notifications))))
-      (alert (plist-get notification :body)
-             :title (plist-get notification :title)
-             :category "mu4e-alert"
-	     :icon "gmail-2"))
-    (when notifications
-      (mu4e-alert-set-window-urgency-maybe))))
+;; ;; ;; Add a column to display what email account the email belongs to.
+;; ;; (add-to-list 'mu4e-header-info-custom
+;; ;; 	     '(:account
+;; ;; 	       :name "Account"
+;; ;; 	       :shortname "Account"
+;; ;; 	       :help "Which account this email belongs to"
+;; ;; 	       :function
+;; ;; 	       (lambda (msg)
+;; ;; 		 (let ((maildir (mu4e-message-field msg :maildir)))
+;; ;; 		   (format "%s" (substring maildir 1 (string-match-p "/" maildir 1)))))))
 
-(setq mu4e-alert-set-window-urgency nil
-      mu4e-alert-email-notification-types '(subjects)
-      mu4e-alert-grouped-mail-notification-formatter 'zp/mu4e-alert-grouped-mail-notification-formatter
-      mu4e-headers-show-threads t)
+;; ;; -----------------------------------------------------------------------------
 
 
 
-(defun zp/mu4e-alert-refresh ()
-  (interactive)
-  (mu4e-alert-enable-mode-line-display)
-  (mu4e-alert-enable-notifications))
+;; (defun zp/mu4e-alert-grouped-mail-notification-formatter (mail-group all-mails)
+;;   "Default function to format MAIL-GROUP for notification.
 
-(defun zp/mu4e-update-index-and-refresh ()
-  (interactive)
-  (mu4e-update-index)
-  (mu4e~request-contacts)
-  ;; (mu4e~headers-maybe-auto-update)
-  (zp/mu4e-alert-refresh))
+;; ALL-MAILS are the all the unread emails"
+;;   (let* ((mail-count (length mail-group))
+;;          (total-mails (length all-mails))
+;;          (first-mail (car mail-group))
+;; 	 ;; Other possible icon:✉
+;;          ;; (title-prefix (format "<span foreground='#75d075'><span font_desc='Noto Color Emoji'>💬</span> [%d/%d] New mail%s</span>"
+;;          (title-prefix (format "[%d/%d] <span foreground='#F04949'>New mail%s</span>"
+;;                                mail-count
+;;                                total-mails
+;;                                (if (> mail-count 1) "s" "")))
+;;          (field-value (mu4e-alert--get-group first-mail))
+;;          (title-suffix (format (pcase mu4e-alert-group-by
+;;                                  (`:from "from %s:")
+;;                                  (`:to "to %s:")
+;;                                  (`:maildir "in %s:")
+;;                                  (`:priority "with %s priority:")
+;;                                  (`:flags "with %s flags:"))
+;;                                field-value))
+;;          (title (format "%s %s" title-prefix title-suffix)))
+;;     (list :title title
+;;           :body (concat "• "
+;;                         (s-join "\n• "
+;;                                 (mapcar (lambda (mail)
+;;                                           (replace-regexp-in-string "&" "&amp;" (plist-get mail :subject)))
+;;                                         mail-group))))))
 
-(mu4e-alert-set-default-style 'libnotify)
-(add-hook 'mu4e-main-mode-hook 'delete-other-windows)
+;; ;; Redefine default notify function to include icon
+;; (defun mu4e-alert-notify-unread-messages (mails)
+;;   "Display desktop notification for given MAILS."
+;;   (let* ((mail-groups (funcall mu4e-alert-mail-grouper
+;;                                mails))
+;;          (sorted-mail-groups (sort mail-groups
+;;                                    mu4e-alert-grouped-mail-sorter))
+;;          (notifications (mapcar (lambda (group)
+;;                                   (funcall mu4e-alert-grouped-mail-notification-formatter
+;;                                            group
+;;                                            mails))
+;;                                 sorted-mail-groups)))
+;;     (dolist (notification (cl-subseq notifications 0 (min 5 (length notifications))))
+;;       (alert (plist-get notification :body)
+;;              :title (plist-get notification :title)
+;;              :category "mu4e-alert"
+;; 	     :icon "gmail-2"))
+;;     (when notifications
+;;       (mu4e-alert-set-window-urgency-maybe))))
 
-(add-hook 'after-init-hook #'mu4e-alert-enable-notifications)
-(add-hook 'after-init-hook #'mu4e-alert-enable-mode-line-display)
-(add-hook 'mu4e-index-updated-hook 'mu4e~headers-maybe-auto-update)
-(add-hook 'mu4e-index-updated-hook 'zp/mu4e-alert-refresh)
+;; (setq mu4e-alert-set-window-urgency nil
+;;       mu4e-alert-email-notification-types '(subjects)
+;;       mu4e-alert-grouped-mail-notification-formatter 'zp/mu4e-alert-grouped-mail-notification-formatter
+;;       mu4e-headers-show-threads t)
 
-(add-hook 'mu4e-view-mode-hook 'visual-line-mode)
 
-(defun mu4e-headers-config ()
-  "Modify keymaps used by `mu4e-mode'."
-  (local-set-key (kbd "C-/") 'mu4e-headers-query-prev)
-  (local-set-key (kbd "\\")  'mu4e-headers-query-prev)
-  (local-set-key (kbd "C-?") 'mu4e-headers-query-next)
-  (local-set-key (kbd "|")   'mu4e-headers-query-next)
-  )
-(setq mu4e-headers-mode-hook 'mu4e-headers-config)
 
-(setq mu4e-maildir (expand-file-name "/home/zaeph/mail")
-      mu4e-change-filenames-when-moving   t
-      mu4e-get-mail-command "check-mail active"
-      mu4e-hide-index-messages t
-      mu4e-update-interval nil
-      mu4e-headers-date-format "%Y-%m-%d %H:%M"
-      )
+;; (defun zp/mu4e-alert-refresh ()
+;;   (interactive)
+;;   (mu4e-alert-enable-mode-line-display)
+;;   (mu4e-alert-enable-notifications))
 
-(defun zp/rewrite-function (contact)
-  (let ((name (or (plist-get contact :name) ""))
-         (mail (plist-get contact :mail)))
-    (cond
-      ;; jonh smiht --> John Smith
-      ;; ((string= "jonh smiht" name)
-      ;;   (plist-put contact :name "John C. Smith")
-      ;;   contact)
-      ;; remove evilspammer from the contacts list
-      ((string= "nic022@hotnail.fr" mail) nil)
-      ;; others stay as the are
-      (t contact))))
+;; (defun zp/mu4e-update-index-and-refresh ()
+;;   (interactive)
+;;   (mu4e-update-index)
+;;   (mu4e~request-contacts)
+;;   ;; (mu4e~headers-maybe-auto-update)
+;;   (zp/mu4e-alert-refresh))
 
-(setq mu4e-contact-rewrite-function 'zp/rewrite-function)
+;; (mu4e-alert-set-default-style 'libnotify)
+;; (add-hook 'mu4e-main-mode-hook 'delete-other-windows)
 
-(setq mu4e-headers-fields
-      '( (:date          .  25)    ;; alternatively, use :human-date
-	 (:flags         .   6)
-	 (:from          .  22)
-	 (:subject       .  nil)))
+;; (add-hook 'after-init-hook #'mu4e-alert-enable-notifications)
+;; (add-hook 'after-init-hook #'mu4e-alert-enable-mode-line-display)
+;; (add-hook 'mu4e-index-updated-hook 'mu4e~headers-maybe-auto-update)
+;; (add-hook 'mu4e-index-updated-hook 'zp/mu4e-alert-refresh)
 
-(setq mu4e-compose-format-flowed t)
+;; (add-hook 'mu4e-view-mode-hook #'visual-line-mode)
 
-;; This allows me to use 'helm' to select mailboxes
-(setq mu4e-completing-read-function 'completing-read)
-;; Why would I want to leave my message open after I've sent it?
-(setq message-kill-buffer-on-exit t)
-;; Don't ask for a 'context' upon opening mu4e
-(setq mu4e-context-policy 'pick-first)
-;; Don't ask to quit... why is this the default?
-(setq mu4e-confirm-quit nil)
+;; (defun mu4e-headers-config ()
+;;   "Modify keymaps used by `mu4e-mode'."
+;;   (local-set-key (kbd "C-/") 'mu4e-headers-query-prev)
+;;   (local-set-key (kbd "\\")  'mu4e-headers-query-prev)
+;;   (local-set-key (kbd "C-?") 'mu4e-headers-query-next)
+;;   (local-set-key (kbd "|")   'mu4e-headers-query-next)
+;;   )
+;; (setq mu4e-headers-mode-hook 'mu4e-headers-config)
 
-(add-to-list 'mu4e-view-actions
-  '("ViewInBrowser" . mu4e-action-view-in-browser) t)
+;; (setq mu4e-maildir (expand-file-name "/home/zaeph/mail")
+;;       mu4e-change-filenames-when-moving   t
+;;       mu4e-get-mail-command "check-mail active"
+;;       mu4e-hide-index-messages t
+;;       mu4e-update-interval nil
+;;       mu4e-headers-date-format "%Y-%m-%d %H:%M"
+;;       )
 
-(setq mu4e-contexts
-      `( ,(make-mu4e-context
-	   :name "Private"
-	   :match-func (lambda (msg) (when msg
-				       (string-prefix-p "/private" (mu4e-message-field msg :maildir))))
-	   :vars `(
-		   (user-mail-address . ,(zp/get-string-from-file "/home/zaeph/org/pp/private/email"))
-		   (user-full-name . "Zaeph")
-		   (message-signature-file . "/home/zaeph/org/sig/private")
+;; (defun zp/rewrite-function (contact)
+;;   (let ((name (or (plist-get contact :name) ""))
+;;          (mail (plist-get contact :mail)))
+;;     (cond
+;;       ;; jonh smiht --> John Smith
+;;       ;; ((string= "jonh smiht" name)
+;;       ;;   (plist-put contact :name "John C. Smith")
+;;       ;;   contact)
+;;       ;; remove evilspammer from the contacts list
+;;       ((string= "nic022@hotnail.fr" mail) nil)
+;;       ;; others stay as the are
+;;       (t contact))))
 
-		   (mu4e-trash-folder  . "/private/trash")
-		   (mu4e-refile-folder . "/private/archive")
-		   (mu4e-sent-folder   . "/private/sent")
-		   (mu4e-drafts-folder . "/private/drafts")
+;; (setq mu4e-contact-rewrite-function 'zp/rewrite-function)
 
-		   (mu4e-maildir-shortcuts . (("/private/inbox"   . ?i)
-					      ("/private/sent"    . ?s)
-					      ("/private/trash"   . ?t)
-					      ("/private/archive" . ?a)))
-		   ))
-	 ,(make-mu4e-context
-	   :name "Work"
-	   :match-func (lambda (msg) (when msg
-				       (string-prefix-p "/work" (mu4e-message-field msg :maildir))))
-	   :vars `(
-		   (user-mail-address . ,(zp/get-string-from-file "/home/zaeph/org/pp/work/email"))
-		   (user-full-name . "Leo Vivier")
-		   (message-signature-file . "/home/zaeph/org/sig/work")
+;; (setq mu4e-headers-fields
+;;       '( (:date          .  25)    ;; alternatively, use :human-date
+;; 	 (:flags         .   6)
+;; 	 (:from          .  22)
+;; 	 (:subject       .  nil)))
 
-		   (mu4e-trash-folder  . "/work/trash")
-		   (mu4e-refile-folder . "/work/archive")
-		   (mu4e-sent-folder   . "/work/sent")
-		   (mu4e-drafts-folder . "/work/drafts")
+;; (setq mu4e-compose-format-flowed t)
 
-		   (mu4e-maildir-shortcuts . (("/work/inbox"   . ?i)
-					      ("/work/sent"    . ?s)
-					      ("/work/trash"   . ?t)
-					      ("/work/archive" . ?a)))
-		   ))
-	 ))
+;; ;; This allows me to use 'helm' to select mailboxes
+;; (setq mu4e-completing-read-function 'completing-read)
+;; ;; Why would I want to leave my message open after I've sent it?
+;; (setq message-kill-buffer-on-exit t)
+;; ;; Don't ask for a 'context' upon opening mu4e
+;; (setq mu4e-context-policy 'pick-first)
+;; ;; Don't ask to quit... why is this the default?
+;; (setq mu4e-confirm-quit nil)
 
-;; Editing modeline display to add a space after the `]'
-(defun mu4e-context-label ()
-  "Propertized string with the current context name, or \"\" if
-  there is none."
-  (if (mu4e-context-current)
-    (concat "[" (propertize (mu4e~quote-for-modeline
-			      (mu4e-context-name (mu4e-context-current)))
-		  'face 'mu4e-context-face) "] ") ""))
+;; (add-to-list 'mu4e-view-actions
+;;   '("ViewInBrowser" . mu4e-action-view-in-browser) t)
+
+;; (setq mu4e-contexts
+;;       `( ,(make-mu4e-context
+;; 	   :name "Private"
+;; 	   :match-func (lambda (msg) (when msg
+;; 				       (string-prefix-p "/private" (mu4e-message-field msg :maildir))))
+;; 	   :vars `(
+;; 		   (user-mail-address . ,(zp/get-string-from-file "/home/zaeph/org/pp/private/email"))
+;; 		   (user-full-name . "Zaeph")
+;; 		   (message-signature-file . "/home/zaeph/org/sig/private")
+
+;; 		   (mu4e-trash-folder  . "/private/trash")
+;; 		   (mu4e-refile-folder . "/private/archive")
+;; 		   (mu4e-sent-folder   . "/private/sent")
+;; 		   (mu4e-drafts-folder . "/private/drafts")
+
+;; 		   (mu4e-maildir-shortcuts . (("/private/inbox"   . ?i)
+;; 					      ("/private/sent"    . ?s)
+;; 					      ("/private/trash"   . ?t)
+;; 					      ("/private/archive" . ?a)))
+;; 		   ))
+;; 	 ,(make-mu4e-context
+;; 	   :name "Work"
+;; 	   :match-func (lambda (msg) (when msg
+;; 				       (string-prefix-p "/work" (mu4e-message-field msg :maildir))))
+;; 	   :vars `(
+;; 		   (user-mail-address . ,(zp/get-string-from-file "/home/zaeph/org/pp/work/email"))
+;; 		   (user-full-name . "Leo Vivier")
+;; 		   (message-signature-file . "/home/zaeph/org/sig/work")
+
+;; 		   (mu4e-trash-folder  . "/work/trash")
+;; 		   (mu4e-refile-folder . "/work/archive")
+;; 		   (mu4e-sent-folder   . "/work/sent")
+;; 		   (mu4e-drafts-folder . "/work/drafts")
+
+;; 		   (mu4e-maildir-shortcuts . (("/work/inbox"   . ?i)
+;; 					      ("/work/sent"    . ?s)
+;; 					      ("/work/trash"   . ?t)
+;; 					      ("/work/archive" . ?a)))
+;; 		   ))
+;; 	 ))
+
+;; ;; Editing modeline display to add a space after the `]'
+;; (defun mu4e-context-label ()
+;;   "Propertized string with the current context name, or \"\" if
+;;   there is none."
+;;   (if (mu4e-context-current)
+;;     (concat "[" (propertize (mu4e~quote-for-modeline
+;; 			      (mu4e-context-name (mu4e-context-current)))
+;; 		  'face 'mu4e-context-face) "] ") ""))
+
+;; (setq message-send-mail-function 'smtpmail-send-it
+;;       smtpmail-auth-credentials
+;;       (expand-file-name "/home/zaeph/.authinfo.gpg")
+;;       )
+
+;; (setq send-mail-function 'sendmail-send-it)
+;; (setq message-send-mail-function 'message-send-mail-with-sendmail)
+
+;; (require 'footnote)
+
+;; ;; Format footnotes for message-mode
+;; ;; Default value had a space at the end causing it to be reflowed.
+;; (setq footnote-section-tag "Footnotes:")
+
+;; (require 'epg-config)
+;; (setq mml2015-use 'epg
+;;       epg-user-id (zp/get-string-from-file "/home/zaeph/org/pp/gpg/gpg-key-id")
+;;       mml-secure-openpgp-sign-with-sender t
+;;       mml-secure-openpgp-encrypt-to-self t)
+
+;; (add-hook 'message-mode-hook #'flyspell-mode)
+;; (add-hook 'message-mode-hook #'electric-quote-local-mode)
+;; (add-hook 'message-mode-hook #'footnote-mode)
+;; (add-hook 'message-mode-hook (lambda ()
+;; 				(zp/helm-ispell-preselect "French")))
+
+;; (setq electric-quote-context-sensitive 1)
+;; ;; -----------------------------------------------------------------------------
+;; ;; Experimental patch for electric-quote
+;; ;; Not necessary since 26.1, since this function has been modified to accommodate ‘electric-quote-chars’
+;; ;; (defun electric-quote-post-self-insert-function ()
+;; ;;   "Function that `electric-quote-mode' adds to `post-self-insert-hook'.
+;; ;; This requotes when a quoting key is typed."
+;; ;;   (when (and electric-quote-mode
+;; ;;              (memq last-command-event '(?\' ?\`)))
+;; ;;     (let ((start
+;; ;;            (if (and comment-start comment-use-syntax)
+;; ;;                (when (or electric-quote-comment electric-quote-string)
+;; ;;                  (let* ((syntax (syntax-ppss))
+;; ;;                         (beg (nth 8 syntax)))
+;; ;;                    (and beg
+;; ;;                         (or (and electric-quote-comment (nth 4 syntax))
+;; ;;                             (and electric-quote-string (nth 3 syntax)))
+;; ;;                         ;; Do not requote a quote that starts or ends
+;; ;;                         ;; a comment or string.
+;; ;;                         (eq beg (nth 8 (save-excursion
+;; ;;                                          (syntax-ppss (1- (point)))))))))
+;; ;;              (and electric-quote-paragraph
+;; ;;                   (derived-mode-p 'text-mode)
+;; ;;                   (or (eq last-command-event ?\`)
+;; ;;                       (save-excursion (backward-paragraph) (point)))))))
+;; ;;       (when start
+;; ;;         (save-excursion
+;; ;;           (if (eq last-command-event ?\`)
+;; ;;               (cond ((search-backward "“`" (- (point) 2) t)
+;; ;;                      (replace-match "`")
+;; ;;                      (when (and electric-pair-mode
+;; ;;                                 (eq (cdr-safe
+;; ;;                                      (assq ?‘ electric-pair-text-pairs))
+;; ;;                                     (char-after)))
+;; ;;                        (delete-char 1))
+;; ;;                      (setq last-command-event ?“))
+;; ;; 		    ((search-backward "‘`" (- (point) 2) t)
+;; ;;                      (replace-match "“")
+;; ;;                      (when (and electric-pair-mode
+;; ;;                                 (eq (cdr-safe
+;; ;;                                      (assq ?‘ electric-pair-text-pairs))
+;; ;;                                     (char-after)))
+;; ;;                        (delete-char 1))
+;; ;;                      (setq last-command-event ?“))
+;; ;;                     ((search-backward "`" (1- (point)) t)
+;; ;;                      (replace-match "‘")
+;; ;;                      (setq last-command-event ?‘)))
+;; ;;             (cond ((search-backward "”'" (- (point) 2) t)
+;; ;;                    (replace-match "'")
+;; ;;                    (setq last-command-event ?”))
+;; ;; 		  ((search-backward "’'" (- (point) 2) t)
+;; ;;                    (replace-match "”")
+;; ;;                    (setq last-command-event ?”))
+;; ;;                   ((search-backward "'" (1- (point)) t)
+;; ;;                    (replace-match "’")
+;; ;;                    (setq last-command-event ?’)))))))))
+;; ;; -----------------------------------------------------------------------------
+
+
+
+;; ;; SMTP
+;; ;; I have my "default" parameters from Gmail
+;; ;; (setq mu4e-sent-folder "/home/zaeph/mail/sent"
+;; ;;       ;; mu4e-sent-messages-behavior 'delete ;; Unsure how this should be configured
+;; ;;       mu4e-drafts-folder "/home/zaeph/mail/drafts"
+;; ;;       user-mail-address "[DATA EXPUNGED]"
+;; ;;       smtpmail-default-smtp-server "smtp.gmail.com"
+;; ;;       smtpmail-smtp-server "smtp.gmail.com"
+;; ;;       smtpmail-smtp-service 587)
+
+;; ;; Now I set a list of
+;; ;; (defvar my-mu4e-account-alist
+;; ;;   '(("personal"
+;; ;;      (mu4e-sent-folder "/personal/sent")
+;; ;;      (user-mail-address "[DATA EXPUNGED]")
+;; ;;      (smtpmail-smtp-user "[DATA EXPUNGED]")
+;; ;;      (smtpmail-local-domain "gmail.com")
+;; ;;      (smtpmail-default-smtp-server "smtp.gmail.com")
+;; ;;      (smtpmail-smtp-server "smtp.gmail.com")
+;; ;;      (smtpmail-smtp-service 587)
+;; ;;      )
+;; ;;     ("work"
+;; ;;      (mu4e-sent-folder "/work/sent")
+;; ;;      (user-mail-address "[DATA EXPUNGED]")
+;; ;;      (smtpmail-smtp-user "[DATA EXPUNGED]")
+;; ;;      (smtpmail-local-domain "gmail.com")
+;; ;;      (smtpmail-default-smtp-server "smtp.gmail.com")
+;; ;;      (smtpmail-smtp-server "smtp.gmail.com")
+;; ;;      (smtpmail-smtp-service 587)
+;; ;;      )
+;; ;;     ))
+
+;; ;; (defun my-mu4e-set-account ()
+;; ;;   "Set the account for composing a message."
+;; ;;   (let* ((account
+;; ;;           (if mu4e-compose-parent-message
+;; ;;               (let ((maildir (mu4e-message-field mu4e-compose-parent-message :maildir)))
+;; ;;                 (string-match "/\\(.*?\\)/" maildir)
+;; ;;                 (match-string 1 maildir))
+;; ;;             (completing-read (format "Compose with account: (%s) "
+;; ;;                                      (mapconcat #'(lambda (var) (car var))
+;; ;;                                                 my-mu4e-account-alist "/"))
+;; ;;                              (mapcar #'(lambda (var) (car var)) my-mu4e-account-alist)
+;; ;;                              nil t nil nil (caar my-mu4e-account-alist))))
+;; ;;          (account-vars (cdr (assoc account my-mu4e-account-alist))))
+;; ;;     (if account-vars
+;; ;;         (mapc #'(lambda (var)
+;; ;;                   (set (car var) (cadr var)))
+;; ;;               account-vars)
+;; ;;       (error "No email account found"))))
+;; ;; (add-hook 'mu4e-compose-pre-hook 'my-mu4e-set-account)
+
+
+
+;; ========================================
+;; =============== NOTMUCH ================
+;; ========================================
+
+(require 'notmuch)
+(require 'org-notmuch)
+
+(setq message-signature
+      (lambda ()
+        (let* ((signature-override
+                (concat (file-name-as-directory "~/org/sig")
+                        (message-sendmail-envelope-from)))
+               (signature-file
+                (if (file-readable-p signature-override)
+                    signature-override
+                  "~/.signature")))
+          (when (file-readable-p signature-file)
+            (with-temp-buffer
+              (insert-file-contents signature-file)
+	      (buffer-string))))))
+
+
+(setq message-sendmail-envelope-from 'header)
+(setq notmuch-always-prompt-for-sender t)
+(setq mml-enable-flowed t)
+
+(defun zp/message-mode-use-hard-newlines ()
+  (use-hard-newlines t 'always))
+(add-hook 'message-mode-hook #'zp/message-mode-use-hard-newlines)
+
+(setq notmuch-fcc-dirs
+      `((,(zp/get-string-from-file "/home/zaeph/org/pp/private/email") .
+	  "private/sent -inbox +sent -unread")
+	(,(zp/get-string-from-file "/home/zaeph/org/pp/work/email") .
+	  "work/sent -inbox +sent -unread")))
+
+;; (setq notmuch-user-name
+;;                   (lambda ()
+;;                     (let* ((signature-override
+;;                             (concat (file-name-as-directory "~/org/sig")
+;;                                     (message-sendmail-envelope-from)))
+;;                            (signature-file
+;;                             (if (file-readable-p signature-override)
+;;                                 signature-override
+;;                               "~/.signature")))
+;;                       (when (file-readable-p signature-file)
+;;                         (with-temp-buffer
+;;                           (insert-file-contents signature-file)
+;; 			  (buffer-string))))))
 
 (setq message-send-mail-function 'smtpmail-send-it
       smtpmail-auth-credentials
@@ -913,6 +1103,37 @@ ALL-MAILS are the all the unread emails"
 
 (setq send-mail-function 'sendmail-send-it)
 (setq message-send-mail-function 'message-send-mail-with-sendmail)
+
+(setq notmuch-search-oldest-first nil)
+
+(define-key notmuch-search-mode-map "d"
+  (lambda (&optional untrash beg end)
+    "mark thread as spam"
+    (interactive (cons current-prefix-arg (notmuch-search-interactive-region)))
+    (if untrash
+	(notmuch-search-tag (list "-deleted"))
+      (notmuch-search-tag (list "+deleted" "-inbox")) beg end)
+    (notmuch-search-next-thread)))
+
+(define-key notmuch-show-mode-map "d"
+  (lambda (&optional beg end)
+    "mark thread as spam"
+    (interactive (notmuch-search-interactive-region))
+    (notmuch-show-tag (list "+deleted" "-inbox" "-draft"))
+    (notmuch-show-next-thread-show)))
+
+(setq user-full-name "Leo Vivier"
+      mail-host-address "thinkpad")
+
+(setq notmuch-saved-searches
+      '((:name "inbox" :query "tag:inbox" :key "i")
+	(:name "unread" :query "tag:unread" :key "u")
+	(:name "flagged" :query "tag:flagged" :key "f")
+	(:name "sent" :query "tag:sent" :key "s")
+	(:name "drafts" :query "tag:draft" :key "d")
+	(:name "archive (month)" :query "* date:\"31d..today\"" :key "a")
+	(:name "archive" :query "*" :key "A")
+	(:name "trash" :query "tag:deleted" :key "t")))
 
 (require 'footnote)
 
@@ -933,116 +1154,6 @@ ALL-MAILS are the all the unread emails"
 				(zp/helm-ispell-preselect "French")))
 
 (setq electric-quote-context-sensitive 1)
-;; -----------------------------------------------------------------------------
-;; Experimental patch for electric-quote
-;; Not necessary since 26.1, since this function has been modified to accommodate ‘electric-quote-chars’
-;; (defun electric-quote-post-self-insert-function ()
-;;   "Function that `electric-quote-mode' adds to `post-self-insert-hook'.
-;; This requotes when a quoting key is typed."
-;;   (when (and electric-quote-mode
-;;              (memq last-command-event '(?\' ?\`)))
-;;     (let ((start
-;;            (if (and comment-start comment-use-syntax)
-;;                (when (or electric-quote-comment electric-quote-string)
-;;                  (let* ((syntax (syntax-ppss))
-;;                         (beg (nth 8 syntax)))
-;;                    (and beg
-;;                         (or (and electric-quote-comment (nth 4 syntax))
-;;                             (and electric-quote-string (nth 3 syntax)))
-;;                         ;; Do not requote a quote that starts or ends
-;;                         ;; a comment or string.
-;;                         (eq beg (nth 8 (save-excursion
-;;                                          (syntax-ppss (1- (point)))))))))
-;;              (and electric-quote-paragraph
-;;                   (derived-mode-p 'text-mode)
-;;                   (or (eq last-command-event ?\`)
-;;                       (save-excursion (backward-paragraph) (point)))))))
-;;       (when start
-;;         (save-excursion
-;;           (if (eq last-command-event ?\`)
-;;               (cond ((search-backward "“`" (- (point) 2) t)
-;;                      (replace-match "`")
-;;                      (when (and electric-pair-mode
-;;                                 (eq (cdr-safe
-;;                                      (assq ?‘ electric-pair-text-pairs))
-;;                                     (char-after)))
-;;                        (delete-char 1))
-;;                      (setq last-command-event ?“))
-;; 		    ((search-backward "‘`" (- (point) 2) t)
-;;                      (replace-match "“")
-;;                      (when (and electric-pair-mode
-;;                                 (eq (cdr-safe
-;;                                      (assq ?‘ electric-pair-text-pairs))
-;;                                     (char-after)))
-;;                        (delete-char 1))
-;;                      (setq last-command-event ?“))
-;;                     ((search-backward "`" (1- (point)) t)
-;;                      (replace-match "‘")
-;;                      (setq last-command-event ?‘)))
-;;             (cond ((search-backward "”'" (- (point) 2) t)
-;;                    (replace-match "'")
-;;                    (setq last-command-event ?”))
-;; 		  ((search-backward "’'" (- (point) 2) t)
-;;                    (replace-match "”")
-;;                    (setq last-command-event ?”))
-;;                   ((search-backward "'" (1- (point)) t)
-;;                    (replace-match "’")
-;;                    (setq last-command-event ?’)))))))))
-;; -----------------------------------------------------------------------------
-
-
-
-;; SMTP
-;; I have my "default" parameters from Gmail
-;; (setq mu4e-sent-folder "/home/zaeph/mail/sent"
-;;       ;; mu4e-sent-messages-behavior 'delete ;; Unsure how this should be configured
-;;       mu4e-drafts-folder "/home/zaeph/mail/drafts"
-;;       user-mail-address "[DATA EXPUNGED]"
-;;       smtpmail-default-smtp-server "smtp.gmail.com"
-;;       smtpmail-smtp-server "smtp.gmail.com"
-;;       smtpmail-smtp-service 587)
-
-;; Now I set a list of
-;; (defvar my-mu4e-account-alist
-;;   '(("personal"
-;;      (mu4e-sent-folder "/personal/sent")
-;;      (user-mail-address "[DATA EXPUNGED]")
-;;      (smtpmail-smtp-user "[DATA EXPUNGED]")
-;;      (smtpmail-local-domain "gmail.com")
-;;      (smtpmail-default-smtp-server "smtp.gmail.com")
-;;      (smtpmail-smtp-server "smtp.gmail.com")
-;;      (smtpmail-smtp-service 587)
-;;      )
-;;     ("work"
-;;      (mu4e-sent-folder "/work/sent")
-;;      (user-mail-address "[DATA EXPUNGED]")
-;;      (smtpmail-smtp-user "[DATA EXPUNGED]")
-;;      (smtpmail-local-domain "gmail.com")
-;;      (smtpmail-default-smtp-server "smtp.gmail.com")
-;;      (smtpmail-smtp-server "smtp.gmail.com")
-;;      (smtpmail-smtp-service 587)
-;;      )
-;;     ))
-
-;; (defun my-mu4e-set-account ()
-;;   "Set the account for composing a message."
-;;   (let* ((account
-;;           (if mu4e-compose-parent-message
-;;               (let ((maildir (mu4e-message-field mu4e-compose-parent-message :maildir)))
-;;                 (string-match "/\\(.*?\\)/" maildir)
-;;                 (match-string 1 maildir))
-;;             (completing-read (format "Compose with account: (%s) "
-;;                                      (mapconcat #'(lambda (var) (car var))
-;;                                                 my-mu4e-account-alist "/"))
-;;                              (mapcar #'(lambda (var) (car var)) my-mu4e-account-alist)
-;;                              nil t nil nil (caar my-mu4e-account-alist))))
-;;          (account-vars (cdr (assoc account my-mu4e-account-alist))))
-;;     (if account-vars
-;;         (mapc #'(lambda (var)
-;;                   (set (car var) (cadr var)))
-;;               account-vars)
-;;       (error "No email account found"))))
-;; (add-hook 'mu4e-compose-pre-hook 'my-mu4e-set-account)
 
 
 
@@ -6283,7 +6394,7 @@ See ‘/home/zaeph/.bin/terminator-dwim’ for more info."
      ("\\.pdf\\'" . default))))
  '(package-selected-packages
    (quote
-    (company-anaconda anaconda-mode company realgud ace-link ivy-hydra counsel lispy dumb-jump lua-mode fish-mode exwm el-patch diminish circe-notifications circe ob-async nov which-key eyebrowse diff-hl recentf-ext flycheck-pos-tip helm-projectile projectile clean-aindent-mode volatile-highlights duplicate-thing org-noter magit hydra highlight mu4e-alert ox-hugo org writeroom-mode anzu flycheck spaceline helm-chronos chronos olivetti multiple-cursors expand-region ace-window auto-minor-mode ledger-mode sublimity auctex smooth-scrolling yasnippet pdf-tools htmlize helm-bibtex free-keys evil color-theme base16-theme)))
+    (bug-hunter org org-plus-contrib messages-are-flowing notmuch forge go-mode company-anaconda anaconda-mode company realgud ace-link ivy-hydra counsel lispy dumb-jump lua-mode fish-mode exwm el-patch diminish circe-notifications circe ob-async nov which-key eyebrowse diff-hl recentf-ext flycheck-pos-tip helm-projectile projectile clean-aindent-mode volatile-highlights duplicate-thing org-noter magit hydra highlight mu4e-alert ox-hugo writeroom-mode anzu flycheck spaceline helm-chronos chronos olivetti multiple-cursors expand-region ace-window auto-minor-mode ledger-mode sublimity auctex smooth-scrolling yasnippet pdf-tools htmlize helm-bibtex free-keys evil color-theme base16-theme)))
  '(safe-local-variable-values
    (quote
     ((eval add-hook
@@ -6294,7 +6405,9 @@ See ‘/home/zaeph/.bin/terminator-dwim’ for more info."
      (org-confirm-babel-evaluate)
      (after-save-hook . org-html-export-to-html))))
  '(send-mail-function (quote mailclient-send-it))
- '(size-indication-mode t))
+ '(size-indication-mode t)
+ '(smtpmail-smtp-server "127.0.0.1")
+ '(smtpmail-smtp-service 25))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
