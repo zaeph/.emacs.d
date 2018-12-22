@@ -5740,6 +5740,8 @@ windows."
   (zp/org-format-face 'org-tag-reading   :weight 'bold :foreground "DeepPink")
   (zp/org-format-face 'org-tag-french    :weight 'bold :foreground "DodgerBlue1")
 
+  (zp/org-format-face 'magit-tag :foreground "SpringGreen4")
+
   (zp/spaceline-theme "dark")
   (zp/pdf-view-midnight-mode-theme)
   )
@@ -5803,10 +5805,12 @@ windows."
   (zp/org-format-face 'org-priority-face-e :foreground "RoyalBlue")
 
   (zp/org-format-face 'org-tag-location  :weight 'bold :foreground "BlueViolet")
-  (zp/org-format-face 'org-tag-todo   :weight 'bold :foreground "Skyblue1")
+  (zp/org-format-face 'org-tag-todo	 :weight 'bold :foreground "Skyblue1")
   (zp/org-format-face 'org-tag-important :weight 'bold :foreground "red")
   (zp/org-format-face 'org-tag-reading   :weight 'bold :foreground "DeepPink")
   (zp/org-format-face 'org-tag-french    :weight 'bold :foreground "DodgerBlue1")
+
+  (zp/org-format-face 'magit-tag :foreground "SpringGreen4")
 
   (zp/spaceline-theme "light")
   (zp/pdf-view-midnight-mode-theme)
