@@ -264,7 +264,7 @@ that date.  Leave point on the first amount."
 (global-set-key (kbd "M-J") 'duplicate-thing)
 
 (require 'flycheck)
-(add-hook 'after-init-hook #'global-flycheck-mode)
+;; (add-hook 'after-init-hook #'global-flycheck-mode)
 (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc))
 (setq flycheck-emacs-lisp-load-path 'inherit
       flycheck-display-errors-delay 0.5)
