@@ -4472,6 +4472,19 @@ org-agenda context."
 	  (setq zp/mu4e-before-config (current-window-configuration))
 	  (mu4e)))))
 
+(defun zp/switch-to-notmuch ()
+  (interactive)
+  (cond ((string-match "\\*notmuch-hello\\*" (buffer-name))
+	 (notmuch-bury-or-kill-this-buffer)
+	 (start-process-shell-command "notmuch-new" nil "check-mail")
+	 (set-window-configuration zp/notmuch-before-config))
+	((string-match "\\*notmuch-.*\\*" (buffer-name))
+	 (notmuch-bury-or-kill-this-buffer))
+	(t
+	 (setq zp/notmuch-before-config (current-window-configuration))
+	 (delete-other-windows)
+	 (notmuch))))
+
 (advice-add #'mu4e-quit :after (lambda ()
 				 (mu4e-update-mail-and-index t)))
 
@@ -5452,7 +5465,8 @@ Every ELEM in LIST is formatted as follows:
 (global-set-key (kbd "H-<backspace>") 'yas-prev-field)
 (global-set-key (kbd "C-c x") 'zp/toggle-org-latex-pdf-process)
 ;; (global-set-key (kbd "H-g") 'keyboard-quit)
-(global-set-key (kbd "H-l") 'zp/switch-to-mu4e)
+;; (global-set-key (kbd "H-l") 'zp/switch-to-mu4e)
+(global-set-key (kbd "H-l") 'zp/switch-to-notmuch)
 (global-set-key (kbd "H-M-l") 'mu4e-compose-new)
 ;; (global-set-key (kbd "H-m") 'zp/switch-to-magit)
 (global-set-key (kbd "H-m") 'magit-status)
