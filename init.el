@@ -3439,6 +3439,7 @@ on init and them removes itself."
 ;; =========== WHITESPACE-MODE ============
 ;; ========================================
 
+(require 'whitespace)
 (defun zp/whitespace-mode-lines-tail ()
   (interactive)
   (if (bound-and-true-p whitespace-mode)
