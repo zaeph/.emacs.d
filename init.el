@@ -1827,6 +1827,7 @@ return `nil'."
       zp/org-agenda-files-hacking-alist
       '(("p h e" . "/home/zaeph/org/projects/hacking/emacs/emacs.org.gpg")
 	("p h l" . "/home/zaeph/org/projects/hacking/linux/linux.org.gpg")
+	("p h o" . "/home/zaeph/org/projects/hacking/opsec/opsec.org.gpg")
 	("p h h" . "/home/zaeph/org/projects/hacking/hacking.org.gpg")
       	("p h p" . "/home/zaeph/org/projects/hacking/python/python.org.gpg"))
       zp/org-agenda-files-hacking
