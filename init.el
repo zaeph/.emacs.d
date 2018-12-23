@@ -1131,7 +1131,7 @@ that date.  Leave point on the first amount."
 	(:name "flagged" :query "tag:flagged" :key "f")
 	(:name "sent" :query "tag:sent" :key "s")
 	(:name "drafts" :query "tag:draft" :key "d")
-	(:name "archive (month)" :query "* date:\"31d..today\"" :key "a")
+	(:name "archive (week)" :query "* date:\"7d..today\"" :key "a")
 	(:name "archive" :query "*" :key "A")
 	(:name "trash" :query "tag:deleted" :key "t")))
 
