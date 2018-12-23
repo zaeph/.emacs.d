@@ -1123,7 +1123,7 @@ that date.  Leave point on the first amount."
     (notmuch-show-next-thread-show)))
 
 (setq user-full-name "Leo Vivier"
-      mail-host-address "thinkpad")
+      mail-host-address "hidden")
 
 (setq notmuch-saved-searches
       '((:name "inbox" :query "tag:inbox" :key "i")
