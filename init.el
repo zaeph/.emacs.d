@@ -2994,9 +2994,9 @@ Based on `org-agenda-set-property'."
 
 (setq zp/org-agenda-capture-templates
       '(("f" "Todo" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
-	 "* TODO %?\n%t")
+	 "* TODO %?\nSCHEDULED: %t")
 	("r" "Todo (+time)" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
-	 "* TODO %?\n%^T")
+	 "* TODO %?\nSCHEDULED: %^T")
 
 	("d" "Date" entry (file+headline "/home/zaeph/org/life.org.gpg" "Calendar")
 	 "* %?\n%t")
