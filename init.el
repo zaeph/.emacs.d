@@ -4476,7 +4476,7 @@ org-agenda context."
   (interactive)
   (cond ((string-match "\\*notmuch-hello\\*" (buffer-name))
 	 (notmuch-bury-or-kill-this-buffer)
-	 (start-process-shell-command "notmuch-new" nil "check-mail")
+	 (start-process-shell-command "notmuch-new" nil "systemctl --user start check-mail.service")
 	 (set-window-configuration zp/notmuch-before-config))
 	((string-match "\\*notmuch-.*\\*" (buffer-name))
 	 (notmuch-bury-or-kill-this-buffer))
