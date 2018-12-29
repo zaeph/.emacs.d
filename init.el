@@ -20,6 +20,9 @@
 
 (defalias 'yes-or-no-p 'y-or-n-p)
 
+;; Show current filename in titlebar
+(setq frame-title-format "%b")
+
 (add-to-list 'load-path "/home/zaeph/.emacs.d/lisp")
 (add-to-list 'load-path (expand-file-name "/usr/share/emacs/site-lisp"))
 
