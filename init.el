@@ -341,6 +341,9 @@ that date.  Leave point on the first amount."
 ;; (require 'exwm-config)
 ;; (exwm-config-default)
 
+;; line-number-mode
+;; (setq display-line-numbers 'relative)
+
 
 
 ;; ========================================
