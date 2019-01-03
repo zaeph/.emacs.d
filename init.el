@@ -1128,6 +1128,8 @@ that date.  Leave point on the first amount."
     (notmuch-show-tag (list "+deleted" "-inbox" "-draft"))
     (notmuch-show-next-thread-show)))
 
+(define-key notmuch-hello-mode-map "q" #'zp/notmuch-hello-quit)
+
 (setq user-full-name "Leo Vivier"
       mail-host-address "hidden")
 
@@ -4479,12 +4481,16 @@ org-agenda context."
 	  (setq zp/mu4e-before-config (current-window-configuration))
 	  (mu4e)))))
 
+(defun zp/notmuch-hello-quit ()
+  (interactive)
+  (notmuch-bury-or-kill-this-buffer)
+  (start-process-shell-command "notmuch-new" nil "systemctl --user start check-mail.service")
+  (set-window-configuration zp/notmuch-before-config))
+
 (defun zp/switch-to-notmuch ()
   (interactive)
   (cond ((string-match "\\*notmuch-hello\\*" (buffer-name))
-	 (notmuch-bury-or-kill-this-buffer)
-	 (start-process-shell-command "notmuch-new" nil "systemctl --user start check-mail.service")
-	 (set-window-configuration zp/notmuch-before-config))
+	 (zp/notmuch-hello-quit))
 	((string-match "\\*notmuch-.*\\*" (buffer-name))
 	 (notmuch-bury-or-kill-this-buffer))
 	(t
