@@ -3299,7 +3299,7 @@ _b_: Media      _l_: Linux      _r_: Research   _p_: Psychotherapy
   "Hook to `org-agenda-finalize-hook' which creates the appt-list
 on init and them removes itself."
   (zp/org-agenda-to-appt)
-  (remove-hook 'org-agenda-finalize-hook 'zp/org-agenda-to-appt-on-load))
+  (remove-hook 'org-agenda-finalize-hook #'zp/org-agenda-to-appt-on-load))
 
 (defun zp/org-agenda-to-appt-on-save ()
   ;; (if (string= (buffer-file-name) (concat (getenv "HOME") "/org/life.org.gpg"))
@@ -3315,13 +3315,13 @@ on init and them removes itself."
 ;; (zp/org-agenda-to-appt)
 
 ;; Everyday at 12:05am
-;; (run-at-time "12:05am" (* 24 3600) 'zp/org-agenda-to-appt)
+(run-at-time "12:05am" (* 24 3600) 'zp/org-agenda-to-appt)
 
 ;; When saving org-agenda-files
-(add-hook 'after-save-hook 'zp/org-agenda-to-appt-on-save)
+(add-hook 'after-save-hook #'zp/org-agenda-to-appt-on-save)
 
-;; When (re)loading an agenda
-(add-hook 'org-agenda-finalize-hook 'zp/org-agenda-to-appt-on-load)
+;; When loading org-agenda for the first time
+(add-hook 'org-agenda-finalize-hook #'zp/org-agenda-to-appt-on-load)
 
 ;; ----------------------------------------
 ;; Remove hooks
