@@ -3217,6 +3217,14 @@ KEYANDHEADLINE should be a list of cons cells of the form (\"key\" . \"headline\
 			     ("t" . "Tasks")
 			     ("c" . "Calendar")))
 
+  (zp/make-hydra-org-refile zp/hydra-org-refile-file-hacking
+			    "Emacs"
+			    "/home/zaeph/org/projects/hacking/hacking.org.gpg"
+			    (("i" . "Inbox")
+			     ("t" . "Tasks")
+			     ("b" . "Troubleshooting")
+			     ("c" . "Contributing")))
+
   (zp/make-hydra-org-refile zp/hydra-org-refile-file-emacs
 			    "Emacs"
 			    "/home/zaeph/org/projects/hacking/emacs/emacs.org.gpg"
@@ -3241,8 +3249,9 @@ KEYANDHEADLINE should be a list of cons cells of the form (\"key\" . \"headline\
   "
 ^Life^          ^Prog^          ^Uni^           ^Mental^
 ^^^^^^^^----------------------------------------------------------
-_o_: Life       _e_: Emacs      _u_: University _a_: Awakening
+_o_: Life       _h_: Hacking    _u_: University _a_: Awakening
 _b_: Media      _l_: Linux      _r_: Research   _p_: Psychotherapy
+^^              _e_: Emacs
 
 "
   ("o" zp/hydra-org-refile-file-life/body :exit t)
@@ -3251,6 +3260,7 @@ _b_: Media      _l_: Linux      _r_: Research   _p_: Psychotherapy
   ("p" zp/hydra-org-refile-file-psychotherapy/body :exit t)
   ("u" zp/hydra-org-refile-file-university/body :exit t)
   ("r" zp/hydra-org-refile-file-research/body :exit t)
+  ("h" zp/hydra-org-refile-file-hacking/body :exit t)
   ("e" zp/hydra-org-refile-file-emacs/body :exit t)
   ("l" zp/hydra-org-refile-file-linux/body :exit t)
 
