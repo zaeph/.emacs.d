@@ -5161,8 +5161,10 @@ will not be modified."
   (interactive)
   (let* ((created (or NAME org-created-property-name))
          (fmt (if active "<%s>" "[%s]"))
-         (now  (format fmt (format-time-string "%Y-%m-%d %a %H:%M"))))
-    (unless (org-entry-get (point) created nil)
+         (now (format fmt (format-time-string "%Y-%m-%d %a %H:%M")))
+	 (add-created (plist-get org-capture-plist :add-created)))
+    (unless (or (org-entry-get (point) created nil)
+		(not add-created))
       (org-set-property created now))))
 
 (add-hook 'org-capture-before-finalize-hook #'org-set-created-property)
