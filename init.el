@@ -2775,7 +2775,8 @@ Based on `org-agenda-set-property'."
 (defun zp/org-agenda-set-appt-warntime ()
   "Set the `APPT_WARNTIME' for the current entry in the agenda."
   (interactive)
-  (zp/org-agenda-set-property 'zp/org-set-appt-warntime))
+  (zp/org-agenda-set-property 'zp/org-set-appt-warntime)
+  (zp/org-agenda-to-appt))
 
 (defun zp/org-set-location ()
   "Set the `LOCATION' property."
@@ -2785,6 +2786,22 @@ Based on `org-agenda-set-property'."
   "Set the `LOCATION' for the current entry in the agenda."
   (interactive)
   (zp/org-agenda-set-property 'zp/org-set-location))
+
+(defun zp/org-agenda-date-prompt-and-update-appt (arg)
+  "Combine ‘org-agenda-date-prompt’ and ‘zp/org-agenda-to-appt’.
+
+Check their respective docstrings for more info."
+  (interactive "P")
+  (org-agenda-date-prompt arg)
+  (zp/org-agenda-to-appt))
+
+(defun zp/org-agenda-schedule-and-update-appt (arg &optional time)
+  "Combine ‘org-agenda-schedule’ and ‘zp/org-agenda-to-appt’.
+
+Check their respective dosctrings for more info."
+  (interactive "P")
+  (org-agenda-schedule arg time)
+  (zp/org-agenda-to-appt))
 
 (defun zp/org-agenda-mode-config ()
   "For use with `org-agenda-mode'."
@@ -2802,6 +2819,8 @@ Based on `org-agenda-set-property'."
   (local-set-key (kbd "C-c C-x r") 'zp/org-agenda-set-appt-warntime)
   (local-set-key (kbd "C-c C-x l") 'zp/org-agenda-set-location)
   (local-set-key (kbd "C-c C-x d") 'zp/org-agenda-delete-property)
+  (local-set-key (kbd ">") 'zp/org-agenda-date-prompt-and-update-appt)
+  (local-set-key (kbd "C-c C-s") 'zp/org-agenda-schedule-and-update-appt)
   ;; (local-set-key (kbd "C-c C-w") 'zp/org-agenda-refile)
   (local-set-key (kbd "C-c C-S-w") 'zp/org-agenda-refile-with-paths)
   (local-set-key (kbd "Z") 'org-resolve-clocks)
@@ -3290,6 +3309,7 @@ _b_: Media      _l_: Linux      _r_: Research   _p_: Psychotherapy
 
 ; Use appointment data from org-mode
 (defun zp/org-agenda-to-appt ()
+  "Update appt-list based on org-agenda items."
   (interactive)
   (setq appt-time-msg-list nil)
   (let ((inhibit-message t))
