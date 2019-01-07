@@ -5147,6 +5147,28 @@ Version 2017-08-25"
 
 
 
+;; Add ‘CREATED’ property to all captured items
+
+(defvar org-created-property-name "CREATED"
+  "The name of the org-mode property that stores the creation date of the entry")
+
+(defun org-set-created-property (&optional active NAME)
+  "Set a property on the entry giving the creation time.
+
+By default the property is called CREATED. If given the `NAME'
+argument will be used instead. If the property already exists, it
+will not be modified."
+  (interactive)
+  (let* ((created (or NAME org-created-property-name))
+         (fmt (if active "<%s>" "[%s]"))
+         (now  (format fmt (format-time-string "%Y-%m-%d %a %H:%M"))))
+    (unless (org-entry-get (point) created nil)
+      (org-set-property created now))))
+
+(add-hook 'org-capture-before-finalize-hook #'org-set-created-property)
+
+
+
 ;; Ediff in dired
 ;; https://oremacs.com/2017/03/18/dired-ediff/
 ;; (require 'dired)
