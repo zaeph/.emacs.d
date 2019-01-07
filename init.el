@@ -5152,7 +5152,7 @@ Version 2017-08-25"
 (defvar org-created-property-name "CREATED"
   "The name of the org-mode property that stores the creation date of the entry")
 
-(defun org-set-created-property (&optional active NAME)
+(defun zp/org-set-created-property (&optional active NAME)
   "Set a property on the entry giving the creation time.
 
 By default the property is called CREATED. If given the `NAME'
@@ -5167,7 +5167,7 @@ will not be modified."
 		(org-entry-get (point) created nil))
       (org-set-property created now))))
 
-(add-hook 'org-capture-before-finalize-hook #'org-set-created-property)
+(add-hook 'org-capture-before-finalize-hook #'zp/org-set-created-property)
 
 
 
