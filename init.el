@@ -3308,10 +3308,12 @@ _b_: Media      _l_: Linux      _r_: Research   _p_: Psychotherapy
 
 
 ; Use appointment data from org-mode
-(defun zp/org-agenda-to-appt ()
+(defun zp/org-agenda-to-appt (&optional arg)
   "Update appt-list based on org-agenda items."
-  (interactive)
+  (interactive "P")
   (setq appt-time-msg-list nil)
+  (if (equal arg '(4))
+      (appt-check))
   (let ((inhibit-message t))
     (org-agenda-to-appt)))
 
