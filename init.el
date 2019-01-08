@@ -2773,11 +2773,11 @@ Based on `org-agenda-set-property'."
   "Set the `APPT_WARNTIME' property."
   (interactive)
   (org-set-property "APPT_WARNTIME" (org-read-property-value "APPT_WARNTIME")))
-(defun zp/org-agenda-set-appt-warntime ()
+(defun zp/org-agenda-set-appt-warntime (arg)
   "Set the `APPT_WARNTIME' for the current entry in the agenda."
-  (interactive)
+  (interactive "P")
   (zp/org-agenda-set-property 'zp/org-set-appt-warntime)
-  (zp/org-agenda-to-appt))
+  (zp/org-agenda-to-appt arg))
 
 (defun zp/org-set-location ()
   "Set the `LOCATION' property."
