@@ -1137,9 +1137,10 @@ that date.  Leave point on the first amount."
       '((:name "inbox" :query "tag:inbox" :key "i")
 	(:name "unread" :query "tag:unread" :key "u")
 	(:name "flagged" :query "tag:flagged" :key "f")
-	(:name "sent" :query "tag:sent" :key "s")
 	(:name "drafts" :query "tag:draft" :key "d")
-	(:name "archive (week)" :query "* date:\"7d..today\"" :key "a")
+	(:name "sent (last week)" :query "tag:sent date:\"7d..today\"" :key "s")
+	(:name "archive (last week)" :query "* date:\"7d..today\"" :key "a")
+	(:name "sent" :query "tag:sent" :key "S")
 	(:name "archive" :query "*" :key "A")
 	(:name "trash" :query "tag:deleted" :key "t")))
 
