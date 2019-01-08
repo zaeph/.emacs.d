@@ -3313,8 +3313,9 @@ _b_: Media      _l_: Linux      _r_: Research   _p_: Psychotherapy
   "Update appt-list based on org-agenda items."
   (interactive "P")
   (setq appt-time-msg-list nil)
-  (if (equal arg '(4))
-      (appt-check))
+  (unless (not (equal arg '(4)))
+    (appt-check)
+    (message "Appt has been reset"))
   (let ((inhibit-message t))
     (org-agenda-to-appt)))
 
