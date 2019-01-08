@@ -1688,6 +1688,7 @@ return `nil'."
 	("^contrib$" "~/org/svg/icons/chill.svg" nil nil :ascent center)
 	("^bug$" "~/org/svg/icons/cross.svg" nil nil :ascent center)
 	("^research$" "~/org/svg/icons/research.svg" nil nil :ascent center)
+	("^swim$" "~/org/svg/icons/foxhound-3.svg" nil nil :ascent center)
 	(".*" '(space . (:width (24))) nil nil :ascent center)))
 
 ;; Babel
