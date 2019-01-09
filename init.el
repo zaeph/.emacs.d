@@ -1885,7 +1885,8 @@ return `nil'."
       	;; ("p C" . "/home/zaeph/org/projects/university/research/sty/presentation.sty")
 	)
       zp/misc-files-alist
-      '(("p d" . "/tmp/asus/home/zaeph/Downloads/Sharing/dl.org"))
+      '(;; ("p d" . "/tmp/asus/home/zaeph/Downloads/Sharing/dl.org")
+	("p d" . "/ssh:asus:/home/zaeph/Downloads/Sharing/dl.org"))
 
       zp/org-agenda-files-journals-alist
       '(("j j" . "/home/zaeph/org/journal.org.gpg")
