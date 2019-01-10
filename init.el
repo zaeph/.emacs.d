@@ -2982,6 +2982,8 @@ Check their respective dosctrings for more info."
 	;;  "* %(zp/letterboxd-set-link)%?%^{MEDIA_DIRECTOR}p%^{MEDIA_YEAR}p%(zp/letterboxd-set-duration)")
 	("sf" "Film recommendation" entry (file+olp "/home/zaeph/org/media.org.gpg" "Films" "List")
 	 "* %(zp/letterboxd-capture)")
+	("sF" "Film recommendation (insert at top)" entry (file+olp "/home/zaeph/org/media.org.gpg" "Films" "List")
+	 "* %(zp/letterboxd-capture)" :prepend t)
        	("sw" "Swimming workout" entry (file+weektree+prompt "/home/zaeph/org/sports/swimming/swimming.org.gpg")
 	 "* DONE Training%^{SWIM_DISTANCE}p%^{SWIM_DURATION}p\n%t%(print zp/swimming-workout-default)")
 
