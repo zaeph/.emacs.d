@@ -1916,6 +1916,7 @@ return `nil'."
 	;; ("p c t"	. "/home/zaeph/org/projects/university/classes/espe/tronc-commun.org.gpg")
 	;; Languages
 	("p j" . "/home/zaeph/org/projects/lang/ja/ja.org.gpg")
+	("p g" . "/home/zaeph/org/projects/lang/de/de.org.gpg")
       	;; Activism
       	;; ("p a d"  . "[DATA EXPUNGED]")
       	;; ("p a s"  . "[DATA EXPUNGED]")
