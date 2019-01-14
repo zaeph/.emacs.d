@@ -5735,7 +5735,7 @@ windows."
   (spaceline-toggle-buffer-id-on)
   (setq powerline-height 45
 	zp/powerline-text-height 0.95
-	powerline-text-scale-factor 0.88
+	powerline-text-scale-factor 0.93
 	powerline-default-separator 'arrow)
 
   (set-face-attribute 'powerline-active0 nil
@@ -5855,7 +5855,7 @@ windows."
 (defun zp/set-fonts ()
   ;; Default font
   (set-face-attribute 'default nil
-  		      :font "Iosevka Prog" :height 100 :weight 'normal)
+  		      :font "Sarasa Term SC" :height 104 :weight 'normal)
   ;; variable-pitch & fixed-pitch
   (set-face-attribute 'variable-pitch nil
   		      :font "Bliss Pro Prog" :height 1.3)
@@ -5865,9 +5865,9 @@ windows."
 		      :font "Iosevka Prog Slab" :height 1.0)
 
   ;; CJK fonts
-  (set-fontset-font (frame-parameter nil 'font) 'han '("Noto Sans CJK JP"))
-  (set-fontset-font (frame-parameter nil 'font) 'japanese-jisx0208 '("Noto Sans CJK JP"))
-  (set-fontset-font (frame-parameter nil 'font) 'hangul '("Noto Sans CJK KR"))
+  ;; (set-fontset-font (frame-parameter nil 'font) 'han '("Noto Sans CJK JP"))
+  ;; (set-fontset-font (frame-parameter nil 'font) 'japanese-jisx0208 '("Noto Sans CJK JP"))
+  ;; (set-fontset-font (frame-parameter nil 'font) 'hangul '("Noto Sans CJK KR"))
   )
 
 ;; Fonts for emoji
