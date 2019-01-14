@@ -3344,7 +3344,7 @@ on init and them removes itself."
 ;; (zp/org-agenda-to-appt)
 
 ;; Everyday at 12:05am
-(run-at-time "12:05am" (* 24 3600) 'zp/org-agenda-to-appt)
+;; (run-at-time "12:05am" (* 24 3600) 'zp/org-agenda-to-appt)
 
 ;; When saving org-agenda-files
 (add-hook 'after-save-hook #'zp/org-agenda-to-appt-on-save)
