@@ -1434,8 +1434,16 @@ If text is selected, adds furigana to the selected kanji instead."
       diff-switches "--textconv")
 
 ;; Default
-;; (setq diff-command "diff"
-;;       diff-switches "-u")
+(setq diff-command "diff"
+      diff-switches "-u")
+
+(defun zp/set-diff-backend-git-diff ()
+  "Set diff backend to ‘git diff’.
+Modifies ‘diff-command’ and ‘diff-switches’ to use ‘git diff’."
+  (setq-local diff-command "git --no-pager diff")
+  (setq-local diff-switches "--textconv"))
+
+(add-hook 'backup-walker-mode-hook #'zp/set-diff-backend-git-diff)
 
 
 
