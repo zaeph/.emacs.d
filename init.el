@@ -1415,7 +1415,7 @@ If text is selected, adds furigana to the selected kanji instead."
  vc-make-backup-files t
 
  ;; Number of backups to keep
- kept-new-versions 100
+ kept-new-versions 500
  kept-old-versions 0
  delete-old-versions t
 
