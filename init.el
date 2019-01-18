@@ -1404,12 +1404,32 @@ If text is selected, adds furigana to the selected kanji instead."
 ;; ================ BACKUP ================
 ;; ========================================
 
-(setq backup-directory-alist `(("." . "/home/zaeph/.saves")))
-(setq backup-by-copying t)
-(setq delete-old-versions t
-      kept-new-versions 6
-      kept-old-versions 2
-      version-control t)
+(setq
+ ;; Don't clobber symlinks.
+ backup-by-copying t
+
+ ;; Use versioned backups
+ version-control t
+
+ ;; Also backup versioned files
+ vc-make-backup-files t
+
+ ;; Number of backups to keep
+ kept-new-versions 100
+ kept-old-versions 0
+ delete-old-versions t
+
+ backup-directory-alist `(("." . "/home/zaeph/.saves")))
+
+
+
+(defun force-buffer-backup ()
+  "Force buffer to back up on next save."
+  (setq buffer-backed-up nil))
+
+;; Back up buffers on every save.
+(add-hook 'before-save-hook 'force-buffer-backup)
+
 
 
 ;; ========================================
