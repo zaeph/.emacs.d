@@ -1404,6 +1404,10 @@ If text is selected, adds furigana to the selected kanji instead."
 ;; ================ BACKUP ================
 ;; ========================================
 
+;; By default, Emacs only create a backup only once per editing
+;; session right before the first save. In other words, it preserves
+;; the state of the file before Emacs touched it.
+
 (setq
  ;; Don't clobber symlinks.
  backup-by-copying t
@@ -1415,18 +1419,11 @@ If text is selected, adds furigana to the selected kanji instead."
  vc-make-backup-files t
 
  ;; Number of backups to keep
- kept-new-versions 500
+ kept-new-versions 10
  kept-old-versions 0
  delete-old-versions t
 
  backup-directory-alist `(("." . "/home/zaeph/.saves")))
-
-(defun force-buffer-backup ()
-  "Force buffer to back up on next save."
-  (setq buffer-backed-up nil))
-
-;; Back up buffers on every save.
-(add-hook 'before-save-hook 'force-buffer-backup)
 
 ;; Diff backend (default)
 (setq diff-command "diff"
