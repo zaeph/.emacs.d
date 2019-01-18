@@ -1421,14 +1421,21 @@ If text is selected, adds furigana to the selected kanji instead."
 
  backup-directory-alist `(("." . "/home/zaeph/.saves")))
 
-
-
 (defun force-buffer-backup ()
   "Force buffer to back up on next save."
   (setq buffer-backed-up nil))
 
 ;; Back up buffers on every save.
 (add-hook 'before-save-hook 'force-buffer-backup)
+
+;; Change diff backend to ‘git diff --textconv’
+;; Allows for gpg files to be decrypted on the fly
+(setq diff-command "git --no-pager diff"
+      diff-switches "--textconv")
+
+;; Default
+;; (setq diff-command "diff"
+;;       diff-switches "-u")
 
 
 
