@@ -23,6 +23,9 @@
 ;; Show current filename in titlebar
 (setq frame-title-format "%b")
 
+;; Use spaces instead of tabs
+(setq-default indent-tabs-mode nil)
+
 (add-to-list 'load-path "/home/zaeph/.emacs.d/lisp")
 (add-to-list 'load-path (expand-file-name "/usr/share/emacs/site-lisp"))
 
