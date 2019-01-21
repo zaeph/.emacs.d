@@ -259,8 +259,13 @@ that date.  Leave point on the first amount."
 (require 'volatile-highlights)
 (volatile-highlights-mode)
 
-(require 'clean-aindent-mode)
-(add-hook 'prog-mode-hook 'clean-aindent-mode)
+;; Removed because of conflict with use-hard-newlines
+;; (require 'clean-aindent-mode)
+;; (add-hook 'prog-mode-hook #'clean-aindent-mode)
+
+(require 'ws-butler)
+(add-hook 'prog-mode-hook #'ws-butler-mode)
+
 (add-hook 'prog-mode-hook 'zp/whitespace-mode-lines-tail)
 
 (global-set-key (kbd "M-U") 'universal-argument)
@@ -6566,7 +6571,7 @@ See ‘/home/zaeph/.bin/terminator-dwim’ for more info."
      ("\\.pdf\\'" . default))))
  '(package-selected-packages
    (quote
-    (backup-walker bug-hunter org org-plus-contrib messages-are-flowing notmuch forge go-mode company-anaconda anaconda-mode company realgud ace-link ivy-hydra counsel lispy dumb-jump lua-mode fish-mode exwm el-patch diminish circe-notifications circe ob-async nov which-key eyebrowse diff-hl recentf-ext flycheck-pos-tip helm-projectile projectile clean-aindent-mode volatile-highlights duplicate-thing org-noter magit hydra highlight mu4e-alert ox-hugo writeroom-mode anzu flycheck spaceline helm-chronos chronos olivetti multiple-cursors expand-region ace-window auto-minor-mode ledger-mode sublimity auctex smooth-scrolling yasnippet pdf-tools htmlize helm-bibtex free-keys evil color-theme base16-theme)))
+    (ws-butler minions moody org-super-agenda backup-walker bug-hunter org org-plus-contrib messages-are-flowing notmuch forge go-mode company-anaconda anaconda-mode company realgud ace-link ivy-hydra counsel lispy dumb-jump lua-mode fish-mode exwm el-patch diminish circe-notifications circe ob-async nov which-key eyebrowse diff-hl recentf-ext flycheck-pos-tip helm-projectile projectile clean-aindent-mode volatile-highlights duplicate-thing org-noter magit hydra highlight mu4e-alert ox-hugo writeroom-mode anzu flycheck spaceline helm-chronos chronos olivetti multiple-cursors expand-region ace-window auto-minor-mode ledger-mode sublimity auctex smooth-scrolling yasnippet pdf-tools htmlize helm-bibtex free-keys evil color-theme base16-theme)))
  '(safe-local-variable-values
    (quote
     ((eval add-hook
