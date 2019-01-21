@@ -1877,9 +1877,6 @@ return `nil'."
 (define-prefix-command 'ledger-map)
 (global-set-key (kbd "C-c l") 'ledger-map)
 
-(define-prefix-command 'journal-map)
-(global-set-key (kbd "C-c j") 'journal-map)
-
 (define-prefix-command 'projects-map)
 (global-set-key (kbd "C-c p") 'projects-map)
 
@@ -1924,17 +1921,18 @@ return `nil'."
       '(;; ("p d" . "/tmp/asus/home/zaeph/Downloads/Sharing/dl.org")
 	("p d" . "/ssh:asus:/home/zaeph/Downloads/Sharing/dl.org"))
 
-      zp/org-agenda-files-journals-alist
-      '(("j j" . "/home/zaeph/org/journal.org.gpg")
-	("j a" . "/home/zaeph/org/projects/awakening/journal.org.gpg")
-	("j p" . "/home/zaeph/org/projects/psychotherapy/journal.org.gpg")
-      	("j w" . "/home/zaeph/org/projects/writing/journal.org.gpg")
-      	("j u" . "/home/zaeph/org/projects/university/journal.org.gpg")
-      	("j r" . "/home/zaeph/org/projects/university/research/journal.org.gpg")
-      	("j h" . "/home/zaeph/org/projects/hacking/journal.org.gpg")
-      	("j s" . "/home/zaeph/org/sports/swimming/journal.org.gpg"))
-      zp/org-agenda-files-journals
-      (mapcar 'cdr zp/org-agenda-files-journals-alist)
+      zp/journal-files-alist
+      '(("j" . "/home/zaeph/org/journal.org.gpg")
+	;; ("j a" . "/home/zaeph/org/projects/awakening/journal.org.gpg")
+	;; ("j p" . "/home/zaeph/org/projects/psychotherapy/journal.org.gpg")
+      	;; ("j w" . "/home/zaeph/org/projects/writing/journal.org.gpg")
+      	;; ("j u" . "/home/zaeph/org/projects/university/journal.org.gpg")
+      	;; ("j r" . "/home/zaeph/org/projects/university/research/journal.org.gpg")
+      	;; ("j h" . "/home/zaeph/org/projects/hacking/journal.org.gpg")
+      	;; ("j s" . "/home/zaeph/org/sports/swimming/journal.org.gpg")
+        )
+      zp/journal-files
+      (mapcar 'cdr zp/journal-files-alist)
 
       zp/org-agenda-files-projects-alist
       '(("p w" . "/home/zaeph/org/projects/writing/writing.org.gpg")
@@ -2008,7 +2006,7 @@ return `nil'."
   (zp/set-shortcuts zp/ledger-files-alist)
   (zp/set-shortcuts zp/research-files-alist)
   (zp/set-shortcuts zp/misc-files-alist)
-  (zp/set-shortcuts zp/org-agenda-files-journals-alist)
+  (zp/set-shortcuts zp/journal-files-alist)
   (zp/set-shortcuts zp/org-agenda-files-projects-alist)
   (zp/set-shortcuts zp/org-agenda-files-awakening-alist)
   (zp/set-shortcuts zp/org-agenda-files-psychotherapy-alist)
