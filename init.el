@@ -2202,18 +2202,11 @@ return `nil'."
 
 (defun zp/update-org-agenda-files ()
   (interactive)
-  (setq zp/org-agenda-files-main (append zp/org-agenda-files-life
-					 zp/org-agenda-files-projects
-					 zp/org-agenda-files-music
-					 zp/org-agenda-files-awakening
-					 zp/org-agenda-files-psychotherapy
-					 zp/org-agenda-files-sports))
-
-  (setq org-agenda-files (append zp/org-agenda-files-main
-				 zp/org-agenda-files-hacking
-				 zp/org-agenda-files-media))
+  
+  (setq org-agenda-files zp/org-agenda-files-life)
 
   (zp/set-shortcuts-all))
+
 (zp/update-org-agenda-files)
 
 
