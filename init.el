@@ -2152,13 +2152,14 @@ return `nil'."
 ;; ========================================
 
 (setq org-agenda-todo-ignore-with-date nil
-      org-agenda-todo-ignore-scheduled 'future
+      ;; org-agenda-todo-ignore-scheduled 'future
+      org-agenda-todo-ignore-scheduled nil
       ;; org-agenda-show-future-repeats 'next
       org-agenda-show-future-repeats t
       ;; org-agenda-todo-ignore-scheduled 'past
       org-agenda-todo-ignore-deadlines nil
       org-agenda-include-deadlines 'all
-      zp/projects-include-waiting nil
+      zp/projects-include-waiting t
       zp/org-agenda-include-scheduled 'all
       org-agenda-cmp-user-defined 'zp/org-agenda-sort-special
       zp/org-agenda-sorting-strategy-user-defined 'special
@@ -2167,7 +2168,7 @@ return `nil'."
       org-agenda-tags-todo-honor-ignore-options 1
       org-agenda-compact-blocks nil
       org-agenda-todo-list-sublevels t
-      org-agenda-dim-blocked-tasks t
+      org-agenda-dim-blocked-tasks nil
       org-agenda-skip-scheduled-if-done 1
       org-agenda-skip-timestamp-if-done 1
       org-agenda-skip-deadline-if-done 1
