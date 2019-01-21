@@ -5870,84 +5870,136 @@ windows."
 	`(,(face-attribute 'default :foreground) .
 	  ,(face-attribute 'default :background))))
 
-(defun zp/spaceline-theme (&optional arg)
-  (spaceline-define-segment narrow
-    "Display Narrowed when buffer is narrowed."
-    (when (buffer-narrowed-p)
-      "Narrow"))
-
-  (spaceline-emacs-theme 'narrow)
-  (spaceline-helm-mode)
-  (spaceline-toggle-hud-off)
-  (spaceline-toggle-mu4e-alert-segment-on)
-  (spaceline-toggle-buffer-id-on)
-  (setq powerline-height 45
-	zp/powerline-text-height 0.95
-	powerline-text-scale-factor 0.93
-	powerline-default-separator 'arrow)
-
-  (set-face-attribute 'powerline-active0 nil
-  		      :height zp/powerline-text-height)
-  (set-face-attribute 'powerline-active1 nil
-  		      :height zp/powerline-text-height)
-  (set-face-attribute 'powerline-active2 nil
-		      :height zp/powerline-text-height)
-  (set-face-attribute 'powerline-inactive0 nil
-		      :height zp/powerline-text-height)
-  (set-face-attribute 'powerline-inactive1 nil
-		      :height zp/powerline-text-height)
-  (set-face-attribute 'powerline-inactive2 nil
-		      :height zp/powerline-text-height)
-  (set-face-attribute 'mode-line nil
-		      :height zp/powerline-text-height)
-  (set-face-attribute 'mode-line-inactive nil
-		      :height zp/powerline-text-height)
+(minions-mode 1)
+(require 'moody)
+(setq x-underline-at-descent-line t)
+(setq moody-mode-line-height 40)
+(moody-replace-mode-line-buffer-identification)
+(moody-replace-vc-mode)
 
 
 
+
+;; Modeline
+
+(defvar ml-selected-window nil)
+
+(defun ml-record-selected-window ()
+  (setq ml-selected-window (selected-window)))
+
+(defun ml-update-all ()
+  (force-mode-line-update t))
+
+(add-hook 'post-command-hook 'ml-record-selected-window)
+
+(add-hook 'buffer-list-update-hook 'ml-update-all)
+
+(defun zp/propertized-buffer-identification (fmt)
+  "Return a list suitable for `mode-line-buffer-identification'.
+FMT is a format specifier such as \"%12b\".  This function adds
+text properties for face, help-echo, and local-map to it."
+  (list (propertize fmt
+		    'face (if (eq ml-selected-window (selected-window))
+                              'mode-line-buffer-id
+                            'mode-line-buffer-id-inactive)
+		    'help-echo
+		    (purecopy "Buffer name
+mouse-1: Previous buffer\nmouse-3: Next buffer")
+		    'mouse-face 'mode-line-highlight
+		    'local-map mode-line-buffer-identification-keymap)))
+
+(setq-default mode-line-format
+              '("%e"
+                mode-line-front-space
+                mode-line-mule-info
+                mode-line-client
+                mode-line-modified
+                mode-line-remote
+                mode-line-frame-identification
+                ;; (:eval
+                ;;  (if (eq ml-selected-window (selected-window))
+                ;;      "OK "
+                ;;    "NO "))
+                ;; (:eval (propertize "%b  " 'face 'org-tag-important
+                ;;                    'help-echo (buffer-file-name)))
+                ;; (:eval (propertize "" 'font-lock-face '(:foreground "red"
+                ;;                                          :background nil)
+                ;;         'help-echo (buffer-file-name)))
+                "   "
+                ;; mode-line-buffer-identification
+                (:eval
+                 (moody-tab
+                  (format-mode-line
+                   (zp/propertized-buffer-identification "%b"))
+                  20 'down))
+                ;; (:eval
+                ;;  (zp/propertized-buffer-identification "%b"))
+                ;; (:eval (propertize "%12b"
+                ;; 		                   'face (if (eq ml-selected-window (selected-window))
+                ;;                                              'mode-line-buffer-id
+                ;;                                            'mode-line-buffer-id-inactive)
+                ;; 		                   'help-echo
+                ;; 		                   (purecopy "Buffer name
+                ;; mouse-1: Previous buffer\nmouse-3: Next buffer")
+                ;; 		                   'mouse-face 'mode-line-highlight
+                ;; 		                   'local-map mode-line-buffer-identification-keymap))
+                "   "
+                mode-line-position
+                ;; (vc-mode vc-mode)
+                (:eval (moody-tab (substring vc-mode 1) nil 'up))
+                "  "
+                minions-mode-line-modes
+                ;; mode-line-misc-info
+                mode-line-end-spaces))
+
+;; Default
+;; (setq-default mode-line-format
+;;               '("%e"
+;;                 mode-line-front-space
+;;                 mode-line-mule-info
+;;                 mode-line-client
+;;                 mode-line-modified
+;;                 mode-line-remote
+;;                 mode-line-frame-identification
+;;                 mode-line-buffer-identification
+;;                 "   "
+;;                 mode-line-position
+;;                 (vc-mode vc-mode)
+;;                 "  "
+;;                 mode-line-modes
+;;                 mode-line-misc-info
+;;                 mode-line-end-spaces))
+
+;;   (set-face-attribute 'mode-line nil :background "#666358" :foreground "black"))
+
+;; END
+
+(defun zp/mode-line-theme (&optional arg)
   (cond ((string= arg "dark")
 	 (progn
-	   (set-face-attribute 'powerline-active1 nil
-			       :background "#6a182e")
-	   (set-face-attribute 'powerline-active2 nil
-			       :background "#400f1c")
-	   (set-face-attribute 'powerline-inactive0 nil
-			       :background "#3d4a80" :foreground "#dfe2f1")
-	   (set-face-attribute 'powerline-inactive1 nil
-			       :background "#293256" :foreground "#dfe2f1")
-	   (set-face-attribute 'powerline-inactive2 nil
-			       :background "#222222")
-	   (set-face-attribute 'mode-line-inactive nil
-			       :background "#3d4a80" :foreground "#666")
 	   (set-face-attribute 'mode-line nil
-			       :background "#222222")
-	   (set-face-attribute 'mode-line-buffer-id nil
-			       :foreground "DarkGoldenrod2" :weight 'bold)
-	   (set-face-attribute 'mode-line-buffer-id-inactive nil
-			       :foreground "white" :weight 'bold)
-	   ))
+			       :background "#293233"
+                               :box '(:line-width -2 :color "#293233"))
+	   (set-face-attribute 'mode-line-inactive nil
+			       :background "#1d1d1d" :foreground "#666"
+                               :box '(:line-width -2 :color "#1d1d1d"))
+           (set-face-attribute 'mode-line-buffer-id nil
+                               :foreground "DarkGoldenrod2" :weight 'bold)
+           (set-face-attribute 'mode-line-buffer-id-inactive nil
+                               :foreground "#888" :weight 'bold)
+           ))
 	((string= arg "light")
 	 (progn
-	   (set-face-attribute 'powerline-active1 nil
-			       :background "#476CCC" :foreground "DarkGoldenrod1")
-	   (set-face-attribute 'powerline-active2 nil
-			       :background "#5987FF")
-	   (set-face-attribute 'powerline-inactive1 nil
-			       :background "#b3c8ff")
-	   (set-face-attribute 'powerline-inactive2 nil
-			       :background "#bbbbbb")
-	   (set-face-attribute 'mode-line-inactive nil
-			       :background "#8fa0cc" :foreground "#666")
 	   (set-face-attribute 'mode-line nil
-			       :background "#666358" :foreground "#ddd")
-	   (set-face-attribute 'mode-line-buffer-id nil
-			       :foreground "DarkGoldenrod2" :weight 'bold)
-	   (set-face-attribute 'mode-line-buffer-id-inactive nil
-			       :foreground "black" :weight 'bold)
-	   (set-face-attribute 'anzu-mode-line nil
-			       :foreground "#c5adff")
-	   )))
-  )
+			       :background "#ada68a" :foreground "#333"
+                               :box '(:line-width -2 :color "#ada68a"))
+	   (set-face-attribute 'mode-line-inactive nil
+			       :background "#e0d7b2" :foreground "#666"
+                               :box '(:line-width -2 :color "#e0d7b2"))
+           (set-face-attribute 'mode-line-buffer-id nil
+			       :foreground "DodgerBlue3" :weight 'bold)
+           (set-face-attribute 'mode-line-buffer-id-inactive nil
+                               :foreground "#c7bf9e" :weight 'bold)))))
 
 (defface org-todo-todo '((t)) nil)
 (defface org-todo-next '((t)) nil)
@@ -6120,7 +6172,7 @@ windows."
 
   (zp/org-format-face 'magit-tag :foreground "SpringGreen4")
 
-  (zp/spaceline-theme "dark")
+  (zp/mode-line-theme "dark")
   (zp/pdf-view-midnight-mode-theme)
   )
 
@@ -6128,7 +6180,6 @@ windows."
   (interactive)
   (setq zp/emacs-theme "light")
   (load-theme 'base16-google-light t)
-  (zp/spaceline-theme)
   (zp/set-fonts)
 
   ;; (set-face-attribute 'org-todo-box nil :inverse-video t :foreground "white" :height 0.8 :weight 'bold :box nil)
@@ -6190,7 +6241,7 @@ windows."
 
   (zp/org-format-face 'magit-tag :foreground "SpringGreen4")
 
-  (zp/spaceline-theme "light")
+  (zp/mode-line-theme "light")
   (zp/pdf-view-midnight-mode-theme)
   )
 
