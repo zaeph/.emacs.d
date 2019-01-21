@@ -48,7 +48,7 @@
 (add-hook 'window-setup-hook 'on-after-init)
 
 ;; Force horizontal splitting
-;; (setq split-width-threshold 9999)	;Default: 160
+;; (setq split-width-threshold 9999)    ;Default: 160
 
 ;; Suppress warning when opening large files
 (setq large-file-warning-threshold nil)
@@ -56,20 +56,20 @@
 ;; Configure ‘display-buffer’ behaviour for some special buffers
 (setq display-buffer-alist
       `(;; Messages, errors, processes, Calendar in the bottom side window
-        (,(rx bos (or "*Apropos"		; Apropos buffers
-                      "*Man"			; Man buffers
-                      ;; "*Help"			; Help buffers
-                      "*Warnings*"		; Emacs warnings
-                      "*Process List*"		; Processes
-                      "*Proced"			; Proced processes list
-                      "*Compile-Log*"		; Emacs byte compiler log
-                      "*compilation"		; Compilation buffers
-                      "*Flycheck errors*"	; Flycheck error list
-                      "*Calendar"		; Calendar window
-                      "*env-info"		; Environment information
-                      "*Cargo"			; Cargo process buffers
-                      "*Word"			; WordNut buffers
-		      "*Reconcile*"		; Reconcile in ledger-mode
+        (,(rx bos (or "*Apropos"                ; Apropos buffers
+                      "*Man"                    ; Man buffers
+                      ;; "*Help"                        ; Help buffers
+                      "*Warnings*"              ; Emacs warnings
+                      "*Process List*"          ; Processes
+                      "*Proced"                 ; Proced processes list
+                      "*Compile-Log*"           ; Emacs byte compiler log
+                      "*compilation"            ; Compilation buffers
+                      "*Flycheck errors*"       ; Flycheck error list
+                      "*Calendar"               ; Calendar window
+                      "*env-info"               ; Environment information
+                      "*Cargo"                  ; Cargo process buffers
+                      "*Word"                   ; WordNut buffers
+                      "*Reconcile*"             ; Reconcile in ledger-mode
                       (and (1+ nonl) " output*"))) ; AUCTeX command output
          (display-buffer-reuse-window display-buffer-in-side-window)
          (side . bottom)
@@ -98,7 +98,7 @@
         ;; Let `display-buffer' reuse visible frames for all buffers. This must
         ;; be the last entry in `display-buffer-alist', because it overrides any
         ;; previous entry with more specific actions.
-	("." nil (reusable-frames . visible))))
+        ("." nil (reusable-frames . visible))))
 
 ;; Enable disabled commands
 (setq disabled-command-function nil)
@@ -190,9 +190,9 @@
   (interactive)
   (if (string-match-p (regexp-quote "*Ledger Schedule*") (buffer-name))
       (progn
-	(kill-buffer)
-	(other-window -1)
-	(delete-other-windows))))
+        (kill-buffer)
+        (other-window -1)
+        (delete-other-windows))))
 (define-key ledger-mode-map (kbd "S-<backspace>") 'zp/ledger-close-scheduled)
 
 ;; -----------------------------------------------------------------------------
@@ -378,9 +378,9 @@ that date.  Leave point on the first amount."
 
 (setq lispy-avy-keys
       '(?a ?b ?c ?d ?e ?f ?g ?h ?i ?j ?k ?l ?m
-	?n ?o ?p ?q ?r ?s ?t ?u ?v ?w ?x ?y ?z
-	?A ?B ?C ?D ?E ?F ?G ?H ?I ?J ?K ?L ?M
-	?N ?O ?P ?Q ?R ?S ?T ?U ?V ?W ?X ?Y ?Z))
+        ?n ?o ?p ?q ?r ?s ?t ?u ?v ?w ?x ?y ?z
+        ?A ?B ?C ?D ?E ?F ?G ?H ?I ?J ?K ?L ?M
+        ?N ?O ?P ?Q ?R ?S ?T ?U ?V ?W ?X ?Y ?Z))
 
 
 
@@ -395,9 +395,9 @@ that date.  Leave point on the first amount."
 ;; Tell ispell.el that ’ can be part of a word.
 (setq ispell-local-dictionary-alist
       `((nil "[[:alpha:]]" "[^[:alpha:]]" "['\x2019]" nil ("-B") nil utf-8)
-	("english" "[[:alpha:]]" "[^[:alpha:]]" "['’]" t ("-d" "en_US") nil utf-8)
-	("british" "[[:alpha:]]" "[^[:alpha:]]" "['’]" t ("-d" "en_GB") nil utf-8)
-	("french" "[[:alpha:]]" "[^[:alpha:]]" "['’]" t ("-d" "fr_FR") nil utf-8)))
+        ("english" "[[:alpha:]]" "[^[:alpha:]]" "['’]" t ("-d" "en_US") nil utf-8)
+        ("british" "[[:alpha:]]" "[^[:alpha:]]" "['’]" t ("-d" "en_GB") nil utf-8)
+        ("french" "[[:alpha:]]" "[^[:alpha:]]" "['’]" t ("-d" "fr_FR") nil utf-8)))
 
 ;; Allow curvy quotes to be considered as regular apostrophe
 (setq ispell-local-dictionary-alist
@@ -428,7 +428,7 @@ that date.  Leave point on the first amount."
 (defvar zp/ispell-completion-data nil)
 (setq ispell-dictionary "british"
       zp/ispell-completion-data '(("English" . "british")
-				 ("French" . "french")))
+                                 ("French" . "french")))
 
 (defun zp/ispell-switch-dictionary (candidate)
   (interactive)
@@ -447,7 +447,7 @@ that date.  Leave point on the first amount."
 (defvar zp/helm-source-ispell nil)
 (setq zp/helm-source-ispell
       '((name . "*HELM Ispell - Dictionary selection*")
-	(candidates . zp/ispell-completion-data)
+        (candidates . zp/ispell-completion-data)
         (action . zp/helm-ispell-actions)))
 
 (defun zp/helm-ispell ()
@@ -459,12 +459,12 @@ that date.  Leave point on the first amount."
   (interactive)
   (let ((current ispell-local-dictionary))
     (helm :sources '(zp/helm-source-ispell)
-	  :preselect (if (or
-			  (eq lang "French")
-			  (eq current nil)
-			  (string-match-p current "british"))
-			 "French"
-		       "English"))))
+          :preselect (if (or
+                          (eq lang "French")
+                          (eq current nil)
+                          (string-match-p current "british"))
+                         "French"
+                       "English"))))
 
 
 
@@ -487,7 +487,7 @@ that date.  Leave point on the first amount."
 (setq erc-autojoin-timing 'connect
       erc-autojoin-channels-alist
       '(("freenode.net" "#emacs" "#ranger")
-	("myanonamouse.net" "#anonamouse.net" "#am-members"))
+        ("myanonamouse.net" "#anonamouse.net" "#am-members"))
       erc-join-buffer 'bury
       erc-fill-function 'erc-fill-static
       erc-fill-static-center 22
@@ -498,7 +498,7 @@ that date.  Leave point on the first amount."
       erc-server-reconnect-attempts 5
       erc-server-reconnect-timeout 3
       erc-track-exclude-types '("JOIN" "MODE" "NICK" "PART" "QUIT"
-				 "324" "329" "332" "333" "353" "477"))
+                                 "324" "329" "332" "333" "353" "477"))
 
 (add-to-list 'erc-modules 'notify)
 (add-to-list 'erc-modules 'notifications)
@@ -544,25 +544,25 @@ that date.  Leave point on the first amount."
 (defface circe-prompt-server-face nil
   "Face used for displaying the name of the server in circe.")
 (set-face-attribute 'circe-prompt-server-face nil
-		    :foreground "purple"
-		    :weight 'normal)
+                    :foreground "purple"
+                    :weight 'normal)
 (set-face-attribute 'circe-prompt-face nil
-		    :foreground "black"
-		    :background "LightSeaGreen")
+                    :foreground "black"
+                    :background "LightSeaGreen")
 
 (defun my-circe-prompt ()
   (lui-set-prompt
    (concat
     "\n"
     (format "%15s"
-	    (concat
-	     (propertize
-	      (concat (buffer-name) " ")
-	      'face 'circe-prompt-server-face)
-	     (concat
-	      (propertize
-	       ">"
-	       'face 'circe-prompt-face))))
+            (concat
+             (propertize
+              (concat (buffer-name) " ")
+              'face 'circe-prompt-server-face)
+             (concat
+              (propertize
+               ">"
+               'face 'circe-prompt-face))))
     " ")))
 (add-hook 'circe-chat-mode-hook 'my-circe-prompt)
 
@@ -585,37 +585,37 @@ that date.  Leave point on the first amount."
 
 (setq circe-network-options
       '(
-	;; ("ZNC SSL"
-	;;  :host "zaeph.tk"
-	;;  ;; :host "176.188.242.162"
-	;;  :port "15873"
-	;;  :tls t
-	;;  :server-buffer-name "{host} ⇄ ZNC"
+        ;; ("ZNC SSL"
+        ;;  :host "zaeph.tk"
+        ;;  ;; :host "176.188.242.162"
+        ;;  :port "15873"
+        ;;  :tls t
+        ;;  :server-buffer-name "{host} ⇄ ZNC"
         ;;  ;; :nick "zaeph"
-	;;  ;; :nickserv-password zp/circe-get-pp
-	;;  :sasl-username "zaeph"
-	;;  :sasl-password zp/circe-get-pp
-	;;  :user "zaeph/freenode"
-	;;  :pass zp/circe-get-pp
+        ;;  ;; :nickserv-password zp/circe-get-pp
+        ;;  :sasl-username "zaeph"
+        ;;  :sasl-password zp/circe-get-pp
+        ;;  :user "zaeph/freenode"
+        ;;  :pass zp/circe-get-pp
         ;;  :channels ("#ranger" "#emacs")
         ;;  )
-	("Weechat Relay"
-	 :host "zaeph.tk"
-	 ;; :host "176.188.242.162"
-	 :port "15873"
-	 :tls t
-	 :server-buffer-name "{host} ⇄ Weechat"
+        ("Weechat Relay"
+         :host "zaeph.tk"
+         ;; :host "176.188.242.162"
+         :port "15873"
+         :tls t
+         :server-buffer-name "{host} ⇄ Weechat"
          :nick "zaeph"
-	 ;; :nickserv-password zp/circe-get-pp
-	 ;; :user "zaeph"
-	 :pass zp/circe-get-pp
+         ;; :nickserv-password zp/circe-get-pp
+         ;; :user "zaeph"
+         :pass zp/circe-get-pp
          :channels ("#ranger")
          )
-	("Freenode Rescue"
+        ("Freenode Rescue"
          :nick "zaeph_"
-	 :host "chat.freenode.net"
-	 :port 6667
-	 :nickserv-password zp/circe-get-pp
+         :host "chat.freenode.net"
+         :port 6667
+         :nickserv-password zp/circe-get-pp
          :channels ("#ranger")
          )))
 
@@ -661,7 +661,7 @@ that date.  Leave point on the first amount."
 ;;        :dyn-target (lambda (target msg) (mu4e-get-trash-folder msg))
 ;;        :action (lambda (docid msg target)
 ;;                  (mu4e~proc-move docid
-;; 				 (mu4e~mark-check-target target) "+S-u-N"))))
+;;                               (mu4e~mark-check-target target) "+S-u-N"))))
 
 ;; (setq mu4e-alert-interesting-mail-query
 ;;       (concat
@@ -727,14 +727,14 @@ that date.  Leave point on the first amount."
 
 ;; ;; ;; Add a column to display what email account the email belongs to.
 ;; ;; (add-to-list 'mu4e-header-info-custom
-;; ;; 	     '(:account
-;; ;; 	       :name "Account"
-;; ;; 	       :shortname "Account"
-;; ;; 	       :help "Which account this email belongs to"
-;; ;; 	       :function
-;; ;; 	       (lambda (msg)
-;; ;; 		 (let ((maildir (mu4e-message-field msg :maildir)))
-;; ;; 		   (format "%s" (substring maildir 1 (string-match-p "/" maildir 1)))))))
+;; ;;        '(:account
+;; ;;          :name "Account"
+;; ;;          :shortname "Account"
+;; ;;          :help "Which account this email belongs to"
+;; ;;          :function
+;; ;;          (lambda (msg)
+;; ;;            (let ((maildir (mu4e-message-field msg :maildir)))
+;; ;;              (format "%s" (substring maildir 1 (string-match-p "/" maildir 1)))))))
 
 ;; ;; -----------------------------------------------------------------------------
 
@@ -747,7 +747,7 @@ that date.  Leave point on the first amount."
 ;;   (let* ((mail-count (length mail-group))
 ;;          (total-mails (length all-mails))
 ;;          (first-mail (car mail-group))
-;; 	 ;; Other possible icon:✉
+;;       ;; Other possible icon:✉
 ;;          ;; (title-prefix (format "<span foreground='#75d075'><span font_desc='Noto Color Emoji'>💬</span> [%d/%d] New mail%s</span>"
 ;;          (title-prefix (format "[%d/%d] <span foreground='#F04949'>New mail%s</span>"
 ;;                                mail-count
@@ -785,7 +785,7 @@ that date.  Leave point on the first amount."
 ;;       (alert (plist-get notification :body)
 ;;              :title (plist-get notification :title)
 ;;              :category "mu4e-alert"
-;; 	     :icon "gmail-2"))
+;;           :icon "gmail-2"))
 ;;     (when notifications
 ;;       (mu4e-alert-set-window-urgency-maybe))))
 
@@ -852,9 +852,9 @@ that date.  Leave point on the first amount."
 
 ;; (setq mu4e-headers-fields
 ;;       '( (:date          .  25)    ;; alternatively, use :human-date
-;; 	 (:flags         .   6)
-;; 	 (:from          .  22)
-;; 	 (:subject       .  nil)))
+;;       (:flags         .   6)
+;;       (:from          .  22)
+;;       (:subject       .  nil)))
 
 ;; (setq mu4e-compose-format-flowed t)
 
@@ -872,44 +872,44 @@ that date.  Leave point on the first amount."
 
 ;; (setq mu4e-contexts
 ;;       `( ,(make-mu4e-context
-;; 	   :name "Private"
-;; 	   :match-func (lambda (msg) (when msg
-;; 				       (string-prefix-p "/private" (mu4e-message-field msg :maildir))))
-;; 	   :vars `(
-;; 		   (user-mail-address . ,(zp/get-string-from-file "/home/zaeph/org/pp/private/email"))
-;; 		   (user-full-name . "Zaeph")
-;; 		   (message-signature-file . "/home/zaeph/org/sig/private")
+;;         :name "Private"
+;;         :match-func (lambda (msg) (when msg
+;;                                     (string-prefix-p "/private" (mu4e-message-field msg :maildir))))
+;;         :vars `(
+;;                 (user-mail-address . ,(zp/get-string-from-file "/home/zaeph/org/pp/private/email"))
+;;                 (user-full-name . "Zaeph")
+;;                 (message-signature-file . "/home/zaeph/org/sig/private")
 
-;; 		   (mu4e-trash-folder  . "/private/trash")
-;; 		   (mu4e-refile-folder . "/private/archive")
-;; 		   (mu4e-sent-folder   . "/private/sent")
-;; 		   (mu4e-drafts-folder . "/private/drafts")
+;;                 (mu4e-trash-folder  . "/private/trash")
+;;                 (mu4e-refile-folder . "/private/archive")
+;;                 (mu4e-sent-folder   . "/private/sent")
+;;                 (mu4e-drafts-folder . "/private/drafts")
 
-;; 		   (mu4e-maildir-shortcuts . (("/private/inbox"   . ?i)
-;; 					      ("/private/sent"    . ?s)
-;; 					      ("/private/trash"   . ?t)
-;; 					      ("/private/archive" . ?a)))
-;; 		   ))
-;; 	 ,(make-mu4e-context
-;; 	   :name "Work"
-;; 	   :match-func (lambda (msg) (when msg
-;; 				       (string-prefix-p "/work" (mu4e-message-field msg :maildir))))
-;; 	   :vars `(
-;; 		   (user-mail-address . ,(zp/get-string-from-file "/home/zaeph/org/pp/work/email"))
-;; 		   (user-full-name . "Leo Vivier")
-;; 		   (message-signature-file . "/home/zaeph/org/sig/work")
+;;                 (mu4e-maildir-shortcuts . (("/private/inbox"   . ?i)
+;;                                            ("/private/sent"    . ?s)
+;;                                            ("/private/trash"   . ?t)
+;;                                            ("/private/archive" . ?a)))
+;;                 ))
+;;       ,(make-mu4e-context
+;;         :name "Work"
+;;         :match-func (lambda (msg) (when msg
+;;                                     (string-prefix-p "/work" (mu4e-message-field msg :maildir))))
+;;         :vars `(
+;;                 (user-mail-address . ,(zp/get-string-from-file "/home/zaeph/org/pp/work/email"))
+;;                 (user-full-name . "Leo Vivier")
+;;                 (message-signature-file . "/home/zaeph/org/sig/work")
 
-;; 		   (mu4e-trash-folder  . "/work/trash")
-;; 		   (mu4e-refile-folder . "/work/archive")
-;; 		   (mu4e-sent-folder   . "/work/sent")
-;; 		   (mu4e-drafts-folder . "/work/drafts")
+;;                 (mu4e-trash-folder  . "/work/trash")
+;;                 (mu4e-refile-folder . "/work/archive")
+;;                 (mu4e-sent-folder   . "/work/sent")
+;;                 (mu4e-drafts-folder . "/work/drafts")
 
-;; 		   (mu4e-maildir-shortcuts . (("/work/inbox"   . ?i)
-;; 					      ("/work/sent"    . ?s)
-;; 					      ("/work/trash"   . ?t)
-;; 					      ("/work/archive" . ?a)))
-;; 		   ))
-;; 	 ))
+;;                 (mu4e-maildir-shortcuts . (("/work/inbox"   . ?i)
+;;                                            ("/work/sent"    . ?s)
+;;                                            ("/work/trash"   . ?t)
+;;                                            ("/work/archive" . ?a)))
+;;                 ))
+;;       ))
 
 ;; ;; Editing modeline display to add a space after the `]'
 ;; (defun mu4e-context-label ()
@@ -917,8 +917,8 @@ that date.  Leave point on the first amount."
 ;;   there is none."
 ;;   (if (mu4e-context-current)
 ;;     (concat "[" (propertize (mu4e~quote-for-modeline
-;; 			      (mu4e-context-name (mu4e-context-current)))
-;; 		  'face 'mu4e-context-face) "] ") ""))
+;;                            (mu4e-context-name (mu4e-context-current)))
+;;                'face 'mu4e-context-face) "] ") ""))
 
 ;; (setq message-send-mail-function 'smtpmail-send-it
 ;;       smtpmail-auth-credentials
@@ -944,7 +944,7 @@ that date.  Leave point on the first amount."
 ;; (add-hook 'message-mode-hook #'electric-quote-local-mode)
 ;; (add-hook 'message-mode-hook #'footnote-mode)
 ;; (add-hook 'message-mode-hook (lambda ()
-;; 				(zp/helm-ispell-preselect "French")))
+;;                              (zp/helm-ispell-preselect "French")))
 
 ;; (setq electric-quote-context-sensitive 1)
 ;; ;; -----------------------------------------------------------------------------
@@ -982,7 +982,7 @@ that date.  Leave point on the first amount."
 ;; ;;                                     (char-after)))
 ;; ;;                        (delete-char 1))
 ;; ;;                      (setq last-command-event ?“))
-;; ;; 		    ((search-backward "‘`" (- (point) 2) t)
+;; ;;               ((search-backward "‘`" (- (point) 2) t)
 ;; ;;                      (replace-match "“")
 ;; ;;                      (when (and electric-pair-mode
 ;; ;;                                 (eq (cdr-safe
@@ -996,7 +996,7 @@ that date.  Leave point on the first amount."
 ;; ;;             (cond ((search-backward "”'" (- (point) 2) t)
 ;; ;;                    (replace-match "'")
 ;; ;;                    (setq last-command-event ?”))
-;; ;; 		  ((search-backward "’'" (- (point) 2) t)
+;; ;;             ((search-backward "’'" (- (point) 2) t)
 ;; ;;                    (replace-match "”")
 ;; ;;                    (setq last-command-event ?”))
 ;; ;;                   ((search-backward "'" (1- (point)) t)
@@ -1079,7 +1079,7 @@ that date.  Leave point on the first amount."
           (when (file-readable-p signature-file)
             (with-temp-buffer
               (insert-file-contents signature-file)
-	      (buffer-string))))))
+              (buffer-string))))))
 
 
 (setq message-sendmail-envelope-from 'header)
@@ -1096,9 +1096,9 @@ that date.  Leave point on the first amount."
 
 (setq notmuch-fcc-dirs
       `((,(zp/get-string-from-file "/home/zaeph/org/pp/private/email") .
-	  "private/sent -inbox +sent -unread")
-	(,(zp/get-string-from-file "/home/zaeph/org/pp/work/email") .
-	  "work/sent -inbox +sent -unread")))
+          "private/sent -inbox +sent -unread")
+        (,(zp/get-string-from-file "/home/zaeph/org/pp/work/email") .
+          "work/sent -inbox +sent -unread")))
 
 ;; (setq notmuch-user-name
 ;;                   (lambda ()
@@ -1112,7 +1112,7 @@ that date.  Leave point on the first amount."
 ;;                       (when (file-readable-p signature-file)
 ;;                         (with-temp-buffer
 ;;                           (insert-file-contents signature-file)
-;; 			  (buffer-string))))))
+;;                        (buffer-string))))))
 
 (setq message-send-mail-function 'smtpmail-send-it
       smtpmail-auth-credentials
@@ -1129,7 +1129,7 @@ that date.  Leave point on the first amount."
     "mark thread as spam"
     (interactive (cons current-prefix-arg (notmuch-search-interactive-region)))
     (if untrash
-	(notmuch-search-tag (list "-deleted"))
+        (notmuch-search-tag (list "-deleted"))
       (notmuch-search-tag (list "+deleted" "-inbox")) beg end)
     (notmuch-search-next-thread)))
 
@@ -1147,14 +1147,14 @@ that date.  Leave point on the first amount."
 
 (setq notmuch-saved-searches
       '((:name "inbox" :query "tag:inbox" :key "i")
-	(:name "unread" :query "tag:unread" :key "u")
-	(:name "flagged" :query "tag:flagged" :key "f")
-	(:name "drafts" :query "tag:draft" :key "d")
-	(:name "sent (last week)" :query "tag:sent date:\"7d..today\"" :key "s")
-	(:name "archive (last week)" :query "* date:\"7d..today\"" :key "a")
-	(:name "sent" :query "tag:sent" :key "S")
-	(:name "archive" :query "*" :key "A")
-	(:name "trash" :query "tag:deleted" :key "t")))
+        (:name "unread" :query "tag:unread" :key "u")
+        (:name "flagged" :query "tag:flagged" :key "f")
+        (:name "drafts" :query "tag:draft" :key "d")
+        (:name "sent (last week)" :query "tag:sent date:\"7d..today\"" :key "s")
+        (:name "archive (last week)" :query "* date:\"7d..today\"" :key "a")
+        (:name "sent" :query "tag:sent" :key "S")
+        (:name "archive" :query "*" :key "A")
+        (:name "trash" :query "tag:deleted" :key "t")))
 
 (require 'footnote)
 
@@ -1172,7 +1172,7 @@ that date.  Leave point on the first amount."
 (add-hook 'message-mode-hook #'electric-quote-local-mode)
 (add-hook 'message-mode-hook #'footnote-mode)
 (add-hook 'message-mode-hook (lambda ()
-				(zp/helm-ispell-preselect "French")))
+                                (zp/helm-ispell-preselect "French")))
 
 (setq electric-quote-context-sensitive 1)
 
@@ -1227,7 +1227,7 @@ that date.  Leave point on the first amount."
 
 ;; Linum parameters
 (require 'linum)
-(setq linum-format " %d ")		;Add spaces before and after
+(setq linum-format " %d ")              ;Add spaces before and after
 
 ;; Mouse & Scrolling options
 (setq mouse-wheel-flip-direction 1
@@ -1260,7 +1260,7 @@ that date.  Leave point on the first amount."
   (call-interactively 'pdf-view-auto-slice-minor-mode)
   (if (not pdf-view-auto-slice-minor-mode)
       (progn
-	(pdf-view-reset-slice))))
+        (pdf-view-reset-slice))))
 
 ;; pdf-tools
 (pdf-tools-install)
@@ -1275,11 +1275,11 @@ that date.  Leave point on the first amount."
 (defun zp/pdf-view-continuous-toggle ()
   (interactive)
   (cond ((eq pdf-view-continuous nil)
-	 (setq pdf-view-continuous t)
-	 (message "Page scrolling: Continous"))
-	(t
-	 (setq pdf-view-continuous nil)
-	 (message "Page scrolling: Constrained"))))
+         (setq pdf-view-continuous t)
+         (message "Page scrolling: Continous"))
+        (t
+         (setq pdf-view-continuous nil)
+         (message "Page scrolling: Constrained"))))
 
 ;; Sublimity
 ;; (sublimity-mode 0)
@@ -1334,8 +1334,8 @@ If text is selected, adds furigana to the selected kanji instead."
   (interactive)
   (if (not (region-active-p))
       (progn
-	(call-interactively 'set-mark-command)
-	(call-interactively 'forward-char)))
+        (call-interactively 'set-mark-command)
+        (call-interactively 'forward-char)))
   (yas-expand-snippet (yas-lookup-snippet "anki-ruby")))
 
 (defun zp/save-buffers-kill-terminal-silently ()
@@ -1378,37 +1378,37 @@ If text is selected, adds furigana to the selected kanji instead."
 
 ;; ;; Korean
 ;; (global-set-key (kbd "C-S-k")
-;; 		(lambda ()
-;; 		  (interactive)
-;; 		  (if (not (eq lang 'ko))
-;; 		      (progn
-;; 			(set-input-method 'korean-hangul)
-;; 			(setq lang 'ko))
-;; 		    (progn
-;; 		      (set-input-method 'nil)
-;; 		      (setq lang 'en)))))
+;;              (lambda ()
+;;                (interactive)
+;;                (if (not (eq lang 'ko))
+;;                    (progn
+;;                      (set-input-method 'korean-hangul)
+;;                      (setq lang 'ko))
+;;                  (progn
+;;                    (set-input-method 'nil)
+;;                    (setq lang 'en)))))
 ;; ;; Latin
 ;; (global-set-key (kbd "C-S-l")
-;; 		(lambda ()
-;; 		  (interactive)
-;; 		  (if (not (eq lang 'fr))
-;; 		      (progn
-;; 			(set-input-method 'latin-1-prefix)
-;; 			(setq lang 'fr))
-;; 		    (progn
-;; 		      (set-input-method 'nil)
-;; 		      (setq lang 'en)))))
+;;              (lambda ()
+;;                (interactive)
+;;                (if (not (eq lang 'fr))
+;;                    (progn
+;;                      (set-input-method 'latin-1-prefix)
+;;                      (setq lang 'fr))
+;;                  (progn
+;;                    (set-input-method 'nil)
+;;                    (setq lang 'en)))))
 ;; ;; IPA
 ;; (global-set-key (kbd "C-M-;")
-;; 		(lambda ()
-;; 		  (interactive)
-;; 		  (if (not (eq lang 'ipa))
-;; 		      (progn
-;; 			(set-input-method 'ipa-x-sampa)
-;; 			(setq lang 'ipa))
-;; 		    (progn
-;; 		      (set-input-method 'nil)
-;; 		      (setq lang 'en)))))
+;;              (lambda ()
+;;                (interactive)
+;;                (if (not (eq lang 'ipa))
+;;                    (progn
+;;                      (set-input-method 'ipa-x-sampa)
+;;                      (setq lang 'ipa))
+;;                  (progn
+;;                    (set-input-method 'nil)
+;;                    (setq lang 'en)))))
 
 
 
@@ -1489,10 +1489,10 @@ Modifies ‘diff-command’ and ‘diff-switches’ to use ‘git diff’."
 
 ;; Set default library
 (setq-default TeX-engine 'xetex
-	      TeX-save-query nil
-	      TeX-parse-self t
-	      TeX-auto-save t
-	      LaTeX-includegraphics-read-file 'LaTeX-includegraphics-read-file-relative)
+              TeX-save-query nil
+              TeX-parse-self t
+              TeX-auto-save t
+              LaTeX-includegraphics-read-file 'LaTeX-includegraphics-read-file-relative)
 (setq reftex-default-bibliography '("/home/zaeph/org/bib/monty-python.bib"))
 ;; (setq reftex-default-bibliography nil)
 (setq warning-suppress-types nil)
@@ -1584,7 +1584,7 @@ return `nil'."
       org-export-in-background t
       org-export-with-sub-superscripts nil
       org-image-actual-width nil ;Ensures that images displayed within emacs can be resized with #+ATTR_ORG:
-      org-hide-emphasis-markers nil	;Fontification
+      org-hide-emphasis-markers nil     ;Fontification
       org-ellipsis "…"
       org-track-ordered-property-with-tag "ORDERED"
       ;; org-tags-exclude-from-inheritance '("project")
@@ -1594,22 +1594,22 @@ return `nil'."
       org-footnote-define-inline 1)
 
 ;; Add curly quotes to list of pre- and post-matches for emphasis markers
-(setq org-emphasis-regexp-components '("- 	('‘\"“’{" "- 	.,:!?;'’\"”)}\\[" " 	
+(setq org-emphasis-regexp-components '("-       ('‘\"“’{" "-    .,:!?;'’\"”)}\\[" "     
 " "." 1))
 
 ;; (eval-after-load 'org '(require 'org-pdfview))
 
 (add-to-list 'org-file-apps
              '("\\.pdf\\'" . (lambda (file link)
-			       (org-pdfview-open link))))
+                               (org-pdfview-open link))))
 
 ;; (setq org-file-apps '(("\\.pdf\\'" lambda
-;; 		       (file link)
-;; 		       (org-pdfview-open link))
-;; 		      (auto-mode . emacs)
-;; 		      ("\\.mm\\'" . default)
-;; 		      ("\\.x?html?\\'" . default)
-;; 		      ("\\.pdf\\'" . default)))
+;;                     (file link)
+;;                     (org-pdfview-open link))
+;;                    (auto-mode . emacs)
+;;                    ("\\.mm\\'" . default)
+;;                    ("\\.x?html?\\'" . default)
+;;                    ("\\.pdf\\'" . default)))
 
 ;; -----------------------------------------------------------------------------
 ;; Template for new emphasis / fontify
@@ -1624,48 +1624,48 @@ return `nil'."
 ;; -----------------------------------------------------------------------------
 
 (setq org-todo-keywords '(
-	;; Default
-	(sequence "TODO(t)" "NEXT(n)" "STRT(S)" "|" "DONE(d)")
-	;; Action
-	;; (sequence "SCHD(m!)" "PREP(!)" "READ(r!)" "DBRF(D!)" "REVW(R!)" "|" "DONE(d!)")
-	;; Extra
-	;; (sequence "STBY(s)" "WAIT(w@/!)" "|" "CXLD(x@/!)")
-	(sequence "STBY(s)" "|" "CXLD(x@/!)")
-	(sequence "WAIT(w!)" "|" "CXLD(x@/!)")
-	))
+        ;; Default
+        (sequence "TODO(t)" "NEXT(n)" "STRT(S)" "|" "DONE(d)")
+        ;; Action
+        ;; (sequence "SCHD(m!)" "PREP(!)" "READ(r!)" "DBRF(D!)" "REVW(R!)" "|" "DONE(d!)")
+        ;; Extra
+        ;; (sequence "STBY(s)" "WAIT(w@/!)" "|" "CXLD(x@/!)")
+        (sequence "STBY(s)" "|" "CXLD(x@/!)")
+        (sequence "WAIT(w!)" "|" "CXLD(x@/!)")
+        ))
 (setq org-todo-keyword-faces '(
-			       ("TODO" :inherit org-todo-todo)
-			       ("NEXT" :inherit org-todo-next)
-			       ("STRT" :inherit org-todo-strt)
-			       ("DONE" :inherit org-todo-done)
+                               ("TODO" :inherit org-todo-todo)
+                               ("NEXT" :inherit org-todo-next)
+                               ("STRT" :inherit org-todo-strt)
+                               ("DONE" :inherit org-todo-done)
 
-			       ("STBY" :inherit org-todo-stby)
-			       ("WAIT" :inherit org-todo-wait)
-			       ("CXLD" :inherit org-todo-cxld)))
+                               ("STBY" :inherit org-todo-stby)
+                               ("WAIT" :inherit org-todo-wait)
+                               ("CXLD" :inherit org-todo-cxld)))
 
-			       ;; ("SCHD" :inherit org-todo-box :background "DeepPink1")
-			       ;; ("PREP" :inherit org-todo-box :background "DeepPink1")
-			       ;; ("READ" :inherit org-todo-box :background "SkyBlue4")
-			       ;; ("DBRF" :inherit org-todo-box :background "gold3")
-			       ;; ("REVW" :inherit org-todo-box :background "gold3")
+                               ;; ("SCHD" :inherit org-todo-box :background "DeepPink1")
+                               ;; ("PREP" :inherit org-todo-box :background "DeepPink1")
+                               ;; ("READ" :inherit org-todo-box :background "SkyBlue4")
+                               ;; ("DBRF" :inherit org-todo-box :background "gold3")
+                               ;; ("REVW" :inherit org-todo-box :background "gold3")
 
 (setq org-highest-priority 65
       org-lowest-priority 69
       org-default-priority 68)
 
 ;; (setq org-priority-faces '((65 . (:foreground "red1"))
-;; 			   (66 . (:foreground "DarkOrange1"))
-;; 			   (67 . (:foreground "gold1"))
-;; 			   (68 . (:foreground "gray40"))
-;; 			   (69 . (:foreground "gray20"))))
+;;                         (66 . (:foreground "DarkOrange1"))
+;;                         (67 . (:foreground "gold1"))
+;;                         (68 . (:foreground "gray40"))
+;;                         (69 . (:foreground "gray20"))))
 
 ;; DEFCON theme
 (setq org-priority-faces '((65 . (:inherit org-priority-face-a))
-			   (66 . (:inherit org-priority-face-b))
-			   (67 . (:inherit org-priority-face-c))
-			   (68 . (:inherit org-priority-face-d))
-			   (69 . (:inherit org-priority-face-e))))
-(setq org-tags-column -77)		;Default: -77
+                           (66 . (:inherit org-priority-face-b))
+                           (67 . (:inherit org-priority-face-c))
+                           (68 . (:inherit org-priority-face-d))
+                           (69 . (:inherit org-priority-face-e))))
+(setq org-tags-column -77)              ;Default: -77
 ;; Default: auto OR -80.
 ;; 89 and not 90 because of org-agenda-category-icon-alist
 (setq org-agenda-tags-column -95)
@@ -1673,29 +1673,29 @@ return `nil'."
 
 (setq org-todo-state-tags-triggers
       '(("CXLD" ("cancelled" . t) ("standby") ("waiting"))
-	("STBY" ("standby"   . t) ("cancelled") ("waiting"))
-	("WAIT" ("waiting"   . t) ("cancelled") ("standby"))
-	("TODO" ("cancelled") ("standby") ("waiting"))
-	("NEXT" ("cancelled") ("standby") ("waiting"))
-	("STRT" ("cancelled") ("standby") ("waiting"))
-	("WAIT" ("cancelled") ("standby") ("waiting"))
-	("DONE" ("cancelled") ("standby") ("waiting"))
-	(""     ("cancelled") ("standby") ("waiting")))
+        ("STBY" ("standby"   . t) ("cancelled") ("waiting"))
+        ("WAIT" ("waiting"   . t) ("cancelled") ("standby"))
+        ("TODO" ("cancelled") ("standby") ("waiting"))
+        ("NEXT" ("cancelled") ("standby") ("waiting"))
+        ("STRT" ("cancelled") ("standby") ("waiting"))
+        ("WAIT" ("cancelled") ("standby") ("waiting"))
+        ("DONE" ("cancelled") ("standby") ("waiting"))
+        (""     ("cancelled") ("standby") ("waiting")))
       ;; Custom colours for specific tags
       ;; Used to cause problem when rescheduling items in the agenda, but it seems to be gone now.
       org-tag-faces
-      '(("@home"	. org-tag-location)
-      	("@work"	. org-tag-location)
-      	("@town"	. org-tag-location)
-      	("standby"	. org-tag-todo)
-      	("cxld"		. org-tag-todo)
-      	("waiting"	. org-tag-todo)
-      	("recurring"	. org-tag-todo)
-      	("assignment"	. org-tag-important)
-      	("exam"		. org-tag-important)
-      	("important"	. org-tag-important)
-      	("reading"	. org-tag-reading)
-      	("french"	. org-tag-french)))
+      '(("@home"        . org-tag-location)
+        ("@work"        . org-tag-location)
+        ("@town"        . org-tag-location)
+        ("standby"      . org-tag-todo)
+        ("cxld"         . org-tag-todo)
+        ("waiting"      . org-tag-todo)
+        ("recurring"    . org-tag-todo)
+        ("assignment"   . org-tag-important)
+        ("exam"         . org-tag-important)
+        ("important"    . org-tag-important)
+        ("reading"      . org-tag-reading)
+        ("french"       . org-tag-french)))
 
 
 
@@ -1705,9 +1705,9 @@ return `nil'."
 ;; Global values for properties
 (setq org-global-properties (quote (("Effort_ALL" . "0:05 0:10 0:15 0:30 0:45 1:00 1:30 2:00 2:30 3:00 3:30 4:00 4:30 5:00 5:30 6:00 0:00")
                                     ("STYLE_ALL" . "habit")
-				    ("APPT_WARNTIME_ALL" . "5 10 15 20 25 30 35 40 45 50 55 60 0")
-				    ("SESSION_DURATION_ALL" . "0:45 0:15 0:20 0:30 1:00")
-				    )))
+                                    ("APPT_WARNTIME_ALL" . "5 10 15 20 25 30 35 40 45 50 55 60 0")
+                                    ("SESSION_DURATION_ALL" . "0:45 0:15 0:20 0:30 1:00")
+                                    )))
 
 ;; (setq org-global-properties nil)
 
@@ -1720,17 +1720,17 @@ return `nil'."
 ;; Category icons
 (setq org-agenda-category-icon-alist
       '(("^emacs$" "~/org/svg/icons/spacemacs.svg" nil nil :ascent center)
-	("^elisp$" "~/org/svg/icons/spacemacs.svg" nil nil :ascent center)
-	("^linux$" "~/org/svg/icons/nixos.svg" nil nil :ascent center)
-	("^opsec$" "~/org/svg/icons/cyber-security-b.svg" nil nil :ascent center)
+        ("^elisp$" "~/org/svg/icons/spacemacs.svg" nil nil :ascent center)
+        ("^linux$" "~/org/svg/icons/nixos.svg" nil nil :ascent center)
+        ("^opsec$" "~/org/svg/icons/cyber-security-b.svg" nil nil :ascent center)
         ("^awakening$" "~/org/svg/icons/aperture-green.svg" nil nil :ascent center)
-	("^hack$" "~/org/svg/icons/engineering-2.svg" nil nil :ascent center)
-	("^python$" "~/org/svg/icons/python.svg" nil nil :ascent center)
-	("^contrib$" "~/org/svg/icons/chill.svg" nil nil :ascent center)
-	("^bug$" "~/org/svg/icons/cross.svg" nil nil :ascent center)
-	("^research$" "~/org/svg/icons/research.svg" nil nil :ascent center)
-	("^swim$" "~/org/svg/icons/foxhound-3.svg" nil nil :ascent center)
-	(".*" '(space . (:width (24))) nil nil :ascent center)))
+        ("^hack$" "~/org/svg/icons/engineering-2.svg" nil nil :ascent center)
+        ("^python$" "~/org/svg/icons/python.svg" nil nil :ascent center)
+        ("^contrib$" "~/org/svg/icons/chill.svg" nil nil :ascent center)
+        ("^bug$" "~/org/svg/icons/cross.svg" nil nil :ascent center)
+        ("^research$" "~/org/svg/icons/research.svg" nil nil :ascent center)
+        ("^swim$" "~/org/svg/icons/foxhound-3.svg" nil nil :ascent center)
+        (".*" '(space . (:width (24))) nil nil :ascent center)))
 
 ;; Babel
 (require 'ob-async)
@@ -1740,15 +1740,15 @@ return `nil'."
 
 ;; Deactivated since migrated to Linux
 (org-babel-do-load-languages 'org-babel-load-languages
-			     '((R . t)
-			       (python . t)
-			       (latex . t)
-			       (ledger . t)))
+                             '((R . t)
+                               (python . t)
+                               (latex . t)
+                               (ledger . t)))
 
 ;; Prototype babel
 (org-babel-do-load-languages 'org-babel-load-languages
-			     '((shell . t)
-			       (ditaa . t)))
+                             '((shell . t)
+                               (ditaa . t)))
 
 (add-hook 'org-babel-after-execute-hook 'org-display-inline-images 'append)
 
@@ -1756,11 +1756,11 @@ return `nil'."
 
 
 (add-to-list 'safe-local-variable-values
-	     '(after-save-hook . org-html-export-to-html))
+             '(after-save-hook . org-html-export-to-html))
 (add-to-list 'safe-local-variable-values
-	     '(org-confirm-babel-evaluate . nil))
+             '(org-confirm-babel-evaluate . nil))
 (add-to-list 'safe-local-variable-values
-	     '( . nil))
+             '( . nil))
 
 (defun zp/org-overview (arg)
   (interactive "p")
@@ -1820,9 +1820,9 @@ return `nil'."
     (outline-up-heading 1)
     (org-narrow-to-subtree)
     (if (eq arg 4)
-	(progn
-	  (goto-char pos-before)
-	  (recenter-top-bottom)))
+        (progn
+          (goto-char pos-before)
+          (recenter-top-bottom)))
     (message "Narrowing to tree above.")
     (zp/play-sound-turn-page)))
 
@@ -1831,13 +1831,13 @@ return `nil'."
   (interactive "p")
   (if (bound-and-true-p zp/org-narrow-previous-position)
       (let ((pos-before zp/org-narrow-previous-position))
-	(goto-char zp/org-narrow-previous-position)
-	(org-reveal)
-	(org-cycle)
-	(org-narrow-to-subtree)
-	(setq zp/org-narrow-previous-position nil)
-	(message "Narrowing to previously narrowed tree.")
-	(zp/play-sound-turn-page))
+        (goto-char zp/org-narrow-previous-position)
+        (org-reveal)
+        (org-cycle)
+        (org-narrow-to-subtree)
+        (setq zp/org-narrow-previous-position nil)
+        (message "Narrowing to previously narrowed tree.")
+        (zp/play-sound-turn-page))
     (message "Couldn’t find a previous position.")))
 
 ;; Hook
@@ -1897,70 +1897,70 @@ return `nil'."
   (mapc
    (lambda (x)
      (let ((file-shortcut (car x))
-	   (file-path (cdr x)))
+           (file-path (cdr x)))
        (global-set-key (kbd (concat "C-c " file-shortcut))
-		       `(lambda ()
-			  (interactive)
-			  (find-file ',file-path)))))
+                       `(lambda ()
+                          (interactive)
+                          (find-file ',file-path)))))
    alist))
 
 
 (setq zp/shortcut-files-alist
       '(("e" . "/home/zaeph/.emacs.d/init.el")
-	("I" . "/home/zaeph/org/info.org.gpg"))
+        ("I" . "/home/zaeph/org/info.org.gpg"))
       zp/ledger-files-alist
       '(("l l" . "/home/zaeph/org/ledger/main.ledger.gpg")
-	("l s" . "/home/zaeph/org/ledger/main-schedule.ledger.gpg")
-      	;; ("l f" . "/home/zaeph/org/ledger/french-house.ledger.gpg")
-	)
+        ("l s" . "/home/zaeph/org/ledger/main-schedule.ledger.gpg")
+        ;; ("l f" . "/home/zaeph/org/ledger/french-house.ledger.gpg")
+        )
       zp/research-files-alist
       '(("p t" . "/home/zaeph/org/projects/university/research/thesis/thesis.tex")
-      	("p T" . "/home/zaeph/org/projects/university/research/presentation/presentation.tex")
-      	("p b" . "/home/zaeph/org/bib/monty-python.bib")
-      	("p B" . "/home/zaeph/org/projects/university/research/thesis/bibliography/bibliography.tex")
-      	;; ("p c" . "/home/zaeph/org/projects/university/research/sty/zaeph.sty")
-      	;; ("p C" . "/home/zaeph/org/projects/university/research/sty/presentation.sty")
-	)
+        ("p T" . "/home/zaeph/org/projects/university/research/presentation/presentation.tex")
+        ("p b" . "/home/zaeph/org/bib/monty-python.bib")
+        ("p B" . "/home/zaeph/org/projects/university/research/thesis/bibliography/bibliography.tex")
+        ;; ("p c" . "/home/zaeph/org/projects/university/research/sty/zaeph.sty")
+        ;; ("p C" . "/home/zaeph/org/projects/university/research/sty/presentation.sty")
+        )
       zp/misc-files-alist
       '(;; ("p d" . "/tmp/asus/home/zaeph/Downloads/Sharing/dl.org")
-	("p d" . "/ssh:asus:/home/zaeph/Downloads/Sharing/dl.org"))
+        ("p d" . "/ssh:asus:/home/zaeph/Downloads/Sharing/dl.org"))
 
       zp/journal-files-alist
       '(("j" . "/home/zaeph/org/journal.org.gpg")
-	;; ("j a" . "/home/zaeph/org/projects/awakening/journal.org.gpg")
-	;; ("j p" . "/home/zaeph/org/projects/psychotherapy/journal.org.gpg")
-      	;; ("j w" . "/home/zaeph/org/projects/writing/journal.org.gpg")
-      	;; ("j u" . "/home/zaeph/org/projects/university/journal.org.gpg")
-      	;; ("j r" . "/home/zaeph/org/projects/university/research/journal.org.gpg")
-      	;; ("j h" . "/home/zaeph/org/projects/hacking/journal.org.gpg")
-      	;; ("j s" . "/home/zaeph/org/sports/swimming/journal.org.gpg")
+        ;; ("j a" . "/home/zaeph/org/projects/awakening/journal.org.gpg")
+        ;; ("j p" . "/home/zaeph/org/projects/psychotherapy/journal.org.gpg")
+        ;; ("j w" . "/home/zaeph/org/projects/writing/journal.org.gpg")
+        ;; ("j u" . "/home/zaeph/org/projects/university/journal.org.gpg")
+        ;; ("j r" . "/home/zaeph/org/projects/university/research/journal.org.gpg")
+        ;; ("j h" . "/home/zaeph/org/projects/hacking/journal.org.gpg")
+        ;; ("j s" . "/home/zaeph/org/sports/swimming/journal.org.gpg")
         )
       zp/journal-files
       (mapcar 'cdr zp/journal-files-alist)
 
       zp/org-agenda-files-projects-alist
       '(("p w" . "/home/zaeph/org/projects/writing/writing.org.gpg")
-      	;; ("p t" . "/home/zaeph/org/projects/tavocat/tavocat.org.gpg")
-      	;; ("p k". "/home/zaeph/org/projects/kendeskiñ/kendeskiñ.org.gpg")
-      	;; University
-      	("p u" . "/home/zaeph/org/projects/university/university.org.gpg")
-      	("p r" . "/home/zaeph/org/projects/university/research/research.org.gpg")
-	;; ("p c l"	. "/home/zaeph/org/projects/university/classes/university/ling/ling.org.gpg")
-	;; ("p c u"	. "/home/zaeph/org/projects/university/classes/university/civ-us/civ-us.org.gpg")
-	;; ("p c g"	. "/home/zaeph/org/projects/university/classes/university/civ-gb/civ-gb.org.gpg")
-	;; ("p c s"	. "/home/zaeph/org/projects/university/classes/university/space/space.org.gpg")
-	;; ("p c i"	. "/home/zaeph/org/projects/university/classes/university/lit/lit.org.gpg")
-	;; ("p c s"	. "/home/zaeph/org/projects/university/classes/university/syn/syn.org.gpg")
-	;; ("p c t"	. "/home/zaeph/org/projects/university/classes/espe/tronc-commun.org.gpg")
-	;; Languages
-	("p j" . "/home/zaeph/org/projects/lang/ja/ja.org.gpg")
-	("p g" . "/home/zaeph/org/projects/lang/de/de.org.gpg")
-      	;; Activism
-      	;; ("p a d"  . "[DATA EXPUNGED]")
-      	;; ("p a s"  . "[DATA EXPUNGED]")
-      	;; ("p a c"  . "[DATA EXPUNGED]")
-      	;; ("p a m"  . "[DATA EXPUNGED]")
-      	)
+        ;; ("p t" . "/home/zaeph/org/projects/tavocat/tavocat.org.gpg")
+        ;; ("p k". "/home/zaeph/org/projects/kendeskiñ/kendeskiñ.org.gpg")
+        ;; University
+        ("p u" . "/home/zaeph/org/projects/university/university.org.gpg")
+        ("p r" . "/home/zaeph/org/projects/university/research/research.org.gpg")
+        ;; ("p c l"     . "/home/zaeph/org/projects/university/classes/university/ling/ling.org.gpg")
+        ;; ("p c u"     . "/home/zaeph/org/projects/university/classes/university/civ-us/civ-us.org.gpg")
+        ;; ("p c g"     . "/home/zaeph/org/projects/university/classes/university/civ-gb/civ-gb.org.gpg")
+        ;; ("p c s"     . "/home/zaeph/org/projects/university/classes/university/space/space.org.gpg")
+        ;; ("p c i"     . "/home/zaeph/org/projects/university/classes/university/lit/lit.org.gpg")
+        ;; ("p c s"     . "/home/zaeph/org/projects/university/classes/university/syn/syn.org.gpg")
+        ;; ("p c t"     . "/home/zaeph/org/projects/university/classes/espe/tronc-commun.org.gpg")
+        ;; Languages
+        ("p j" . "/home/zaeph/org/projects/lang/ja/ja.org.gpg")
+        ("p g" . "/home/zaeph/org/projects/lang/de/de.org.gpg")
+        ;; Activism
+        ;; ("p a d"  . "[DATA EXPUNGED]")
+        ;; ("p a s"  . "[DATA EXPUNGED]")
+        ;; ("p a c"  . "[DATA EXPUNGED]")
+        ;; ("p a m"  . "[DATA EXPUNGED]")
+        )
       zp/org-agenda-files-projects
       (mapcar 'cdr zp/org-agenda-files-projects-alist)
 
@@ -1981,17 +1981,17 @@ return `nil'."
 
       zp/org-agenda-files-sports-alist
       '(("p s" . "/home/zaeph/org/sports/swimming/swimming.org.gpg")
-      	;; ("p R" . "/home/zaeph/org/sports/running/running.org.gpg")
-      	)
+        ;; ("p R" . "/home/zaeph/org/sports/running/running.org.gpg")
+        )
       zp/org-agenda-files-sports
       (mapcar 'cdr zp/org-agenda-files-sports-alist)
 
       zp/org-agenda-files-hacking-alist
       '(("p h e" . "/home/zaeph/org/projects/hacking/emacs/emacs.org.gpg")
-	("p h l" . "/home/zaeph/org/projects/hacking/linux/linux.org.gpg")
-	("p h o" . "/home/zaeph/org/projects/hacking/opsec/opsec.org.gpg")
-	("p h h" . "/home/zaeph/org/projects/hacking/hacking.org.gpg")
-      	("p h p" . "/home/zaeph/org/projects/hacking/python/python.org.gpg"))
+        ("p h l" . "/home/zaeph/org/projects/hacking/linux/linux.org.gpg")
+        ("p h o" . "/home/zaeph/org/projects/hacking/opsec/opsec.org.gpg")
+        ("p h h" . "/home/zaeph/org/projects/hacking/hacking.org.gpg")
+        ("p h p" . "/home/zaeph/org/projects/hacking/python/python.org.gpg"))
       zp/org-agenda-files-hacking
       (mapcar 'cdr zp/org-agenda-files-hacking-alist)
 
@@ -2086,7 +2086,7 @@ return `nil'."
 (setq ivy-use-virtual-buffers t)
 (setq enable-recursive-minibuffers t)
 (setq ivy-count-format "(%d/%d) "
-      ivy-height 10			;Default
+      ivy-height 10                     ;Default
       counsel-find-file-at-point t)
 (global-set-key "\C-s" 'swiper)
 (global-set-key (kbd "C-c C-r") 'ivy-resume)
@@ -2112,7 +2112,7 @@ return `nil'."
 
 ;; Shortcut for opening Keep (not yet implemented: can't find a good key for it)
 ;; (global-set-key (kbd "C-<f1>")
-;; 		(lambda () (interactive) (org-open-link-from-string "https://keep.google.com/")))
+;;              (lambda () (interactive) (org-open-link-from-string "https://keep.google.com/")))
 
 
 
@@ -2134,7 +2134,7 @@ return `nil'."
 (require 'olivetti)
 
 (setq-default olivetti-body-width 0.6
-	      olivetti-minimum-body-width 80)
+              olivetti-minimum-body-width 80)
 
 (defun zp/olivetti-toggle-hide-mode-line ()
   (interactive)
@@ -2184,23 +2184,23 @@ return `nil'."
       org-clock-out-remove-zero-time-clocks t
       org-agenda-exporter-settings
       '((ps-print-color-p t)
-	(ps-landscape-mode t)
-	(ps-print-header nil)
-	(ps-default-bg t))
+        (ps-landscape-mode t)
+        (ps-print-header nil)
+        (ps-default-bg t))
       org-agenda-clockreport-parameter-plist '(:link t :maxlevel 2 :fileskip0 t)
       )
 
 
 
 (setq org-agenda-clock-consistency-checks '(:max-duration "10:00"
-					    :min-duration 0
-					    :max-gap "0:05"
-					    :gap-ok-around ("4:00" "13:00" "19:30")
-					    :default-face zp/org-agenda-block-info-face
-					    :gap-face nil
-					    :no-end-time-face nil
-					    :long-face nil
-					    :short-face nil))
+                                            :min-duration 0
+                                            :max-gap "0:05"
+                                            :gap-ok-around ("4:00" "13:00" "19:30")
+                                            :default-face zp/org-agenda-block-info-face
+                                            :gap-face nil
+                                            :no-end-time-face nil
+                                            :long-face nil
+                                            :short-face nil))
 
 
 
@@ -2222,22 +2222,22 @@ return `nil'."
 (defun org-cmp-test-todo (todo a b)
   "Compare the todo states of strings A and B."
   (let* ((ma (or (get-text-property 1 'org-marker a)
-		 (get-text-property 1 'org-hd-marker a)))
-	 (mb (or (get-text-property 1 'org-marker b)
-		 (get-text-property 1 'org-hd-marker b)))
-	 (fa (and ma (marker-buffer ma)))
-	 (fb (and mb (marker-buffer mb)))
-	 (todo-kwds
-	  (or (and fa (with-current-buffer fa org-todo-keywords-1))
-	      (and fb (with-current-buffer fb org-todo-keywords-1))))
-	 (ta (or (get-text-property 1 'todo-state a) ""))
-	 (tb (or (get-text-property 1 'todo-state b) ""))
-	 (la (- (length (member ta todo-kwds))))
-	 (lb (- (length (member tb todo-kwds))))
-	 (donepa (member ta org-done-keywords-for-agenda))
-	 (donepb (member tb org-done-keywords-for-agenda)))
+                 (get-text-property 1 'org-hd-marker a)))
+         (mb (or (get-text-property 1 'org-marker b)
+                 (get-text-property 1 'org-hd-marker b)))
+         (fa (and ma (marker-buffer ma)))
+         (fb (and mb (marker-buffer mb)))
+         (todo-kwds
+          (or (and fa (with-current-buffer fa org-todo-keywords-1))
+              (and fb (with-current-buffer fb org-todo-keywords-1))))
+         (ta (or (get-text-property 1 'todo-state a) ""))
+         (tb (or (get-text-property 1 'todo-state b) ""))
+         (la (- (length (member ta todo-kwds))))
+         (lb (- (length (member tb todo-kwds))))
+         (donepa (member ta org-done-keywords-for-agenda))
+         (donepb (member tb org-done-keywords-for-agenda)))
     (cond ((and (string-match-p ta todo) (not (string-match-p tb todo))) +1)
-	  ((and (string-match-p tb todo) (not (string-match-p ta todo))) -1))))
+          ((and (string-match-p tb todo) (not (string-match-p ta todo))) -1))))
 
 (defun zp/org-agenda-sort-special (a b)
   (cond
@@ -2267,34 +2267,34 @@ return `nil'."
 (defun zp/org-agenda-format-word-list (word-list)
   (let ((word-list-linked (s-join ";" word-list)))
     (if (not (eq word-list nil))
-	(concat " " "(" word-list-linked ")"))))
+        (concat " " "(" word-list-linked ")"))))
 
 (defun zp/org-agenda-format-header-main (header)
   "Format the main header block in org-agenda."
   (let* ((tags-column org-agenda-tags-column)
-	 (flanking-symbol "~")
-	 (header-formatted
-	  (zp/org-agenda-format-header-align
-	   (concat flanking-symbol " " header " " flanking-symbol)))
-	 (word-list ()))
+         (flanking-symbol "~")
+         (header-formatted
+          (zp/org-agenda-format-header-align
+           (concat flanking-symbol " " header " " flanking-symbol)))
+         (word-list ()))
     (if (eq org-agenda-dim-blocked-tasks nil)
-    	(add-to-list 'word-list "-dim" t))
+        (add-to-list 'word-list "-dim" t))
     (if (eq org-agenda-include-deadlines nil)
-    	(add-to-list 'word-list "-deadlines" t))
+        (add-to-list 'word-list "-deadlines" t))
     (if (eq org-habit-show-habits nil)
-    	(add-to-list 'word-list "-habits" t))
+        (add-to-list 'word-list "-habits" t))
     (if (eq zp/org-agenda-include-scheduled nil)
-    	(add-to-list 'word-list "-scheduled" t))
+        (add-to-list 'word-list "-scheduled" t))
     (let ((word-list-formatted (s-join ";" word-list)))
       (if (not (eq word-list nil))
-	  (setq word-list-formatted (concat " " "(" word-list-formatted ")")))
+          (setq word-list-formatted (concat " " "(" word-list-formatted ")")))
       (concat
        header-formatted word-list-formatted "\n"))))
 
 (defun zp/org-agenda-format-header-block (header)
   "Format header blocks in org-agenda."
   (let* ((tags-column org-agenda-tags-column)
-	 (header-formatted (zp/org-agenda-format-header-align header)))
+         (header-formatted (zp/org-agenda-format-header-align header)))
     (concat
      header-formatted "\n")))
 
@@ -2303,13 +2303,13 @@ return `nil'."
 agenda settings after them."
   (let ((word-list ()))
     (if (eq zp/org-agenda-sorting-strategy-user-defined 'priority)
-    	(add-to-list 'word-list "+#↓" t))
+        (add-to-list 'word-list "+#↓" t))
     (if (eq org-agenda-dim-blocked-tasks nil)
-    	(add-to-list 'word-list "-dim" t))
+        (add-to-list 'word-list "-dim" t))
     (if (eq org-agenda-todo-ignore-scheduled 'future)
-    	(add-to-list 'word-list "-future" t))
+        (add-to-list 'word-list "-future" t))
     (let ((header-formatted (zp/org-agenda-format-header-align header))
-	  (word-list-formatted (zp/org-agenda-format-word-list word-list)))
+          (word-list-formatted (zp/org-agenda-format-word-list word-list)))
       (concat header-formatted word-list-formatted))))
 
 ;; Special blocks
@@ -2317,15 +2317,15 @@ agenda settings after them."
   "Format headers of ‘Stuck Projects’ in org-agenda, and display important
 agenda settings after them."
   (let* ((tags-column org-agenda-tags-column)
-	 (flanking-symbol-left "[")
-	 (flanking-symbol-right "]")
-	 (header "Stuck Projects")
-	 (header-formatted
-	  (zp/org-agenda-format-header-align
-	   (concat flanking-symbol-left " " header " " flanking-symbol-right)))
-	 (word-list ()))
+         (flanking-symbol-left "[")
+         (flanking-symbol-right "]")
+         (header "Stuck Projects")
+         (header-formatted
+          (zp/org-agenda-format-header-align
+           (concat flanking-symbol-left " " header " " flanking-symbol-right)))
+         (word-list ()))
     (if (eq org-agenda-dim-blocked-tasks nil)
-    	(add-to-list 'word-list "-dim" t))
+        (add-to-list 'word-list "-dim" t))
     (let ((word-list-formatted (zp/org-agenda-format-word-list word-list)))
       (concat header-formatted word-list-formatted "\n"))))
 
@@ -2333,32 +2333,32 @@ agenda settings after them."
   "Format headers of ‘Scheduled’ in org-agenda, and display
 important agenda settings after them."
   (let* ((tags-column org-agenda-tags-column)
-	 (header "Scheduled")
-	 (word-list ()))
+         (header "Scheduled")
+         (word-list ()))
     (if (eq zp/org-agenda-sorting-strategy-user-defined 'priority)
-    	(add-to-list 'word-list "+#↓" t))
+        (add-to-list 'word-list "+#↓" t))
     (if (eq org-agenda-dim-blocked-tasks nil)
-    	(add-to-list 'word-list "-dim" t))
+        (add-to-list 'word-list "-dim" t))
     (if (eq org-agenda-todo-ignore-scheduled 'future)
-    	(add-to-list 'word-list "-future" t))
+        (add-to-list 'word-list "-future" t))
     (if (eq org-agenda-todo-ignore-scheduled nil)
-    	(add-to-list 'word-list "+future" t))
+        (add-to-list 'word-list "+future" t))
     (let ((header-formatted (zp/org-agenda-format-header-align header))
-	  (word-list-formatted (zp/org-agenda-format-word-list word-list)))
+          (word-list-formatted (zp/org-agenda-format-word-list word-list)))
       (concat header-formatted word-list-formatted "\n"))))
 
 (defun zp/org-agenda-format-header-projects ()
   "Format header blocks in org-agenda, and display important
 agenda settings after them."
   (let* ((tags-column org-agenda-tags-column)
-	 (header "Projects")
-	 (word-list ()))
+         (header "Projects")
+         (word-list ()))
     (if (eq zp/org-agenda-sorting-strategy-user-defined 'priority)
-    	(add-to-list 'word-list "+#↓" t))
+        (add-to-list 'word-list "+#↓" t))
     (if (eq zp/projects-include-waiting nil)
-    	(add-to-list 'word-list "-waiting" t))
+        (add-to-list 'word-list "-waiting" t))
     (let ((header-formatted (zp/org-agenda-format-header-align header))
-	  (word-list-formatted (zp/org-agenda-format-word-list word-list)))
+          (word-list-formatted (zp/org-agenda-format-word-list word-list)))
       (concat header-formatted word-list-formatted))))
 
 
@@ -2369,60 +2369,60 @@ agenda settings after them."
 
 (defun zp/org-agenda-block-agenda (header &optional file)
   `(agenda ""
-	   ((org-agenda-overriding-header
-	     (zp/org-agenda-format-header-main ,header))
-	    ,@(if (bound-and-true-p file)
-		  `((org-agenda-files ',file)))
-	    (org-agenda-span 'day)
-	    (org-agenda-dim-blocked-tasks 'dimmed))))
+           ((org-agenda-overriding-header
+             (zp/org-agenda-format-header-main ,header))
+            ,@(if (bound-and-true-p file)
+                  `((org-agenda-files ',file)))
+            (org-agenda-span 'day)
+            (org-agenda-dim-blocked-tasks 'dimmed))))
 
 (defun zp/org-agenda-block-agenda-with-filter (header &optional file)
   `(agenda ""
-	   ((org-agenda-overriding-header
-	     (zp/org-agenda-format-header-main ,header))
-	    ,@(if (bound-and-true-p file)
-		  `((org-agenda-files ',file))
+           ((org-agenda-overriding-header
+             (zp/org-agenda-format-header-main ,header))
+            ,@(if (bound-and-true-p file)
+                  `((org-agenda-files ',file))
                 `((org-agenda-files nil)))
-	    (org-agenda-span 'day)
+            (org-agenda-span 'day)
             (org-agenda-dim-blocked-tasks 'dimmed))))
 
 (defun zp/org-agenda-block-agenda-week (header &optional file)
   `(agenda ""
-	   ((org-agenda-overriding-header
-	     (zp/org-agenda-format-header-main ,header))
-	    ,@(if (bound-and-true-p file)
-		  `((org-agenda-files ',file)))
-	    (org-agenda-span 'week)
-	    (org-agenda-tag-filter-preset '("-recurring"))
-	    (org-agenda-skip-function
-	     '(org-agenda-skip-entry-if
-	       'todo '("CXLD")))
-	    (org-agenda-dim-blocked-tasks 'dimmed))))
+           ((org-agenda-overriding-header
+             (zp/org-agenda-format-header-main ,header))
+            ,@(if (bound-and-true-p file)
+                  `((org-agenda-files ',file)))
+            (org-agenda-span 'week)
+            (org-agenda-tag-filter-preset '("-recurring"))
+            (org-agenda-skip-function
+             '(org-agenda-skip-entry-if
+               'todo '("CXLD")))
+            (org-agenda-dim-blocked-tasks 'dimmed))))
 
 (defun zp/org-agenda-block-tasks (&optional file)
   `(tags-todo "-recurring-standby-reading"
-	      ((org-agenda-overriding-header
-		(zp/org-agenda-format-header-block-with-settings "Tasks"))
-	       ,@(if (bound-and-true-p file)
-		     `((org-agenda-files ',file)))
-	       (org-agenda-sorting-strategy
-		'(user-defined-down priority-down category-keep))
-	       ;; (org-agenda-skip-function 'zp/skip-non-tasks-and-scheduled))))
-	       (org-agenda-skip-function 'bh/skip-non-tasks)
-	       (org-agenda-todo-ignore-scheduled 'all)
-	       )))
+              ((org-agenda-overriding-header
+                (zp/org-agenda-format-header-block-with-settings "Tasks"))
+               ,@(if (bound-and-true-p file)
+                     `((org-agenda-files ',file)))
+               (org-agenda-sorting-strategy
+                '(user-defined-down priority-down category-keep))
+               ;; (org-agenda-skip-function 'zp/skip-non-tasks-and-scheduled))))
+               (org-agenda-skip-function 'bh/skip-non-tasks)
+               (org-agenda-todo-ignore-scheduled 'all)
+               )))
 
 (defun zp/org-agenda-block-tasks-with-filter (filter &optional file)
   `(tags-todo ,(concat filter "-standby-recurring")
-	      ((org-agenda-overriding-header
-		(zp/org-agenda-format-header-block-with-settings "Tasks"))
-	       ,@(if (bound-and-true-p file)
-		     `((org-agenda-files ',file)))
-	       (org-agenda-sorting-strategy
-		'(user-defined-down priority-down category-keep))
-	       ;; (org-agenda-skip-function 'zp/skip-non-tasks-and-scheduled))))
-	       (org-agenda-skip-function 'bh/skip-non-tasks)
-	       ;; (org-agenda-todo-ignore-scheduled 'all)
+              ((org-agenda-overriding-header
+                (zp/org-agenda-format-header-block-with-settings "Tasks"))
+               ,@(if (bound-and-true-p file)
+                     `((org-agenda-files ',file)))
+               (org-agenda-sorting-strategy
+                '(user-defined-down priority-down category-keep))
+               ;; (org-agenda-skip-function 'zp/skip-non-tasks-and-scheduled))))
+               (org-agenda-skip-function 'bh/skip-non-tasks)
+               ;; (org-agenda-todo-ignore-scheduled 'all)
                (org-super-agenda-groups
                '((:name "Overdue"
                   :and (:scheduled past
@@ -2438,48 +2438,48 @@ agenda settings after them."
 (defun zp/org-agenda-block-projects-stuck (&optional file)
   (let ((org-agenda-cmp-user-defined 'org-cmp-todo-state-wait))
     `(tags-todo "-standby"
-		((org-agenda-overriding-header
-		  (zp/org-agenda-format-header-projects-stuck))
-		 ,@(if (bound-and-true-p file)
-		       `((org-agenda-files ',file)))
-		 (org-agenda-skip-function 'zp/skip-non-stuck-projects)
-		 (org-agenda-todo-ignore-scheduled nil)
-		 (org-agenda-dim-blocked-tasks 'dimmed)))))
+                ((org-agenda-overriding-header
+                  (zp/org-agenda-format-header-projects-stuck))
+                 ,@(if (bound-and-true-p file)
+                       `((org-agenda-files ',file)))
+                 (org-agenda-skip-function 'zp/skip-non-stuck-projects)
+                 (org-agenda-todo-ignore-scheduled nil)
+                 (org-agenda-dim-blocked-tasks 'dimmed)))))
 
 (defun zp/org-agenda-block-projects-stuck-with-filter (filter &optional file)
   (let ((org-agenda-cmp-user-defined 'org-cmp-todo-state-wait))
     `(tags-todo ,(concat filter "-standby")
-		((org-agenda-overriding-header
-		  (zp/org-agenda-format-header-projects-stuck))
-		 ,@(if (bound-and-true-p file)
-		       `((org-agenda-files ',file)))
-		 (org-agenda-skip-function 'zp/skip-non-stuck-projects)
-		 (org-agenda-todo-ignore-scheduled nil)
-		 (org-agenda-dim-blocked-tasks 'dimmed)))))
+                ((org-agenda-overriding-header
+                  (zp/org-agenda-format-header-projects-stuck))
+                 ,@(if (bound-and-true-p file)
+                       `((org-agenda-files ',file)))
+                 (org-agenda-skip-function 'zp/skip-non-stuck-projects)
+                 (org-agenda-todo-ignore-scheduled nil)
+                 (org-agenda-dim-blocked-tasks 'dimmed)))))
 
 (defun zp/org-agenda-block-projects (&optional file)
   `(tags-todo "-standby-reading"
-	      ((org-agenda-overriding-header
-		(zp/org-agenda-format-header-projects))
-	       ,@(if (bound-and-true-p file)
-		     `((org-agenda-files ',file)))
-	       (org-agenda-skip-function 'zp/skip-non-projects-and-waiting)
-	       (org-agenda-sorting-strategy
-		'(user-defined-down priority-down category-keep))
-	       (org-agenda-todo-ignore-scheduled nil)
-	       (org-agenda-dim-blocked-tasks nil))))
+              ((org-agenda-overriding-header
+                (zp/org-agenda-format-header-projects))
+               ,@(if (bound-and-true-p file)
+                     `((org-agenda-files ',file)))
+               (org-agenda-skip-function 'zp/skip-non-projects-and-waiting)
+               (org-agenda-sorting-strategy
+                '(user-defined-down priority-down category-keep))
+               (org-agenda-todo-ignore-scheduled nil)
+               (org-agenda-dim-blocked-tasks nil))))
 
 (defun zp/org-agenda-block-projects-with-filter (filter &optional file)
   `(tags-todo ,(concat filter "-standby")
-	      ((org-agenda-overriding-header
-		(zp/org-agenda-format-header-projects))
-	       ,@(if (bound-and-true-p file)
-		     `((org-agenda-files ',file)))
-	       (org-agenda-skip-function 'zp/skip-non-unstuck-projects-and-waiting)
-	       (org-agenda-sorting-strategy
-		'(user-defined-down priority-down category-keep))
-	       (org-agenda-todo-ignore-scheduled nil)
-	       (org-agenda-dim-blocked-tasks nil)
+              ((org-agenda-overriding-header
+                (zp/org-agenda-format-header-projects))
+               ,@(if (bound-and-true-p file)
+                     `((org-agenda-files ',file)))
+               (org-agenda-skip-function 'zp/skip-non-unstuck-projects-and-waiting)
+               (org-agenda-sorting-strategy
+                '(user-defined-down priority-down category-keep))
+               (org-agenda-todo-ignore-scheduled nil)
+               (org-agenda-dim-blocked-tasks nil)
                (org-super-agenda-groups
                '((:name "Active"
                   :not (:tag "waiting") )
@@ -2528,74 +2528,74 @@ It creates 4 blocks:
 
 (defun zp/org-agenda-block-tasks-special (&optional file)
   `(tags-todo "-standby/!WAIT|STRT"
-	      ((org-agenda-overriding-header
-		(zp/org-agenda-format-header-tasks-waiting))
-	       ,@(if (bound-and-true-p file)
-		     `((org-agenda-files ',file)))
-	       (org-agenda-skip-function 'bh/skip-non-tasks))))
+              ((org-agenda-overriding-header
+                (zp/org-agenda-format-header-tasks-waiting))
+               ,@(if (bound-and-true-p file)
+                     `((org-agenda-files ',file)))
+               (org-agenda-skip-function 'bh/skip-non-tasks))))
 
 (defun zp/org-agenda-block-scheduled (&optional file)
   `(tags-todo "-recurring-reading"
-	      ((org-agenda-overriding-header
-		(zp/org-agenda-format-header-scheduled))
-	       ,@(if (bound-and-true-p file)
-		     `((org-agenda-files ',file)))
-	       (org-agenda-skip-function
-		'(org-agenda-skip-entry-if 'notscheduled))
-	       (org-agenda-dim-blocked-tasks 'dimmed)
-	       (org-agenda-sorting-strategy '(timestamp-up user-defined-down priority-down)))))
+              ((org-agenda-overriding-header
+                (zp/org-agenda-format-header-scheduled))
+               ,@(if (bound-and-true-p file)
+                     `((org-agenda-files ',file)))
+               (org-agenda-skip-function
+                '(org-agenda-skip-entry-if 'notscheduled))
+               (org-agenda-dim-blocked-tasks 'dimmed)
+               (org-agenda-sorting-strategy '(timestamp-up user-defined-down priority-down)))))
 
 (defun zp/org-agenda-block-scheduled-with-filter (filter &optional file)
   `(tags-todo ,(concat filter "-recurring")
-	      ((org-agenda-overriding-header
-		(zp/org-agenda-format-header-scheduled))
-	       ,@(if (bound-and-true-p file)
-		     `((org-agenda-files ',file)))
-	       (org-agenda-skip-function
-		'(org-agenda-skip-entry-if 'notscheduled))
-	       (org-agenda-dim-blocked-tasks 'dimmed)
-	       (org-agenda-sorting-strategy '(timestamp-up user-defined-down priority-down)))))
+              ((org-agenda-overriding-header
+                (zp/org-agenda-format-header-scheduled))
+               ,@(if (bound-and-true-p file)
+                     `((org-agenda-files ',file)))
+               (org-agenda-skip-function
+                '(org-agenda-skip-entry-if 'notscheduled))
+               (org-agenda-dim-blocked-tasks 'dimmed)
+               (org-agenda-sorting-strategy '(timestamp-up user-defined-down priority-down)))))
 
 (defun zp/org-agenda-block-tasks-waiting (&optional file)
   `(tags-todo "-recurring-reading/!WAIT"
-	      ((org-agenda-overriding-header
-		(zp/org-agenda-format-header-main "Waiting & Stand-by Tasks"))
-	       ,@(if (bound-and-true-p file)
-		     `((org-agenda-files ',file)))
-	       ;; (org-agenda-skip-function
-	       ;; 	'(org-agenda-skip-entry-if 'notscheduled))
-	       (org-agenda-dim-blocked-tasks 'dimmed)
-	       (org-agenda-sorting-strategy '(timestamp-up user-defined-down priority-down)))))
+              ((org-agenda-overriding-header
+                (zp/org-agenda-format-header-main "Waiting & Stand-by Tasks"))
+               ,@(if (bound-and-true-p file)
+                     `((org-agenda-files ',file)))
+               ;; (org-agenda-skip-function
+               ;;       '(org-agenda-skip-entry-if 'notscheduled))
+               (org-agenda-dim-blocked-tasks 'dimmed)
+               (org-agenda-sorting-strategy '(timestamp-up user-defined-down priority-down)))))
 
 (defun zp/org-agenda-block-deadines ()
   '(agenda ""
-	   ((org-agenda-span 'day)
-	    (org-agenda-overriding-header
-	     (zp/org-agenda-format-header-main "Deadlines"))
-	    (org-agenda-entry-types '(:deadline))
-	    (org-agenda-include-deadlines t)
-	    (org-agenda-dim-blocked-tasks 'dimmed)
-	    (org-deadline-warning-days 31)
-	    (org-agenda-sorting-strategy
-	     '((agenda habit-down time-up deadline-up priority-down category-keep)
-	       (tags priority-down category-keep)
-	       (todo priority-down category-keep)
-	       (search category-keep))))))
+           ((org-agenda-span 'day)
+            (org-agenda-overriding-header
+             (zp/org-agenda-format-header-main "Deadlines"))
+            (org-agenda-entry-types '(:deadline))
+            (org-agenda-include-deadlines t)
+            (org-agenda-dim-blocked-tasks 'dimmed)
+            (org-deadline-warning-days 31)
+            (org-agenda-sorting-strategy
+             '((agenda habit-down time-up deadline-up priority-down category-keep)
+               (tags priority-down category-keep)
+               (todo priority-down category-keep)
+               (search category-keep))))))
 
 (defun zp/org-agenda-block-reading-next-and-started ()
   '(tags-todo "+reading-recurring-standby/!NEXT|STRT"
-	      ((org-agenda-overriding-header
-		(zp/org-agenda-format-header-block "Next & Started")))))
+              ((org-agenda-overriding-header
+                (zp/org-agenda-format-header-block "Next & Started")))))
 
 (defun zp/org-agenda-block-reading-list ()
   '(tags-todo "+reading-recurring-standby/!-NEXT-STRT"
-	      ((org-agenda-overriding-header
-		(zp/org-agenda-format-header-block "Next & Started")))))
+              ((org-agenda-overriding-header
+                (zp/org-agenda-format-header-block "Next & Started")))))
 
 (defun zp/org-agenda-block-journal ()
   '(agenda ""
-	   ((org-agenda-overriding-header
-	     (zp/org-agenda-format-header-main "Journal")))))
+           ((org-agenda-overriding-header
+             (zp/org-agenda-format-header-main "Journal")))))
 
 (setq org-use-property-inheritance '("AGENDA_GROUP"))
 
@@ -2665,19 +2665,19 @@ It creates 4 blocks:
 
 
 (setq org-agenda-prefix-format '((agenda . " %i %-12:c%?-12t% s")
-				 (timeline . "  % s")
-				 (todo . " %i %-12:c")
-				 (tags . " %i %-12:c")
-				 (search . " %i %-12:c")))
+                                 (timeline . "  % s")
+                                 (todo . " %i %-12:c")
+                                 (tags . " %i %-12:c")
+                                 (search . " %i %-12:c")))
 
 
 
 ;; (setq org-agenda-sorting-strategy
 (setq org-agenda-sorting-strategy '((agenda habit-down time-up scheduled-up deadline-up priority-down category-keep)
-				    (tags priority-down category-keep)
-				    ;; (tags category-keep priority-down)
-				    (todo priority-down category-keep)
-				    (search category-keep)))
+                                    (tags priority-down category-keep)
+                                    ;; (tags category-keep priority-down)
+                                    (todo priority-down category-keep)
+                                    (search category-keep)))
 
 ;; Previous priority for agenda
 ;; '((agenda habit-down time-up priority-down category-keep)
@@ -2702,26 +2702,26 @@ It creates 4 blocks:
   (save-excursion
     (goto-char (point-min))
     (let* ((blank-line-re "^\\s-*$")
-	   (content-line-count (if (looking-at-p blank-line-re) 0 1))
-	   (start-pos (point))
-	   (block-re (format "%c\\{10,\\}" org-agenda-block-separator)))
+           (content-line-count (if (looking-at-p blank-line-re) 0 1))
+           (start-pos (point))
+           (block-re (format "%c\\{10,\\}" org-agenda-block-separator)))
       (while (and (not (eobp)) (forward-line))
-	(cond
-	 ((looking-at-p block-re)
-	  (when (< content-line-count 2)
-	    (delete-region start-pos (1+ (point-at-bol))))
-	  (setq start-pos (point))
-	  (forward-line)
-	  (setq content-line-count (if (looking-at-p blank-line-re) 0 1)))
-	 ((not (looking-at-p blank-line-re))
-	  (setq content-line-count (1+ content-line-count)))))
+        (cond
+         ((looking-at-p block-re)
+          (when (< content-line-count 2)
+            (delete-region start-pos (1+ (point-at-bol))))
+          (setq start-pos (point))
+          (forward-line)
+          (setq content-line-count (if (looking-at-p blank-line-re) 0 1)))
+         ((not (looking-at-p blank-line-re))
+          (setq content-line-count (1+ content-line-count)))))
       (when (< content-line-count 2)
-	(delete-region start-pos (point-max)))
+        (delete-region start-pos (point-max)))
       (goto-char (point-min))
       ;; The above strategy can leave a separator line at the beginning
       ;; of the buffer.
       (when (looking-at-p block-re)
-	(delete-region (point) (1+ (point-at-eol))))))
+        (delete-region (point) (1+ (point-at-eol))))))
   (setq buffer-read-only t))
 
 (defface zp/org-agenda-block-info-face nil
@@ -2749,114 +2749,114 @@ It creates 4 blocks:
   (interactive)
   (cond ((bound-and-true-p org-habit-show-all-today)
          (setq org-habit-show-all-today nil)
-	 (org-agenda-redo)
-	 (message "Habits: Showing today"))
+         (org-agenda-redo)
+         (message "Habits: Showing today"))
         (t
          (setq org-habit-show-all-today 1)
-	 (org-agenda-redo)
-	 (message "Habits: Showing all"))))
+         (org-agenda-redo)
+         (message "Habits: Showing all"))))
 
 (defun zp/toggle-org-agenda-include-deadlines ()
   "Toggle the inclusion of deadlines in the agenda."
   (interactive)
   (cond ((bound-and-true-p org-agenda-include-deadlines)
          (setq org-agenda-include-deadlines nil)
-	 (org-agenda-redo)
-	 (message "Deadlines: Hidden"))
+         (org-agenda-redo)
+         (message "Deadlines: Hidden"))
         (t
          (setq org-agenda-include-deadlines t)
-	 (org-agenda-redo)
-	 (message "Deadlines: Visible"))))
+         (org-agenda-redo)
+         (message "Deadlines: Visible"))))
 
 (defun zp/toggle-org-agenda-include-scheduled ()
   "Toggle the inclusion of scheduled items in the agenda."
   (interactive)
   (cond ((eq zp/org-agenda-include-scheduled 'all)
          (setq org-agenda-entry-types '(:deadline :timestamp :sexp)
-	       zp/org-agenda-include-scheduled nil)
-	 (org-agenda-redo)
-	 (message "Scheduled: Hidden"))
+               zp/org-agenda-include-scheduled nil)
+         (org-agenda-redo)
+         (message "Scheduled: Hidden"))
         (t
          (setq org-agenda-entry-types '(:deadline :scheduled :timestamp :sexp)
-	       zp/org-agenda-include-scheduled 'all)
-	 (org-agenda-redo)
-	 (message "Scheduled: Visible"))))
+               zp/org-agenda-include-scheduled 'all)
+         (org-agenda-redo)
+         (message "Scheduled: Visible"))))
 
 (defun zp/toggle-org-agenda-cmp-user-defined ()
   "Toggle the skip function used by the agenda."
   (interactive)
   (cond ((eq zp/org-agenda-sorting-strategy-user-defined 'priority)
          (setq org-agenda-cmp-user-defined 'zp/org-agenda-sort-special
-	       zp/org-agenda-sorting-strategy-user-defined 'special)
-	 (org-agenda-redo)
-	 (message "Sorting: Special first"))
+               zp/org-agenda-sorting-strategy-user-defined 'special)
+         (org-agenda-redo)
+         (message "Sorting: Special first"))
         (t
          (setq org-agenda-cmp-user-defined 'zp/org-agenda-sort-wait
-	       zp/org-agenda-sorting-strategy-user-defined 'priority)
-	 (org-agenda-redo)
-	 (message "Sorting: Priority first"))))
+               zp/org-agenda-sorting-strategy-user-defined 'priority)
+         (org-agenda-redo)
+         (message "Sorting: Priority first"))))
 
 (defun zp/toggle-org-deadline-warning-days-range ()
   "Toggle the range of days for deadline to show up on the agenda."
   (interactive)
   (cond ((eq org-deadline-warning-days 7)
-	 (setq org-deadline-warning-days 31)
-	 (org-agenda-redo)
-	 (message "Deadline range: 1 month"))
-	((eq org-deadline-warning-days 31)
-	 (setq org-deadline-warning-days 7)
-	 (org-agenda-redo)
-	 (message "Deadline range: 1 week"))))
+         (setq org-deadline-warning-days 31)
+         (org-agenda-redo)
+         (message "Deadline range: 1 month"))
+        ((eq org-deadline-warning-days 31)
+         (setq org-deadline-warning-days 7)
+         (org-agenda-redo)
+         (message "Deadline range: 1 week"))))
 
 (defun zp/toggle-org-agenda-todo-ignore-future-scheduled ()
   "Toggle the range of days for deadline to show up on the agenda."
   (interactive)
   (cond ((eq org-agenda-todo-ignore-scheduled 'future)
-	 (setq org-agenda-todo-ignore-scheduled nil)
-	 (org-agenda-redo)
-	 (message "Scheduled: All (Today + Future)"))
-	((eq org-agenda-todo-ignore-scheduled nil)
-	 (setq org-agenda-todo-ignore-scheduled 'future)
-	 (org-agenda-redo)
-	 (message "Scheduled: Only Today"))))
+         (setq org-agenda-todo-ignore-scheduled nil)
+         (org-agenda-redo)
+         (message "Scheduled: All (Today + Future)"))
+        ((eq org-agenda-todo-ignore-scheduled nil)
+         (setq org-agenda-todo-ignore-scheduled 'future)
+         (org-agenda-redo)
+         (message "Scheduled: Only Today"))))
 
 (defun zp/toggle-org-agenda-projects-include-waiting ()
   "Toggle whether to include projects with a waiting task."
   (interactive)
   (cond ((eq zp/projects-include-waiting nil)
-	 (setq zp/projects-include-waiting t)
-	 (org-agenda-redo)
-	 (message "Projects: Showing All"))
-	((eq zp/projects-include-waiting t)
-	 (setq zp/projects-include-waiting nil)
-	 (org-agenda-redo)
-	 (message "Projects: Hiding Waiting"))))
+         (setq zp/projects-include-waiting t)
+         (org-agenda-redo)
+         (message "Projects: Showing All"))
+        ((eq zp/projects-include-waiting t)
+         (setq zp/projects-include-waiting nil)
+         (org-agenda-redo)
+         (message "Projects: Hiding Waiting"))))
 
 (defun zp/toggle-org-agenda-dim-blocked-tasks ()
   "Toggle the dimming of blocked tags in the agenda."
   (interactive)
   (cond ((or (eq org-agenda-dim-blocked-tasks nil)
-	     (eq org-agenda-dim-blocked-tasks 'invisible))
+             (eq org-agenda-dim-blocked-tasks 'invisible))
          (setq org-agenda-dim-blocked-tasks t)
-	 (org-agenda-redo)
-	 (message "Blocked tasks: Dimmed"))
+         (org-agenda-redo)
+         (message "Blocked tasks: Dimmed"))
         (t
          (setq org-agenda-dim-blocked-tasks nil)
-	 (org-agenda-redo)
-	 (message "Blocked tasks: Plain"))))
+         (org-agenda-redo)
+         (message "Blocked tasks: Plain"))))
 
 (defun zp/toggle-org-agenda-hide-blocked-tasks ()
   "Toggle the visibility of blocked tags in the agenda."
   (interactive)
   (cond ((or (eq org-agenda-dim-blocked-tasks nil)
-	     (eq org-agenda-dim-blocked-tasks t))
+             (eq org-agenda-dim-blocked-tasks t))
          (setq org-agenda-dim-blocked-tasks 'invisible)
-	 (org-agenda-redo)
-	 (message "Blocked tasks: Invisible"))
+         (org-agenda-redo)
+         (message "Blocked tasks: Invisible"))
         (t
          (setq org-agenda-dim-blocked-tasks t)
-	 (org-agenda-redo)
-	 (message "Blocked tasks: Dimmed"))))
+         (org-agenda-redo)
+         (message "Blocked tasks: Dimmed"))))
 
 ;; Dangerous, since it might hide important tasks to do.
 ;; (defun zp/org-tags-match-list-sublevels ()
@@ -2864,28 +2864,28 @@ It creates 4 blocks:
 ;;   (interactive)
 ;;   (cond ((bound-and-true-p org-tags-match-list-sublevels)
 ;;          (setq org-tags-match-list-sublevels nil)
-;; 	 (org-agenda-redo)
-;; 	 (message "Subtasks: Hidden"))
+;;       (org-agenda-redo)
+;;       (message "Subtasks: Hidden"))
 ;;         (t
 ;;          (setq org-tags-match-list-sublevels t)
-;; 	 (org-agenda-redo)
-;; 	 (message "Subtasks: Showing"))))
+;;       (org-agenda-redo)
+;;       (message "Subtasks: Showing"))))
 
 ;; (defun zp/toggle-org-agenda-dim-blocked-tasks ()
 ;;   "Toggle a distraction-free environment for writing."
 ;;   (interactive)
 ;;   (cond ((eq org-agenda-dim-blocked-tasks 'invisible)
 ;;          (setq org-agenda-dim-blocked-tasks nil)
-;; 	 (org-agenda-redo)
-;; 	 (message "Blocked tasks: Plain"))
-;; 	((eq org-agenda-dim-blocked-tasks nil)
+;;       (org-agenda-redo)
+;;       (message "Blocked tasks: Plain"))
+;;      ((eq org-agenda-dim-blocked-tasks nil)
 ;;          (setq org-agenda-dim-blocked-tasks t)
-;; 	 (org-agenda-redo)
-;; 	 (message "Blocked tasks: Dimmed"))
-;; 	((eq org-agenda-dim-blocked-tasks t)
-;; 	 (setq org-agenda-dim-blocked-tasks 'invisible)
-;; 	 (org-agenda-redo)
-;; 	 (message "Blocked tasks: Invisible"))
+;;       (org-agenda-redo)
+;;       (message "Blocked tasks: Dimmed"))
+;;      ((eq org-agenda-dim-blocked-tasks t)
+;;       (setq org-agenda-dim-blocked-tasks 'invisible)
+;;       (org-agenda-redo)
+;;       (message "Blocked tasks: Invisible"))
 ;;         ))
 
 (defun zp/org-agenda-set-property (property-function)
@@ -2894,17 +2894,17 @@ Based on `org-agenda-set-property'."
   (interactive)
   (org-agenda-check-no-diary)
   (let* ((hdmarker (or (org-get-at-bol 'org-hd-marker)
-		       (org-agenda-error)))
-	 (buffer (marker-buffer hdmarker))
-	 (pos (marker-position hdmarker))
-	 (inhibit-read-only t)
-	 newhead)
+                       (org-agenda-error)))
+         (buffer (marker-buffer hdmarker))
+         (pos (marker-position hdmarker))
+         (inhibit-read-only t)
+         newhead)
     (org-with-remote-undo buffer
       (with-current-buffer buffer
-	(widen)
-	(goto-char pos)
-	(org-show-context 'agenda)
-	(call-interactively property-function)))))
+        (widen)
+        (goto-char pos)
+        (org-show-context 'agenda)
+        (call-interactively property-function)))))
 
 (defun zp/org-agenda-delete-property ()
   "Delete a property for the current headline in the agenda."
@@ -3011,56 +3011,56 @@ Check their respective dosctrings for more info."
 
 (defun zp/letterboxd-format-link (&optional title)
   (let* ((title (if title
-		    title
-		  (read-string "Title: ")))
-	 (domain "https://letterboxd.com/film/")
-	 (search "https://letterboxd.com/search/films/")
-	 (title-no-symbols (replace-regexp-in-string " *:\\|,\\|’" "" title))
-	 (title-formatted (replace-regexp-in-string
-			   " " "-" (downcase title-no-symbols)))
-	 (url-guessed (concat domain title-formatted))
-	 (verify (y-or-n-p "Would you like to verify the link?"))
-	 (url (if verify
-		  (progn
-		    (browse-url-xdg-open url-guessed)
-		    (if (y-or-n-p "Did the link work?")
-			url-guessed
-		      (browse-url-xdg-open (concat search title))
-		      (read-string "Letterboxd URL: ")))
-		url-guessed))
-	 (url-description "Letterboxd"))
+                    title
+                  (read-string "Title: ")))
+         (domain "https://letterboxd.com/film/")
+         (search "https://letterboxd.com/search/films/")
+         (title-no-symbols (replace-regexp-in-string " *:\\|,\\|’" "" title))
+         (title-formatted (replace-regexp-in-string
+                           " " "-" (downcase title-no-symbols)))
+         (url-guessed (concat domain title-formatted))
+         (verify (y-or-n-p "Would you like to verify the link?"))
+         (url (if verify
+                  (progn
+                    (browse-url-xdg-open url-guessed)
+                    (if (y-or-n-p "Did the link work?")
+                        url-guessed
+                      (browse-url-xdg-open (concat search title))
+                      (read-string "Letterboxd URL: ")))
+                url-guessed))
+         (url-description "Letterboxd"))
     ;; (org-insert-link nil url title)))
     (concat "[[" url "][" url-description "]]")))
 
 (defun zp/letterboxd-set-link ()
   (let* ((title (read-string "Title: "))
-	 (title-formatted (zp/letterboxd-format-link title)))
+         (title-formatted (zp/letterboxd-format-link title)))
     (org-set-property "MEDIA_LINK" title-formatted)
     title))
 
 (defun zp/convert-m-to-hm (min-str)
   (let* ((min (string-to-number min-str))
-	 (h (/ min 60))
-	 (m (% min 60)))
+         (h (/ min 60))
+         (m (% min 60)))
     (format "%1s:%02d" h m)))
 
 (defun zp/letterboxd-set-duration (&optional min-str)
   "Return duration as a string formated as H:MM from MIN-STR."
   (let* ((min-str (if min-str min-str (read-string "Duration (min): ")))
-	 (hm-str (if (string= min-str "") "???"
-		   (zp/convert-m-to-hm min-str))))
+         (hm-str (if (string= min-str "") "???"
+                   (zp/convert-m-to-hm min-str))))
     (org-set-property "MEDIA_DURATION" hm-str)))
 
 (defun zp/letterboxd-set-director (&optional director)
   (let ((director (if director
-		      director
-		    (read-string "Director: "))))
+                      director
+                    (read-string "Director: "))))
     (org-set-property "MEDIA_DIRECTOR" director)))
 
 (defun zp/letterboxd-set-year (&optional year)
   (let ((year (if year
-		  year
-		(read-string "Year: "))))
+                  year
+                (read-string "Year: "))))
     (org-set-property "MEDIA_YEAR" year)))
 
 (defun zp/letterboxd-capture ()
@@ -3078,79 +3078,79 @@ Check their respective dosctrings for more info."
 
 (setq org-capture-templates
       '(("n" "Note" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
-	 "* %?")
-	("f" "Todo" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
-	 "* TODO %?" :add-created t)
-	("F" "Todo + Clock" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
-	 "* TODO %?\n"  :add-created t :clock-in t)
-	("r" "Todo with Context" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
-	 "* TODO %?\n%a" :add-created t)
-	("R" "Todo with Context + Clock" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
-	 "* TODO %?\n%a" :add-created t :clock-in t)
-	;; ("r" "Todo + Reminder" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
-	;;  "* TODO %?\nSCHEDULED: %^T\n:PROPERTIES:\n:APPT_WARNTIME:  %^{APPT_WARNTIME|5|15|30|60}\n:END:")
-	;; ("T" "Todo (with keyword selection)" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
-	;;  "* %^{State|TODO|NEXT|STBY|WAIT} %?")
-	;; ("e" "Todo + Creation time" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
-	;;  "* TODO %?\n:PROPERTIES:\n:CREATED:  %U\n:END:")
-	;; ("C" "Todo + Clock" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
-	;;  "* TODO %^{Task}%?" :clock-in t)
-	;; ("C" "Todo + Clock (with keyword selection)" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
-	;;  "* %^{State|TODO|NEXT} %?" :clock-in t)
-	("d" "Date" entry (file+headline "/home/zaeph/org/life.org.gpg" "Calendar")
-	 "* %?\n" :add-created t)
-	("e" "Date + Context" entry (file+headline "/home/zaeph/org/life.org.gpg" "Calendar")
-	 "* %?\n%a" :add-created t)
+         "* %?")
+        ("f" "Todo" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
+         "* TODO %?" :add-created t)
+        ("F" "Todo + Clock" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
+         "* TODO %?\n"  :add-created t :clock-in t)
+        ("r" "Todo with Context" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
+         "* TODO %?\n%a" :add-created t)
+        ("R" "Todo with Context + Clock" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
+         "* TODO %?\n%a" :add-created t :clock-in t)
+        ;; ("r" "Todo + Reminder" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
+        ;;  "* TODO %?\nSCHEDULED: %^T\n:PROPERTIES:\n:APPT_WARNTIME:  %^{APPT_WARNTIME|5|15|30|60}\n:END:")
+        ;; ("T" "Todo (with keyword selection)" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
+        ;;  "* %^{State|TODO|NEXT|STBY|WAIT} %?")
+        ;; ("e" "Todo + Creation time" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
+        ;;  "* TODO %?\n:PROPERTIES:\n:CREATED:  %U\n:END:")
+        ;; ("C" "Todo + Clock" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
+        ;;  "* TODO %^{Task}%?" :clock-in t)
+        ;; ("C" "Todo + Clock (with keyword selection)" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
+        ;;  "* %^{State|TODO|NEXT} %?" :clock-in t)
+        ("d" "Date" entry (file+headline "/home/zaeph/org/life.org.gpg" "Calendar")
+         "* %?\n" :add-created t)
+        ("e" "Date + Context" entry (file+headline "/home/zaeph/org/life.org.gpg" "Calendar")
+         "* %?\n%a" :add-created t)
 
-	;; ("D" "Date + Reminder" entry (file+headline "/home/zaeph/org/life.org.gpg" "Calendar")
-	;;  "* %?\n%^T\n\n%^{APPT_WARNTIME}p")
-	;; ("R" "Reminder" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
-	;;  "* %?\n%^T%^{APPT_WARNTIME}p")
+        ;; ("D" "Date + Reminder" entry (file+headline "/home/zaeph/org/life.org.gpg" "Calendar")
+        ;;  "* %?\n%^T\n\n%^{APPT_WARNTIME}p")
+        ;; ("R" "Reminder" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
+        ;;  "* %?\n%^T%^{APPT_WARNTIME}p")
 
-	("p" "Phone-call" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
-	 "* TODO Phone-call with %^{Interlocutor|Nicolas|Mum}%?\n:STATES:\n- State \"TODO\"       from              %U\n:END:" :clock-in t)
-	("m" "Meeting" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
-	 "* TODO Meeting with %^{Meeting with}%?" :clock-in t)
+        ("p" "Phone-call" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
+         "* TODO Phone-call with %^{Interlocutor|Nicolas|Mum}%?\n:STATES:\n- State \"TODO\"       from              %U\n:END:" :clock-in t)
+        ("m" "Meeting" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
+         "* TODO Meeting with %^{Meeting with}%?" :clock-in t)
 
-	("s" "Special")
-	("ss" "Code Snippet" entry (file "/home/zaeph/org/projects/hacking/snippets.org.gpg")
+        ("s" "Special")
+        ("ss" "Code Snippet" entry (file "/home/zaeph/org/projects/hacking/snippets.org.gpg")
          ;; Prompt for tag and language
          "* %?\t%^g\n#+BEGIN_SRC %^{language}\n\n#+END_SRC")
-	;; ("sf" "Film recommendation" entry (file+olp "/home/zaeph/org/media.org.gpg" "Films" "List")
-	;;  "* %(zp/org-capture-set-media-link-letterboxd)%?%^{MEDIA_DIRECTOR}p%^{MEDIA_YEAR}p%^{MEDIA_DURATION}p")
-	;; ("sf" "Film recommendation" entry (file+olp "/home/zaeph/org/media.org.gpg" "Films" "List")
-	;;  "* %(zp/letterboxd-set-link)%?%^{MEDIA_DIRECTOR}p%^{MEDIA_YEAR}p%(zp/letterboxd-set-duration)")
-	("sf" "Film recommendation" entry (file+olp "/home/zaeph/org/media.org.gpg" "Films" "List")
-	 "* %(zp/letterboxd-capture)")
-	("sF" "Film recommendation (insert at top)" entry (file+olp "/home/zaeph/org/media.org.gpg" "Films" "List")
-	 "* %(zp/letterboxd-capture)" :prepend t)
-       	("sw" "Swimming workout" entry (file+weektree+prompt "/home/zaeph/org/sports/swimming/swimming.org.gpg")
-	 "* DONE Training%^{SWIM_DISTANCE}p%^{SWIM_DURATION}p\n%t%(print zp/swimming-workout-default)")
+        ;; ("sf" "Film recommendation" entry (file+olp "/home/zaeph/org/media.org.gpg" "Films" "List")
+        ;;  "* %(zp/org-capture-set-media-link-letterboxd)%?%^{MEDIA_DIRECTOR}p%^{MEDIA_YEAR}p%^{MEDIA_DURATION}p")
+        ;; ("sf" "Film recommendation" entry (file+olp "/home/zaeph/org/media.org.gpg" "Films" "List")
+        ;;  "* %(zp/letterboxd-set-link)%?%^{MEDIA_DIRECTOR}p%^{MEDIA_YEAR}p%(zp/letterboxd-set-duration)")
+        ("sf" "Film recommendation" entry (file+olp "/home/zaeph/org/media.org.gpg" "Films" "List")
+         "* %(zp/letterboxd-capture)")
+        ("sF" "Film recommendation (insert at top)" entry (file+olp "/home/zaeph/org/media.org.gpg" "Films" "List")
+         "* %(zp/letterboxd-capture)" :prepend t)
+        ("sw" "Swimming workout" entry (file+weektree+prompt "/home/zaeph/org/sports/swimming/swimming.org.gpg")
+         "* DONE Training%^{SWIM_DISTANCE}p%^{SWIM_DURATION}p\n%t%(print zp/swimming-workout-default)")
 
-	("j" "Journal")
-	("jj" "Journal" entry (file+headline "/home/zaeph/org/journal.org.gpg" "Life")
-	 "* %^{Title|Entry}\n%T\n\n%?")
-	("ja" "Awakening" entry (file+headline "/home/zaeph/org/journal.org.gpg" "Awakening")
-	 "* %^{Title|Entry}\n%T\n\n%?")
-	("jp" "Psychotherapy" entry (file+headline "/home/zaeph/org/journal.org.gpg" "Psychotherapy")
-	 "* %^{Title|Entry}\n%T\n\n%?")
-	("jw" "Writing" entry (file+headline "/home/zaeph/org/journal.org.gpg" "Writing")
-	 "* %^{Title|Entry} %^g\n%T\n\n%?")
-	("jr" "Research" entry (file+headline "/home/zaeph/org/journal.org.gpg" "Research")
-	 "* %^{Title|Entry}\n%T\n\n%?")
-	("ju" "University" entry (file+headline "/home/zaeph/org/journal.org.gpg" "University")
-	 "* %^{Title|Entry}\n%T\n\n%?")
-	("jh" "Hacking" entry (file+headline "/home/zaeph/org/journal.org.gpg" "Hacking")
-	 "* %^{Title|Entry}\n%T\n\n%?")
-	("js" "Swimming" entry (file+headline "/home/zaeph/org/journal.org.gpg" "Swimming")
-	 "* %^{Title|Entry}\n%T\n\n%?")
+        ("j" "Journal")
+        ("jj" "Journal" entry (file+headline "/home/zaeph/org/journal.org.gpg" "Life")
+         "* %^{Title|Entry}\n%T\n\n%?")
+        ("ja" "Awakening" entry (file+headline "/home/zaeph/org/journal.org.gpg" "Awakening")
+         "* %^{Title|Entry}\n%T\n\n%?")
+        ("jp" "Psychotherapy" entry (file+headline "/home/zaeph/org/journal.org.gpg" "Psychotherapy")
+         "* %^{Title|Entry}\n%T\n\n%?")
+        ("jw" "Writing" entry (file+headline "/home/zaeph/org/journal.org.gpg" "Writing")
+         "* %^{Title|Entry} %^g\n%T\n\n%?")
+        ("jr" "Research" entry (file+headline "/home/zaeph/org/journal.org.gpg" "Research")
+         "* %^{Title|Entry}\n%T\n\n%?")
+        ("ju" "University" entry (file+headline "/home/zaeph/org/journal.org.gpg" "University")
+         "* %^{Title|Entry}\n%T\n\n%?")
+        ("jh" "Hacking" entry (file+headline "/home/zaeph/org/journal.org.gpg" "Hacking")
+         "* %^{Title|Entry}\n%T\n\n%?")
+        ("js" "Swimming" entry (file+headline "/home/zaeph/org/journal.org.gpg" "Swimming")
+         "* %^{Title|Entry}\n%T\n\n%?")
 
-	;; Daily Record of Dysfunctional Thoughts
-	("D" "Record Dysfunctional Thoughts" entry (file "/home/zaeph/org/projects/psychotherapy/journal.org.gpg")
-	 "* Record of Dysfunctional Thoughts\n%T\n** Situation\n%?\n** Emotions\n** Thoughts")
+        ;; Daily Record of Dysfunctional Thoughts
+        ("D" "Record Dysfunctional Thoughts" entry (file "/home/zaeph/org/projects/psychotherapy/journal.org.gpg")
+         "* Record of Dysfunctional Thoughts\n%T\n** Situation\n%?\n** Emotions\n** Thoughts")
 
-	("a" "Meditation session" entry (file+headline "/home/zaeph/org/projects/awakening/awakening.org.gpg" "Sessions")
-	 "* DONE Session%^{SESSION_DURATION}p\n%t" :immediate-finish t)))
+        ("a" "Meditation session" entry (file+headline "/home/zaeph/org/projects/awakening/awakening.org.gpg" "Sessions")
+         "* DONE Session%^{SESSION_DURATION}p\n%t" :immediate-finish t)))
 
 (defvar zp/swimming-workout-default nil)
 (setq zp/swimming-workout-default "
@@ -3167,24 +3167,24 @@ Check their respective dosctrings for more info."
 
 (setq zp/org-agenda-capture-templates
       '(("f" "Todo" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
-	 "* TODO %?\nSCHEDULED: %t")
-	("r" "Todo (+time)" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
-	 "* TODO %?\nSCHEDULED: %^T")
+         "* TODO %?\nSCHEDULED: %t")
+        ("r" "Todo (+time)" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
+         "* TODO %?\nSCHEDULED: %^T")
 
-	("d" "Date" entry (file+headline "/home/zaeph/org/life.org.gpg" "Calendar")
-	 "* %?\n%t")
-	("e" "Date (+time)" entry (file+headline "/home/zaeph/org/life.org.gpg" "Calendar")
-	 "* %?\n%^T")
+        ("d" "Date" entry (file+headline "/home/zaeph/org/life.org.gpg" "Calendar")
+         "* %?\n%t")
+        ("e" "Date (+time)" entry (file+headline "/home/zaeph/org/life.org.gpg" "Calendar")
+         "* %?\n%^T")
 
-	("s" "Todo & Scheduled" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
-	 "* TODO %?\nSCHEDULED: %t")
-	("w" "Todo & Scheduled (+time)" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
-	 "* TODO %?\nSCHEDULED: %^T")
+        ("s" "Todo & Scheduled" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
+         "* TODO %?\nSCHEDULED: %t")
+        ("w" "Todo & Scheduled (+time)" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
+         "* TODO %?\nSCHEDULED: %^T")
 
-	("g" "Todo + Deadline" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
-	 "* TODO %?\nDEADLINE: %t")
-	("t" "Todo & Deadline (+time)" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
-	 "* TODO %?\nDEADLINE: %^T")))
+        ("g" "Todo + Deadline" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
+         "* TODO %?\nDEADLINE: %t")
+        ("t" "Todo & Deadline (+time)" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
+         "* TODO %?\nDEADLINE: %^T")))
 
 (defun zp/org-agenda-capture (&optional arg)
   (interactive "P")
@@ -3193,24 +3193,24 @@ Check their respective dosctrings for more info."
 
 
 
-	;; ("v" "Vocabulary")
-	;; ("ve" "EN" entry (file+olp "/home/zaeph/org/life.org.gpg" "Vocabulary")
-	;;  "* EN: %?\n%U\n")
-	;; ("vf" "FR" entry (file+olp "/home/zaeph/org/life.org.gpg" "Vocabulary")
-	;;  "* FR: %?\n%U\n")
-	;; ("vj" "JA" entry (file+olp "/home/zaeph/org/life.org.gpg" "Vocabulary")
-	;;  "* JA: %?\n%U\n")
-	;; ("vk" "KO" entry (file+olp "/home/zaeph/org/life.org.gpg" "Vocabulary")
-	;;  "* KO: %?\n%U\n")))
+        ;; ("v" "Vocabulary")
+        ;; ("ve" "EN" entry (file+olp "/home/zaeph/org/life.org.gpg" "Vocabulary")
+        ;;  "* EN: %?\n%U\n")
+        ;; ("vf" "FR" entry (file+olp "/home/zaeph/org/life.org.gpg" "Vocabulary")
+        ;;  "* FR: %?\n%U\n")
+        ;; ("vj" "JA" entry (file+olp "/home/zaeph/org/life.org.gpg" "Vocabulary")
+        ;;  "* JA: %?\n%U\n")
+        ;; ("vk" "KO" entry (file+olp "/home/zaeph/org/life.org.gpg" "Vocabulary")
+        ;;  "* KO: %?\n%U\n")))
 
 ;; ;; Empty lines before and after
 ;; (setq org-capture-templates
 ;;       '(("t" "Todo" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
-;; 	 "* TODO %?" :empty-lines-before 1 :empty-lines-after 1)
-;; 	("T" "Todo+" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
-;; 	 "* TODO %?\n%U\n%a\n" :empty-lines-before 1 :empty-lines-after 1)
-;; 	("j" "Journal" entry (file+datetree "/home/zaeph/org/journal.org")
-;; 	 "* %?\n%U\n")))
+;;       "* TODO %?" :empty-lines-before 1 :empty-lines-after 1)
+;;      ("T" "Todo+" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
+;;       "* TODO %?\n%U\n%a\n" :empty-lines-before 1 :empty-lines-after 1)
+;;      ("j" "Journal" entry (file+datetree "/home/zaeph/org/journal.org")
+;;       "* %?\n%U\n")))
 
 (defvar zp/org-capture-before-config nil
   "Window configuration before `org-capture'.")
@@ -3233,10 +3233,10 @@ Check their respective dosctrings for more info."
 ;; ========================================
 
 (setq org-refile-targets '(
-			   (nil :maxlevel . 9)
-			   (org-agenda-files :maxlevel . 1)
-			   (zp/org-agenda-files-life :maxlevel . 3)
-			   )
+                           (nil :maxlevel . 9)
+                           (org-agenda-files :maxlevel . 1)
+                           (zp/org-agenda-files-life :maxlevel . 3)
+                           )
       org-refile-use-cache nil)
 
 
@@ -3246,9 +3246,9 @@ Check their respective dosctrings for more info."
 (defun zp/org-refile-with-paths (&optional arg default-buffer rfloc msg)
   (interactive "P")
   (let ((org-refile-use-outline-path 1)
-	(org-refile-targets
-	 '((nil :maxlevel . 9)
-	   (org-agenda-files :maxlevel . 3))))
+        (org-refile-targets
+         '((nil :maxlevel . 9)
+           (org-agenda-files :maxlevel . 3))))
     (org-refile arg default-buffer rfloc msg)))
 
 (defun zp/org-agenda-refile (&optional arg default-buffer rfloc msg goto rfloc no-update)
@@ -3260,11 +3260,11 @@ Check their respective dosctrings for more info."
 (defun zp/org-agenda-refile-with-paths (&optional arg default-buffer rfloc msg goto rfloc no-update)
   (interactive "P")
   (let ((org-refile-use-outline-path 1)
-	(org-refile-targets
-	 '((nil :maxlevel . 9)
-	   (org-agenda-files :maxlevel . 3))))
+        (org-refile-targets
+         '((nil :maxlevel . 9)
+           (org-agenda-files :maxlevel . 3))))
     (if current-prefix-arg
-	(org-refile arg default-buffer rfloc msg)
+        (org-refile arg default-buffer rfloc msg)
       (org-agenda-refile goto rfloc no-update))))
 
 
@@ -3274,14 +3274,14 @@ Check their respective dosctrings for more info."
 With a 'C-u' ARG argument, we jump to that location (see
 `org-refile').
 Use `org-agenda-refile' in `org-agenda' mode."
-  (let* ((pos (with-current-buffer (or (get-buffer file)	;Is the file open in a buffer already?
-				       (find-file-noselect file)) ;Otherwise, try to find the file by name (Note, default-directory matters here if it isn't absolute)
-		(or (org-find-exact-headline-in-buffer headline)
-		    (error "Can't find headline `%s'" headline))))
-	 (filepath (buffer-file-name (marker-buffer pos)));If we're given a relative name, find absolute path
-	 (rfloc (list headline filepath nil pos)))
+  (let* ((pos (with-current-buffer (or (get-buffer file)        ;Is the file open in a buffer already?
+                                       (find-file-noselect file)) ;Otherwise, try to find the file by name (Note, default-directory matters here if it isn't absolute)
+                (or (org-find-exact-headline-in-buffer headline)
+                    (error "Can't find headline `%s'" headline))))
+         (filepath (buffer-file-name (marker-buffer pos)));If we're given a relative name, find absolute path
+         (rfloc (list headline filepath nil pos)))
     (if (and (eq major-mode 'org-agenda-mode) (not (and arg (listp arg)))) ;Don't use org-agenda-refile if we're just jumping
-	(org-agenda-refile nil rfloc)
+        (org-agenda-refile nil rfloc)
       (org-refile arg nil rfloc))))
 
 (defun zp/org-refile (file headline &optional arg)
@@ -3290,10 +3290,10 @@ With a `C-u` ARG, just jump to the headline."
   (interactive "P")
   (let ((is-capturing (and (boundp 'org-capture-mode) org-capture-mode)))
     (cond
-     ((and arg (listp arg))	    ;Are we jumping?
+     ((and arg (listp arg))         ;Are we jumping?
       (zp/org-refile-internal file headline arg))
      ;; Are we in org-capture-mode?
-     (is-capturing      	;Minor mode variable that's defined when capturing
+     (is-capturing              ;Minor mode variable that's defined when capturing
       (zp/org-capture-refile-internal file headline arg))
      (t
       (zp/org-refile-internal file headline arg)))
@@ -3307,109 +3307,109 @@ passing arguments. This does."
     (error
      "Refiling from a capture buffer makes only sense for `entry'-type templates"))
   (let ((pos (point))
-	(base (buffer-base-buffer (current-buffer)))
-	(org-capture-is-refiling t)
-	(kill-buffer (org-capture-get :kill-buffer 'local)))
+        (base (buffer-base-buffer (current-buffer)))
+        (org-capture-is-refiling t)
+        (kill-buffer (org-capture-get :kill-buffer 'local)))
     (org-capture-put :kill-buffer nil)
     (org-capture-finalize)
     (save-window-excursion
       (with-current-buffer (or base (current-buffer))
-	(org-with-wide-buffer
-	 (goto-char pos)
-	 (zp/org-refile-internal file headline arg))))
+        (org-with-wide-buffer
+         (goto-char pos)
+         (zp/org-refile-internal file headline arg))))
     (when kill-buffer (kill-buffer base))))
 
 (defmacro zp/make-hydra-org-refile (hydraname name file keyandheadline)
   "Make a hydra named HYDRANAME with refile targets to FILE.
 KEYANDHEADLINE should be a list of cons cells of the form (\"key\" . \"headline\")"
   `(defhydra ,hydraname (:color blue :after-exit (unless (or hydra-deactivate
-							     current-prefix-arg) ;If we're just jumping to a location, quit the hydra
-						   (zp/hydra-org-refile/body)))
+                                                             current-prefix-arg) ;If we're just jumping to a location, quit the hydra
+                                                   (zp/hydra-org-refile/body)))
      ,name
      ,@(cl-loop for kv in keyandheadline
-     	  collect (list (car kv)
-     			(list 'zp/org-refile
-     			      file
-     			      (cdr kv)
-     			      'current-prefix-arg)
-     			(cdr kv)))
+          collect (list (car kv)
+                        (list 'zp/org-refile
+                              file
+                              (cdr kv)
+                              'current-prefix-arg)
+                        (cdr kv)))
      ("q" nil "cancel")))
 
 (progn
   (zp/make-hydra-org-refile zp/hydra-org-refile-file-life
-			    "Life"
-			    "/home/zaeph/org/life.org.gpg"
-			    (("i" . "Inbox")
-			     ("t" . "Tasks")
-			     ("c" . "Calendar")
-			     ("m" . "Maintenance")))
+                            "Life"
+                            "/home/zaeph/org/life.org.gpg"
+                            (("i" . "Inbox")
+                             ("t" . "Tasks")
+                             ("c" . "Calendar")
+                             ("m" . "Maintenance")))
 
   (zp/make-hydra-org-refile zp/hydra-org-refile-file-media
-			    "Media"
-			    "/home/zaeph/org/media.org.gpg"
-			    (("i" . "Inbox")
-			     ("t" . "Tasks")
-			     ("b" . "Books")
-			     ("f" . "Films")
-			     ("c" . "Calendar")))
+                            "Media"
+                            "/home/zaeph/org/media.org.gpg"
+                            (("i" . "Inbox")
+                             ("t" . "Tasks")
+                             ("b" . "Books")
+                             ("f" . "Films")
+                             ("c" . "Calendar")))
 
   (zp/make-hydra-org-refile zp/hydra-org-refile-file-awakening
-			    "Awakening"
-			    "/home/zaeph/org/life.org.gpg"
-			    (("i" . "Inbox")
-			     ("t" . "Tasks")
-			     ("c" . "Calendar")))
+                            "Awakening"
+                            "/home/zaeph/org/life.org.gpg"
+                            (("i" . "Inbox")
+                             ("t" . "Tasks")
+                             ("c" . "Calendar")))
 
   (zp/make-hydra-org-refile zp/hydra-org-refile-file-psychotherapy
-			    "Psychotherapy"
-			    "/home/zaeph/org/life.org.gpg"
-			    (("i" . "Inbox")
-			     ("t" . "Tasks")
-			     ("c" . "Calendar")))
+                            "Psychotherapy"
+                            "/home/zaeph/org/life.org.gpg"
+                            (("i" . "Inbox")
+                             ("t" . "Tasks")
+                             ("c" . "Calendar")))
 
   (zp/make-hydra-org-refile zp/hydra-org-refile-file-university
-			    "University"
-			    "/home/zaeph/org/projects/university/university.org.gpg"
-			    (("i" . "Inbox")
-			     ("t" . "Tasks")
-			     ("c" . "Calendar")))
+                            "University"
+                            "/home/zaeph/org/projects/university/university.org.gpg"
+                            (("i" . "Inbox")
+                             ("t" . "Tasks")
+                             ("c" . "Calendar")))
 
   (zp/make-hydra-org-refile zp/hydra-org-refile-file-research
-			    "Research"
-			    "/home/zaeph/org/projects/university/research/research.org.gpg"
-			    (("i" . "Inbox")
-			     ("t" . "Tasks")
-			     ("c" . "Calendar")))
+                            "Research"
+                            "/home/zaeph/org/projects/university/research/research.org.gpg"
+                            (("i" . "Inbox")
+                             ("t" . "Tasks")
+                             ("c" . "Calendar")))
 
   (zp/make-hydra-org-refile zp/hydra-org-refile-file-hacking
-			    "Emacs"
-			    "/home/zaeph/org/projects/hacking/hacking.org.gpg"
-			    (("i" . "Inbox")
-			     ("t" . "Tasks")
-			     ("b" . "Troubleshooting")
-			     ("c" . "Contributing")))
+                            "Emacs"
+                            "/home/zaeph/org/projects/hacking/hacking.org.gpg"
+                            (("i" . "Inbox")
+                             ("t" . "Tasks")
+                             ("b" . "Troubleshooting")
+                             ("c" . "Contributing")))
 
   (zp/make-hydra-org-refile zp/hydra-org-refile-file-emacs
-			    "Emacs"
-			    "/home/zaeph/org/projects/hacking/emacs/emacs.org.gpg"
-			    (("i" . "Inbox")
-			     ("t" . "Tasks")
-			     ("b" . "Troubleshooting")
-			     ("c" . "Contributing")))
+                            "Emacs"
+                            "/home/zaeph/org/projects/hacking/emacs/emacs.org.gpg"
+                            (("i" . "Inbox")
+                             ("t" . "Tasks")
+                             ("b" . "Troubleshooting")
+                             ("c" . "Contributing")))
 
   (zp/make-hydra-org-refile zp/hydra-org-refile-file-linux
-			    "Linux"
-			    "/home/zaeph/org/projects/hacking/linux/linux.org.gpg"
-			    (("i" . "Inbox")
-			     ("t" . "Tasks")
-			     ("b" . "Troubleshooting")
-			     ("c" . "Contributing")
-			     ("u" . "Utilities")
-			     ("a" . "AUR"))))
+                            "Linux"
+                            "/home/zaeph/org/projects/hacking/linux/linux.org.gpg"
+                            (("i" . "Inbox")
+                             ("t" . "Tasks")
+                             ("b" . "Troubleshooting")
+                             ("c" . "Contributing")
+                             ("u" . "Utilities")
+                             ("a" . "AUR"))))
 
 
 (defhydra zp/hydra-org-refile (:foreign-keys run
-			       :hint nil)
+                               :hint nil)
   "
 ^Life^          ^Prog^          ^Uni^           ^Mental^
 ^^^^^^^^----------------------------------------------------------
@@ -3546,22 +3546,22 @@ on init and them removes itself."
     :filtered-candidate-transformer
     (lambda (_candidates _source)
       (list (or (and (not (string= helm-pattern ""))
-		     helm-pattern)
-		"Enter a timer to start")))
+                     helm-pattern)
+                "Enter a timer to start")))
     :action '(("Add timer" . (lambda (candidate)
-			       (if (string= helm-pattern "")
-				   (message "No timer")
-				 (helm-chronos--parse-string-and-add-timer helm-pattern)))))))
+                               (if (string= helm-pattern "")
+                                   (message "No timer")
+                                 (helm-chronos--parse-string-and-add-timer helm-pattern)))))))
 
 (setq helm-chronos-recent-timers-limit 100
       helm-chronos-standard-timers
       '(
-	"Green Tea		3/Green Tea: Remove tea bag"
-	"Black Tea		4/Black Tea: Remove tea bag"
-	"Herbal Tea		10/Herbal Tea: Remove tea bag"
-	"Timebox		25/Finish and Reflect + 5/Back to it"
-	"Break			30/Back to it"
-	))
+        "Green Tea              3/Green Tea: Remove tea bag"
+        "Black Tea              4/Black Tea: Remove tea bag"
+        "Herbal Tea             10/Herbal Tea: Remove tea bag"
+        "Timebox                25/Finish and Reflect + 5/Back to it"
+        "Break                  30/Back to it"
+        ))
 
 (defun zp/chronos-edit-selected-line-time (time prefix)
   (interactive)
@@ -3589,35 +3589,35 @@ on init and them removes itself."
 (defun chronos-mode-config ()
   "Modify keymaps used by `org-mode'."
   (local-set-key (kbd "U") (lambda ()
-			     (interactive)
-			     (zp/chronos-edit-quick "-0:00:05" "5 s")))
+                             (interactive)
+                             (zp/chronos-edit-quick "-0:00:05" "5 s")))
   (local-set-key (kbd "I") (lambda ()
-			     (interactive)
-			     (zp/chronos-edit-quick "+0:00:05" "5 s")))
+                             (interactive)
+                             (zp/chronos-edit-quick "+0:00:05" "5 s")))
   (local-set-key (kbd "u") (lambda ()
-			     (interactive)
-			     (zp/chronos-edit-quick "-0:00:15" "15 s")))
+                             (interactive)
+                             (zp/chronos-edit-quick "-0:00:15" "15 s")))
   (local-set-key (kbd "i") (lambda ()
-			     (interactive)
-			     (zp/chronos-edit-quick "+0:00:15" "15 s")))
+                             (interactive)
+                             (zp/chronos-edit-quick "+0:00:15" "15 s")))
   (local-set-key (kbd "j") (lambda ()
-			     (interactive)
-			     (zp/chronos-edit-quick "-0:01:00" "1 min")))
+                             (interactive)
+                             (zp/chronos-edit-quick "-0:01:00" "1 min")))
   (local-set-key (kbd "k") (lambda ()
-			     (interactive)
-			     (zp/chronos-edit-quick "+0:01:00" "1 min")))
+                             (interactive)
+                             (zp/chronos-edit-quick "+0:01:00" "1 min")))
   (local-set-key (kbd "J") (lambda ()
-			     (interactive)
-			     (zp/chronos-edit-quick "-0:05:00" "5 min")))
+                             (interactive)
+                             (zp/chronos-edit-quick "-0:05:00" "5 min")))
   (local-set-key (kbd "K") (lambda ()
-			     (interactive)
-			     (zp/chronos-edit-quick "+0:05:00" "5 min")))
+                             (interactive)
+                             (zp/chronos-edit-quick "+0:05:00" "5 min")))
   (local-set-key (kbd "m") (lambda ()
-			     (interactive)
-			     (zp/chronos-edit-quick "-0:10:00" "10 min")))
+                             (interactive)
+                             (zp/chronos-edit-quick "-0:10:00" "10 min")))
   (local-set-key (kbd ",") (lambda ()
-			     (interactive)
-			     (zp/chronos-edit-quick "+0:10:00" "10 min")))
+                             (interactive)
+                             (zp/chronos-edit-quick "+0:10:00" "10 min")))
   (local-set-key (kbd "a") 'helm-chronos-add-timer))
 (setq chronos-mode-hook 'chronos-mode-config)
 
@@ -3632,10 +3632,10 @@ on init and them removes itself."
   (interactive)
   (if (bound-and-true-p whitespace-mode)
       (progn
-	(whitespace-mode -1)
-	(message "Whitespace mode disabled in current buffer"))
+        (whitespace-mode -1)
+        (message "Whitespace mode disabled in current buffer"))
     (let ((whitespace-style '(face trailing lines-tail))
-	  (whitespace-line-column 80))
+          (whitespace-line-column 80))
       (whitespace-mode t)
       (message "Whitespace mode enabled in current buffer"))))
 
@@ -3666,113 +3666,113 @@ on init and them removes itself."
 ;; (el-patch-feature org-noter)
 ;; (with-eval-after-load 'org-noter
 ;;   (el-patch-defun org-noter--create-session (ast document-property-value notes-file-path)
-;; 		  (let* ((raw-value-not-empty (> (length (org-element-property :raw-value ast)) 0))
-;; 			 (display-name (if raw-value-not-empty
-;; 					   (org-element-property :raw-value ast)
-;; 					 (file-name-nondirectory document-property-value)))
-;; 			 (frame-name (format "Emacs Org-noter - %s" display-name))
+;;                (let* ((raw-value-not-empty (> (length (org-element-property :raw-value ast)) 0))
+;;                       (display-name (if raw-value-not-empty
+;;                                         (org-element-property :raw-value ast)
+;;                                       (file-name-nondirectory document-property-value)))
+;;                       (frame-name (format "Emacs Org-noter - %s" display-name))
 
-;; 			 (document (find-file-noselect document-property-value))
-;; 			 (document-path (expand-file-name document-property-value))
-;; 			 (document-major-mode (buffer-local-value 'major-mode document))
-;; 			 (document-buffer-name
-;; 			  (generate-new-buffer-name (concat (unless raw-value-not-empty "Org-noter: ") display-name)))
-;; 			 (document-buffer
-;; 			  (if (eq document-major-mode 'nov-mode)
-;; 			      document
-;; 			    (make-indirect-buffer document document-buffer-name t)))
+;;                       (document (find-file-noselect document-property-value))
+;;                       (document-path (expand-file-name document-property-value))
+;;                       (document-major-mode (buffer-local-value 'major-mode document))
+;;                       (document-buffer-name
+;;                        (generate-new-buffer-name (concat (unless raw-value-not-empty "Org-noter: ") display-name)))
+;;                       (document-buffer
+;;                        (if (eq document-major-mode 'nov-mode)
+;;                            document
+;;                          (make-indirect-buffer document document-buffer-name t)))
 
-;; 			 (notes-buffer
-;; 			  (make-indirect-buffer
-;; 			   (or (buffer-base-buffer) (current-buffer))
-;; 			   (generate-new-buffer-name (concat "Notes of " display-name)) t))
+;;                       (notes-buffer
+;;                        (make-indirect-buffer
+;;                         (or (buffer-base-buffer) (current-buffer))
+;;                         (generate-new-buffer-name (concat "Notes of " display-name)) t))
 
-;; 			 (session
-;; 			  (make-org-noter--session
-;; 			   :id (org-noter--get-new-id)
-;; 			   :display-name display-name
-;; 			   :frame
-;; 			   (if (or org-noter-always-create-frame
-;; 				   (catch 'has-session
-;; 				     (dolist (test-session org-noter--sessions)
-;; 				       (when (eq (org-noter--session-frame test-session) (selected-frame))
-;; 					 (throw 'has-session t)))))
-;; 			       (make-frame `((name . ,frame-name) (fullscreen . maximized)))
-;; 			     (set-frame-parameter nil 'name frame-name)
-;; 			     (selected-frame))
-;; 			   :doc-mode document-major-mode
-;; 			   :property-text document-property-value
-;; 			   :notes-file-path notes-file-path
-;; 			   :doc-buffer document-buffer
-;; 			   :notes-buffer notes-buffer
-;; 			   :level (org-element-property :level ast)
-;; 			   :window-behavior (org-noter--property-or-default notes-window-behavior)
-;; 			   :window-location (org-noter--property-or-default notes-window-location)
-;; 			   :doc-split-fraction (org-noter--property-or-default doc-split-fraction)
-;; 			   :auto-save-last-location (org-noter--property-or-default auto-save-last-location)
-;; 			   :hide-other (org-noter--property-or-default hide-other)
-;; 			   :closest-tipping-point (org-noter--property-or-default closest-tipping-point)
-;; 			   :modified-tick -1))
+;;                       (session
+;;                        (make-org-noter--session
+;;                         :id (org-noter--get-new-id)
+;;                         :display-name display-name
+;;                         :frame
+;;                         (if (or org-noter-always-create-frame
+;;                                 (catch 'has-session
+;;                                   (dolist (test-session org-noter--sessions)
+;;                                     (when (eq (org-noter--session-frame test-session) (selected-frame))
+;;                                       (throw 'has-session t)))))
+;;                             (make-frame `((name . ,frame-name) (fullscreen . maximized)))
+;;                           (set-frame-parameter nil 'name frame-name)
+;;                           (selected-frame))
+;;                         :doc-mode document-major-mode
+;;                         :property-text document-property-value
+;;                         :notes-file-path notes-file-path
+;;                         :doc-buffer document-buffer
+;;                         :notes-buffer notes-buffer
+;;                         :level (org-element-property :level ast)
+;;                         :window-behavior (org-noter--property-or-default notes-window-behavior)
+;;                         :window-location (org-noter--property-or-default notes-window-location)
+;;                         :doc-split-fraction (org-noter--property-or-default doc-split-fraction)
+;;                         :auto-save-last-location (org-noter--property-or-default auto-save-last-location)
+;;                         :hide-other (org-noter--property-or-default hide-other)
+;;                         :closest-tipping-point (org-noter--property-or-default closest-tipping-point)
+;;                         :modified-tick -1))
 
-;; 			 (target-location org-noter--start-location-override)
-;; 			 (starting-point (point)))
+;;                       (target-location org-noter--start-location-override)
+;;                       (starting-point (point)))
 
-;; 		    (add-hook 'delete-frame-functions 'org-noter--handle-delete-frame)
-;; 		    (push session org-noter--sessions)
+;;                  (add-hook 'delete-frame-functions 'org-noter--handle-delete-frame)
+;;                  (push session org-noter--sessions)
 
-;; 		    (with-current-buffer document-buffer
-;; 		      (cond
-;; 		       ;; NOTE(nox): PDF Tools
-;; 		       ((eq document-major-mode 'pdf-view-mode)
-;; 			(setq buffer-file-name document-path)
-;; 			(pdf-view-mode)
-;; 			(add-hook 'pdf-view-after-change-page-hook 'org-noter--doc-location-change-handler nil t))
+;;                  (with-current-buffer document-buffer
+;;                    (cond
+;;                     ;; NOTE(nox): PDF Tools
+;;                     ((eq document-major-mode 'pdf-view-mode)
+;;                      (setq buffer-file-name document-path)
+;;                      (pdf-view-mode)
+;;                      (add-hook 'pdf-view-after-change-page-hook 'org-noter--doc-location-change-handler nil t))
 
-;; 		       ;; NOTE(nox): DocView
-;; 		       ((eq document-major-mode 'doc-view-mode)
-;; 			(setq buffer-file-name document-path)
-;; 			(doc-view-mode)
-;; 			(advice-add 'doc-view-goto-page :after 'org-noter--location-change-advice))
+;;                     ;; NOTE(nox): DocView
+;;                     ((eq document-major-mode 'doc-view-mode)
+;;                      (setq buffer-file-name document-path)
+;;                      (doc-view-mode)
+;;                      (advice-add 'doc-view-goto-page :after 'org-noter--location-change-advice))
 
-;; 		       ;; NOTE(nox): Nov.el
-;; 		       ((eq document-major-mode 'nov-mode)
-;; 			(rename-buffer document-buffer-name)
-;; 			(advice-add 'nov-render-document :after 'org-noter--nov-scroll-handler)
-;; 			(add-hook 'window-scroll-functions 'org-noter--nov-scroll-handler nil t))
+;;                     ;; NOTE(nox): Nov.el
+;;                     ((eq document-major-mode 'nov-mode)
+;;                      (rename-buffer document-buffer-name)
+;;                      (advice-add 'nov-render-document :after 'org-noter--nov-scroll-handler)
+;;                      (add-hook 'window-scroll-functions 'org-noter--nov-scroll-handler nil t))
 
-;; 		       (t (error "This document handler is not supported :/")))
+;;                     (t (error "This document handler is not supported :/")))
 
-;; 		      (org-noter-doc-mode 1)
-;; 		      (setq org-noter--session session)
-;; 		      (add-hook 'kill-buffer-hook 'org-noter--handle-kill-buffer nil t))
+;;                    (org-noter-doc-mode 1)
+;;                    (setq org-noter--session session)
+;;                    (add-hook 'kill-buffer-hook 'org-noter--handle-kill-buffer nil t))
 
-;; 		    (with-current-buffer notes-buffer
-;; 		      (org-noter-notes-mode 1)
-;; 		      ;; NOTE(nox): This is needed because a session created in an indirect buffer would use the point of
-;; 		      ;; the base buffer (as this buffer is indirect to the base!)
-;; 		      (goto-char starting-point)
-;; 		      (setq buffer-file-name notes-file-path
-;; 			    org-noter--session session
-;; 			    (el-patch-remove fringe-indicator-alist '((truncation . nil)))
-;; 			    ;; fringe-indicator-alist '((truncation . nil))
-;; 			    )
-;; 		      (add-hook 'kill-buffer-hook 'org-noter--handle-kill-buffer nil t)
-;; 		      (add-hook 'window-scroll-functions 'org-noter--set-notes-scroll nil t)
-;; 		      (org-noter--set-text-properties (org-noter--parse-root (vector notes-buffer document-property-value))
-;; 						      (org-noter--session-id session))
-;; 		      (unless target-location
-;; 			(setq target-location (org-noter--location-property (org-noter--get-containing-heading t)))))
+;;                  (with-current-buffer notes-buffer
+;;                    (org-noter-notes-mode 1)
+;;                    ;; NOTE(nox): This is needed because a session created in an indirect buffer would use the point of
+;;                    ;; the base buffer (as this buffer is indirect to the base!)
+;;                    (goto-char starting-point)
+;;                    (setq buffer-file-name notes-file-path
+;;                          org-noter--session session
+;;                          (el-patch-remove fringe-indicator-alist '((truncation . nil)))
+;;                          ;; fringe-indicator-alist '((truncation . nil))
+;;                          )
+;;                    (add-hook 'kill-buffer-hook 'org-noter--handle-kill-buffer nil t)
+;;                    (add-hook 'window-scroll-functions 'org-noter--set-notes-scroll nil t)
+;;                    (org-noter--set-text-properties (org-noter--parse-root (vector notes-buffer document-property-value))
+;;                                                    (org-noter--session-id session))
+;;                    (unless target-location
+;;                      (setq target-location (org-noter--location-property (org-noter--get-containing-heading t)))))
 
-;; 		    (org-noter--setup-windows session)
+;;                  (org-noter--setup-windows session)
 
-;; 		    ;; NOTE(nox): This timer is for preventing reflowing too soon.
-;; 		    (run-with-idle-timer
-;; 		     0.05 nil
-;; 		     (lambda ()
-;; 		       (with-current-buffer document-buffer
-;; 			 (let ((org-noter--inhibit-location-change-handler t))
-;; 			   (when target-location (org-noter--doc-goto-location target-location)))
-;; 			 (org-noter--doc-location-change-handler)))))))
+;;                  ;; NOTE(nox): This timer is for preventing reflowing too soon.
+;;                  (run-with-idle-timer
+;;                   0.05 nil
+;;                   (lambda ()
+;;                     (with-current-buffer document-buffer
+;;                       (let ((org-noter--inhibit-location-change-handler t))
+;;                         (when target-location (org-noter--doc-goto-location target-location)))
+;;                       (org-noter--doc-location-change-handler)))))))
 ;; -----------------------------------------------------------------------------
 
 (define-key org-noter-doc-mode-map (kbd "j") 'pdf-view-next-line-or-next-page)
@@ -3827,35 +3827,35 @@ on init and them removes itself."
 
 (defun zp/tex-view-program-set-pdf-tools ()
   (setq TeX-view-program-selection
-	'((output-pdf "PDF Tools"))
-	TeX-source-correlate-start-server t
-	zp/tex-view-program 'pdf-tools)
+        '((output-pdf "PDF Tools"))
+        TeX-source-correlate-start-server t
+        zp/tex-view-program 'pdf-tools)
   (add-hook #'TeX-after-compilation-finished-functions
-	    #'TeX-revert-document-buffer))
+            #'TeX-revert-document-buffer))
 
 (defun zp/tex-view-program-set-evince ()
   (setq TeX-view-program-selection
-	'(((output-dvi has-no-display-manager)
-	   "dvi2tty")
-	  ((output-dvi style-pstricks)
-	   "dvips and gv")
-	  (output-dvi "xdvi")
-	  (output-pdf "Evince")
-	  (output-html "xdg-open"))
-	TeX-source-correlate-start-server 'ask
-	zp/tex-view-program 'evince)
+        '(((output-dvi has-no-display-manager)
+           "dvi2tty")
+          ((output-dvi style-pstricks)
+           "dvips and gv")
+          (output-dvi "xdvi")
+          (output-pdf "Evince")
+          (output-html "xdg-open"))
+        TeX-source-correlate-start-server 'ask
+        zp/tex-view-program 'evince)
   (remove-hook #'TeX-after-compilation-finished-functions
-	       #'TeX-revert-document-buffer))
+               #'TeX-revert-document-buffer))
 
 (defun zp/tex-view-program-switch ()
   (interactive)
   (cond ((eq zp/tex-view-program 'pdf-tools)
-	 (zp/tex-view-program-set-evince)
-	 (message "TeX view program: Evince"))
-	((or (eq zp/tex-view-program 'evince)
-	     (not (bound-and-true-p zp/tex-view-program)))
-	 (zp/tex-view-program-set-pdf-tools)
-	 (message "TeX view program: pdf-tools"))))
+         (zp/tex-view-program-set-evince)
+         (message "TeX view program: Evince"))
+        ((or (eq zp/tex-view-program 'evince)
+             (not (bound-and-true-p zp/tex-view-program)))
+         (zp/tex-view-program-set-pdf-tools)
+         (message "TeX view program: pdf-tools"))))
 
 (zp/tex-view-program-set-pdf-tools)
 
@@ -3875,19 +3875,19 @@ on init and them removes itself."
 ;; Loaded on file-basis now
 ;; (add-to-list 'org-latex-packages-alist '("frenchb,british" "babel" t))
 (setq org-latex-default-packages-alist '(("" "graphicx" t)
-					 ("" "grffile" t)
-					 ("" "longtable" nil)
-					 ("" "wrapfig" nil)
-					 ("" "rotating" nil)
-					 ("normalem" "ulem" t)
-					 ("" "amsmath" t)
-					 ("" "textcomp" t)
-					 ("" "amssymb" t)
-					 ("" "capt-of" nil)
-					 ("" "setspace" nil)
-					 ("" "titletoc" nil)
-					 ("" "hyperref" nil)
-					 ))
+                                         ("" "grffile" t)
+                                         ("" "longtable" nil)
+                                         ("" "wrapfig" nil)
+                                         ("" "rotating" nil)
+                                         ("normalem" "ulem" t)
+                                         ("" "amsmath" t)
+                                         ("" "textcomp" t)
+                                         ("" "amssymb" t)
+                                         ("" "capt-of" nil)
+                                         ("" "setspace" nil)
+                                         ("" "titletoc" nil)
+                                         ("" "hyperref" nil)
+                                         ))
 
 ;; BibTeX
 (setq bibtex-autokey-year-length '4)
@@ -3898,26 +3898,26 @@ on init and them removes itself."
   "Toggle the number of steps in the XeTeX PDF process."
   (interactive)
   (if (or (not (bound-and-true-p zp/org-latex-pdf-process-mode))
-	  (string= zp/org-latex-pdf-process-mode "full"))
+          (string= zp/org-latex-pdf-process-mode "full"))
       (progn (setq org-latex-pdf-process '("xelatex -shell-escape\
                                                   -interaction nonstopmode\
                                                   -output-directory %o %f")
-		   org-export-async-init-file "/home/zaeph/.emacs.d/async/main-short.el"
-		   zp/org-latex-pdf-process-mode 'short)
-	     (message "XeLaTeX process mode: Short"))
+                   org-export-async-init-file "/home/zaeph/.emacs.d/async/main-short.el"
+                   zp/org-latex-pdf-process-mode 'short)
+             (message "XeLaTeX process mode: Short"))
     (progn (setq org-latex-pdf-process '("xelatex -shell-escape\
                                                     -interaction nonstopmode\
                                                     -output-directory %o %f"
-					   "biber %b"
-					   "xelatex -shell-escape\
+                                           "biber %b"
+                                           "xelatex -shell-escape\
                                                     -interaction nonstopmode\
                                                     -output-directory %o %f"
-					   "xelatex -shell-escape\
+                                           "xelatex -shell-escape\
                                                     -interaction nonstopmode\
                                                     -output-directory %o %f")
-		 org-export-async-init-file "/home/zaeph/.emacs.d/async/main-full.el"
-		 zp/org-latex-pdf-process-mode 'full)
-	   (message "XeLaTeX process mode: Full"))))
+                 org-export-async-init-file "/home/zaeph/.emacs.d/async/main-full.el"
+                 zp/org-latex-pdf-process-mode 'full)
+           (message "XeLaTeX process mode: Full"))))
 (zp/toggle-org-latex-pdf-process)
 
 ;; latexmk
@@ -3933,9 +3933,9 @@ on init and them removes itself."
 ;;
 ;; (setq org-latex-pdf-process
 ;;       '("pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
-;; 	"biber %b"
-;; 	"pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
-;; 	"pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
+;;      "biber %b"
+;;      "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+;;      "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
 
 ;; LuaTeX
 ;; Not as good as XeTeX, since I can't figure out how to make CJK characters work.
@@ -3947,9 +3947,9 @@ on init and them removes itself."
 ;;
 ;; (setq org-latex-pdf-process
 ;;       '("lualatex -shell-escape -interaction nonstopmode -output-directory %o %f"
-;; 	"biber %b"
-;; 	"lualatex -shell-escape -interaction nonstopmode -output-directory %o %f"
-;; 	"lualatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
+;;      "biber %b"
+;;      "lualatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+;;      "lualatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
 
 ;; KOMA
 (add-to-list 'org-latex-classes
@@ -3996,7 +3996,7 @@ on init and them removes itself."
 
 (defun zp/play-sound-reward ()
   (when (string-equal org-state "DONE")
-    ;; (org-clock-out-if-current)		;Default value
+    ;; (org-clock-out-if-current)               ;Default value
     (start-process-shell-command "play-sound" nil "notification-sound-org done")))
 (add-hook 'org-after-todo-state-change-hook 'zp/play-sound-reward)
 
@@ -4039,12 +4039,12 @@ on init and them removes itself."
   (interactive)
   (setq zp/bibtex-completion-bib-data zp/bibtex-completion-bib-data-alist)
   (map-put zp/bibtex-completion-bib-data
-	   "All entries" (list (mapcar 'cdr zp/bibtex-completion-bib-data))))
+           "All entries" (list (mapcar 'cdr zp/bibtex-completion-bib-data))))
 
 (defun zp/bibtex-select-bib-init ()
   (zp/bibtex-completion-bib-data-format)
   (setq bibtex-completion-bibliography
-	(cdr (assoc "All entries" zp/bibtex-completion-bib-data))))
+        (cdr (assoc "All entries" zp/bibtex-completion-bib-data))))
 
 (defun zp/bibtex-select-bib-select (candidate)
   (setq bibtex-completion-bibliography candidate))
@@ -4055,7 +4055,7 @@ on init and them removes itself."
 
 (setq zp/bibtex-completion-select-bib-actions
       '(("Open bibliography" . zp/bibtex-select-bib-select-open)
-	("Select bibliography" . zp/bibtex-select-bib-select)))
+        ("Select bibliography" . zp/bibtex-select-bib-select)))
 
 (setq zp/helm-source-bibtex-select-bib
       '((name . "*HELM Bibtex - Bibliography selection*")
@@ -4073,8 +4073,8 @@ on init and them removes itself."
 
 (setq zp/bibtex-completion-bib-data-alist
       '(("Monty Python" . "/home/zaeph/org/bib/monty-python.bib")
-	;; ("Monty Python - Extra" . "/home/zaeph/org/bib/monty-python-extra.bib")
-	("FromSoftware" . "/home/zaeph/org/bib/fromsoftware.bib")))
+        ;; ("Monty Python - Extra" . "/home/zaeph/org/bib/monty-python-extra.bib")
+        ("FromSoftware" . "/home/zaeph/org/bib/fromsoftware.bib")))
 
 (zp/bibtex-select-bib-init)
 
@@ -4095,25 +4095,25 @@ on init and them removes itself."
 
 ;; Additional fields
 (setq bibtex-user-optional-fields '(("subtitle" "Subtitle")
-				    ("booksubtitle" "Book subtitle")
-				    ("langid" "Language to use with BibLaTeX")
-				    ("library" "Library where the resource is held")
-				    ("shelf" "Shelf number at the library")
-				    ("annote" "Personal annotation (ignored)")
-				    ("keywords" "Personal keywords")
-				    ("tags" "Personal tags")
-				    ("file" "Path to file")
-				    ("url" "URL to reference"))
+                                    ("booksubtitle" "Book subtitle")
+                                    ("langid" "Language to use with BibLaTeX")
+                                    ("library" "Library where the resource is held")
+                                    ("shelf" "Shelf number at the library")
+                                    ("annote" "Personal annotation (ignored)")
+                                    ("keywords" "Personal keywords")
+                                    ("tags" "Personal tags")
+                                    ("file" "Path to file")
+                                    ("url" "URL to reference"))
 
       helm-bibtex-additional-search-fields '(subtitle booksubtitle keywords tags library))
 
 ;; Define which citation function to use on a buffer basis
 (setq bibtex-completion-format-citation-functions
       '((org-mode      . bibtex-completion-format-citation-cite)
-	(latex-mode    . bibtex-completion-format-citation-cite)
-	(bibtex-mode   . bibtex-completion-format-citation-cite)
-	(markdown-mode . bibtex-completion-format-citation-pandoc-citeproc)
-	(default       . bibtex-completion-format-citation-default)))
+        (latex-mode    . bibtex-completion-format-citation-cite)
+        (bibtex-mode   . bibtex-completion-format-citation-cite)
+        (markdown-mode . bibtex-completion-format-citation-pandoc-citeproc)
+        (default       . bibtex-completion-format-citation-default)))
 
 ;; PDF open function
 (setq bibtex-completion-pdf-open-function 'helm-open-file-with-default-tool)
@@ -4126,11 +4126,11 @@ on init and them removes itself."
 ;; (defun zp/select-current-document ()
 ;;   (interactive)
 ;;   (setq zp/current-document
-;; 	(read-string
-;; 	 (concat "Current document(s)"
-;; 		 (if (bound-and-true-p zp/current-document)
-;; 		     (concat " [" zp/current-document "]"))
-;; 		 ": "))))
+;;      (read-string
+;;       (concat "Current document(s)"
+;;               (if (bound-and-true-p zp/current-document)
+;;                   (concat " [" zp/current-document "]"))
+;;               ": "))))
 
 ;; (defun zp/bibtex-completion-select-current-document (keys)
 ;;   (setq zp/current-document (s-join ", " keys)))
@@ -4160,17 +4160,17 @@ commas and space."
 (defun zp/bibtex-completion-insert-key-last ()
   (interactive)
   (let ((last-keys (zp/bibtex-completion-format-citation-default
-		    zp/bibtex-completion-key-last)))
+                    zp/bibtex-completion-key-last)))
     (if (bound-and-true-p last-keys)
-	(insert last-keys)
+        (insert last-keys)
       (zp/helm-bibtex-solo-action-insert-key))))
 
 (defun zp/bibtex-completion-message-key-last ()
   (interactive)
   (let ((keys (zp/bibtex-completion-format-citation-comma-space
-	       zp/bibtex-completion-key-last)))
+               zp/bibtex-completion-key-last)))
     (if (bound-and-true-p keys)
-	(message (concat "Last key(s) used: " keys "."))
+        (message (concat "Last key(s) used: " keys "."))
       (message "No previous key used."))))
 
 ;; Add to helm
@@ -4183,8 +4183,8 @@ commas and space."
 (defun zp/helm-bibtex-solo-action-insert-key ()
   (interactive)
   (let ((inhibit-message t)
-	(previous-actions (helm-attr 'action helm-source-bibtex))
-	(new-action zp/helm-source-bibtex-insert-key))
+        (previous-actions (helm-attr 'action helm-source-bibtex))
+        (new-action zp/helm-source-bibtex-insert-key))
     (helm-attrset 'action new-action helm-source-bibtex)
     (helm-bibtex)
     ;; Wrapping with (progn (foo) nil) suppress the output
@@ -4202,7 +4202,7 @@ commas and space."
 ;;       bibtex-completion-notes-symbol "N")
 
 ;; ;; (setq bibtex-completion-bibliography '("/home/zaeph/org/uni/phonology/refs.bib"
-;; ;; 				       "/home/zaeph/org/uni/civ/refs.bib"))
+;; ;;                                  "/home/zaeph/org/uni/civ/refs.bib"))
 
 ;; ;; Obsolete with `helm-bibtex-switch'
 ;; ;; (setq helm-bibtex-pdf-open-function 'org-open-file
@@ -4220,19 +4220,19 @@ commas and space."
 ;; ;; Additional fields
 ;; (setq helm-bibtex-additional-search-fields '(keywords tags library)
 ;;       bibtex-user-optional-fields '(("langid" "Language to use with BibLaTeX")
-;; 				    ("library" "Library where the resource is held")
-;; 				    ("shelf" "Shelf number at the library")
-;; 				    ("annote" "Personal annotation (ignored)")
-;; 				    ("keywords" "Personal keywords")
-;; 				    ("tags" "Personal tags")))
+;;                                  ("library" "Library where the resource is held")
+;;                                  ("shelf" "Shelf number at the library")
+;;                                  ("annote" "Personal annotation (ignored)")
+;;                                  ("keywords" "Personal keywords")
+;;                                  ("tags" "Personal tags")))
 
 ;; ;; Define which citation function to use on a buffer basis
 ;; (setq bibtex-completion-format-citation-functions
 ;;       '((org-mode      . bibtex-completion-format-citation-)
-;; 	(latex-mode    . bibtex-completion-format-citation-cite)
-;; 	(bibtex-mode   . bibtex-completion-format-citation-cite)
-;; 	(markdown-mode . bibtex-completion-format-citation-pandoc-citeproc)
-;; 	(default       . bibtex-completion-format-citation-default)))
+;;      (latex-mode    . bibtex-completion-format-citation-cite)
+;;      (bibtex-mode   . bibtex-completion-format-citation-cite)
+;;      (markdown-mode . bibtex-completion-format-citation-pandoc-citeproc)
+;;      (default       . bibtex-completion-format-citation-default)))
 
 ;; ;; Helm source
 ;; (defun bibtex-completion-insert-org-link (_)
@@ -4273,50 +4273,50 @@ commas and space."
 ;;     (candidates                                . bibtex-completion-candidates)
 ;;     (filtered-candidate-transformer            . helm-bibtex-candidates-formatter) ;helm-bibtex-candidates-formatter doesn't seem to work for some reason
 ;;     (action . (("Open PDF file externally (if present)" . bibtex-completion-open-pdf-with-org-open-file)
-;; 	       ("Insert citation"                       . bibtex-completion-insert-citation)
-;; 	       ("Insert org-link to PDF"                . bibtex-completion-insert-org-link)
+;;             ("Insert citation"                       . bibtex-completion-insert-citation)
+;;             ("Insert org-link to PDF"                . bibtex-completion-insert-org-link)
 ;;                ("Edit notes"                            . bibtex-completion-edit-notes)
 ;;                ("Show entry"                            . bibtex-completion-show-entry)
 ;;                ("Insert BibTeX key"                     . bibtex-completion-insert-key)
 ;;                ("Insert BibTeX entry"                   . bibtex-completion-insert-bibtex)
-;; 	       ("Open PDF file internally (if present)" . bibtex-completion-open-pdf-with-find-file)
-;; 	       ("Open URL or DOI in browser"            . bibtex-completion-open-url-or-doi)
-;; 	       ("Insert reference"                      . bibtex-completion-insert-reference)
+;;             ("Open PDF file internally (if present)" . bibtex-completion-open-pdf-with-find-file)
+;;             ("Open URL or DOI in browser"            . bibtex-completion-open-url-or-doi)
+;;             ("Insert reference"                      . bibtex-completion-insert-reference)
 ;;                ("Attach PDF to email"                   . bibtex-completion-add-PDF-attachment)))))
 
 ;; ;; bib files
 ;; (setq bib-data '(("All" . ("/home/zaeph/org/old/uni/phonology/refs.bib"
-;; 			   "/home/zaeph/org/old/uni/civilisation/refs.bib"
-;; 			   "/home/zaeph/org/old/uni/physics/refs.bib"))
-;; 		 ("Phonology" . "/home/zaeph/org/old/uni/phonology/refs.bib")
-;; 		 ("Civilisation" . "/home/zaeph/org/old/uni/civilisation/refs.bib")
-;; 		 ("Physics" . "/home/zaeph/org/old/uni/physics/refs.bib")
-;; 		 ("Labour" . "/home/zaeph/org/projects/university/courses/civilisation/refs.bib")))
+;;                         "/home/zaeph/org/old/uni/civilisation/refs.bib"
+;;                         "/home/zaeph/org/old/uni/physics/refs.bib"))
+;;               ("Phonology" . "/home/zaeph/org/old/uni/phonology/refs.bib")
+;;               ("Civilisation" . "/home/zaeph/org/old/uni/civilisation/refs.bib")
+;;               ("Physics" . "/home/zaeph/org/old/uni/physics/refs.bib")
+;;               ("Labour" . "/home/zaeph/org/projects/university/courses/civilisation/refs.bib")))
 
 ;; ;; Folders where the PDFs and notes are
 ;; (setq bibtex-completion-notes-path "/home/zaeph/org/refs/notes.org"
 ;;       bibtex-completion-library-path '("/home/zaeph/../pdfs/phonology"
-;; 				       "/home/zaeph/../pdfs/civilisation"
-;; 				       "k:/pdfs/phonology"
-;; 				       "k:/pdfs/civilisation"))
+;;                                     "/home/zaeph/../pdfs/civilisation"
+;;                                     "k:/pdfs/phonology"
+;;                                     "k:/pdfs/civilisation"))
 
 ;; ;; Init on all entries
 ;; (defun bibtex-completion-default ()
 ;;   "Sets the default bibliography and buffer-name to be used by helm-bibtex."
 ;;   (setq bibtex-completion-bibliography (cdr (assoc "All" bib-data))
-;; 	bibtex-completion-buffer "*Helm BibTeX* All"))
+;;      bibtex-completion-buffer "*Helm BibTeX* All"))
 
 ;; (bibtex-completion-default)
 
 ;; (defun bibtex-completion-open (candidate &optional arg)
 ;;   (bibtex-completion-switch arg
-;; 		      :bib (cdr (assoc candidate bib-data))
-;; 		      :buffer (concat "*Helm BibTeX* " (car (assoc candidate bib-data)))))
+;;                    :bib (cdr (assoc candidate bib-data))
+;;                    :buffer (concat "*Helm BibTeX* " (car (assoc candidate bib-data)))))
 ;; (defun bibtex-completion-open-full-frame (candidate &optional arg)
 ;;   (bibtex-completion-switch arg
-;; 		      :bib (cdr (assoc candidate bib-data))
-;; 		      :buffer (concat "*Helm BibTeX* " (car (assoc candidate bib-data)))
-;; 		      :full-frame t))
+;;                    :bib (cdr (assoc candidate bib-data))
+;;                    :buffer (concat "*Helm BibTeX* " (car (assoc candidate bib-data)))
+;;                    :full-frame t))
 
 ;; (cl-defun bibtex-completion-switch (&optional arg &key bib buffer (full-frame nil) (candidate-number-limit 500))
 ;;   "Search BibTeX entries."
@@ -4328,33 +4328,33 @@ commas and space."
 ;;   (when (eq arg 16)
 ;;     (bibtex-completion-default))
 ;;   (helm :sources '(helm-source-bibtex helm-source-fallback-options)
-;; 	:full-frame full-frame
-;; 	:buffer bibtex-completion-buffer
-;; 	:candidate-number-limit candidate-number-limit))
+;;      :full-frame full-frame
+;;      :buffer bibtex-completion-buffer
+;;      :candidate-number-limit candidate-number-limit))
 
 ;; (setq bibtex-completion-sources
 ;;       `((name . "*Helm BibTeX* Sources")
 ;;         (candidates . ,(mapcar 'car bib-data))
 ;;         (action
-;; 	 ("Load bibliography" . bibtex-completion-open)
-;; 	 ("Load bibliography (full window)" . bibtex-completion-open-full-frame)
-;; 	 ("Reload bibliography"))))
+;;       ("Load bibliography" . bibtex-completion-open)
+;;       ("Load bibliography (full window)" . bibtex-completion-open-full-frame)
+;;       ("Reload bibliography"))))
 
 ;; (global-set-key (kbd "C-c b") (lambda (&optional arg)
-;; 				(interactive "p")
-;; 				(bibtex-completion-switch arg
-;; 						    :bib bibtex-completion-bibliography
-;; 						    :buffer bibtex-completion-buffer
-;; 						    :full-frame nil)))
+;;                              (interactive "p")
+;;                              (bibtex-completion-switch arg
+;;                                                  :bib bibtex-completion-bibliography
+;;                                                  :buffer bibtex-completion-buffer
+;;                                                  :full-frame nil)))
 ;; ;; (global-set-key (kbd "C-c B") (lambda (&optional arg)
-;; ;; 				(interactive "p")
-;; ;; 				(bibtex-completion-switch arg
-;; ;; 						    :bib bibtex-completion-bibliography
-;; ;; 						    :buffer bibtex-completion-buffer
-;; ;; 						    :full-frame t)))
+;; ;;                           (interactive "p")
+;; ;;                           (bibtex-completion-switch arg
+;; ;;                                               :bib bibtex-completion-bibliography
+;; ;;                                               :buffer bibtex-completion-buffer
+;; ;;                                               :full-frame t)))
 ;; (global-set-key (kbd "C-c B") (lambda ()
-;; 				(interactive)
-;; 				(helm :sources bibtex-completion-sources)))
+;;                              (interactive)
+;;                              (helm :sources bibtex-completion-sources)))
 
 
 
@@ -4366,7 +4366,7 @@ commas and space."
 ;; (notifications-notify :title "Achtung!"
 ;;                       :body (format "You have an appointment in %d minutes" 10)
 ;;                       :app-name "Emacs: Org"
-;; 		      :urgency "critical"
+;;                    :urgency "critical"
 ;;                       :sound-name "/home/zaeph/SFX/Misc/rimshot.mp3")
 
 
@@ -4603,34 +4603,34 @@ org-agenda context."
 
   (interactive "P")
   (let* ((current-config (current-window-configuration))
-	 (current-frame (window-configuration-frame current-config)))
+         (current-frame (window-configuration-frame current-config)))
 
     (cond ((and
-	    (frame-parameter current-frame
-			     'zp/org-agenda-session-p)
-	    (not arg))
-	   (set-frame-parameter current-frame
-				'zp/org-agenda-window-config
-				current-config)
-	   (set-window-configuration
-	    (frame-parameter current-frame
-			     'zp/org-agenda-window-config-before))
-	   (set-frame-parameter current-frame
-				'zp/org-agenda-session-p nil))
+            (frame-parameter current-frame
+                             'zp/org-agenda-session-p)
+            (not arg))
+           (set-frame-parameter current-frame
+                                'zp/org-agenda-window-config
+                                current-config)
+           (set-window-configuration
+            (frame-parameter current-frame
+                             'zp/org-agenda-window-config-before))
+           (set-frame-parameter current-frame
+                                'zp/org-agenda-session-p nil))
 
-	  (t
-	   (set-frame-parameter current-frame
-				'zp/org-agenda-window-config-before
-				current-config)
-	   (if (or arg
-		   (not (frame-parameter current-frame
-					 'zp/org-agenda-window-config)))
-	       (zp/create-agenda-view arg)
-	     (set-window-configuration
-	      (frame-parameter current-frame
-			       'zp/org-agenda-window-config)))
-	   (set-frame-parameter current-frame
-				'zp/org-agenda-session-p t)))))
+          (t
+           (set-frame-parameter current-frame
+                                'zp/org-agenda-window-config-before
+                                current-config)
+           (if (or arg
+                   (not (frame-parameter current-frame
+                                         'zp/org-agenda-window-config)))
+               (zp/create-agenda-view arg)
+             (set-window-configuration
+              (frame-parameter current-frame
+                               'zp/org-agenda-window-config)))
+           (set-frame-parameter current-frame
+                                'zp/org-agenda-session-p t)))))
 
 
 
@@ -4639,8 +4639,8 @@ org-agenda context."
   (if (string-match "*chronos*" (buffer-name))
       (mode-line-other-buffer)
     (if (or (eq (get-buffer "*chronos*") nil) (not (eq arg nil)))
-	(if (yes-or-no-p "There are no timer running. Would you like to create one?")
-	    (call-interactively 'helm-chronos-add-timer))
+        (if (yes-or-no-p "There are no timer running. Would you like to create one?")
+            (call-interactively 'helm-chronos-add-timer))
       (switch-to-buffer "*chronos*"))))
 
 ;; (defun zp/switch-to-magit (arg)
@@ -4653,12 +4653,12 @@ org-agenda context."
   (interactive)
   (if (string-match "*mu4e-.*" (buffer-name))
       (progn
-	(mu4e-quit)
-	(set-window-configuration zp/mu4e-before-config))
+        (mu4e-quit)
+        (set-window-configuration zp/mu4e-before-config))
     (if (eq (get-buffer "*mu4e-main*") nil)
-	(progn
-	  (setq zp/mu4e-before-config (current-window-configuration))
-	  (mu4e)))))
+        (progn
+          (setq zp/mu4e-before-config (current-window-configuration))
+          (mu4e)))))
 
 (defun zp/notmuch-hello-quit ()
   (interactive)
@@ -4669,16 +4669,16 @@ org-agenda context."
 (defun zp/switch-to-notmuch ()
   (interactive)
   (cond ((string-match "\\*notmuch-hello\\*" (buffer-name))
-	 (zp/notmuch-hello-quit))
-	((string-match "\\*notmuch-.*\\*" (buffer-name))
-	 (notmuch-bury-or-kill-this-buffer))
-	(t
-	 (setq zp/notmuch-before-config (current-window-configuration))
-	 (delete-other-windows)
-	 (notmuch))))
+         (zp/notmuch-hello-quit))
+        ((string-match "\\*notmuch-.*\\*" (buffer-name))
+         (notmuch-bury-or-kill-this-buffer))
+        (t
+         (setq zp/notmuch-before-config (current-window-configuration))
+         (delete-other-windows)
+         (notmuch))))
 
 (advice-add #'mu4e-quit :after (lambda ()
-				 (mu4e-update-mail-and-index t)))
+                                 (mu4e-update-mail-and-index t)))
 
 (defun zp/mu4e-view-message-with-message-id-save-window-config-before (old-function &rest arguments)
   (interactive)
@@ -4697,27 +4697,27 @@ along with effort estimates and total time."
   (interactive)
   (if (org-clocking-p)
       (let ((header "Current clock")
-	    (clocked-time (org-clock-get-clocked-time))
-	    (org-clock-heading-formatted (replace-regexp-in-string "%" "%%"org-clock-heading)))
-	(if org-clock-effort
-	    (let* ((effort-in-minutes (org-duration-to-minutes org-clock-effort))
-		   (work-done-str
-		    (propertize (org-duration-from-minutes clocked-time)
-				'face
-				(if (and org-clock-task-overrun
-					 (not org-clock-task-overrun-text))
-				    'org-mode-line-clock-overrun
-				  'org-meta-line)))
-		   (effort-str (org-duration-from-minutes effort-in-minutes)))
-	      (message (concat
-			header ": "
-			(format (propertize "[%s/%s] (%s)" 'face 'org-meta-line)
-				work-done-str effort-str org-clock-heading-formatted))))
-	  (message (concat
-		    header ": "
-		    (format (propertize "[%s] (%s)" 'face 'org-meta-line)
-			   (org-duration-from-minutes clocked-time)
-			   org-clock-heading-formatted)))))
+            (clocked-time (org-clock-get-clocked-time))
+            (org-clock-heading-formatted (replace-regexp-in-string "%" "%%"org-clock-heading)))
+        (if org-clock-effort
+            (let* ((effort-in-minutes (org-duration-to-minutes org-clock-effort))
+                   (work-done-str
+                    (propertize (org-duration-from-minutes clocked-time)
+                                'face
+                                (if (and org-clock-task-overrun
+                                         (not org-clock-task-overrun-text))
+                                    'org-mode-line-clock-overrun
+                                  'org-meta-line)))
+                   (effort-str (org-duration-from-minutes effort-in-minutes)))
+              (message (concat
+                        header ": "
+                        (format (propertize "[%s/%s] (%s)" 'face 'org-meta-line)
+                                work-done-str effort-str org-clock-heading-formatted))))
+          (message (concat
+                    header ": "
+                    (format (propertize "[%s] (%s)" 'face 'org-meta-line)
+                           (org-duration-from-minutes clocked-time)
+                           org-clock-heading-formatted)))))
     (error "Not currently clocking any task.")))
 
 
@@ -4874,11 +4874,11 @@ Callers of this function already widen the buffer view."
                  (has-next))
             (save-excursion
               (forward-line 1)
-	      (while (and (not has-next)
-			  (< (point) subtree-end)
-			  (if zp/projects-include-waiting
-			      (re-search-forward "^\\*+ \\(NEXT\\|STRT\\) " subtree-end t)
-			    (re-search-forward "^\\*+ \\(NEXT\\|STRT\\|WAIT\\) " subtree-end t)))
+              (while (and (not has-next)
+                          (< (point) subtree-end)
+                          (if zp/projects-include-waiting
+                              (re-search-forward "^\\*+ \\(NEXT\\|STRT\\) " subtree-end t)
+                            (re-search-forward "^\\*+ \\(NEXT\\|STRT\\|WAIT\\) " subtree-end t)))
                 (unless (member "standby" (org-get-tags-at))
                   (setq has-next t))))
             (if has-next
@@ -4898,17 +4898,17 @@ agenda.")
     (let ((next-headline (save-excursion (or (outline-next-heading) (point-max)))))
       (if (bh/is-project-p)
           (let* ((subtree-end (save-excursion (org-end-of-subtree t)))
-		 (is-waiting (string-match-p "WAIT" (org-get-todo-state)))
+                 (is-waiting (string-match-p "WAIT" (org-get-todo-state)))
                  (has-next))
             (save-excursion
               (forward-line 1)
               (while (and (not has-next)
-			  (< (point) subtree-end)
-			  (if is-waiting
-			      (re-search-forward "^\\*+ \\(WAIT\\) " subtree-end t)
-			    (re-search-forward "^\\*+ \\(NEXT\\|STRT\\) " subtree-end t)))
+                          (< (point) subtree-end)
+                          (if is-waiting
+                              (re-search-forward "^\\*+ \\(WAIT\\) " subtree-end t)
+                            (re-search-forward "^\\*+ \\(NEXT\\|STRT\\) " subtree-end t)))
                 (unless (member "standby" (org-get-tags-at))
-		  (setq has-next t))))
+                  (setq has-next t))))
             (if has-next
                 next-headline
               nil)) ; a stuck project, has subtasks but no next task
@@ -5273,24 +5273,24 @@ Skip project and sub-project tasks, habits, and loose non-project tasks."
   (dotimes (i (or arg 1))
     (unless (org-get-at-bol 'org-agenda-diary-link)
       (let* ((m (org-get-at-bol 'org-hd-marker))
-	     ov)
-	(unless (org-agenda-bulk-marked-p)
-	  (unless m (user-error "Nothing to mark at point"))
-	  (push m org-agenda-bulk-marked-entries)
-	  (setq ov (make-overlay (point-at-bol) (+ 2 (point-at-bol))))
-	  (org-overlay-display ov (concat org-agenda-bulk-mark-char " ")
-			       ;; (org-get-todo-face "TODO")
-			       'org-todo		                  ;Modification
-			       'evaporate)
-	  (overlay-put ov 'type 'org-marked-entry-overlay))
-	(end-of-line 1)
-	(or (ignore-errors
-	      (goto-char (next-single-property-change (point) 'org-hd-marker)))
-	    (beginning-of-line 2))
-	(while (and (get-char-property (point) 'invisible) (not (eobp)))
-	  (beginning-of-line 2))
-	(message "%d entries marked for bulk action"
-		 (length org-agenda-bulk-marked-entries))))))
+             ov)
+        (unless (org-agenda-bulk-marked-p)
+          (unless m (user-error "Nothing to mark at point"))
+          (push m org-agenda-bulk-marked-entries)
+          (setq ov (make-overlay (point-at-bol) (+ 2 (point-at-bol))))
+          (org-overlay-display ov (concat org-agenda-bulk-mark-char " ")
+                               ;; (org-get-todo-face "TODO")
+                               'org-todo                                  ;Modification
+                               'evaporate)
+          (overlay-put ov 'type 'org-marked-entry-overlay))
+        (end-of-line 1)
+        (or (ignore-errors
+              (goto-char (next-single-property-change (point) 'org-hd-marker)))
+            (beginning-of-line 2))
+        (while (and (get-char-property (point) 'invisible) (not (eobp)))
+          (beginning-of-line 2))
+        (message "%d entries marked for bulk action"
+                 (length org-agenda-bulk-marked-entries))))))
 
 ;; Copy file path
 
@@ -5339,9 +5339,9 @@ will not be modified."
   (let* ((created (or NAME org-created-property-name))
          (fmt (if active "<%s>" "[%s]"))
          (now (format fmt (format-time-string "%Y-%m-%d %a %H:%M")))
-	 (add-created (plist-get org-capture-plist :add-created)))
+         (add-created (plist-get org-capture-plist :add-created)))
     (unless (or (not add-created)
-		(org-entry-get (point) created nil))
+                (org-entry-get (point) created nil))
       (org-set-property created now))))
 
 (add-hook 'org-capture-before-finalize-hook #'zp/org-set-created-property)
@@ -5420,30 +5420,30 @@ Every ELEM in LIST is formatted as follows:
     (forward-line)
     (delete-region (region-beginning) (region-end)))
   (mapc (lambda (arg)
-	  (zp/helm-smbp-set-property alist arg))
-	(helm-marked-candidates)))
+          (zp/helm-smbp-set-property alist arg))
+        (helm-marked-candidates)))
 
 (defun zp/helm-smbp (symbol)
   (interactive)
   (let* ((symbol-name (symbol-name symbol))
-	 (list (symbol-value symbol))
+         (list (symbol-value symbol))
 
-	 ;; Separate prefix and name in symbol-name
-	 (prefix-pos	(string-match-p "/" symbol-name))
-	 (prefix	(if prefix-pos
-			    (substring symbol-name 0 prefix-pos)))
-	 (name	(if prefix-pos
-		    (substring symbol-name (1+ prefix-pos))
-		  symbol-name))
+         ;; Separate prefix and name in symbol-name
+         (prefix-pos    (string-match-p "/" symbol-name))
+         (prefix        (if prefix-pos
+                            (substring symbol-name 0 prefix-pos)))
+         (name  (if prefix-pos
+                    (substring symbol-name (1+ prefix-pos))
+                  symbol-name))
 
-	 (property-alist (zp/make-property-alist name list))
+         (property-alist (zp/make-property-alist name list))
 
-	 (set-property (lambda (arg)
-			(zp/helm-smbp-set-properties `,property-alist))))
+         (set-property (lambda (arg)
+                        (zp/helm-smbp-set-properties `,property-alist))))
     (helm :name "Testing"
-	  :sources `((name . ,(concat "*helm " name "*"))
-    	  	     (candidates . ,property-alist)
-    	  	     (action . (("Set property" . ,set-property)))))))
+          :sources `((name . ,(concat "*helm " name "*"))
+                     (candidates . ,property-alist)
+                     (action . (("Set property" . ,set-property)))))))
 
 
 
@@ -5473,7 +5473,7 @@ Every ELEM in LIST is formatted as follows:
   (let ((subtree-end (save-excursion (org-end-of-subtree t))))
     (save-excursion
       (unless (org-at-heading-p)
-	(org-previous-visible-heading 1))
+        (org-previous-visible-heading 1))
       (re-search-forward "^\\*+ Cognitive Distortions$" subtree-end t))))
 
 (defun zp/psychotherapy-thoughts-clear-response ()
@@ -5484,9 +5484,9 @@ Every ELEM in LIST is formatted as follows:
 
 (defun zp/psychotherapy-thoughts-create-response (arg)
   (let ((org-insert-heading-respect-content t)
-	(has-response-p (zp/psychotherapy-thoughts-has-response-p)))
+        (has-response-p (zp/psychotherapy-thoughts-has-response-p)))
     (if has-response-p
-	(zp/psychotherapy-thoughts-clear-response))
+        (zp/psychotherapy-thoughts-clear-response))
     (org-insert-heading)
     (org-demote)
     (insert "Cognitive Distortions")
@@ -5502,76 +5502,76 @@ Every ELEM in LIST is formatted as follows:
 
 (setq zp/psychotherapy-headings-alist
       '(("Situation" .
-	 (lambda (arg)
-	   (if (save-excursion (org-get-next-sibling))
-	       (progn
-		 (org-forward-heading-same-level 1)
-		 (zp/psychotherapy-dwim nil)))))
+         (lambda (arg)
+           (if (save-excursion (org-get-next-sibling))
+               (progn
+                 (org-forward-heading-same-level 1)
+                 (zp/psychotherapy-dwim nil)))))
 
-	("Emotions" .
-	 (lambda (arg)
-	   (let ((org-insert-heading-respect-content t))
-	     (zp/helm-smbp 'zp/emotions)
-	     (if (save-excursion
-		   (org-get-next-sibling))
-		 (org-forward-heading-same-level 1))
-	     (unless (save-excursion
-		       (and (org-get-heading "Thoughts")
-			    (org-goto-first-child)))
-	       (org-insert-heading)
-	       (org-demote)))))
+        ("Emotions" .
+         (lambda (arg)
+           (let ((org-insert-heading-respect-content t))
+             (zp/helm-smbp 'zp/emotions)
+             (if (save-excursion
+                   (org-get-next-sibling))
+                 (org-forward-heading-same-level 1))
+             (unless (save-excursion
+                       (and (org-get-heading "Thoughts")
+                            (org-goto-first-child)))
+               (org-insert-heading)
+               (org-demote)))))
 
-	("Cognitive Distortions" .
-	 (lambda (arg)
-	   (zp/helm-smbp 'zp/cognitive-distortions)
-	   (if (save-excursion (org-get-next-sibling))
-	       (org-forward-heading-same-level 1))
-	   (next-line)))
+        ("Cognitive Distortions" .
+         (lambda (arg)
+           (zp/helm-smbp 'zp/cognitive-distortions)
+           (if (save-excursion (org-get-next-sibling))
+               (org-forward-heading-same-level 1))
+           (next-line)))
 
-	("Rational Response" .
-	 (lambda (arg)
-	   (cond ((eq arg 4)
-		  (outline-up-heading 1)
-		  (zp/psychotherapy-thoughts-create-response arg))
-		 ((save-excursion
-		    (outline-up-heading 1)
-		    (org-get-next-sibling))
-		  (outline-up-heading 1)
-		  (org-forward-heading-same-level 1)
-		  (zp/psychotherapy-dwim nil))
-		 (t
-		  (if (y-or-n-p "Finalise?")
-		      (org-capture-finalize)))))))
+        ("Rational Response" .
+         (lambda (arg)
+           (cond ((eq arg 4)
+                  (outline-up-heading 1)
+                  (zp/psychotherapy-thoughts-create-response arg))
+                 ((save-excursion
+                    (outline-up-heading 1)
+                    (org-get-next-sibling))
+                  (outline-up-heading 1)
+                  (org-forward-heading-same-level 1)
+                  (zp/psychotherapy-dwim nil))
+                 (t
+                  (if (y-or-n-p "Finalise?")
+                      (org-capture-finalize)))))))
 
       zp/psychotherapy-parent-headings-alist
-      '(("Thoughts"	. zp/psychotherapy-thoughts-create-response)))
+      '(("Thoughts"     . zp/psychotherapy-thoughts-create-response)))
 
 ;; dwim-function
 (defun zp/psychotherapy-dwim (arg)
   (interactive "p")
   (let* ((heading (org-get-heading))
-	 (type (cdr (assoc heading zp/psychotherapy-headings-alist)))
-	 (parent (car (last (org-get-outline-path))))
-	 (parent-type (cdr (assoc parent zp/psychotherapy-parent-headings-alist))))
+         (type (cdr (assoc heading zp/psychotherapy-headings-alist)))
+         (parent (car (last (org-get-outline-path))))
+         (parent-type (cdr (assoc parent zp/psychotherapy-parent-headings-alist))))
     (cond (type
-	   (unless (org-at-heading-p)
-	     (org-previous-visible-heading 1))
-	   (funcall type arg))
+           (unless (org-at-heading-p)
+             (org-previous-visible-heading 1))
+           (funcall type arg))
 
-	  (parent-type
-	   (funcall parent-type arg))
+          (parent-type
+           (funcall parent-type arg))
 
-	  (t
-	   (if (y-or-n-p "Finalise?")
-	       (org-capture-finalize))))))
+          (t
+           (if (y-or-n-p "Finalise?")
+               (org-capture-finalize))))))
 
 
 
 ;; mode definition
 (defvar zp/psychotherapy-mode-map
   (let ((map (make-sparse-keymap)))
-	(define-key map (kbd "C-c C-c") #'zp/psychotherapy-dwim)
-	map)
+        (define-key map (kbd "C-c C-c") #'zp/psychotherapy-dwim)
+        map)
   "Keymap for ‘zp/psychotherapy-mode’.")
 
 (define-minor-mode zp/psychotherapy-mode
@@ -5593,9 +5593,9 @@ Every ELEM in LIST is formatted as follows:
   "Load minor-mode based on based on key."
   (interactive)
   (let* ((key (plist-get org-capture-plist :key))
-	 (minor-mode (cdr (assoc key zp/org-capture-extra-minor-modes-alist))))
+         (minor-mode (cdr (assoc key zp/org-capture-extra-minor-modes-alist))))
     (if minor-mode
-	(funcall minor-mode))))
+        (funcall minor-mode))))
 
 (add-hook #'org-capture-mode-hook #'zp/org-capture-load-extra-minor-mode)
 
@@ -5604,29 +5604,29 @@ Every ELEM in LIST is formatted as follows:
 ;; Setting variables
 (setq zp/cognitive-distortions
       '("All-or-nothing thinking"
-	"Over-generalisation"
-	"Mental filter"
-	"Disqualifying the positive"
-	"Mind-reading"
-	"Fortune-Teller error"
-	"Magnification or minimisation"
-	"Emotional reasoning"
-	"Should statements"
-	"Labelling and mislabelling"
-	"Personalisation")
+        "Over-generalisation"
+        "Mental filter"
+        "Disqualifying the positive"
+        "Mind-reading"
+        "Fortune-Teller error"
+        "Magnification or minimisation"
+        "Emotional reasoning"
+        "Should statements"
+        "Labelling and mislabelling"
+        "Personalisation")
 
       zp/emotions
       '("Anger"
-	"Anxiety"
-	"Boredom"
-	"Disgust"
-	"Dispirited"
-	"Fear"
-	"Guilt"
-	"Laziness"
-	"Loneliness"
-	"Sadness"
-	"Tiredness"))
+        "Anxiety"
+        "Boredom"
+        "Disgust"
+        "Dispirited"
+        "Fear"
+        "Guilt"
+        "Laziness"
+        "Loneliness"
+        "Sadness"
+        "Tiredness"))
 
 
 
@@ -5686,8 +5686,8 @@ Every ELEM in LIST is formatted as follows:
 ;; Prototype
 ;; Doesn't toggle, just turns on
 ;; (global-set-key (kbd "C-c h") (lambda () (interactive)
-;; 				(global-hl-line-mode)
-;; 				(global-linum-mode)))
+;;                              (global-hl-line-mode)
+;;                              (global-linum-mode)))
 
 
 ;; Other toggles
@@ -5789,8 +5789,8 @@ Every ELEM in LIST is formatted as follows:
   (interactive)
   (if (not (one-window-p))
       (progn
-	(other-window 1)
-	(kill-buffer-and-window))
+        (other-window 1)
+        (kill-buffer-and-window))
     (error "There is only one window in the frame.")))
 
 (defun zp/kill-indirect-buffer ()
@@ -5798,11 +5798,11 @@ Every ELEM in LIST is formatted as follows:
   (interactive)
   (if (not (eq (buffer-base-buffer) nil))
       (progn
-	(condition-case nil
-	    (kill-buffer-and-window)
-	  (error nil))
-	(message "Killed indirect buffer and window.")
-	(zp/play-sound-turn-page))
+        (condition-case nil
+            (kill-buffer-and-window)
+          (error nil))
+        (message "Killed indirect buffer and window.")
+        (zp/play-sound-turn-page))
     (message "Not in an indirect buffer.")))
 
 (defun zp/org-agenda-kill-other-buffer-and-window ()
@@ -5867,8 +5867,8 @@ windows."
 
 (defun zp/pdf-view-midnight-mode-theme ()
   (setq pdf-view-midnight-colors
-	`(,(face-attribute 'default :foreground) .
-	  ,(face-attribute 'default :background))))
+        `(,(face-attribute 'default :foreground) .
+          ,(face-attribute 'default :background))))
 
 (minions-mode 1)
 (require 'moody)
@@ -5899,14 +5899,14 @@ windows."
 FMT is a format specifier such as \"%12b\".  This function adds
 text properties for face, help-echo, and local-map to it."
   (list (propertize fmt
-		    'face (if (eq ml-selected-window (selected-window))
+                    'face (if (eq ml-selected-window (selected-window))
                               'mode-line-buffer-id
                             'mode-line-buffer-id-inactive)
-		    'help-echo
-		    (purecopy "Buffer name
+                    'help-echo
+                    (purecopy "Buffer name
 mouse-1: Previous buffer\nmouse-3: Next buffer")
-		    'mouse-face 'mode-line-highlight
-		    'local-map mode-line-buffer-identification-keymap)))
+                    'mouse-face 'mode-line-highlight
+                    'local-map mode-line-buffer-identification-keymap)))
 
 (setq-default mode-line-format
               '("%e"
@@ -5935,14 +5935,14 @@ mouse-1: Previous buffer\nmouse-3: Next buffer")
                 ;; (:eval
                 ;;  (zp/propertized-buffer-identification "%b"))
                 ;; (:eval (propertize "%12b"
-                ;; 		                   'face (if (eq ml-selected-window (selected-window))
+                ;;                                 'face (if (eq ml-selected-window (selected-window))
                 ;;                                              'mode-line-buffer-id
                 ;;                                            'mode-line-buffer-id-inactive)
-                ;; 		                   'help-echo
-                ;; 		                   (purecopy "Buffer name
+                ;;                                 'help-echo
+                ;;                                 (purecopy "Buffer name
                 ;; mouse-1: Previous buffer\nmouse-3: Next buffer")
-                ;; 		                   'mouse-face 'mode-line-highlight
-                ;; 		                   'local-map mode-line-buffer-identification-keymap))
+                ;;                                 'mouse-face 'mode-line-highlight
+                ;;                                 'local-map mode-line-buffer-identification-keymap))
                 "   "
                 mode-line-position
                 ;; (vc-mode vc-mode)
@@ -5976,28 +5976,28 @@ mouse-1: Previous buffer\nmouse-3: Next buffer")
 
 (defun zp/mode-line-theme (&optional arg)
   (cond ((string= arg "dark")
-	 (progn
-	   (set-face-attribute 'mode-line nil
-			       :background "#293233"
+         (progn
+           (set-face-attribute 'mode-line nil
+                               :background "#293233"
                                :box '(:line-width -2 :color "#293233"))
-	   (set-face-attribute 'mode-line-inactive nil
-			       :background "#1d1d1d" :foreground "#666"
+           (set-face-attribute 'mode-line-inactive nil
+                               :background "#1d1d1d" :foreground "#666"
                                :box '(:line-width -2 :color "#1d1d1d"))
            (set-face-attribute 'mode-line-buffer-id nil
                                :foreground "DarkGoldenrod2" :weight 'bold)
            (set-face-attribute 'mode-line-buffer-id-inactive nil
                                :foreground "#888" :weight 'bold)
            ))
-	((string= arg "light")
-	 (progn
-	   (set-face-attribute 'mode-line nil
-			       :background "#ada68a" :foreground "#333"
+        ((string= arg "light")
+         (progn
+           (set-face-attribute 'mode-line nil
+                               :background "#ada68a" :foreground "#333"
                                :box '(:line-width -2 :color "#ada68a"))
-	   (set-face-attribute 'mode-line-inactive nil
-			       :background "#e0d7b2" :foreground "#666"
+           (set-face-attribute 'mode-line-inactive nil
+                               :background "#e0d7b2" :foreground "#666"
                                :box '(:line-width -2 :color "#e0d7b2"))
            (set-face-attribute 'mode-line-buffer-id nil
-			       :foreground "DodgerBlue3" :weight 'bold)
+                               :foreground "DodgerBlue3" :weight 'bold)
            (set-face-attribute 'mode-line-buffer-id-inactive nil
                                :foreground "#c7bf9e" :weight 'bold)))))
 
@@ -6011,19 +6011,19 @@ mouse-1: Previous buffer\nmouse-3: Next buffer")
 
 (defun zp/org-todo-format-face (type face colour)
   (cond ((string= type "box")
-	 (set-face-attribute face nil
-			     :box '(:line-width -3 :style released-button)
-			     :height 0.8
-			     :weight 'bold
-			     :foreground "white"
-			     :background colour))
-	((string= type "normal")
-	 (set-face-attribute face nil
-			     :box nil
-			     :height 0.8
-			     :background nil
-			     :weight 'bold
-			     :foreground colour))))
+         (set-face-attribute face nil
+                             :box '(:line-width -3 :style released-button)
+                             :height 0.8
+                             :weight 'bold
+                             :foreground "white"
+                             :background colour))
+        ((string= type "normal")
+         (set-face-attribute face nil
+                             :box nil
+                             :height 0.8
+                             :background nil
+                             :weight 'bold
+                             :foreground colour))))
 
 (defface org-priority-face-a '((t)) nil)
 (defface org-priority-face-b '((t)) nil)
@@ -6039,30 +6039,30 @@ mouse-1: Previous buffer\nmouse-3: Next buffer")
 
 (defun zp/org-format-face (face &rest args)
   (let (
-	(foreground (plist-get args :foreground))
-	(weight     (plist-get args :weight))
-	(background (plist-get args :background)))
+        (foreground (plist-get args :foreground))
+        (weight     (plist-get args :weight))
+        (background (plist-get args :background)))
     (if (bound-and-true-p foreground)
-	(set-face-attribute face nil :foreground foreground)
+        (set-face-attribute face nil :foreground foreground)
       (set-face-attribute face nil :foreground nil))
     (if (bound-and-true-p background)
-	(set-face-attribute face nil :background background)
+        (set-face-attribute face nil :background background)
       (set-face-attribute face nil :background nil))
     (if (bound-and-true-p weight)
-	(set-face-attribute face nil :weight weight)
+        (set-face-attribute face nil :weight weight)
       (set-face-attribute face nil :weight 'normal))))
 
 (defun zp/set-fonts ()
   ;; Default font
   (set-face-attribute 'default nil
-  		      :font "Sarasa Term SC" :height 96 :weight 'normal)
+                      :font "Sarasa Term SC" :height 96 :weight 'normal)
   ;; variable-pitch & fixed-pitch
   (set-face-attribute 'variable-pitch nil
-  		      :font "Bliss Pro Prog" :height 1.3)
+                      :font "Bliss Pro Prog" :height 1.3)
   ;; (set-face-attribute 'variable-pitch nil
-  ;; 		      :family "Equity" :height 1.6 :slant 'normal)
+  ;;                  :family "Equity" :height 1.6 :slant 'normal)
   (set-face-attribute 'fixed-pitch-serif nil
-		      :font "Iosevka Prog Slab" :height 1.0)
+                      :font "Iosevka Prog Slab" :height 1.0)
 
   ;; CJK fonts
   ;; (set-fontset-font (frame-parameter nil 'font) 'han '("Noto Sans CJK JP"))
@@ -6100,13 +6100,13 @@ mouse-1: Previous buffer\nmouse-3: Next buffer")
   "Enable variable-pitch-mode and changes line-spacing."
   (interactive)
   (cond ((bound-and-true-p zp/variable-pitch-mode-toggle)
-	 (variable-pitch-mode)
-	 (setq line-spacing zp/line-spacing
-	       zp/variable-pitch-mode-toggle nil))
-	(t
-	 (variable-pitch-mode)
-	 (setq line-spacing zp/line-spacing-variable-pitch
-	       zp/variable-pitch-mode-toggle 1))))
+         (variable-pitch-mode)
+         (setq line-spacing zp/line-spacing
+               zp/variable-pitch-mode-toggle nil))
+        (t
+         (variable-pitch-mode)
+         (setq line-spacing zp/line-spacing-variable-pitch
+               zp/variable-pitch-mode-toggle 1))))
 
 
 (defvar zp/emacs-theme nil
@@ -6144,10 +6144,10 @@ mouse-1: Previous buffer\nmouse-3: Next buffer")
 
 
   (set-face-attribute 'zp/org-agenda-block-info-face nil
-		      :foreground "violetred1"
-		      :background "violetred4"
-		      :height 0.8
-		      :weight 'bold)
+                      :foreground "violetred1"
+                      :background "violetred4"
+                      :height 0.8
+                      :weight 'bold)
   (set-face-attribute 'zp/org-agenda-block-warning-face nil :foreground "red" :weight 'bold)
 
   (zp/org-todo-format-face 'normal 'org-todo-todo "darkred")
@@ -6213,10 +6213,10 @@ mouse-1: Previous buffer\nmouse-3: Next buffer")
   (set-face-attribute 'diff-hl-delete nil :foreground "#ee6363" :background "#ee6363")
 
   (set-face-attribute 'zp/org-agenda-block-info-face nil
-		      :foreground "violetred1"
-		      :background "thistle2"
-		      :height 0.8
-		      :weight 'bold)
+                      :foreground "violetred1"
+                      :background "thistle2"
+                      :height 0.8
+                      :weight 'bold)
   (set-face-attribute 'zp/org-agenda-block-warning-face nil :foreground "red" :weight 'bold)
 
   (zp/org-todo-format-face 'normal 'org-todo-todo "red")
@@ -6234,7 +6234,7 @@ mouse-1: Previous buffer\nmouse-3: Next buffer")
   (zp/org-format-face 'org-priority-face-e :foreground "RoyalBlue")
 
   (zp/org-format-face 'org-tag-location  :weight 'bold :foreground "BlueViolet")
-  (zp/org-format-face 'org-tag-todo	 :weight 'bold :foreground "Skyblue1")
+  (zp/org-format-face 'org-tag-todo      :weight 'bold :foreground "Skyblue1")
   (zp/org-format-face 'org-tag-important :weight 'bold :foreground "red")
   (zp/org-format-face 'org-tag-reading   :weight 'bold :foreground "DeepPink")
   (zp/org-format-face 'org-tag-french    :weight 'bold :foreground "DodgerBlue1")
@@ -6249,7 +6249,7 @@ mouse-1: Previous buffer\nmouse-3: Next buffer")
   (interactive)
   (cond ((string= zp/emacs-theme "dark")
          (zp/light-theme))
-	((string= zp/emacs-theme "light")
+        ((string= zp/emacs-theme "light")
          (zp/dark-theme))))
 
 ;; -----------------------------------------------------------------------------
@@ -6268,19 +6268,19 @@ specifications are processed in order:
 (defun zp/encode-time-of-day (TIME-STR CURRENT-DAY-DECODED NEXT-DAY-DECODED)
   "Encode time specification from STR to (HIGH LOW)."
   (let* ((time-string TIME-STR)
-	 (current-day-decoded CURRENT-DAY-DECODED)
-	 (next-day-decoded NEXT-DAY-DECODED))
+         (current-day-decoded CURRENT-DAY-DECODED)
+         (next-day-decoded NEXT-DAY-DECODED))
     ;; The output of ‘parse-time-string’ cannot be encoded by
     ;; ‘encode-time’ because of missing data, so we’re using either
     ;; today’s to fill in the blanks. If ‘time-string’ is between 12am
     ;; and 1am, use tomorrow’s data instead.
     (apply 'encode-time
-	   (append
-	    (subseq (parse-time-string time-string) 0 3)
-	    (subseq (if (string-match "^0*:" time-string)
-			next-day-decoded
-		      current-day-decoded)
-		    3)))))
+           (append
+            (subseq (parse-time-string time-string) 0 3)
+            (subseq (if (string-match "^0*:" time-string)
+                        next-day-decoded
+                      current-day-decoded)
+                    3)))))
 
 (defvar zp/time-of-day-sections-parsed nil
   "List of time specifications (HIGH LOW) to split the day into sections.
@@ -6295,26 +6295,26 @@ integers (HIGH LOW) used by Emacs to compute time. See
 
 A new time specification ‘next-day’ is computed from ‘day’ and
 appended to the list to handle next-day timers."
-  (let* ((now				(current-time))
-	 (now-decoded			(decode-time now))
-	 (tomorrow			(time-add now (* 24 60 60)))
-	 (tomorrow-decoded		(decode-time tomorrow))
-	 (after-tomorrow		(time-add tomorrow (* 24 60 60)))
-	 (after-tomorrow-decoded	(decode-time after-tomorrow))
-	 (tod-sections			zp/time-of-day-sections)
-	 (tod-day			(nth 1 tod-sections)))
+  (let* ((now                           (current-time))
+         (now-decoded                   (decode-time now))
+         (tomorrow                      (time-add now (* 24 60 60)))
+         (tomorrow-decoded              (decode-time tomorrow))
+         (after-tomorrow                (time-add tomorrow (* 24 60 60)))
+         (after-tomorrow-decoded        (decode-time after-tomorrow))
+         (tod-sections                  zp/time-of-day-sections)
+         (tod-day                       (nth 1 tod-sections)))
     (setq zp/time-of-day-sections-parsed
-	  (mapcar (lambda (arg)
-		    (zp/encode-time-of-day arg
-					   now-decoded
-					   tomorrow-decoded))
-		  tod-sections))
+          (mapcar (lambda (arg)
+                    (zp/encode-time-of-day arg
+                                           now-decoded
+                                           tomorrow-decoded))
+                  tod-sections))
     ;; Add next-day to list
     (add-to-list 'zp/time-of-day-sections-parsed
-    		 (zp/encode-time-of-day tod-day
-					tomorrow-decoded
-					after-tomorrow-decoded)
-		 t)))
+                 (zp/encode-time-of-day tod-day
+                                        tomorrow-decoded
+                                        after-tomorrow-decoded)
+                 t)))
 
 ;;; Status
 (defun zp/daytimep ()
@@ -6323,12 +6323,12 @@ Based on ‘zp/time-of-day-sections’. A time-of-day is considered
 as day-time if it’s between pre-day and pre-evening.
 See ‘zp/time-of-day-sections’ for more info."
   (let* ((tod-sections zp/time-of-day-sections-parsed)
-	 (now		(current-time))
-	 (pre-day	(nth 0 tod-sections))
-	 (pre-evening	(nth 2 tod-sections)))
+         (now           (current-time))
+         (pre-day       (nth 0 tod-sections))
+         (pre-evening   (nth 2 tod-sections)))
     (if (and (time-less-p pre-day now)
-	     (time-less-p now pre-evening))
-	t
+             (time-less-p now pre-evening))
+        t
       nil)))
 
 ;;; Switching themes
@@ -6338,16 +6338,16 @@ See ‘zp/time-of-day-sections’ and ‘zp/daytimep’ for more info."
   (interactive "p")
   (let* ((daytime (zp/daytimep)))
     (cond ((and daytime
-		(or (string= zp/emacs-theme "dark")
-		    (not zp/emacs-theme)))
-	   (zp/light-theme))
-	  ((and (not daytime)
-		(or (string= zp/emacs-theme "light")
-		    (not zp/emacs-theme)))
-	   (zp/dark-theme))
-	  (t
-	   (when print-message
-	     (message "Nothing to do."))))))
+                (or (string= zp/emacs-theme "dark")
+                    (not zp/emacs-theme)))
+           (zp/light-theme))
+          ((and (not daytime)
+                (or (string= zp/emacs-theme "light")
+                    (not zp/emacs-theme)))
+           (zp/dark-theme))
+          (t
+           (when print-message
+             (message "Nothing to do."))))))
 
 (defun zp/switch-theme-auto ()
   "Automatically switch theme based on time-of-day.
@@ -6363,19 +6363,19 @@ See ‘zp/time-of-day-sections’ and ‘zp/daytimep’ for more info."
 (defun zp/set-daytime-timer ()
   "Set timer for switching theme at ‘day’ and ‘evening’.
 See ‘zp/time-of-day-sections’"
-  (let* ((tod-sections	zp/time-of-day-sections-parsed)
-	 (now		(current-time))
-	 (day		(nth 1 tod-sections))
-	 (evening	(nth 3 tod-sections))
-	 (next-day	(nth 5 tod-sections)))
+  (let* ((tod-sections  zp/time-of-day-sections-parsed)
+         (now           (current-time))
+         (day           (nth 1 tod-sections))
+         (evening       (nth 3 tod-sections))
+         (next-day      (nth 5 tod-sections)))
     (unless (not zp/daytime-timer)
-	  (cancel-timer zp/daytime-timer)
-	  (setq zp/daytime-timer nil))
+          (cancel-timer zp/daytime-timer)
+          (setq zp/daytime-timer nil))
     (setq zp/daytime-timer
-	  (run-at-time (cl-some (lambda (x)
-				  (when (time-less-p now x)
+          (run-at-time (cl-some (lambda (x)
+                                  (when (time-less-p now x)
                                     x))
-				(list day evening next-day))
+                                (list day evening next-day))
                        nil #'zp/switch-theme-auto))))
 
 ;; Init
@@ -6395,17 +6395,17 @@ accepted by terminology (e.g. ‘-x command’).
 See ‘/home/zaeph/.bin/terminology-dwim’ for more info."
   (interactive)
   (let ((client-buffer (current-buffer))
-	(arg ARGUMENTS))
+        (arg ARGUMENTS))
     (with-current-buffer (window-buffer (selected-window))
       (let* ((path-emacs default-directory)
-	     (tramp-regex "/sudo:root@.*?:")
-	     (path (replace-regexp-in-string
-		    tramp-regex "" path-emacs)))
-	(set-buffer client-buffer)
-	(call-process-shell-command
-	 (concat "terminology"
-		 (if arg (concat " " arg))
-		 " -d \"" path "\""))))))
+             (tramp-regex "/sudo:root@.*?:")
+             (path (replace-regexp-in-string
+                    tramp-regex "" path-emacs)))
+        (set-buffer client-buffer)
+        (call-process-shell-command
+         (concat "terminology"
+                 (if arg (concat " " arg))
+                 " -d \"" path "\""))))))
 
 (defun zp/terminator-dwim (&optional ARGUMENTS)
   "Run terminator in the CWD.
@@ -6417,16 +6417,16 @@ accepted by terminator (e.g. ‘-x command’).
 See ‘/home/zaeph/.bin/terminator-dwim’ for more info."
   (interactive)
   (let ((client-buffer (current-buffer))
-	(arg ARGUMENTS))
+        (arg ARGUMENTS))
     (with-current-buffer (window-buffer (selected-window))
       (let* ((path-emacs default-directory)
-	     (tramp-regex "/sudo:root@.*?:")
-	     (path (replace-regexp-in-string
-		    tramp-regex "" path-emacs)))
-	(set-buffer client-buffer)
-	(shell-command
-	 (concat "terminator --working-dir \"" path "\""
-		 (if arg (concat " " arg))))))))
+             (tramp-regex "/sudo:root@.*?:")
+             (path (replace-regexp-in-string
+                    tramp-regex "" path-emacs)))
+        (set-buffer client-buffer)
+        (shell-command
+         (concat "terminator --working-dir \"" path "\""
+                 (if arg (concat " " arg))))))))
 
 
 
@@ -6490,18 +6490,18 @@ time is displayed."
 ;;         (goto-char (point-min))
 ;;         (while (re-search-forward "(DONE)" nil t)
 ;;           (add-text-properties (match-beginning 0) (match-end 0)
-;; 			       '(face org-done)))
-;; 	(goto-char (point-min))
+;;                             '(face org-done)))
+;;      (goto-char (point-min))
 ;;         (while (re-search-forward "(TODO)\\|(NEXT)\\|(STRT)\\|(SCHD)\\|(PREP)" nil t)
 ;;           (add-text-properties (match-beginning 0) (match-end 0)
-;; 			       '(face org-todo)))
+;;                             '(face org-todo)))
 ;;         (while (re-search-forward problematic-regex nil t)
 ;;           (add-text-properties (match-beginning 1) (match-end 1)
-;; 			       '(face org-action-word-face)))
-;; 	;; Remove mouse highlighting in org-agenda
-;; 	(remove-text-properties
+;;                             '(face org-action-word-face)))
+;;      ;; Remove mouse highlighting in org-agenda
+;;      (remove-text-properties
 ;;          (point-min) (point-max) '(mouse-face t))
-;; 	)))
+;;      )))
 
 ;; ;; (setq org-finalize-agenda-hook nil)
 
@@ -6577,14 +6577,14 @@ time is displayed."
 ;;   (interactive)
 ;;   (if (not (eq theme-mode 'dark))
 ;;       (progn
-;; 	(load-theme dark-theme t)
-;; 	(set-face-attribute 'org-done nil :foreground "spring green")
-;; 	(set-face-attribute 'org-hide nil :foreground "#202746")
-;; 	(set-face-attribute 'helm-selection nil :background "RoyalBlue4")
-;; 	(set-face-attribute 'region nil :background "RoyalBlue4")
-;; 	(set-face-attribute 'org-agenda-dimmed-todo-face nil :foreground "SkyBlue4")
-;; 	(set-face-attribute 'org-agenda-clocking nil :background "RoyalBlue4")
-;; 	(setq theme-mode 'dark))
+;;      (load-theme dark-theme t)
+;;      (set-face-attribute 'org-done nil :foreground "spring green")
+;;      (set-face-attribute 'org-hide nil :foreground "#202746")
+;;      (set-face-attribute 'helm-selection nil :background "RoyalBlue4")
+;;      (set-face-attribute 'region nil :background "RoyalBlue4")
+;;      (set-face-attribute 'org-agenda-dimmed-todo-face nil :foreground "SkyBlue4")
+;;      (set-face-attribute 'org-agenda-clocking nil :background "RoyalBlue4")
+;;      (setq theme-mode 'dark))
 ;;     (progn
 ;;       (load-theme light-theme t)
 ;;       (set-face-attribute 'org-hide nil :foreground "#fdf6e3")
@@ -6611,34 +6611,34 @@ time is displayed."
 ;;   "Switch the main font."
 ;;   (interactive)
 ;;   (cond ((or
-;; 	  (eq (boundp 'main-font) nil)
-;; 	  (eq main-font 'pragmata-font))
-;; 	 ;; (set-face-attribute 'default nil
-;; 	 ;; 		     :family "Source Code Pro" :height 110 :weight 'normal)           ;Necessary to reset weight
-;; 	 (set-face-attribute 'default nil
-;; 			     :family "PragmataPro Mono" :height 100 :weight 'normal)
-;; 	 (set-face-attribute 'bold nil
-;; 	 		     :weight 'normal)
-;; 	 (set-face-attribute 'bold nil
-;; 	 		     :weight 'bold)
-;; 	 (setq-default line-spacing nil)
-;; 	 ;; (switch-cjk-font "Noto Sans CJK JP Regular")
-;; 	 (setq main-font 'source-font))
-;; 	((eq main-font 'source-font)
-;; 	 (set-face-attribute 'default nil
-;; 			     :family "Source Code Pro" :height 100 :weight 'normal)
-;; 	 (set-face-attribute 'bold nil
-;; 	 		     :weight 'black)
-;; 	 (setq-default line-spacing nil)
-;; 	 ;; (switch-cjk-font "Unifont")
-;; 	 (setq main-font 'pragmata-font))))
+;;        (eq (boundp 'main-font) nil)
+;;        (eq main-font 'pragmata-font))
+;;       ;; (set-face-attribute 'default nil
+;;       ;;                  :family "Source Code Pro" :height 110 :weight 'normal)           ;Necessary to reset weight
+;;       (set-face-attribute 'default nil
+;;                           :family "PragmataPro Mono" :height 100 :weight 'normal)
+;;       (set-face-attribute 'bold nil
+;;                           :weight 'normal)
+;;       (set-face-attribute 'bold nil
+;;                           :weight 'bold)
+;;       (setq-default line-spacing nil)
+;;       ;; (switch-cjk-font "Noto Sans CJK JP Regular")
+;;       (setq main-font 'source-font))
+;;      ((eq main-font 'source-font)
+;;       (set-face-attribute 'default nil
+;;                           :family "Source Code Pro" :height 100 :weight 'normal)
+;;       (set-face-attribute 'bold nil
+;;                           :weight 'black)
+;;       (setq-default line-spacing nil)
+;;       ;; (switch-cjk-font "Unifont")
+;;       (setq main-font 'pragmata-font))))
 
-;; 	;; ((eq main-font 'consolas-font)
-;; 	;;  (set-face-attribute 'default nil
-;; 	;; 		     :family "Unifont" :height 110)
-;; 	;;  (setq-default line-spacing 0.15)
-;; 	;;  (switch-cjk-font "Unifont")
-;; 	;;  (setq main-font 'unifont-font))))
+;;      ;; ((eq main-font 'consolas-font)
+;;      ;;  (set-face-attribute 'default nil
+;;      ;;                   :family "Unifont" :height 110)
+;;      ;;  (setq-default line-spacing 0.15)
+;;      ;;  (switch-cjk-font "Unifont")
+;;      ;;  (setq main-font 'unifont-font))))
 
 ;; (defun switch-cjk-font (cjk-font)
 ;;   "Switch the font used for CJK characters."
@@ -6754,9 +6754,9 @@ time is displayed."
  '(safe-local-variable-values
    (quote
     ((eval add-hook
-	   (quote after-save-hook)
-	   (function org-hugo-export-wim-to-md-after-save)
-	   :append :local)
+           (quote after-save-hook)
+           (function org-hugo-export-wim-to-md-after-save)
+           :append :local)
      nil
      (org-confirm-babel-evaluate)
      (after-save-hook . org-html-export-to-html))))
