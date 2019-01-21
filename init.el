@@ -5841,7 +5841,7 @@ windows."
 (defun zp/org-todo-format-face (type face colour)
   (cond ((string= type "box")
 	 (set-face-attribute face nil
-			     :box '(:line-width 3 :style released-button)
+			     :box '(:line-width -3 :style released-button)
 			     :height 0.8
 			     :weight 'bold
 			     :foreground "white"
