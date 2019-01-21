@@ -3355,14 +3355,14 @@ KEYANDHEADLINE should be a list of cons cells of the form (\"key\" . \"headline\
 
   (zp/make-hydra-org-refile zp/hydra-org-refile-file-awakening
 			    "Awakening"
-			    "/home/zaeph/org/projects/awakening/awakening.org.gpg"
+			    "/home/zaeph/org/life.org.gpg"
 			    (("i" . "Inbox")
 			     ("t" . "Tasks")
 			     ("c" . "Calendar")))
 
   (zp/make-hydra-org-refile zp/hydra-org-refile-file-psychotherapy
 			    "Psychotherapy"
-			    "/home/zaeph/org/projects/psychotherapy/psychotherapy.org.gpg"
+			    "/home/zaeph/org/life.org.gpg"
 			    (("i" . "Inbox")
 			     ("t" . "Tasks")
 			     ("c" . "Calendar")))
@@ -3866,7 +3866,7 @@ on init and them removes itself."
       org-export-with-smart-quotes t)
 (add-to-list 'org-export-smart-quotes-alist
              '("en-gb"
-               (primary-opening   :utf-8 "‘" :html "&lsquo;" :latex "\\enquote{"  :texinfo "`")
+               (primary-opening   :utf-8 "‘" :html "&lsquo ;" :latex "\\enquote{"  :texinfo "`")
                (primary-closing   :utf-8 "’" :html "&rsquo;" :latex "}"           :texinfo "'")
                (secondary-opening :utf-8 "“" :html "&ldquo;" :latex "\\enquote*{" :texinfo "``")
                (secondary-closing :utf-8 "”" :html "&rdquo;" :latex "}"           :texinfo "''")
