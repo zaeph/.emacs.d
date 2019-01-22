@@ -3585,6 +3585,21 @@ on init and them removes itself."
       (message (concat "Subtracted " string " from selected timer."))
     (message (concat "Added " string " to selected timer."))))
 
+(defun zp/chronos-quit (&optional arg)
+  "Kill chronos window on quit when there are no more timers
+running."
+  (interactive "P")
+  (let* ((timers chronos--timers-list)
+         (last-timer-is-now (not (nth 1(nth 0 (last timers)))))
+         (no-running-timer (if (> (length timers) 1)
+                               nil
+                             't)))
+    (if (or (and last-timer-is-now
+                 no-running-timer)
+            (eq arg '(4)))
+        (quit-window 1)
+      (quit-window))))
+
 ;; Hook
 (defun chronos-mode-config ()
   "Modify keymaps used by `org-mode'."
@@ -3618,7 +3633,9 @@ on init and them removes itself."
   (local-set-key (kbd ",") (lambda ()
                              (interactive)
                              (zp/chronos-edit-quick "+0:10:00" "10 min")))
-  (local-set-key (kbd "a") 'helm-chronos-add-timer))
+  (local-set-key (kbd "a") 'helm-chronos-add-timer)
+  (local-set-key (kbd "q") 'zp/chronos-quit)
+  )
 (setq chronos-mode-hook 'chronos-mode-config)
 
 
@@ -4637,7 +4654,7 @@ org-agenda context."
 (defun zp/switch-to-chronos (arg)
   (interactive "P")
   (if (string-match "*chronos*" (buffer-name))
-      (mode-line-other-buffer)
+      (zp/chronos-quit)
     (if (or (eq (get-buffer "*chronos*") nil) (not (eq arg nil)))
         (if (yes-or-no-p "There are no timer running. Would you like to create one?")
             (call-interactively 'helm-chronos-add-timer))
