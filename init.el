@@ -6055,27 +6055,34 @@ mouse-1: Previous buffer\nmouse-3: Next buffer")
          (progn
            (set-face-attribute 'mode-line nil
                                :background "#293233"
-                               :box '(:line-width -2 :color "#293233"))
+                               :foreground "#bfe9bd"
+                               :weight 'bold)
            (set-face-attribute 'mode-line-inactive nil
-                               :background "#1d1d1d" :foreground "#666"
-                               :box '(:line-width -2 :color "#1d1d1d"))
+                               :background "#1d1d1d"
+                               :foreground "#666"
+                               :weight 'bold)
            (set-face-attribute 'mode-line-buffer-id nil
-                               :foreground "DarkGoldenrod2" :weight 'bold)
+                               :foreground "DarkGoldenrod2"
+                               :weight 'bold)
            (set-face-attribute 'mode-line-buffer-id-inactive nil
-                               :foreground "#888" :weight 'bold)
-           ))
+                               :foreground "#888"
+                               :weight 'bold)))
         ((string= arg "light")
          (progn
            (set-face-attribute 'mode-line nil
-                               :background "#948e76" :foreground "#333"
-                               :box '(:line-width -2 :color "#948e76"))
+                               :background "#948e76"
+                               :foreground "#333"
+                               :weight 'bold)
            (set-face-attribute 'mode-line-inactive nil
-                               :background "#c7bf9e" :foreground "#666"
-                               :box '(:line-width -2 :color "#c7bf9e"))
+                               :background "#c7bf9e"
+                               :foreground "#666"
+                               :weight 'bold)
            (set-face-attribute 'mode-line-buffer-id nil
-                               :foreground "#d98e2d" :weight 'bold)
+                               :foreground "#d98e2d"
+                               :weight 'bold)
            (set-face-attribute 'mode-line-buffer-id-inactive nil
-                               :foreground "#948e76" :weight 'bold)))))
+                               :foreground "#948e76"
+                               :weight 'bold)))))
 
 (defface org-todo-todo '((t)) nil)
 (defface org-todo-next '((t)) nil)
