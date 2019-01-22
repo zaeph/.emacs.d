@@ -3145,7 +3145,7 @@ Check their respective dosctrings for more info."
          "* %^{Title|Entry}\n%T\n\n%?")
 
         ;; Daily Record of Dysfunctional Thoughts
-        ("D" "Record Dysfunctional Thoughts" entry (file "/home/zaeph/org/projects/psychotherapy/journal.org.gpg")
+        ("D" "Record Dysfunctional Thoughts" entry (file+headline "/home/zaeph/org/journal.org.gpg" "Psychotherapy")
          "* Record of Dysfunctional Thoughts\n%T\n** Situation\n%?\n** Emotions\n** Thoughts")
 
         ("a" "Meditation session" entry (file+headline "/home/zaeph/org/projects/awakening/awakening.org.gpg" "Sessions")
