@@ -5911,6 +5911,18 @@ mouse-1: Previous buffer\nmouse-3: Next buffer")
                     'mouse-face 'mode-line-highlight
                     'local-map mode-line-buffer-identification-keymap)))
 
+(defun simple-mode-line-render (left right)
+  "Return a string of `window-width' length containing LEFT, and RIGHT aligned respectively."
+  (let* ((available-width
+          (-
+           (window-total-width)
+           (+
+            (length
+             (format-mode-line left))
+            (length
+             (format-mode-line right))))))
+    (append left (list (format (format "%%%ds" available-width) "")) right)))
+
 (setq-default mode-line-format
               '("%e"
                 mode-line-front-space
@@ -5954,6 +5966,52 @@ mouse-1: Previous buffer\nmouse-3: Next buffer")
                 minions-mode-line-modes
                 ;; mode-line-misc-info
                 mode-line-end-spaces))
+
+(setq-default mode-line-format
+              '((:eval
+                 (simple-mode-line-render
+                  ;; Left
+                  '("%e"
+                    mode-line-front-space
+                    mode-line-mule-info
+                    mode-line-client
+                    mode-line-modified
+                    mode-line-remote
+                    mode-line-frame-identification
+                    ;; (:eval
+                    ;;  (if (eq ml-selected-window (selected-window))
+                    ;;      "OK "
+                    ;;    "NO "))
+                    ;; (:eval (propertize "%b  " 'face 'org-tag-important
+                    ;;                    'help-echo (buffer-file-name)))
+                    ;; (:eval (propertize "" 'font-lock-face '(:foreground "red"
+                    ;;                                          :background nil)
+                    ;;         'help-echo (buffer-file-name)))
+                    "   "
+                    ;; mode-line-buffer-identification
+                    (:eval
+                     (moody-tab
+                      (format-mode-line
+                       (zp/propertized-buffer-identification "%b"))
+                      20 'down))
+                    " [%*]"
+                    " "
+                    ;; mode-line-buffer-identification
+                    minions-mode-line-modes
+                    ;; " %l : %c"
+                    evil-mode-line-tag)
+                  ;; Right
+                  '((format "%%-12s" "%p")
+                    " | %l : %c "
+                    ;; mode-line-position
+                    ;; (vc-mode vc-mode)
+                    (:eval (moody-tab (substring vc-mode 1) nil 'up))
+                    " "
+                    ;; mode-line-modes
+                    mode-line-misc-info
+                    "   "
+                    ;; mode-line-end-spaces
+                    )))))
 
 ;; Default
 ;; (setq-default mode-line-format
