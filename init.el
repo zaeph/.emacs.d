@@ -6054,7 +6054,7 @@ mouse-1: Previous buffer\nmouse-3: Next buffer")
                                :background "#c7bf9e" :foreground "#666"
                                :box '(:line-width -2 :color "#c7bf9e"))
            (set-face-attribute 'mode-line-buffer-id nil
-                               :foreground "DodgerBlue3" :weight 'bold)
+                               :foreground "#d98e2d" :weight 'bold)
            (set-face-attribute 'mode-line-buffer-id-inactive nil
                                :foreground "#948e76" :weight 'bold)))))
 
