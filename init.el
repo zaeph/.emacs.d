@@ -2415,25 +2415,25 @@ agenda settings after them."
                ,@(if (bound-and-true-p file)
                      `((org-agenda-files ',file)))
                (org-agenda-sorting-strategy
-                '(user-defined-down priority-down category-keep))
+                '(timestamp-up user-defined-down priority-down category-keep))
                ;; (org-agenda-skip-function 'zp/skip-non-tasks-and-scheduled))))
                (org-agenda-skip-function 'bh/skip-non-tasks)
                ;; (org-agenda-todo-ignore-scheduled 'all)
                (org-super-agenda-groups
-               '((:name "Overdue"
-                  :and (:scheduled past
-                        :not (:habit t)))
-                 (:name "Waiting"
-                  :and (:scheduled nil
-                        :tag "waiting"))
-                 (:name "Scheduled today"
-                  :and (:scheduled today
-                        :not (:habit t)))
-                 (:name "Tasks"
-                  :and (:scheduled nil
-                        :not (:tag "waiting")))
-                 (:name "Scheduled later"
-                  :scheduled future))))))
+                '((:name "Overdue"
+                   :and (:scheduled past
+                         :not (:habit t)))
+                  (:name "Waiting"
+                   :and (:scheduled nil
+                         :tag "waiting"))
+                  (:name "Scheduled today"
+                   :and (:scheduled today
+                         :not (:habit t)))
+                  (:name "Tasks"
+                   :and (:scheduled nil
+                         :not (:tag "waiting")))
+                  (:name "Scheduled later"
+                   :scheduled future))))))
 
 (defun zp/org-agenda-block-projects-stuck (&optional file)
   (let ((org-agenda-cmp-user-defined 'org-cmp-todo-state-wait))
