@@ -2281,8 +2281,6 @@ return `nil'."
           (zp/org-agenda-format-header-align
            (concat flanking-symbol " " header " " flanking-symbol)))
          (word-list ()))
-    (if (eq org-agenda-dim-blocked-tasks nil)
-        (add-to-list 'word-list "-dim" t))
     (if (eq org-agenda-include-deadlines nil)
         (add-to-list 'word-list "-deadlines" t))
     (if (eq org-habit-show-habits nil)
@@ -2308,8 +2306,6 @@ agenda settings after them."
   (let ((word-list ()))
     (if (eq zp/org-agenda-sorting-strategy-user-defined 'priority)
         (add-to-list 'word-list "+#↓" t))
-    (if (eq org-agenda-dim-blocked-tasks nil)
-        (add-to-list 'word-list "-dim" t))
     (if (eq org-agenda-todo-ignore-scheduled 'future)
         (add-to-list 'word-list "-future" t))
     (let ((header-formatted (zp/org-agenda-format-header-align header))
@@ -2328,8 +2324,6 @@ agenda settings after them."
           (zp/org-agenda-format-header-align
            (concat flanking-symbol-left " " header " " flanking-symbol-right)))
          (word-list ()))
-    (if (eq org-agenda-dim-blocked-tasks nil)
-        (add-to-list 'word-list "-dim" t))
     (let ((word-list-formatted (zp/org-agenda-format-word-list word-list)))
       (concat header-formatted word-list-formatted "\n"))))
 
@@ -2341,8 +2335,6 @@ important agenda settings after them."
          (word-list ()))
     (if (eq zp/org-agenda-sorting-strategy-user-defined 'priority)
         (add-to-list 'word-list "+#↓" t))
-    (if (eq org-agenda-dim-blocked-tasks nil)
-        (add-to-list 'word-list "-dim" t))
     (if (eq org-agenda-todo-ignore-scheduled 'future)
         (add-to-list 'word-list "-future" t))
     (if (eq org-agenda-todo-ignore-scheduled nil)
@@ -2964,7 +2956,6 @@ Check their respective dosctrings for more info."
   (local-set-key (kbd "S") 'zp/toggle-org-agenda-include-scheduled)
   (local-set-key (kbd "M-d") 'zp/toggle-org-deadline-warning-days-range)
   (local-set-key (kbd "h") 'zp/toggle-org-agenda-cmp-user-defined)
-  (local-set-key (kbd "H") 'zp/toggle-org-agenda-dim-blocked-tasks)
   (local-set-key (kbd "F") 'zp/toggle-org-agenda-todo-ignore-future-scheduled)
   (local-set-key (kbd "W") 'zp/toggle-org-agenda-projects-include-waiting)
   (local-set-key (kbd "C-c C-x r") 'zp/org-agenda-set-appt-warntime)
