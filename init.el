@@ -1086,9 +1086,11 @@ that date.  Leave point on the first amount."
 (setq notmuch-always-prompt-for-sender t)
 (setq mml-enable-flowed t)
 
-(defun zp/message-mode-use-hard-newlines ()
-  (use-hard-newlines t 'always))
-(add-hook 'message-mode-hook #'zp/message-mode-use-hard-newlines)
+;; Enforce f=f in message-mode
+;; Disabled because it’s bad practice according to the netiquette
+;; (defun zp/message-mode-use-hard-newlines ()
+;;   (use-hard-newlines t 'always))
+;; (add-hook 'message-mode-hook #'zp/message-mode-use-hard-newlines)
 
 (require 'orgalist)
 (add-hook 'message-mode-hook #'orgalist-mode)
