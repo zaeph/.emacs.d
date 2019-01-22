@@ -5925,49 +5925,49 @@ mouse-1: Previous buffer\nmouse-3: Next buffer")
              (format-mode-line right))))))
     (append left (list (format (format "%%%ds" available-width) "")) right)))
 
-(setq-default mode-line-format
-              '("%e"
-                mode-line-front-space
-                mode-line-mule-info
-                mode-line-client
-                mode-line-modified
-                mode-line-remote
-                mode-line-frame-identification
-                ;; (:eval
-                ;;  (if (eq ml-selected-window (selected-window))
-                ;;      "OK "
-                ;;    "NO "))
-                ;; (:eval (propertize "%b  " 'face 'org-tag-important
-                ;;                    'help-echo (buffer-file-name)))
-                ;; (:eval (propertize "" 'font-lock-face '(:foreground "red"
-                ;;                                          :background nil)
-                ;;         'help-echo (buffer-file-name)))
-                "   "
-                ;; mode-line-buffer-identification
-                (:eval
-                 (moody-tab
-                  (format-mode-line
-                   (zp/propertized-buffer-identification "%b"))
-                  20 'down))
-                ;; (:eval
-                ;;  (zp/propertized-buffer-identification "%b"))
-                ;; (:eval (propertize "%12b"
-                ;;                                 'face (if (eq ml-selected-window (selected-window))
-                ;;                                              'mode-line-buffer-id
-                ;;                                            'mode-line-buffer-id-inactive)
-                ;;                                 'help-echo
-                ;;                                 (purecopy "Buffer name
-                ;; mouse-1: Previous buffer\nmouse-3: Next buffer")
-                ;;                                 'mouse-face 'mode-line-highlight
-                ;;                                 'local-map mode-line-buffer-identification-keymap))
-                "   "
-                mode-line-position
-                ;; (vc-mode vc-mode)
-                (:eval (moody-tab (substring vc-mode 1) nil 'up))
-                "  "
-                minions-mode-line-modes
-                ;; mode-line-misc-info
-                mode-line-end-spaces))
+;; (setq-default mode-line-format
+;;               '("%e"
+;;                 mode-line-front-space
+;;                 mode-line-mule-info
+;;                 mode-line-client
+;;                 mode-line-modified
+;;                 mode-line-remote
+;;                 mode-line-frame-identification
+;;                 ;; (:eval
+;;                 ;;  (if (eq ml-selected-window (selected-window))
+;;                 ;;      "OK "
+;;                 ;;    "NO "))
+;;                 ;; (:eval (propertize "%b  " 'face 'org-tag-important
+;;                 ;;                    'help-echo (buffer-file-name)))
+;;                 ;; (:eval (propertize "" 'font-lock-face '(:foreground "red"
+;;                 ;;                                          :background nil)
+;;                 ;;         'help-echo (buffer-file-name)))
+;;                 "   "
+;;                 ;; mode-line-buffer-identification
+;;                 (:eval
+;;                  (moody-tab
+;;                   (format-mode-line
+;;                    (zp/propertized-buffer-identification "%b"))
+;;                   20 'down))
+;;                 ;; (:eval
+;;                 ;;  (zp/propertized-buffer-identification "%b"))
+;;                 ;; (:eval (propertize "%12b"
+;;                 ;;                                 'face (if (eq ml-selected-window (selected-window))
+;;                 ;;                                              'mode-line-buffer-id
+;;                 ;;                                            'mode-line-buffer-id-inactive)
+;;                 ;;                                 'help-echo
+;;                 ;;                                 (purecopy "Buffer name
+;;                 ;; mouse-1: Previous buffer\nmouse-3: Next buffer")
+;;                 ;;                                 'mouse-face 'mode-line-highlight
+;;                 ;;                                 'local-map mode-line-buffer-identification-keymap))
+;;                 "   "
+;;                 mode-line-position
+;;                 ;; (vc-mode vc-mode)
+;;                 (:eval (moody-tab (substring vc-mode 1) nil 'up))
+;;                 "  "
+;;                 minions-mode-line-modes
+;;                 ;; mode-line-misc-info
+;;                 mode-line-end-spaces))
 
 (setq-default mode-line-format
               '((:eval
@@ -5991,11 +5991,10 @@ mouse-1: Previous buffer\nmouse-3: Next buffer")
                     ;;         'help-echo (buffer-file-name)))
                     "   "
                     ;; mode-line-buffer-identification
-                    (:eval
-                     (moody-tab
-                      (format-mode-line
-                       (zp/propertized-buffer-identification "%b"))
-                      20 'down))
+                    (:eval (moody-tab
+                            (format-mode-line
+                             (zp/propertized-buffer-identification "%b"))
+                            20 'down))
                     " [%*]"
                     " "
                     ;; mode-line-buffer-identification
@@ -6003,12 +6002,12 @@ mouse-1: Previous buffer\nmouse-3: Next buffer")
                     ;; " %l : %c"
                     evil-mode-line-tag)
                   ;; Right
-                  '((format "%%-12s" "%p")
-                    " | %l : %c "
+                  '("%p | %l : %c "
                     ;; mode-line-position
                     ;; (vc-mode vc-mode)
-                    (:eval (moody-tab (substring vc-mode 1) nil 'up))
+                    (vc-mode moody-vc-mode)
                     " "
+                    ;; (:eval (moody-tab (substring vc-mode 1) 20 'up))
                     ;; mode-line-modes
                     mode-line-misc-info
                     "   "
