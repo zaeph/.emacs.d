@@ -5989,6 +5989,7 @@ mouse-1: Previous buffer\nmouse-3: Next buffer")
                   ;; Left
                   '("%e"
                     mode-line-front-space
+                    ;; (:propertize mode-line-mule-info face (:foreground "#777"))
                     mode-line-mule-info
                     mode-line-client
                     mode-line-modified
@@ -6000,23 +6001,30 @@ mouse-1: Previous buffer\nmouse-3: Next buffer")
                     ;;    "NO "))
                     ;; (:eval (propertize "%b  " 'face 'org-tag-important
                     ;;                    'help-echo (buffer-file-name)))
-                    ;; (:eval (propertize "" 'font-lock-face '(:foreground "red"
+                    ;; (:eval (propertize "" 'face '(:foreground "red"
                     ;;                                          :background nil)
-                    ;;         'help-echo (buffer-file-name)))
+                    ;;                    'help-echo (buffer-file-name)))
                     "   "
                     ;; mode-line-buffer-identification
                     (:eval (moody-tab
                             (format-mode-line
                              (zp/propertized-buffer-identification "%b"))
                             20 'down))
+                    ;; (:propertize " [%*]" face (:foreground "#49B05C"))
                     " [%*]"
                     " "
+                    ;; (:eval (propertize "test" 'face '(:foreground "red" :weight 'bold)
+                    ;;                    'help-echo "buffer is read-only!!!"))
                     ;; mode-line-buffer-identification
+                    ;; (:propertize minions-mode-line-modes face (:foreground "#777"))
                     minions-mode-line-modes
+                    ;; minions-mode-line-modes
                     ;; " %l : %c"
                     evil-mode-line-tag)
                   ;; Right
-                  '("%p | %l : %c "
+                  '(;; (:propertize "%p" face mode-line-buffer-id)
+                    ;; (:propertize " | " face (:foreground "#777"))
+                    "%p | %l : %c "
                     ;; mode-line-position
                     ;; (vc-mode vc-mode)
                     (vc-mode moody-vc-mode)
