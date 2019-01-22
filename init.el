@@ -2415,7 +2415,7 @@ agenda settings after them."
                ,@(if (bound-and-true-p file)
                      `((org-agenda-files ',file)))
                (org-agenda-sorting-strategy
-                '(timestamp-up user-defined-down priority-down category-keep))
+                '(ts-up user-defined-down priority-down category-keep))
                ;; (org-agenda-skip-function 'zp/skip-non-tasks-and-scheduled))))
                (org-agenda-skip-function 'bh/skip-non-tasks)
                ;; (org-agenda-todo-ignore-scheduled 'all)
