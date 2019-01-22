@@ -6054,15 +6054,15 @@ mouse-1: Previous buffer\nmouse-3: Next buffer")
         ((string= arg "light")
          (progn
            (set-face-attribute 'mode-line nil
-                               :background "#ada68a" :foreground "#333"
-                               :box '(:line-width -2 :color "#ada68a"))
+                               :background "#948e76" :foreground "#333"
+                               :box '(:line-width -2 :color "#948e76"))
            (set-face-attribute 'mode-line-inactive nil
-                               :background "#e0d7b2" :foreground "#666"
-                               :box '(:line-width -2 :color "#e0d7b2"))
+                               :background "#c7bf9e" :foreground "#666"
+                               :box '(:line-width -2 :color "#c7bf9e"))
            (set-face-attribute 'mode-line-buffer-id nil
                                :foreground "DodgerBlue3" :weight 'bold)
            (set-face-attribute 'mode-line-buffer-id-inactive nil
-                               :foreground "#c7bf9e" :weight 'bold)))))
+                               :foreground "#948e76" :weight 'bold)))))
 
 (defface org-todo-todo '((t)) nil)
 (defface org-todo-next '((t)) nil)
