@@ -3373,21 +3373,21 @@ KEYANDHEADLINE should be a list of cons cells of the form (\"key\" . \"headline\
 
   (zp/make-hydra-org-refile zp/hydra-org-refile-file-university
                             "University"
-                            "/home/zaeph/org/projects/university/university.org.gpg"
+                            "/home/zaeph/org/life.org.gpg"
                             (("i" . "Inbox")
                              ("t" . "Tasks")
                              ("c" . "Calendar")))
 
   (zp/make-hydra-org-refile zp/hydra-org-refile-file-research
                             "Research"
-                            "/home/zaeph/org/projects/university/research/research.org.gpg"
+                            "/home/zaeph/org/life.org.gpg"
                             (("i" . "Inbox")
                              ("t" . "Tasks")
                              ("c" . "Calendar")))
 
   (zp/make-hydra-org-refile zp/hydra-org-refile-file-hacking
                             "Emacs"
-                            "/home/zaeph/org/projects/hacking/hacking.org.gpg"
+                            "/home/zaeph/org/life.org.gpg"
                             (("i" . "Inbox")
                              ("t" . "Tasks")
                              ("b" . "Troubleshooting")
@@ -3395,7 +3395,7 @@ KEYANDHEADLINE should be a list of cons cells of the form (\"key\" . \"headline\
 
   (zp/make-hydra-org-refile zp/hydra-org-refile-file-emacs
                             "Emacs"
-                            "/home/zaeph/org/projects/hacking/emacs/emacs.org.gpg"
+                            "/home/zaeph/org/life.org.gpg"
                             (("i" . "Inbox")
                              ("t" . "Tasks")
                              ("b" . "Troubleshooting")
@@ -3403,7 +3403,7 @@ KEYANDHEADLINE should be a list of cons cells of the form (\"key\" . \"headline\
 
   (zp/make-hydra-org-refile zp/hydra-org-refile-file-linux
                             "Linux"
-                            "/home/zaeph/org/projects/hacking/linux/linux.org.gpg"
+                            "/home/zaeph/org/life.org.gpg"
                             (("i" . "Inbox")
                              ("t" . "Tasks")
                              ("b" . "Troubleshooting")
@@ -3422,15 +3422,16 @@ _b_: Media      _l_: Linux      _r_: Research   _p_: Psychotherapy
 ^^              _e_: Emacs
 
 "
-  ("o" zp/hydra-org-refile-file-life/body :exit t)
-  ("b" zp/hydra-org-refile-file-media/body :exit t)
-  ("a" zp/hydra-org-refile-file-awakening/body :exit t)
-  ("p" zp/hydra-org-refile-file-psychotherapy/body :exit t)
-  ("u" zp/hydra-org-refile-file-university/body :exit t)
-  ("r" zp/hydra-org-refile-file-research/body :exit t)
-  ("h" zp/hydra-org-refile-file-hacking/body :exit t)
-  ("e" zp/hydra-org-refile-file-emacs/body :exit t)
-  ("l" zp/hydra-org-refile-file-linux/body :exit t)
+  ;; ("o" zp/hydra-org-refile-file-life/body :exit t)
+  ("o" (zp/org-refile "/home/zaeph/org/life.org.gpg" "Life" current-prefix-arg) :exit t)
+  ("b" (zp/org-refile "/home/zaeph/org/life.org.gpg" "Media" current-prefix-arg) :exit t)
+  ("a" (zp/org-refile "/home/zaeph/org/life.org.gpg" "Awakening" current-prefix-arg) :exit t)
+  ("p" (zp/org-refile "/home/zaeph/org/life.org.gpg" "Psychotheray" current-prefix-arg) :exit t)
+  ("u" (zp/org-refile "/home/zaeph/org/life.org.gpg" "University" current-prefix-arg) :exit t)
+  ("r" (zp/org-refile "/home/zaeph/org/life.org.gpg" "Research" current-prefix-arg) :exit t)
+  ("h" (zp/org-refile "/home/zaeph/org/life.org.gpg" "Hacking" current-prefix-arg) :exit t)
+  ("e" (zp/org-refile "/home/zaeph/org/life.org.gpg" "Emacs" current-prefix-arg) :exit t)
+  ("l" (zp/org-refile "/home/zaeph/org/life.org.gpg" "Linux" current-prefix-arg) :exit t)
 
   ("j" org-refile-goto-last-stored "Jump to last refile" :exit t)
   ("w" org-refile "zp/org-refile" :exit t)
