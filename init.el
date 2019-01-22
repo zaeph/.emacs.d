@@ -1158,11 +1158,12 @@ that date.  Leave point on the first amount."
         (:name "archive" :query "*" :key "A")
         (:name "trash" :query "tag:deleted" :key "t")))
 
-(require 'footnote)
+;; (require 'footnote)
 
 ;; Format footnotes for message-mode
-;; Default value had a space at the end causing it to be reflowed.
-(setq footnote-section-tag "Footnotes:")
+;; Default value had a space at the end causing it to be reflowed when
+;; using f=f.
+;; (setq footnote-section-tag "Footnotes: ")
 
 (require 'epg-config)
 (setq mml2015-use 'epg
@@ -1172,7 +1173,7 @@ that date.  Leave point on the first amount."
 
 (add-hook 'message-mode-hook #'flyspell-mode)
 (add-hook 'message-mode-hook #'electric-quote-local-mode)
-(add-hook 'message-mode-hook #'footnote-mode)
+;; (add-hook 'message-mode-hook #'footnote-mode)
 (add-hook 'message-mode-hook (lambda ()
                                 (zp/helm-ispell-preselect "French")))
 
