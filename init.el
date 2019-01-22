@@ -3170,9 +3170,9 @@ Check their respective dosctrings for more info."
         ("r" "Todo (+time)" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
          "* TODO %?\nSCHEDULED: %^T")
 
-        ("d" "Date" entry (file+headline "/home/zaeph/org/life.org.gpg" "Calendar")
+        ("d" "Date" entry (file+olp "/home/zaeph/org/life.org.gpg" "Life" "Calendar")
          "* %?\n%t")
-        ("e" "Date (+time)" entry (file+headline "/home/zaeph/org/life.org.gpg" "Calendar")
+        ("e" "Date (+time)" entry (file+olp "/home/zaeph/org/life.org.gpg" "Life" "Calendar")
          "* %?\n%^T")
 
         ("s" "Todo & Scheduled" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
