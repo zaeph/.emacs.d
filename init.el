@@ -2431,15 +2431,15 @@ agenda settings after them."
                '((:name "Overdue"
                   :and (:scheduled past
                         :not (:habit t)))
+                 (:name "Waiting"
+                  :and (:scheduled nil
+                        :tag "waiting"))
                  (:name "Scheduled today"
                   :and (:scheduled today
                         :not (:habit t)))
                  (:name "Tasks"
                   :and (:scheduled nil
                         :not (:tag "waiting")))
-                 (:name "Waiting"
-                  :and (:scheduled nil
-                        :tag "waiting"))
                  (:name "Scheduled later"
                   :scheduled future))))))
 
@@ -2489,9 +2489,9 @@ agenda settings after them."
                (org-agenda-todo-ignore-scheduled nil)
                (org-agenda-dim-blocked-tasks nil)
                (org-super-agenda-groups
-               '((:name "Active"
-                  :not (:tag "waiting") )
-                 (:name "Waiting"
+               '((:name "Waiting"
+                  :tag "waiting")
+                 (:name "Active"
                   :anything))))))
 
 (defun zp/org-agenda-process-group-filter (list)
