@@ -3421,7 +3421,7 @@ _b_: Media      _l_: Linux      _r_: Research   _p_: Psychotherapy
   ("o" (zp/org-refile "/home/zaeph/org/life.org.gpg" "Life" current-prefix-arg) :exit t)
   ("b" (zp/org-refile "/home/zaeph/org/life.org.gpg" "Media" current-prefix-arg) :exit t)
   ("a" (zp/org-refile "/home/zaeph/org/life.org.gpg" "Awakening" current-prefix-arg) :exit t)
-  ("p" (zp/org-refile "/home/zaeph/org/life.org.gpg" "Psychotheray" current-prefix-arg) :exit t)
+  ("p" (zp/org-refile "/home/zaeph/org/life.org.gpg" "Psychotherapy" current-prefix-arg) :exit t)
   ("u" (zp/org-refile "/home/zaeph/org/life.org.gpg" "University" current-prefix-arg) :exit t)
   ("r" (zp/org-refile "/home/zaeph/org/life.org.gpg" "Research" current-prefix-arg) :exit t)
   ("h" (zp/org-refile "/home/zaeph/org/life.org.gpg" "Hacking" current-prefix-arg) :exit t)
