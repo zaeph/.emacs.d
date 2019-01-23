@@ -6032,9 +6032,8 @@ mouse-1: Previous buffer\nmouse-3: Next buffer")
                     ;; (:eval (moody-tab (substring vc-mode 1) 20 'up))
                     ;; mode-line-modes
                     mode-line-misc-info
-                    "   "
-                    ;; mode-line-end-spaces
-                    )))))
+                    "  "
+                    mode-line-end-spaces)))))
 
 ;; Default
 ;; (setq-default mode-line-format
