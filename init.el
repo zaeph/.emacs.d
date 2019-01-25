@@ -4141,7 +4141,8 @@ running."
 
 ;; Define which citation function to use on a buffer basis
 (setq bibtex-completion-format-citation-functions
-      '((org-mode      . org-ref-bibtex-completion-format-org)
+      '(;; (org-mode      . org-ref-bibtex-completion-format-org)
+        (org-mode      . org-ref-format-citation)
         (latex-mode    . bibtex-completion-format-citation-cite)
         (bibtex-mode   . bibtex-completion-format-citation-cite)
         (markdown-mode . bibtex-completion-format-citation-pandoc-citeproc)
