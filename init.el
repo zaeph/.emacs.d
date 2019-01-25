@@ -4199,7 +4199,7 @@ commas and space."
 
 (defun zp/bibtex-completion-insert-key (keys)
   "Insert BibTeX key at point."
-  (let ((current-keys (zp/bibtex-completion-format-citation-default keys)))
+  (let ((current-keys (zp/bibtex-completion-format-citation-comma-space keys)))
     (insert current-keys)
     (setq zp/bibtex-completion-key-last keys)))
 
