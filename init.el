@@ -4156,8 +4156,10 @@ running."
 With a prefix ARG the cache is invalidated and the bibliography
 reread."
   (interactive "P")
-  (let* ((local-bib (or (bibtex-completion-find-local-bibliography)
-                        org-ref-bibliography-files))
+  (let* ((local-bib-org org-ref-bibliography-files)
+         (local-bib (or (bibtex-completion-find-local-bibliography)
+                        (if (cl-every 'file-exists-p local-bib-org)
+                            local-bib-org)))
          (bibtex-completion-bibliography (or local-bib
                                              bibtex-completion-bibliography)))
     (helm-bibtex arg local-bib)))
