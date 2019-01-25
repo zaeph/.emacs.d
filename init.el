@@ -3835,9 +3835,6 @@ running."
 
 (setq reftex-plug-into-AUCTeX t
       reftex-default-bibliography '("/home/zaeph/org/bib/monty-python.bib"))
-(setq org-ref-bibliography-notes "/home/zaeph/org/bib/notes.org"
-      org-ref-default-bibliography '("/home/zaeph/org/bib/monty-python.bib")
-      org-ref-pdf-directory "/home/zaeph/org/bib/pdf")
 
 ;; TeX view program
 (defvar zp/tex-view-program nil)
@@ -4039,6 +4036,10 @@ running."
 ;; ========================================
 
 (require 'org-ref)
+
+(setq org-ref-bibliography-notes "/home/zaeph/org/bib/notes.org"
+      org-ref-default-bibliography '("/home/zaeph/org/bib/monty-python.bib")
+      org-ref-pdf-directory "/home/zaeph/org/bib/pdf")
 
 
 
