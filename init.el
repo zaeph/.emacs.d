@@ -4094,8 +4094,10 @@ running."
   (interactive "P")
   (if (equal arg '(4))
       (progn
-        ;; Refresh
-        (message "Working")
+        ;; Refresh reftex if inside AUCTeX
+        (when (derived-mode-p 'latex-mode)
+          (reftex-reset-mode))
+        ;; Refresh org-ref
         (setq org-ref-bibliography-files nil)
         (zp/bibtex-select-bib-init)))
   (helm :sources '(zp/helm-source-bibtex-select-bib)))
