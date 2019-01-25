@@ -4090,7 +4090,7 @@ running."
         (candidates . zp/bibtex-completion-bib-data)
         (action . zp/bibtex-completion-select-bib-actions)))
 
-(defun helm-bibtex-select-bib (&optional arg)
+(defun zp/helm-bibtex-select-bib (&optional arg)
   (interactive "p")
   (if (eq arg 4)
       (zp/bibtex-select-bib-init))
@@ -5753,7 +5753,7 @@ Every ELEM in LIST is formatted as follows:
 (global-set-key (kbd "H-.") 'zp/echo-buffer-name)
 (global-set-key (kbd "H-/") 'zp/echo-clock-string)
 (global-set-key (kbd "H-y") 'zp/helm-bibtex-with-local-bibliography)
-(global-set-key (kbd "H-M-y") 'helm-bibtex-select-bib)
+(global-set-key (kbd "H-M-y") 'zp/helm-bibtex-select-bib)
 (global-set-key (kbd "C-x F") 'zp/unfill-document)
 (global-set-key (kbd "M-Q") 'zp/unfill-context)
 (global-set-key (kbd "C-c D") 'zp/bibtex-completion-message-key-last)
