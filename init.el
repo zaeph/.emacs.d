@@ -4191,7 +4191,7 @@ reread."
 (defvar zp/bibtex-completion-key-last nil
   "Last inserted keys.")
 
-(defun zp/bibtex-completion-format-citation-default (keys)
+(defun zp/bibtex-completion-format-citation-comma (keys)
   "Default formatter for keys, separates multiple keys with
 commas."
   (s-join "," keys))
