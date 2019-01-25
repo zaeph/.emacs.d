@@ -4091,9 +4091,13 @@ running."
         (action . zp/bibtex-completion-select-bib-actions)))
 
 (defun zp/helm-bibtex-select-bib (&optional arg)
-  (interactive "p")
-  (if (eq arg 4)
-      (zp/bibtex-select-bib-init))
+  (interactive "P")
+  (if (equal arg '(4))
+      (progn
+        ;; Refresh
+        (message "Working")
+        (setq org-ref-bibliography-files nil)
+        (zp/bibtex-select-bib-init)))
   (helm :sources '(zp/helm-source-bibtex-select-bib)))
 ;; ------------------------------------------------------------------------------
 
