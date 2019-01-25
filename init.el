@@ -3833,8 +3833,7 @@ running."
 (setq org-latex-logfiles-extensions '("aux" "bcf" "blg" "fdb_latexmk" "fls" "figlist" "idx" "nav" "out" "ptc" "run.xml" "snm" "toc" "vrb" "xdv")
       org-export-async-debug nil)
 
-(setq reftex-plug-into-AUCTeX t
-      reftex-default-bibliography '("/home/zaeph/org/bib/monty-python.bib"))
+(setq reftex-plug-into-AUCTeX t)
 
 ;; TeX view program
 (defvar zp/tex-view-program nil)
@@ -4038,6 +4037,7 @@ running."
 (require 'org-ref)
 
 (setq org-ref-bibliography-notes "/home/zaeph/org/bib/notes.org"
+      reftex-default-bibliography '("/home/zaeph/org/bib/monty-python.bib")
       org-ref-default-bibliography '("/home/zaeph/org/bib/monty-python.bib")
       org-ref-pdf-directory "/home/zaeph/org/bib/pdf")
 
@@ -4073,10 +4073,12 @@ running."
         (cdr (assoc "All entries" zp/bibtex-completion-bib-data))))
 
 (defun zp/bibtex-select-bib-select (candidate)
-  (setq bibtex-completion-bibliography candidate))
+  (setq bibtex-completion-bibliography candidate
+        reftex-default-bibliography candidate
+        org-ref-default-bibliography (list candidate)))
 
 (defun zp/bibtex-select-bib-select-open (candidate)
-  (setq bibtex-completion-bibliography candidate)
+  (zp/bibtex-select-bib-select candidate)
   (helm-bibtex))
 
 (setq zp/bibtex-completion-select-bib-actions
