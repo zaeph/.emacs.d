@@ -4146,6 +4146,19 @@ running."
 ;; PDF open function
 (setq bibtex-completion-pdf-open-function 'helm-open-file-with-default-tool)
 
+;; Helm
+(defun zp/helm-bibtex-with-local-bibliography (&optional arg)
+  "Search BibTeX entries with local bibliography.
+
+With a prefix ARG the cache is invalidated and the bibliography
+reread."
+  (interactive "P")
+  (let* ((local-bib (or (bibtex-completion-find-local-bibliography)
+                        org-ref-bibliography-files))
+         (bibtex-completion-bibliography (or local-bib
+                                             bibtex-completion-bibliography)))
+    (helm-bibtex arg local-bib)))
+
 
 
 ;; Custom action: Select current document
@@ -5739,7 +5752,7 @@ Every ELEM in LIST is formatted as follows:
 (global-set-key (kbd "C-c T") 'zp/switch-theme)
 (global-set-key (kbd "H-.") 'zp/echo-buffer-name)
 (global-set-key (kbd "H-/") 'zp/echo-clock-string)
-(global-set-key (kbd "H-y") 'helm-bibtex-with-local-bibliography)
+(global-set-key (kbd "H-y") 'zp/helm-bibtex-with-local-bibliography)
 (global-set-key (kbd "H-M-y") 'helm-bibtex-select-bib)
 (global-set-key (kbd "C-x F") 'zp/unfill-document)
 (global-set-key (kbd "M-Q") 'zp/unfill-context)
