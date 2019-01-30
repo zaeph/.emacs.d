@@ -1527,11 +1527,37 @@ return `nil'."
       (delete-region (car bounds) (1+ brace)))
     t))
 
+;; Source: https://www.reddit.com/r/emacs/comments/5f99nv/help_with_auctex_how_to_delete_an_environment/dailbtu/
+(defun LaTeX-remove-environment ()
+  "Remove current environment and return `t'.  If no environment at point,
+return `nil'."
+  (interactive)
+  (when (LaTeX-current-environment)
+    (save-excursion
+      (let* ((begin-start (save-excursion
+                            (LaTeX-find-matching-begin)
+                            (point)))
+             (begin-end (save-excursion
+                          (goto-char begin-start)
+                          (search-forward-regexp "begin{.*?}")))
+             (end-end (save-excursion
+                        (LaTeX-find-matching-end)
+                        (point)))
+             (end-start (save-excursion
+                          (goto-char end-end)
+                          (1- (search-backward-regexp "\\end")))))
+        ;; delete end first since if we delete begin first it shifts the
+        ;; location of end
+        (delete-region end-start end-end)
+        (delete-region begin-start begin-end)))
+    t))
+
 ;; Hook
 (defun zp/LaTeX-mode-config ()
   "Modify keymaps used by `latex-mode'."
   (local-set-key (kbd "C-c DEL") 'zp/LaTeX-remove-macro)
   (local-set-key (kbd "C-c <C-backspace>") 'zp/LaTeX-remove-macro)
+  (local-set-key (kbd "C-c M-backspace>") 'zp/LaTeX-remove-environment)
   (local-set-key (kbd "C-c C-t C-v") 'zp/tex-view-program-switch))
 (setq LaTeX-mode-hook '(zp/LaTeX-mode-config))
 
