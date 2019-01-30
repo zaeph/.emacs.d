@@ -3823,7 +3823,8 @@ running."
 ;; ========================================
 
 ;; Enable LaTeX modes for Orgmode
-(add-hook 'LaTeX-mode-hook 'turn-on-reftex)
+(add-hook 'LaTeX-mode-hook #'turn-on-reftex)
+(add-hook 'LaTeX-mode-hook #'orgtbl-mode)
 
 (eval-after-load "org"
   '(require 'ox-beamer nil t)
