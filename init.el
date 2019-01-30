@@ -1143,6 +1143,7 @@ that date.  Leave point on the first amount."
     (notmuch-show-next-thread-show)))
 
 (define-key notmuch-hello-mode-map "q" #'zp/notmuch-hello-quit)
+(define-key notmuch-search-mode-map "g" #'notmuch-refresh-this-buffer)
 
 (setq user-full-name "Leo Vivier"
       mail-host-address "hidden")
