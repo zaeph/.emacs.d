@@ -3835,6 +3835,21 @@ running."
 
 (setq reftex-plug-into-AUCTeX t)
 
+(setq LaTeX-font-list '((1 #1="" #1# "\\mathcal{" "}")
+                        (2 "\\textbf{" "}" "\\mathbf{" "}")
+                        (3 "\\textsc{" "}")
+                        (5 "\\emph{" "}")
+                        (6 "\\textsf{" "}" "\\mathsf{" "}")
+                        (9 "\\textit{" "}" "\\mathit{" "}")
+                        (? "\\underline{" "}")
+                        (13 "\\textmd{" "}")
+                        (14 "\\textnormal{" "}" "\\mathnormal{" "}")
+                        (18 "\\textrm{" "}" "\\mathrm{" "}")
+                        (19 "\\textsl{" "}" "\\mathbb{" "}")
+                        (20 "\\texttt{" "}" "\\mathtt{" "}")
+                        (21 "\\textup{" "}")
+                        (4 #1# #1# t)))
+
 ;; TeX view program
 (defvar zp/tex-view-program nil)
 
