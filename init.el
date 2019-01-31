@@ -5970,6 +5970,22 @@ windows."
   (let ((current-prefix-arg '(1)))
     (zp/org-agenda-tree-to-indirect-buffer arg)))
 
+(defun move-beginning-of-line-dwim (arg)
+  "Move point back to indentation or beginning of line
+
+Move point to the first non-whitespace character on this line.
+If point is already there, move to the beginning of the line.
+Effectively toggle between the first non-whitespace character and
+the beginning of the line."
+  (interactive "^p")
+  (let ((old-point (point)))
+    (back-to-indentation)
+    (when (= old-point (point))
+      (move-beginning-of-line arg))))
+
+(global-set-key [remap move-beginning-of-line]
+                'move-beginning-of-line-dwim)
+
 
 
 ;; ========================================
