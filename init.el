@@ -2400,13 +2400,14 @@ agenda settings after them."
             (org-agenda-span 'day)
             (org-agenda-dim-blocked-tasks 'dimmed))))
 
-(defun zp/org-agenda-block-agenda-with-filter (header &optional file)
+(defun zp/org-agenda-block-agenda-with-filter (header group &optional file)
   `(agenda ""
            ((org-agenda-overriding-header
              (zp/org-agenda-format-header-main ,header))
             ,@(if (bound-and-true-p file)
-                  `((org-agenda-files ',file))
-                `((org-agenda-files nil)))
+                  `((org-agenda-files ',file)))
+            (org-agenda-skip-function
+             '(zp/skip-non-agenda-group-tasks ',group))
             (org-agenda-span 'day)
             (org-agenda-dim-blocked-tasks 'dimmed))))
 
@@ -2514,30 +2515,35 @@ agenda settings after them."
                  (:name "Active"
                   :anything))))))
 
-(defun zp/org-agenda-process-group-filter (list)
+(defun zp/org-agenda-groups-format-regex (list)
+  "Format LIST of agenda groups as a regex"
+  (string-join
+   (mapcar (lambda (arg)
+             (concat ".*\\b"
+                     arg
+                     "\\b.*"))
+           list)
+   "\\|"))
+
+(defun zp/org-agenda-groups-format-regex-for-filtering (list)
+  "Format LIST of agenda groups as a regex for tags-todo"
   (concat
    "+AGENDA_GROUP={"
-   (string-join
-    (mapcar (lambda (arg)
-              (concat ".*\\b"
-                      arg
-                      "\\b.*"))
-            list)
-    "\\|")
+   (zp/org-agenda-groups-format-regex list)
    "}"))
 
-(zp/org-agenda-process-group-filter '("hack" "life"))
+(zp/org-agenda-groups-format-regex '("hack" "life"))
 
 
 
-(defun zp/org-agenda-blocks-main (header filter &optional file)
+(defun zp/org-agenda-blocks-main (header groups &optional file)
   "Format the main agenda blocks.
 
 HEADER is the string to be used as the header of the the agenda
 view.
 
-If FILTER is a list, each string within it should be a possible
-value of the property AGENDA_GROUP.  Otherwise, FILTER should be
+If GROUPS is a list, each string within it should be a possible
+value of the property AGENDA_GROUP.  Otherwise, GROUPS should be
 a regex to be plugged into ‘tags-todo’.
 
 It creates 4 blocks:
@@ -2545,14 +2551,14 @@ It creates 4 blocks:
 - A ‘tags-todo’ block displaying the non-stuck projects
 - A ‘tags-todo’ block displaying the stuck projects
 - A ‘tags-todo’ block displaying the tasks"
-  (let ((group-filter-regex
-         (if (listp filter)
-             (zp/org-agenda-process-group-filter filter)
-           filter)))
-    `(,(zp/org-agenda-block-agenda-with-filter header)
-       ,(zp/org-agenda-block-projects-with-filter group-filter-regex)
-       ,(zp/org-agenda-block-projects-stuck-with-filter group-filter-regex)
-       ,(zp/org-agenda-block-tasks-with-filter group-filter-regex))))
+  (let ((groups-regex
+         (if (listp groups)
+             (zp/org-agenda-groups-format-regex-for-filtering groups)
+           groups)))
+    `(,(zp/org-agenda-block-agenda-with-filter header groups)
+       ,(zp/org-agenda-block-projects-with-filter groups-regex)
+       ,(zp/org-agenda-block-projects-stuck-with-filter groups-regex)
+       ,(zp/org-agenda-block-tasks-with-filter groups-regex))))
 
 (defun zp/org-agenda-block-tasks-special (&optional file)
   `(tags-todo "-standby/!WAIT|STRT"
@@ -5197,6 +5203,25 @@ Skip project and sub-project tasks, habits, and loose non-project tasks."
           (setq parent-task (point))))
       (goto-char parent-task)
       parent-task)))
+
+(defun zp/org-task-in-agenda-group-p (group-regex &optional pom)
+  "Test whether a task is in agenda-group matched by GROUP-REGEX"
+  (save-restriction
+    (widen)
+    (let ((task-group (org-entry-get (or pom (point)) "AGENDA_GROUP" 'selective)))
+      (if task-group
+          (string-match-p group-regex task-group)))))
+
+(defun zp/skip-non-agenda-group-tasks (list)
+  "Skip task if its agenda-group isn’t one of LIST"
+  (save-restriction
+    (widen)
+    (let ((next-headline (save-excursion (or (outline-next-heading) (point-max)))))
+      (cond
+        ((zp/org-task-in-agenda-group-p (zp/org-agenda-groups-format-regex list))
+         nil)
+        (t
+         next-headline)))))
 
 
 
