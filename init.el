@@ -1905,6 +1905,15 @@ return `nil'."
 (setq org-mode-hook 'org-mode-config)
 (define-key mode-specific-map (kbd "a") 'org-agenda)
 
+(defun zp/org-agenda-redo-all ()
+  (interactive)
+  (dolist (buffer (buffer-list))
+    (with-current-buffer buffer
+      (when (derived-mode-p 'org-agenda-mode)
+        (org-agenda-maybe-redo)))))
+
+(run-with-idle-timer 300 t #'zp/org-agenda-redo-all)
+
 
 
 ;; ========================================
