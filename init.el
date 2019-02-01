@@ -2556,7 +2556,7 @@ agenda settings after them."
 
 
 
-(defun zp/org-agenda-blocks-main (header groups &optional include-all file)
+(defun zp/org-agenda-blocks-main (header groups &optional other-groups file)
   "Format the main agenda blocks.
 
 HEADER is the string to be used as the header of the the agenda
@@ -2566,8 +2566,8 @@ If GROUPS is a list, each string within it should be a possible
 value of the property AGENDA_GROUP.  Otherwise, GROUPS should be
 a regex to be plugged into ‘tags-todo’.
 
-If INCLUDE-ALL is t, do not use a group-filter for the top
-agenda-block.
+If OTHER-GROUPS is a list or a regex, use it to filter the top
+agenda block instead of GROUPS.
 
 It creates 4 blocks:
 - An ‘agenda’ block displaying the HEADER and the date
@@ -2577,10 +2577,16 @@ It creates 4 blocks:
   (let ((groups-regex
          (if (listp groups)
              (zp/org-agenda-groups-format-regex-for-filtering groups)
-           groups)))
-    `(,(if (bound-and-true-p include-all)
-           (zp/org-agenda-block-agenda header file)
-         (zp/org-agenda-block-agenda-with-group-filter header groups file))
+           groups))
+        (other-groups-regex
+         (if (listp groups)
+             (zp/org-agenda-groups-format-regex-for-filtering groups)
+           other-groups)))
+    `(,(zp/org-agenda-block-agenda-with-group-filter header
+                                                     (if (bound-and-true-p other-groups)
+                                                         other-groups
+                                                       groups)
+                                                     file)
        ,(zp/org-agenda-block-projects-stuck-with-group-filter groups-regex file)
        ,(zp/org-agenda-block-tasks-with-group-filter groups-regex file)
        ,(zp/org-agenda-block-projects-with-group-filter groups-regex file))))
@@ -2669,7 +2675,7 @@ It creates 4 blocks:
              (,(zp/org-agenda-block-agenda-week "Weekly Agenda")))
 
         ("n" "Task List"
-             (,@(zp/org-agenda-blocks-main "Life" '("life" "pro") t)))
+             (,@(zp/org-agenda-blocks-main "Life" '("life" "pro") '("life" "pro" "media"))))
 
         ("j" "Journal entries"
              (,(zp/org-agenda-block-journal))
