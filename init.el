@@ -2407,19 +2407,17 @@ agenda settings after them."
              (zp/org-agenda-format-header-main ,header))
             ,@(if (bound-and-true-p file)
                   `((org-agenda-files ',file)))
-            (org-agenda-span 'day)
-            (org-agenda-dim-blocked-tasks 'dimmed))))
+            (org-agenda-span 'day))))
 
-(defun zp/org-agenda-block-agenda-with-filter (header group &optional file)
+(defun zp/org-agenda-block-agenda-with-group-filter (header groups &optional file)
   `(agenda ""
            ((org-agenda-overriding-header
              (zp/org-agenda-format-header-main ,header))
             ,@(if (bound-and-true-p file)
                   `((org-agenda-files ',file)))
             (org-agenda-skip-function
-             '(zp/skip-non-agenda-group-tasks ',group))
-            (org-agenda-span 'day)
-            (org-agenda-dim-blocked-tasks 'dimmed))))
+             '(zp/skip-non-agenda-group-tasks ',groups))
+            (org-agenda-span 'day))))
 
 (defun zp/org-agenda-block-agenda-week (header &optional file)
   `(agenda ""
@@ -2447,32 +2445,36 @@ agenda settings after them."
                (org-agenda-todo-ignore-scheduled 'all)
                )))
 
-(defun zp/org-agenda-block-tasks-with-filter (filter &optional file)
-  `(tags-todo ,(concat filter "-standby-recurring")
-              ((org-agenda-overriding-header
-                (zp/org-agenda-format-header-block-with-settings "Tasks"))
-               ,@(if (bound-and-true-p file)
-                     `((org-agenda-files ',file)))
-               (org-agenda-sorting-strategy
-                '(scheduled-up user-defined-down priority-down category-keep))
-               ;; (org-agenda-skip-function 'zp/skip-non-tasks-and-scheduled))))
-               (org-agenda-skip-function 'bh/skip-non-tasks)
-               ;; (org-agenda-todo-ignore-scheduled 'all)
-               (org-super-agenda-groups
-                '((:name "Overdue"
-                   :and (:scheduled past
-                         :not (:habit t)))
-                  (:name "Waiting"
-                   :and (:scheduled nil
-                         :tag "waiting"))
-                  (:name "Scheduled today"
-                   :and (:scheduled today
-                         :not (:habit t)))
-                  (:name "Tasks"
-                   :and (:scheduled nil
-                         :not (:tag "waiting")))
-                  (:name "Scheduled later"
-                   :scheduled future))))))
+(defun zp/org-agenda-block-tasks-with-group-filter (groups &optional file)
+  (let ((groups-regex
+         (if (listp groups)
+             (zp/org-agenda-groups-format-regex-for-filtering groups)
+           groups)))
+   `(tags-todo ,(concat groups-regex "-standby-recurring")
+               ((org-agenda-overriding-header
+                 (zp/org-agenda-format-header-block-with-settings "Tasks"))
+                ,@(if (bound-and-true-p file)
+                      `((org-agenda-files ',file)))
+                (org-agenda-sorting-strategy
+                 '(scheduled-up user-defined-down priority-down category-keep))
+                ;; (org-agenda-skip-function 'zp/skip-non-tasks-and-scheduled))))
+                (org-agenda-skip-function 'bh/skip-non-tasks)
+                ;; (org-agenda-todo-ignore-scheduled 'all)
+                (org-super-agenda-groups
+                 '((:name "Overdue"
+                    :and (:scheduled past
+                          :not (:habit t)))
+                   (:name "Waiting"
+                    :and (:scheduled nil
+                          :tag "waiting"))
+                   (:name "Scheduled today"
+                    :and (:scheduled today
+                          :not (:habit t)))
+                   (:name "Tasks"
+                    :and (:scheduled nil
+                          :not (:tag "waiting")))
+                   (:name "Scheduled later"
+                    :scheduled future)))))))
 
 (defun zp/org-agenda-block-projects-stuck (&optional file)
   (let ((org-agenda-cmp-user-defined 'org-cmp-todo-state-wait))
@@ -2485,9 +2487,13 @@ agenda settings after them."
                  (org-agenda-todo-ignore-scheduled nil)
                  (org-agenda-dim-blocked-tasks 'dimmed)))))
 
-(defun zp/org-agenda-block-projects-stuck-with-filter (filter &optional file)
-  (let ((org-agenda-cmp-user-defined 'org-cmp-todo-state-wait))
-    `(tags-todo ,(concat filter "-standby")
+(defun zp/org-agenda-block-projects-stuck-with-group-filter (groups &optional file)
+  (let ((org-agenda-cmp-user-defined 'org-cmp-todo-state-wait)
+        (groups-regex
+         (if (listp groups)
+             (zp/org-agenda-groups-format-regex-for-filtering groups)
+           groups)))
+    `(tags-todo ,(concat groups-regex "-standby")
                 ((org-agenda-overriding-header
                   (zp/org-agenda-format-header-projects-stuck))
                  ,@(if (bound-and-true-p file)
@@ -2508,22 +2514,26 @@ agenda settings after them."
                (org-agenda-todo-ignore-scheduled nil)
                (org-agenda-dim-blocked-tasks nil))))
 
-(defun zp/org-agenda-block-projects-with-filter (filter &optional file)
-  `(tags-todo ,(concat filter "-standby")
-              ((org-agenda-overriding-header
-                (zp/org-agenda-format-header-projects))
-               ,@(if (bound-and-true-p file)
-                     `((org-agenda-files ',file)))
-               (org-agenda-skip-function 'zp/skip-non-unstuck-projects-and-waiting)
-               (org-agenda-sorting-strategy
-                '(user-defined-down priority-down category-keep))
-               (org-agenda-todo-ignore-scheduled nil)
-               (org-agenda-dim-blocked-tasks nil)
-               (org-super-agenda-groups
-               '((:name "Waiting"
-                  :tag "waiting")
-                 (:name "Active"
-                  :anything))))))
+(defun zp/org-agenda-block-projects-with-group-filter (groups &optional file)
+  (let ((groups-regex
+         (if (listp groups)
+             (zp/org-agenda-groups-format-regex-for-filtering groups)
+           groups)))
+   `(tags-todo ,(concat groups-regex "-standby")
+               ((org-agenda-overriding-header
+                 (zp/org-agenda-format-header-projects))
+                ,@(if (bound-and-true-p file)
+                      `((org-agenda-files ',file)))
+                (org-agenda-skip-function 'zp/skip-non-unstuck-projects-and-waiting)
+                (org-agenda-sorting-strategy
+                 '(user-defined-down priority-down category-keep))
+                (org-agenda-todo-ignore-scheduled nil)
+                (org-agenda-dim-blocked-tasks nil)
+                (org-super-agenda-groups
+                 '((:name "Waiting"
+                    :tag "waiting")
+                   (:name "Active"
+                    :anything)))))))
 
 (defun zp/org-agenda-groups-format-regex (list)
   "Format LIST of agenda groups as a regex"
@@ -2565,10 +2575,10 @@ It creates 4 blocks:
          (if (listp groups)
              (zp/org-agenda-groups-format-regex-for-filtering groups)
            groups)))
-    `(,(zp/org-agenda-block-agenda-with-filter header groups file)
-       ,(zp/org-agenda-block-projects-stuck-with-filter groups-regex file)
-       ,(zp/org-agenda-block-tasks-with-filter groups-regex file)
-       ,(zp/org-agenda-block-projects-with-filter groups-regex file))))
+    `(,(zp/org-agenda-block-agenda-with-group-filter header groups file)
+       ,(zp/org-agenda-block-projects-stuck-with-group-filter groups-regex file)
+       ,(zp/org-agenda-block-tasks-with-group-filter groups-regex file)
+       ,(zp/org-agenda-block-projects-with-group-filter groups-regex file))))
 
 (defun zp/org-agenda-block-tasks-special (&optional file)
   `(tags-todo "-standby/!WAIT|STRT"
