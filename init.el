@@ -2556,7 +2556,7 @@ agenda settings after them."
 
 
 
-(defun zp/org-agenda-blocks-main (header groups &optional file)
+(defun zp/org-agenda-blocks-main (header groups &optional include-all file)
   "Format the main agenda blocks.
 
 HEADER is the string to be used as the header of the the agenda
@@ -2565,6 +2565,9 @@ view.
 If GROUPS is a list, each string within it should be a possible
 value of the property AGENDA_GROUP.  Otherwise, GROUPS should be
 a regex to be plugged into ‘tags-todo’.
+
+If INCLUDE-ALL is t, do not use a group-filter for the top
+agenda-block.
 
 It creates 4 blocks:
 - An ‘agenda’ block displaying the HEADER and the date
@@ -2575,7 +2578,9 @@ It creates 4 blocks:
          (if (listp groups)
              (zp/org-agenda-groups-format-regex-for-filtering groups)
            groups)))
-    `(,(zp/org-agenda-block-agenda-with-group-filter header groups file)
+    `(,(if (bound-and-true-p include-all)
+           (zp/org-agenda-block-agenda header file)
+         (zp/org-agenda-block-agenda-with-group-filter header groups file))
        ,(zp/org-agenda-block-projects-stuck-with-group-filter groups-regex file)
        ,(zp/org-agenda-block-tasks-with-group-filter groups-regex file)
        ,(zp/org-agenda-block-projects-with-group-filter groups-regex file))))
@@ -2664,7 +2669,7 @@ It creates 4 blocks:
              (,(zp/org-agenda-block-agenda-week "Weekly Agenda")))
 
         ("n" "Task List"
-             (,@(zp/org-agenda-blocks-main "Life" '("life" "pro"))))
+             (,@(zp/org-agenda-blocks-main "Life" '("life" "pro") t)))
 
         ("j" "Journal entries"
              (,(zp/org-agenda-block-journal))
