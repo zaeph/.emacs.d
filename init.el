@@ -2556,10 +2556,10 @@ It creates 4 blocks:
          (if (listp groups)
              (zp/org-agenda-groups-format-regex-for-filtering groups)
            groups)))
-    `(,(zp/org-agenda-block-agenda-with-filter header groups)
-       ,(zp/org-agenda-block-projects-stuck-with-filter groups-regex)
-       ,(zp/org-agenda-block-tasks-with-filter groups-regex)
-       ,(zp/org-agenda-block-projects-with-filter groups-regex))))
+    `(,(zp/org-agenda-block-agenda-with-filter header groups file)
+       ,(zp/org-agenda-block-projects-stuck-with-filter groups-regex file)
+       ,(zp/org-agenda-block-tasks-with-filter groups-regex file)
+       ,(zp/org-agenda-block-projects-with-filter groups-regex file))))
 
 (defun zp/org-agenda-block-tasks-special (&optional file)
   `(tags-todo "-standby/!WAIT|STRT"
