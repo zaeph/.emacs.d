@@ -5229,13 +5229,19 @@ Skip project and sub-project tasks, habits, and loose non-project tasks."
       (goto-char parent-task)
       parent-task)))
 
-(defun zp/org-task-in-agenda-group-p (group-regex &optional pom)
-  "Test whether a task is in agenda-group matched by GROUP-REGEX"
-  (save-restriction
-    (widen)
-    (let ((task-group (org-entry-get (or pom (point)) "AGENDA_GROUP" 'selective)))
-      (if task-group
-          (string-match-p group-regex task-group)))))
+(defun zp/org-task-in-agenda-group-p (groups &optional pom)
+  "Test whether a task is in agenda-group matched by GROUPS
+
+GROUPS can be a list or a regex."
+  (let ((groups-regex
+         (if (listp groups)
+             (zp/org-agenda-groups-format-regex-for-filtering groups)
+           groups)))
+    (save-restriction
+      (widen)
+      (let ((task-group (org-entry-get (or pom (point)) "AGENDA_GROUP" 'selective)))
+        (if task-group
+            (string-match-p groups-regex task-group))))))
 
 (defun zp/skip-non-agenda-group-tasks (list)
   "Skip task if its agenda-group isn’t one of LIST"
