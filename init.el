@@ -4225,6 +4225,8 @@ running."
 
       helm-bibtex-additional-search-fields '(subtitle booksubtitle keywords tags library))
 
+(define-key bibtex-mode-map (kbd "C-c M-o") 'bibtex-Online)
+
 ;; Define which citation function to use on a buffer basis
 (setq bibtex-completion-format-citation-functions
       '(;; (org-mode      . org-ref-bibtex-completion-format-org)
