@@ -4208,6 +4208,9 @@ running."
 (setq bibtex-completion-pdf-symbol "P"
       bibtex-completion-notes-symbol "N")
 
+;; Set default dialect to biblatex
+(setq bibtex-dialect 'biblatex)
+
 ;; Additional fields
 (setq bibtex-user-optional-fields '(("subtitle" "Subtitle")
                                     ("booksubtitle" "Book subtitle")
