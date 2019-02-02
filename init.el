@@ -1529,7 +1529,7 @@ return `nil'."
     t))
 
 ;; Source: https://www.reddit.com/r/emacs/comments/5f99nv/help_with_auctex_how_to_delete_an_environment/dailbtu/
-(defun LaTeX-remove-environment ()
+(defun zp/LaTeX-remove-environment ()
   "Remove current environment and return `t'.  If no environment at point,
 return `nil'."
   (interactive)
@@ -1558,7 +1558,7 @@ return `nil'."
   "Modify keymaps used by `latex-mode'."
   (local-set-key (kbd "C-c DEL") 'zp/LaTeX-remove-macro)
   (local-set-key (kbd "C-c <C-backspace>") 'zp/LaTeX-remove-macro)
-  (local-set-key (kbd "C-c M-backspace>") 'zp/LaTeX-remove-environment)
+  (local-set-key (kbd "C-c <M-backspace>") 'zp/LaTeX-remove-environment)
   (local-set-key (kbd "C-c C-t C-v") 'zp/tex-view-program-switch))
 (setq LaTeX-mode-hook '(zp/LaTeX-mode-config))
 
