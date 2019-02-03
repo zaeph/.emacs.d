@@ -1517,6 +1517,180 @@ Modifies ‘diff-command’ and ‘diff-switches’ to use ‘git diff’."
 
 (set-default 'preview-scale-function 3)
 
+;; Enable LaTeX modes for Orgmode
+(add-hook 'LaTeX-mode-hook #'turn-on-reftex)
+(add-hook 'LaTeX-mode-hook #'orgtbl-mode)
+
+(eval-after-load "org"
+  '(require 'ox-beamer nil t)
+  )
+(require 'ox-latex)
+
+(setq org-latex-logfiles-extensions '("aux" "bcf" "blg" "fdb_latexmk" "fls" "figlist" "idx" "nav" "out" "ptc" "run.xml" "snm" "toc" "vrb" "xdv")
+      org-export-async-debug nil)
+
+(setq reftex-plug-into-AUCTeX t)
+
+(setq LaTeX-font-list '((1 #1="" #1# "\\mathcal{" "}")
+                        (2 "\\textbf{" "}" "\\mathbf{" "}")
+                        (3 "\\textsc{" "}")
+                        (5 "\\emph{" "}")
+                        (6 "\\textsf{" "}" "\\mathsf{" "}")
+                        (9 "\\textit{" "}" "\\mathit{" "}")
+                        (? "\\underline{" "}")
+                        (13 "\\textmd{" "}")
+                        (14 "\\textnormal{" "}" "\\mathnormal{" "}")
+                        (18 "\\textrm{" "}" "\\mathrm{" "}")
+                        (19 "\\textsl{" "}" "\\mathbb{" "}")
+                        (20 "\\texttt{" "}" "\\mathtt{" "}")
+                        (21 "\\textup{" "}")
+                        (4 #1# #1# t)))
+
+;; TeX view program
+(defvar zp/tex-view-program nil)
+
+(defun zp/tex-view-program-set-pdf-tools ()
+  (setq TeX-view-program-selection
+        '((output-pdf "PDF Tools"))
+        TeX-source-correlate-start-server t
+        zp/tex-view-program 'pdf-tools)
+  (add-hook #'TeX-after-compilation-finished-functions
+            #'TeX-revert-document-buffer))
+
+(defun zp/tex-view-program-set-evince ()
+  (setq TeX-view-program-selection
+        '(((output-dvi has-no-display-manager)
+           "dvi2tty")
+          ((output-dvi style-pstricks)
+           "dvips and gv")
+          (output-dvi "xdvi")
+          (output-pdf "Evince")
+          (output-html "xdg-open"))
+        TeX-source-correlate-start-server 'ask
+        zp/tex-view-program 'evince)
+  (remove-hook #'TeX-after-compilation-finished-functions
+               #'TeX-revert-document-buffer))
+
+(defun zp/tex-view-program-switch ()
+  (interactive)
+  (cond ((eq zp/tex-view-program 'pdf-tools)
+         (zp/tex-view-program-set-evince)
+         (message "TeX view program: Evince"))
+        ((or (eq zp/tex-view-program 'evince)
+             (not (bound-and-true-p zp/tex-view-program)))
+         (zp/tex-view-program-set-pdf-tools)
+         (message "TeX view program: pdf-tools"))))
+
+(zp/tex-view-program-set-pdf-tools)
+
+;; Update PDF buffers after successful LaTeX runs
+
+;; Smart quotes
+(setq org-export-default-language "en-gb"
+      org-export-with-smart-quotes t)
+(add-to-list 'org-export-smart-quotes-alist
+             '("en-gb"
+               (primary-opening   :utf-8 "‘" :html "&lsquo ;" :latex "\\enquote{"  :texinfo "`")
+               (primary-closing   :utf-8 "’" :html "&rsquo;" :latex "}"           :texinfo "'")
+               (secondary-opening :utf-8 "“" :html "&ldquo;" :latex "\\enquote*{" :texinfo "``")
+               (secondary-closing :utf-8 "”" :html "&rdquo;" :latex "}"           :texinfo "''")
+               (apostrophe        :utf-8 "’" :html "&rsquo;" :latex "'")))
+
+;; Loaded on file-basis now
+;; (add-to-list 'org-latex-packages-alist '("frenchb,british" "babel" t))
+(setq org-latex-default-packages-alist '(("" "graphicx" t)
+                                         ("" "grffile" t)
+                                         ("" "longtable" nil)
+                                         ("" "wrapfig" nil)
+                                         ("" "rotating" nil)
+                                         ("normalem" "ulem" t)
+                                         ("" "amsmath" t)
+                                         ("" "textcomp" t)
+                                         ("" "amssymb" t)
+                                         ("" "capt-of" nil)
+                                         ("" "setspace" nil)
+                                         ("" "titletoc" nil)
+                                         ("" "hyperref" nil)
+                                         ))
+
+;; BibTeX
+(setq bibtex-autokey-year-length '4)
+
+;; XeTeX
+(defvar zp/org-latex-pdf-process-mode)
+(defun zp/toggle-org-latex-pdf-process ()
+  "Toggle the number of steps in the XeTeX PDF process."
+  (interactive)
+  (if (or (not (bound-and-true-p zp/org-latex-pdf-process-mode))
+          (string= zp/org-latex-pdf-process-mode "full"))
+      (progn (setq org-latex-pdf-process '("xelatex -shell-escape\
+                                                  -interaction nonstopmode\
+                                                  -output-directory %o %f")
+                   org-export-async-init-file "/home/zaeph/.emacs.d/async/main-short.el"
+                   zp/org-latex-pdf-process-mode 'short)
+             (message "XeLaTeX process mode: Short"))
+    (progn (setq org-latex-pdf-process '("xelatex -shell-escape\
+                                                    -interaction nonstopmode\
+                                                    -output-directory %o %f"
+                                           "biber %b"
+                                           "xelatex -shell-escape\
+                                                    -interaction nonstopmode\
+                                                    -output-directory %o %f"
+                                           "xelatex -shell-escape\
+                                                    -interaction nonstopmode\
+                                                    -output-directory %o %f")
+                 org-export-async-init-file "/home/zaeph/.emacs.d/async/main-full.el"
+                 zp/org-latex-pdf-process-mode 'full)
+           (message "XeLaTeX process mode: Full"))))
+(zp/toggle-org-latex-pdf-process)
+
+;; latexmk
+;; (setq org-latex-pdf-process '("latexmk -xelatex %f"))
+;; (setq org-latex-to-pdf-process (list "latexmk -f -pdf %f"))
+
+;; pdfTeX
+;; Need to rework the packages I use before I can use pdfTeX
+;; Will need tinkering.
+;;
+;; microtype:
+;; #+LATEX_HEADER: \usepackage[activate={true,nocompatibility},final,tracking=true,kerning=true,spacing=true,factor=1100,stretch=10,shrink=10]{microtype}
+;;
+;; (setq org-latex-pdf-process
+;;       '("pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+;;      "biber %b"
+;;      "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+;;      "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
+
+;; LuaTeX
+;; Not as good as XeTeX, since I can't figure out how to make CJK characters work.
+;; To investigate.
+;;
+;; # LuaTeXJA
+;; #+LATEX_HEADER: \usepackage{luatexja-fontspec}
+;; #+LATEX_HEADER: \setmainjfont{A-OTF Ryumin Pr5}
+;;
+;; (setq org-latex-pdf-process
+;;       '("lualatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+;;      "biber %b"
+;;      "lualatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+;;      "lualatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
+
+;; KOMA
+(add-to-list 'org-latex-classes
+          '("koma-article"
+             "\\documentclass{scrartcl}"
+             ("\\section{%s}" . "\\section*{%s}")
+             ("\\subsection{%s}" . "\\subsection*{%s}")
+             ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+             ("\\paragraph{%s}" . "\\paragraph*{%s}")
+             ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+
+;; Minted
+(setq org-latex-listings 'minted)
+(setq org-src-preserve-indentation t)
+
+
+
 (defun zp/LaTeX-remove-macro ()
   "Remove current macro and return `t'.  If no macro at point,
 return `nil'."
@@ -3944,184 +4118,6 @@ running."
 
 (setq org-html-postamble nil)
 ;; (setq html-validation-link nil)
-
-
-
-;; ========================================
-;; ================ AUCTEX ================
-;; ========================================
-
-;; Enable LaTeX modes for Orgmode
-(add-hook 'LaTeX-mode-hook #'turn-on-reftex)
-(add-hook 'LaTeX-mode-hook #'orgtbl-mode)
-
-(eval-after-load "org"
-  '(require 'ox-beamer nil t)
-  )
-(require 'ox-latex)
-
-(setq org-latex-logfiles-extensions '("aux" "bcf" "blg" "fdb_latexmk" "fls" "figlist" "idx" "nav" "out" "ptc" "run.xml" "snm" "toc" "vrb" "xdv")
-      org-export-async-debug nil)
-
-(setq reftex-plug-into-AUCTeX t)
-
-(setq LaTeX-font-list '((1 #1="" #1# "\\mathcal{" "}")
-                        (2 "\\textbf{" "}" "\\mathbf{" "}")
-                        (3 "\\textsc{" "}")
-                        (5 "\\emph{" "}")
-                        (6 "\\textsf{" "}" "\\mathsf{" "}")
-                        (9 "\\textit{" "}" "\\mathit{" "}")
-                        (? "\\underline{" "}")
-                        (13 "\\textmd{" "}")
-                        (14 "\\textnormal{" "}" "\\mathnormal{" "}")
-                        (18 "\\textrm{" "}" "\\mathrm{" "}")
-                        (19 "\\textsl{" "}" "\\mathbb{" "}")
-                        (20 "\\texttt{" "}" "\\mathtt{" "}")
-                        (21 "\\textup{" "}")
-                        (4 #1# #1# t)))
-
-;; TeX view program
-(defvar zp/tex-view-program nil)
-
-(defun zp/tex-view-program-set-pdf-tools ()
-  (setq TeX-view-program-selection
-        '((output-pdf "PDF Tools"))
-        TeX-source-correlate-start-server t
-        zp/tex-view-program 'pdf-tools)
-  (add-hook #'TeX-after-compilation-finished-functions
-            #'TeX-revert-document-buffer))
-
-(defun zp/tex-view-program-set-evince ()
-  (setq TeX-view-program-selection
-        '(((output-dvi has-no-display-manager)
-           "dvi2tty")
-          ((output-dvi style-pstricks)
-           "dvips and gv")
-          (output-dvi "xdvi")
-          (output-pdf "Evince")
-          (output-html "xdg-open"))
-        TeX-source-correlate-start-server 'ask
-        zp/tex-view-program 'evince)
-  (remove-hook #'TeX-after-compilation-finished-functions
-               #'TeX-revert-document-buffer))
-
-(defun zp/tex-view-program-switch ()
-  (interactive)
-  (cond ((eq zp/tex-view-program 'pdf-tools)
-         (zp/tex-view-program-set-evince)
-         (message "TeX view program: Evince"))
-        ((or (eq zp/tex-view-program 'evince)
-             (not (bound-and-true-p zp/tex-view-program)))
-         (zp/tex-view-program-set-pdf-tools)
-         (message "TeX view program: pdf-tools"))))
-
-(zp/tex-view-program-set-pdf-tools)
-
-;; Update PDF buffers after successful LaTeX runs
-
-;; Smart quotes
-(setq org-export-default-language "en-gb"
-      org-export-with-smart-quotes t)
-(add-to-list 'org-export-smart-quotes-alist
-             '("en-gb"
-               (primary-opening   :utf-8 "‘" :html "&lsquo ;" :latex "\\enquote{"  :texinfo "`")
-               (primary-closing   :utf-8 "’" :html "&rsquo;" :latex "}"           :texinfo "'")
-               (secondary-opening :utf-8 "“" :html "&ldquo;" :latex "\\enquote*{" :texinfo "``")
-               (secondary-closing :utf-8 "”" :html "&rdquo;" :latex "}"           :texinfo "''")
-               (apostrophe        :utf-8 "’" :html "&rsquo;" :latex "'")))
-
-;; Loaded on file-basis now
-;; (add-to-list 'org-latex-packages-alist '("frenchb,british" "babel" t))
-(setq org-latex-default-packages-alist '(("" "graphicx" t)
-                                         ("" "grffile" t)
-                                         ("" "longtable" nil)
-                                         ("" "wrapfig" nil)
-                                         ("" "rotating" nil)
-                                         ("normalem" "ulem" t)
-                                         ("" "amsmath" t)
-                                         ("" "textcomp" t)
-                                         ("" "amssymb" t)
-                                         ("" "capt-of" nil)
-                                         ("" "setspace" nil)
-                                         ("" "titletoc" nil)
-                                         ("" "hyperref" nil)
-                                         ))
-
-;; BibTeX
-(setq bibtex-autokey-year-length '4)
-
-;; XeTeX
-(defvar zp/org-latex-pdf-process-mode)
-(defun zp/toggle-org-latex-pdf-process ()
-  "Toggle the number of steps in the XeTeX PDF process."
-  (interactive)
-  (if (or (not (bound-and-true-p zp/org-latex-pdf-process-mode))
-          (string= zp/org-latex-pdf-process-mode "full"))
-      (progn (setq org-latex-pdf-process '("xelatex -shell-escape\
-                                                  -interaction nonstopmode\
-                                                  -output-directory %o %f")
-                   org-export-async-init-file "/home/zaeph/.emacs.d/async/main-short.el"
-                   zp/org-latex-pdf-process-mode 'short)
-             (message "XeLaTeX process mode: Short"))
-    (progn (setq org-latex-pdf-process '("xelatex -shell-escape\
-                                                    -interaction nonstopmode\
-                                                    -output-directory %o %f"
-                                           "biber %b"
-                                           "xelatex -shell-escape\
-                                                    -interaction nonstopmode\
-                                                    -output-directory %o %f"
-                                           "xelatex -shell-escape\
-                                                    -interaction nonstopmode\
-                                                    -output-directory %o %f")
-                 org-export-async-init-file "/home/zaeph/.emacs.d/async/main-full.el"
-                 zp/org-latex-pdf-process-mode 'full)
-           (message "XeLaTeX process mode: Full"))))
-(zp/toggle-org-latex-pdf-process)
-
-;; latexmk
-;; (setq org-latex-pdf-process '("latexmk -xelatex %f"))
-;; (setq org-latex-to-pdf-process (list "latexmk -f -pdf %f"))
-
-;; pdfTeX
-;; Need to rework the packages I use before I can use pdfTeX
-;; Will need tinkering.
-;;
-;; microtype:
-;; #+LATEX_HEADER: \usepackage[activate={true,nocompatibility},final,tracking=true,kerning=true,spacing=true,factor=1100,stretch=10,shrink=10]{microtype}
-;;
-;; (setq org-latex-pdf-process
-;;       '("pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
-;;      "biber %b"
-;;      "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
-;;      "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
-
-;; LuaTeX
-;; Not as good as XeTeX, since I can't figure out how to make CJK characters work.
-;; To investigate.
-;;
-;; # LuaTeXJA
-;; #+LATEX_HEADER: \usepackage{luatexja-fontspec}
-;; #+LATEX_HEADER: \setmainjfont{A-OTF Ryumin Pr5}
-;;
-;; (setq org-latex-pdf-process
-;;       '("lualatex -shell-escape -interaction nonstopmode -output-directory %o %f"
-;;      "biber %b"
-;;      "lualatex -shell-escape -interaction nonstopmode -output-directory %o %f"
-;;      "lualatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
-
-;; KOMA
-(add-to-list 'org-latex-classes
-          '("koma-article"
-             "\\documentclass{scrartcl}"
-             ("\\section{%s}" . "\\section*{%s}")
-             ("\\subsection{%s}" . "\\subsection*{%s}")
-             ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-             ("\\paragraph{%s}" . "\\paragraph*{%s}")
-             ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
-
-;; Minted
-(setq org-latex-listings 'minted)
-(setq org-src-preserve-indentation t)
 
 
 
