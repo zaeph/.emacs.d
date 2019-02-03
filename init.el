@@ -1736,6 +1736,10 @@ return `nil'."
 (defun zp/LaTeX-narrow-to-environment (&optional count)
   (interactive "p")
   (LaTeX-narrow-to-environment)
+  (LaTeX-mark-environment 1)
+  (TeX-pin-region (region-beginning) (region-end))
+  (deactivate-mark)
+  (move-end-of-line 1)
   (message "Narrowing to enviroment")
   (zp/play-sound-turn-page))
 
