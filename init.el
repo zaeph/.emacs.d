@@ -1553,6 +1553,67 @@ return `nil'."
         (delete-region begin-start begin-end)))
     t))
 
+;; Movements
+
+(defvar zp/LaTeX-narrow-previous-positions nil)
+
+(defun zp/LaTeX-narrow-to-environment (&optional count)
+  (interactive "p")
+  (LaTeX-narrow-to-environment)
+  (message "Narrowing to enviroment")
+  (zp/play-sound-turn-page))
+
+(defun zp/LaTeX-widen ()
+  (interactive)
+  (widen)
+  (message "Removing narrowing")
+  (zp/play-sound-turn-page))
+
+(defun zp/LaTeX-narrow-forwards (&optional arg)
+  (interactive "P")
+  (widen)
+  (when (search-forward-regexp "^\\\\begin{frame}" nil t)
+    (LaTeX-narrow-to-environment)
+    (unless arg
+      (LaTeX-mark-environment 1)
+      (TeX-pin-region (region-beginning) (region-end))
+      (deactivate-mark)
+      (move-end-of-line 1))
+    (message "Narrowing to next frame")
+    (zp/play-sound-turn-page)))
+
+(defun zp/LaTeX-narrow-backwards (&optional arg)
+  (interactive "P")
+  (widen)
+  (when (and (search-backward-regexp "^\\\\begin{frame}" nil t)
+             (search-backward-regexp "^\\\\begin{frame}" nil t))
+    (search-forward-regexp "^\\\\begin{frame}" nil t)
+    (LaTeX-narrow-to-environment)
+    (unless arg
+      (LaTeX-mark-environment 1)
+      (TeX-pin-region (region-beginning) (region-end))
+      (deactivate-mark)
+      (move-end-of-line 1))
+    (message "Narrowing to previous frame")
+    (zp/play-sound-turn-page)))
+
+(defun zp/LaTeX-narrow-up ()
+  (interactive)
+  (widen)
+  (LaTeX-mark-environment 2)
+  (narrow-to-region (region-beginning) (region-end))
+  (call-interactively #'narrow-to-region)
+  (deactivate-mark)
+  (move-end-of-line 1)
+  (message "Narrowing to parent environment")
+  (zp/play-sound-turn-page))
+
+(define-key LaTeX-mode-map (kbd "C-x n e") #'zp/LaTeX-narrow-to-environment)
+(define-key LaTeX-mode-map (kbd "C-x n w") #'zp/LaTeX-widen)
+(define-key LaTeX-mode-map (kbd "C-x n f") #'zp/LaTeX-narrow-forwards)
+(define-key LaTeX-mode-map (kbd "C-x n b") #'zp/LaTeX-narrow-backwards)
+(define-key LaTeX-mode-map (kbd "C-x n u") #'zp/LaTeX-narrow-up)
+
 ;; Hook
 (defun zp/LaTeX-mode-config ()
   "Modify keymaps used by `latex-mode'."
