@@ -1491,6 +1491,8 @@ Modifies ‘diff-command’ and ‘diff-switches’ to use ‘git diff’."
 ;; =============== AUCTeX =================
 ;; ========================================
 
+(require 'latex)
+
 ;; Set default library
 (setq-default TeX-engine 'xetex
               TeX-save-query nil
