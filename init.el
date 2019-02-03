@@ -1797,6 +1797,7 @@ return `nil'."
 ;; Hook
 (defun zp/LaTeX-mode-config ()
   "Modify keymaps used by `latex-mode'."
+  (local-set-key (kbd "C-x n e") #'zp/LaTeX-narrow-to-environment)
   (local-set-key (kbd "C-c DEL") 'zp/LaTeX-remove-macro)
   (local-set-key (kbd "C-c <C-backspace>") 'zp/LaTeX-remove-macro)
   (local-set-key (kbd "C-c <M-backspace>") 'zp/LaTeX-remove-environment)
