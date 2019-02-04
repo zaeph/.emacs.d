@@ -3881,6 +3881,12 @@ on init and them removes itself."
   (if (member buffer-file-name org-agenda-files)
       (zp/org-agenda-to-appt)))
 
+(defun zp/org-agenda-to-appt-on-state-change ()
+  "Hook to ‘org-after-todo-state-change-hook’ and update
+appt-list when an item is marked as DONE."
+  (when (string-equal org-state "DONE")
+    (zp/org-agenda-to-appt)))
+
 
 ;; ----------------------------------------
 ;; Update reminders when...
@@ -3896,6 +3902,9 @@ on init and them removes itself."
 
 ;; When loading org-agenda for the first time
 (add-hook 'org-agenda-finalize-hook #'zp/org-agenda-to-appt-on-load)
+
+;; When marking an item as done
+(add-hook 'org-after-todo-state-change-hook #'zp/org-agenda-to-appt-on-state-change)
 
 ;; ----------------------------------------
 ;; Remove hooks
