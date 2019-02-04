@@ -2084,7 +2084,7 @@ return `nil'."
 ;; Category icons
 (setq org-agenda-category-icon-alist
       '(("^emacs$" "~/org/svg/icons/spacemacs.svg" nil nil :ascent center)
-        ("^elisp$" "~/org/svg/icons/spacemacs.svg" nil nil :ascent center)
+        ("^elisp$" "~/org/svg/icons/spacemacs-elisp.svg" nil nil :ascent center)
         ("^linux$" "~/org/svg/icons/nixos.svg" nil nil :ascent center)
         ("^opsec$" "~/org/svg/icons/cyber-security-b.svg" nil nil :ascent center)
         ("^media$" "~/org/svg/icons/library.svg" nil nil :ascent center)
