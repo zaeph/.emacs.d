@@ -7118,7 +7118,8 @@ time is displayed."
  '(global-hl-line-mode t)
  '(helm-external-programs-associations
    (quote
-    (("docx" . "lowriter")
+    (("xlsx" . "localc")
+     ("docx" . "lowriter")
      ("gpg" . "evince")
      ("mp4" . "smplayer")
      ("mkv" . "smplayer")
