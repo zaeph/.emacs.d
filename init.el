@@ -1638,101 +1638,6 @@ entry in `TeX-view-program-list-builtin'."
                (secondary-closing :utf-8 "”" :html "&rdquo;" :latex "}"           :texinfo "''")
                (apostrophe        :utf-8 "’" :html "&rsquo;" :latex "'")))
 
-;; Loaded on file-basis now
-;; (add-to-list 'org-latex-packages-alist '("frenchb,british" "babel" t))
-(setq org-latex-default-packages-alist '(("" "graphicx" t)
-                                         ("" "grffile" t)
-                                         ("" "longtable" nil)
-                                         ("" "wrapfig" nil)
-                                         ("" "rotating" nil)
-                                         ("normalem" "ulem" t)
-                                         ("" "amsmath" t)
-                                         ("" "textcomp" t)
-                                         ("" "amssymb" t)
-                                         ("" "capt-of" nil)
-                                         ("" "setspace" nil)
-                                         ("" "titletoc" nil)
-                                         ("" "hyperref" nil)
-                                         ))
-
-;; BibTeX
-(setq bibtex-autokey-year-length '4)
-
-;; XeTeX
-(defvar zp/org-latex-pdf-process-mode)
-(defun zp/toggle-org-latex-pdf-process ()
-  "Toggle the number of steps in the XeTeX PDF process."
-  (interactive)
-  (if (or (not (bound-and-true-p zp/org-latex-pdf-process-mode))
-          (string= zp/org-latex-pdf-process-mode "full"))
-      (progn (setq org-latex-pdf-process '("xelatex -shell-escape\
-                                                  -interaction nonstopmode\
-                                                  -output-directory %o %f")
-                   org-export-async-init-file "/home/zaeph/.emacs.d/async/main-short.el"
-                   zp/org-latex-pdf-process-mode 'short)
-             (message "XeLaTeX process mode: Short"))
-    (progn (setq org-latex-pdf-process '("xelatex -shell-escape\
-                                                    -interaction nonstopmode\
-                                                    -output-directory %o %f"
-                                           "biber %b"
-                                           "xelatex -shell-escape\
-                                                    -interaction nonstopmode\
-                                                    -output-directory %o %f"
-                                           "xelatex -shell-escape\
-                                                    -interaction nonstopmode\
-                                                    -output-directory %o %f")
-                 org-export-async-init-file "/home/zaeph/.emacs.d/async/main-full.el"
-                 zp/org-latex-pdf-process-mode 'full)
-           (message "XeLaTeX process mode: Full"))))
-(zp/toggle-org-latex-pdf-process)
-
-;; latexmk
-;; (setq org-latex-pdf-process '("latexmk -xelatex %f"))
-;; (setq org-latex-to-pdf-process (list "latexmk -f -pdf %f"))
-
-;; pdfTeX
-;; Need to rework the packages I use before I can use pdfTeX
-;; Will need tinkering.
-;;
-;; microtype:
-;; #+LATEX_HEADER: \usepackage[activate={true,nocompatibility},final,tracking=true,kerning=true,spacing=true,factor=1100,stretch=10,shrink=10]{microtype}
-;;
-;; (setq org-latex-pdf-process
-;;       '("pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
-;;      "biber %b"
-;;      "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
-;;      "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
-
-;; LuaTeX
-;; Not as good as XeTeX, since I can't figure out how to make CJK characters work.
-;; To investigate.
-;;
-;; # LuaTeXJA
-;; #+LATEX_HEADER: \usepackage{luatexja-fontspec}
-;; #+LATEX_HEADER: \setmainjfont{A-OTF Ryumin Pr5}
-;;
-;; (setq org-latex-pdf-process
-;;       '("lualatex -shell-escape -interaction nonstopmode -output-directory %o %f"
-;;      "biber %b"
-;;      "lualatex -shell-escape -interaction nonstopmode -output-directory %o %f"
-;;      "lualatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
-
-;; KOMA
-(add-to-list 'org-latex-classes
-          '("koma-article"
-             "\\documentclass{scrartcl}"
-             ("\\section{%s}" . "\\section*{%s}")
-             ("\\subsection{%s}" . "\\subsection*{%s}")
-             ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-             ("\\paragraph{%s}" . "\\paragraph*{%s}")
-             ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
-
-;; Minted
-(setq org-latex-listings 'minted)
-(setq org-src-preserve-indentation t)
-
-
-
 (defun zp/LaTeX-remove-macro ()
   "Remove current macro and return `t'.  If no macro at point,
 return `nil'."
@@ -1845,6 +1750,150 @@ return `nil'."
   (local-set-key (kbd "C-c <M-backspace>") 'zp/LaTeX-remove-environment)
   (local-set-key (kbd "C-c C-t C-v") 'zp/tex-view-program-switch))
 (setq LaTeX-mode-hook '(zp/LaTeX-mode-config))
+
+
+
+;; ========================================
+;; ============== ORG-LATEX ===============
+;; ========================================
+
+;; Loaded on file-basis now
+;; (add-to-list 'org-latex-packages-alist '("frenchb,british" "babel" t))
+(setq org-latex-default-class "koma-article")
+(setq org-latex-compiler "xelatex")
+
+;; (setq org-latex-default-packages-alist '(("" "graphicx" t)
+;;                                          ("" "grffile" t)
+;;                                          ("" "longtable" nil)
+;;                                          ("" "wrapfig" nil)
+;;                                          ("" "rotating" nil)
+;;                                          ("normalem" "ulem" t)
+;;                                          ("" "amsmath" t)
+;;                                          ("" "textcomp" t)
+;;                                          ("" "amssymb" t)
+;;                                          ("" "capt-of" nil)
+;;                                          ("" "setspace" nil)
+;;                                          ("" "titletoc" nil)
+;;                                          ("" "hyperref" nil)
+;;                                          ))
+
+(setq org-latex-default-packages-alist nil)
+
+
+;; KOMA
+(setq org-latex-classes
+      '(("koma-article-default"
+         "\\documentclass{scrartcl}"
+         ("\\section{%s}" . "\\section*{%s}")
+         ("\\subsection{%s}" . "\\subsection*{%s}")
+         ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+         ("\\paragraph{%s}" . "\\paragraph*{%s}")
+         ("\\subparagraph{%s}" . "\\subparagraph*{%s}"))
+        ("koma-article"
+         "\\documentclass[
+,a4paper
+,DIV=12
+,12pt
+,abstract
+,bibliography=totoc
+]{scrartcl}
+
+\\usepackage[
+,babel=english
+,header=false
+,geometry
+,autolang=hyphen
+,numbers=osf
+]{zpart}
+
+"
+         ("\\section{%s}" . "\\section*{%s}")
+         ("\\subsection{%s}" . "\\subsection*{%s}")
+         ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+         ("\\paragraph{%s}" . "\\paragraph*{%s}")
+         ("\\subparagraph{%s}" . "\\subparagraph*{%s}"))))
+
+;; BibTeX
+(setq bibtex-autokey-year-length '4)
+
+;; XeTeX
+(defvar zp/org-latex-pdf-process-mode)
+(defun zp/toggle-org-latex-pdf-process ()
+  "Toggle the number of steps in the XeTeX PDF process."
+  (interactive)
+  (if (or (not (bound-and-true-p zp/org-latex-pdf-process-mode))
+          (string= zp/org-latex-pdf-process-mode "full"))
+      (progn (setq org-latex-pdf-process '("xelatex -shell-escape\
+                                                  -interaction nonstopmode\
+                                                  -output-directory %o %f")
+                   org-export-async-init-file "/home/zaeph/.emacs.d/async/main-short.el"
+                   zp/org-latex-pdf-process-mode 'short)
+             (message "XeLaTeX process mode: Short"))
+    (progn (setq org-latex-pdf-process '("xelatex -shell-escape\
+                                                    -interaction nonstopmode\
+                                                    -output-directory %o %f"
+                                           "biber %b"
+                                           "xelatex -shell-escape\
+                                                    -interaction nonstopmode\
+                                                    -output-directory %o %f"
+                                           "xelatex -shell-escape\
+                                                    -interaction nonstopmode\
+                                                    -output-directory %o %f")
+                 org-export-async-init-file "/home/zaeph/.emacs.d/async/main-full.el"
+                 zp/org-latex-pdf-process-mode 'full)
+           (message "XeLaTeX process mode: Full"))))
+(zp/toggle-org-latex-pdf-process)
+
+;; latexmk
+;; (setq org-latex-pdf-process '("latexmk -xelatex %f"))
+;; (setq org-latex-to-pdf-process (list "latexmk -f -pdf %f"))
+
+;; pdfTeX
+;; Need to rework the packages I use before I can use pdfTeX
+;; Will need tinkering.
+;;
+;; microtype:
+;; #+LATEX_HEADER: \usepackage[activate={true,nocompatibility},final,tracking=true,kerning=true,spacing=true,factor=1100,stretch=10,shrink=10]{microtype}
+;;
+;; (setq org-latex-pdf-process
+;;       '("pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+;;      "biber %b"
+;;      "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+;;      "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
+
+;; LuaTeX
+;; Not as good as XeTeX, since I can't figure out how to make CJK characters work.
+;; To investigate.
+;;
+;; # LuaTeXJA
+;; #+LATEX_HEADER: \usepackage{luatexja-fontspec}
+;; #+LATEX_HEADER: \setmainjfont{A-OTF Ryumin Pr5}
+;;
+;; (setq org-latex-pdf-process
+;;       '("lualatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+;;      "biber %b"
+;;      "lualatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+;;      "lualatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
+
+;; Suppress creation of labels when converting org→tex
+(defun remove-orgmode-latex-labels ()
+  "Remove labels generated by org-mode"
+  (interactive)
+  (let ((case-fold-search nil))
+   (goto-char 1)
+   (replace-regexp "\\\\label{sec:org[0-9][^}]*}" "")))
+
+(defun zp/org-latex-remove-section-labels (string backend info)
+  "Remove section labels generated by org-mode"
+  (when (org-export-derived-backend-p backend 'latex)
+    (replace-regexp-in-string "\\\\label{sec:.*?}" "" string)))
+
+(add-to-list 'org-export-filter-final-output-functions
+             #'zp/org-latex-remove-section-labels)
+
+;; Minted
+(setq org-latex-listings 'minted)
+(setq org-src-preserve-indentation t)
 
 
 
