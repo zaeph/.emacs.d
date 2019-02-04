@@ -1549,6 +1549,48 @@ Modifies ‘diff-command’ and ‘diff-switches’ to use ‘git diff’."
 ;; TeX view program
 (defvar zp/tex-view-program nil)
 
+;; -----------------------------------------------------------------------------
+;; Patch submitted to mailing list
+
+(defcustom TeX-view-pdf-tools-keep-focus nil
+  "Whether AUCTeX retains the focus when viewing PDF files with pdf-tools.
+
+When calling `TeX-pdf-tools-sync-view', the pdf-tools buffer
+normally captures the focus. If this option is set to non-nil,
+the AUCTeX buffer will retain the focus."
+  :group 'TeX-view
+  :type 'boolean)
+
+(defun TeX-pdf-tools-sync-view ()
+  "Focus the focused page/paragraph in `pdf-view-mode'.
+If `TeX-source-correlate-mode' is disabled, only find and pop to
+the output PDF file.  Used by default for the PDF Tools viewer
+entry in `TeX-view-program-list-builtin'."
+  ;; Make sure `pdf-tools' is at least in the `load-path', but the user must
+  ;; take care of properly loading and installing the package.  We used to test
+  ;; "(featurep 'pdf-tools)", but that doesn't play well with deferred loading.
+  (unless (fboundp 'pdf-tools-install)
+    (error "PDF Tools are not available"))
+  (unless TeX-PDF-mode
+    (error "PDF Tools only work with PDF output"))
+  (add-hook 'pdf-sync-backward-redirect-functions
+	    #'TeX-source-correlate-handle-TeX-region)
+  (if (and TeX-source-correlate-mode
+	   (fboundp 'pdf-sync-forward-search))
+      (with-current-buffer (or (when TeX-current-process-region-p
+			    	 (get-file-buffer (TeX-region-file t)))
+			       (current-buffer))
+	(pdf-sync-forward-search))
+    (let* ((pdf (concat file "." (TeX-output-extension)))
+           (buffer (or (find-buffer-visiting pdf)
+		       (find-file-noselect pdf))))
+      (if TeX-view-pdf-tools-keep-focus
+          (display-buffer buffer)
+        (pop-to-buffer buffer)))))
+;; -----------------------------------------------------------------------------
+
+(setq TeX-view-pdf-tools-keep-focus t)
+
 (defun zp/tex-view-program-set-pdf-tools ()
   (setq TeX-view-program-selection
         '((output-pdf "PDF Tools"))
