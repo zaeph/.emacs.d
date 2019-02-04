@@ -2567,6 +2567,12 @@ return `nil'."
       org-agenda-clockreport-parameter-plist '(:link t :maxlevel 2 :fileskip0 t)
       )
 
+(defun zp/org-agenda-benchmark ()
+  "Benchmark the time required to remake the agenda"
+  (interactive)
+  (with-timer "Remaking the agenda"
+    (org-agenda-redo)))
+
 
 
 (setq org-agenda-clock-consistency-checks '(:max-duration "10:00"
