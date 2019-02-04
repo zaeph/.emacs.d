@@ -3664,11 +3664,8 @@ Check their respective dosctrings for more info."
 ;; ============== ORG-REFILE ==============
 ;; ========================================
 
-(setq org-refile-targets '(
-                           (nil :maxlevel . 9)
-                           (org-agenda-files :maxlevel . 1)
-                           (zp/org-agenda-files-life :maxlevel . 3)
-                           )
+(setq org-refile-targets '((nil :maxlevel . 9)
+                           (org-agenda-files :maxlevel . 1))
       org-refile-use-cache nil)
 
 
