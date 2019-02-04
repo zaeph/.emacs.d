@@ -3840,15 +3840,15 @@ KEYANDHEADLINE should be a list of cons cells of the form (\"key\" . \"headline\
 (defhydra zp/hydra-org-refile (:foreign-keys run
                                :hint nil)
   "
-^Life^            ^Prog^                ^Uni^           ^Mental^
-^^^^^^^^------------------------------------------------------------------
-_o_: Life         _h_: Hacking          _u_: University _a_: Awakening
-_m_: Media        _l_: Linux            _r_: Research   _p_: Psychotherapy
-_M_: Maintenance  _e_: Emacs
-^^                _t_: LaTeX
+^Life^              ^Prog^                  ^Uni^              ^Mental^
+^^^^^^^^----------------------------------------------------------------------
+_o_: Life           _h_: Hacking            _u_: University    _a_: Awakening
+_m_: Media          _l_: Linux              _r_: Research      _p_: Psychotherapy
+_M_: Maintenance    _e_: Emacs
+^^                  _t_: LaTeX
 
-^^                _c_: Contributing
-^^                _b_: Troubleshooting
+^^                  _c_: Contributing
+^^                  _b_: Troubleshooting
 
 "
   ;; ("o" zp/hydra-org-refile-file-life/body :exit t)
