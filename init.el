@@ -2756,7 +2756,7 @@ agenda settings after them."
             ,@(if (bound-and-true-p file)
                   `((org-agenda-files ',file)))
             (org-agenda-skip-function
-             '(zp/skip-non-agenda-group-tasks ',groups))
+             '(zp/skip-tasks-not-belonging-to-agenda-groups ',groups))
             (org-agenda-span 'day))))
 
 (defun zp/org-agenda-block-agenda-week (header &optional file)
@@ -2879,9 +2879,11 @@ agenda settings after them."
   "Format LIST of agenda groups as a regex"
   (string-join
    (mapcar (lambda (arg)
-             (concat ".*\\b"
-                     arg
-                     "\\b.*"))
+             (if (not arg)
+                 "^$"
+                 (concat ".*\\b"
+                         arg
+                         "\\b.*")))
            list)
    "\\|"))
 
@@ -2917,8 +2919,8 @@ It creates 4 blocks:
              (zp/org-agenda-groups-format-regex-for-filtering groups)
            groups))
         (other-groups-regex
-         (if (listp groups)
-             (zp/org-agenda-groups-format-regex-for-filtering groups)
+         (if (listp other-groups)
+             (zp/org-agenda-groups-format-regex-for-filtering other-groups)
            other-groups)))
     `(,(zp/org-agenda-block-agenda-with-group-filter header
                                                      (if (bound-and-true-p other-groups)
@@ -3013,7 +3015,7 @@ It creates 4 blocks:
              (,(zp/org-agenda-block-agenda-week "Weekly Agenda")))
 
         ("n" "Task List"
-             (,@(zp/org-agenda-blocks-main "Life" '("life" "pro") '("life" "pro" "media"))))
+             (,@(zp/org-agenda-blocks-main "Life" '("life" "pro" nil) '("life" "pro" "media" nil))))
 
         ("j" "Journal entries"
              (,(zp/org-agenda-block-journal))
@@ -5409,32 +5411,44 @@ Skip project and sub-project tasks, habits, and loose non-project tasks."
       (goto-char parent-task)
       parent-task)))
 
-(defun zp/org-task-in-agenda-group-p (groups &optional pom)
+(defun zp/org-task-in-agenda-groups-p (groups &optional match-groupless pom)
   "Test whether a task is in agenda-group matched by GROUPS
 
-GROUPS can be a list or a regex."
+GROUPS can be a list or a regex.
+
+If MATCH-GROUPLESS is true, returns 0 when a task
+doesn’t have a group."
   (let ((groups-regex
          (if (listp groups)
-             (zp/org-agenda-groups-format-regex-for-filtering groups)
+             (zp/org-agenda-groups-format-regex groups)
            groups)))
     (save-restriction
       (widen)
       (let ((task-group (org-entry-get (or pom (point)) "AGENDA_GROUP" 'selective)))
-        (if task-group
-            (string-match-p groups-regex task-group))))))
+        (cond (task-group
+               (string-match-p groups-regex task-group))
+              (match-groupless
+               0))))))
 
-(defun zp/skip-non-agenda-group-tasks (list)
-  "Skip task if its agenda-group isn’t one of LIST"
+(defun zp/skip-tasks-not-belonging-to-agenda-groups (groups &optional include-groupless)
+  "Skip tasks if they aren’t part of GROUPS
+
+GROUPS can either be a list or a regex.
+
+If INCLUDE-EMPTY is t, include groupless tasks."
   (save-restriction
     (widen)
-    (let ((next-headline (save-excursion (or (outline-next-heading) (point-max)))))
+    (let* ((next-headline (save-excursion (or (outline-next-heading) (point-max))))
+           (groups-regex (if (listp groups)
+                             (zp/org-agenda-groups-format-regex groups)
+                           groups))
+           (include-groupless-p (or include-groupless
+                                    (string-match-p "\\\\|\\^\\$" groups-regex))))
       (cond
-        ((zp/org-task-in-agenda-group-p (zp/org-agenda-groups-format-regex list))
+        ((zp/org-task-in-agenda-groups-p groups-regex include-groupless-p)
          nil)
         (t
          next-headline)))))
-
-
 
 ;; 18.2.1 Narrowing to a subtree with bh/org-todo
 ;; (global-set-key (kbd "<f5>") 'bh/org-todo)
