@@ -2087,6 +2087,7 @@ return `nil'."
         ("^elisp$" "~/org/svg/icons/spacemacs-elisp.svg" nil nil :ascent center)
         ("^linux$" "~/org/svg/icons/nixos.svg" nil nil :ascent center)
         ("^opsec$" "~/org/svg/icons/cyber-security-b.svg" nil nil :ascent center)
+        ("^git$" "~/org/svg/icons/git.svg" nil nil :ascent center)
         ("^media$" "~/org/svg/icons/library.svg" nil nil :ascent center)
         ("^tex$" "~/org/svg/icons/file-2-p.svg" nil nil :ascent center)
         ("^inbox$" "~/org/svg/icons/gmail.svg" nil nil :ascent center)
