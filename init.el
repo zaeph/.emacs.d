@@ -2589,9 +2589,7 @@ return `nil'."
 
 (defun zp/update-org-agenda-files ()
   (interactive)
-  
   (setq org-agenda-files zp/org-agenda-files-life)
-
   (zp/set-shortcuts-all))
 
 (zp/update-org-agenda-files)
@@ -2892,8 +2890,6 @@ agenda settings after them."
    "+AGENDA_GROUP={"
    (zp/org-agenda-groups-format-regex list)
    "}"))
-
-(zp/org-agenda-groups-format-regex '("hack" "life"))
 
 
 
