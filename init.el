@@ -3014,6 +3014,9 @@ It creates 4 blocks:
         ("g" "Groupless Tasks"
              (,@(zp/org-agenda-blocks-main "Groupless Tasks" '(nil))))
 
+        ("x" "Maintenance"
+             (,@(zp/org-agenda-blocks-main "Maintenance" '("mx"))))
+
         ("j" "Journal entries"
              (,(zp/org-agenda-block-journal))
              ((org-agenda-files zp/journal-files)))
