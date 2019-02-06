@@ -2786,35 +2786,35 @@ agenda settings after them."
                )))
 
 (defun zp/org-agenda-block-tasks-with-group-filter (groups &optional file)
-  (let ((groups-regex
-         (if (listp groups)
-             (zp/org-agenda-groups-format-regex-for-filtering groups)
-           groups)))
-   `(tags-todo ,(concat groups-regex "-standby-recurring")
-               ((org-agenda-overriding-header
-                 (zp/org-agenda-format-header-block-with-settings "Tasks"))
-                ,@(if (bound-and-true-p file)
-                      `((org-agenda-files ',file)))
-                (org-agenda-sorting-strategy
-                 '(scheduled-up user-defined-down priority-down category-keep))
-                ;; (org-agenda-skip-function 'zp/skip-non-tasks-and-scheduled))))
-                (org-agenda-skip-function 'bh/skip-non-tasks)
-                ;; (org-agenda-todo-ignore-scheduled 'all)
-                (org-super-agenda-groups
-                 '((:name "Overdue"
-                    :and (:scheduled past
-                          :not (:habit t)))
-                   (:name "Waiting"
-                    :and (:scheduled nil
-                          :tag "waiting"))
-                   (:name "Scheduled today"
-                    :and (:scheduled today
-                          :not (:habit t)))
-                   (:name "Tasks"
-                    :and (:scheduled nil
-                          :not (:tag "waiting")))
-                   (:name "Scheduled later"
-                    :scheduled future)))))))
+  `(tags-todo "-standby-recurring"
+              ((org-agenda-overriding-header
+                (zp/org-agenda-format-header-block-with-settings "Tasks"))
+               ,@(if (bound-and-true-p file)
+                     `((org-agenda-files ',file)))
+               (org-agenda-sorting-strategy
+                '(scheduled-up user-defined-down priority-down category-keep))
+               ;; (org-agenda-skip-function 'zp/skip-non-tasks-and-scheduled))))
+               ;; (org-agenda-skip-function 'bh/skip-non-tasks)
+               (org-agenda-skip-function
+                '(progn
+                  (zp/skip-tasks-not-belonging-to-agenda-groups ',groups)
+                  (bh/skip-non-tasks)))
+               ;; (org-agenda-todo-ignore-scheduled 'all)
+               (org-super-agenda-groups
+                '((:name "Overdue"
+                   :and (:scheduled past
+                         :not (:habit t)))
+                  (:name "Waiting"
+                   :and (:scheduled nil
+                         :tag "waiting"))
+                  (:name "Scheduled today"
+                   :and (:scheduled today
+                         :not (:habit t)))
+                  (:name "Tasks"
+                   :and (:scheduled nil
+                         :not (:tag "waiting")))
+                  (:name "Scheduled later"
+                   :scheduled future))))))
 
 (defun zp/org-agenda-block-projects-stuck (&optional file)
   (let ((org-agenda-cmp-user-defined 'org-cmp-todo-state-wait))
@@ -2828,19 +2828,18 @@ agenda settings after them."
                  (org-agenda-dim-blocked-tasks 'dimmed)))))
 
 (defun zp/org-agenda-block-projects-stuck-with-group-filter (groups &optional file)
-  (let ((org-agenda-cmp-user-defined 'org-cmp-todo-state-wait)
-        (groups-regex
-         (if (listp groups)
-             (zp/org-agenda-groups-format-regex-for-filtering groups)
-           groups)))
-    `(tags-todo ,(concat groups-regex "-standby")
-                ((org-agenda-overriding-header
-                  (zp/org-agenda-format-header-projects-stuck))
-                 ,@(if (bound-and-true-p file)
-                       `((org-agenda-files ',file)))
-                 (org-agenda-skip-function 'zp/skip-non-stuck-projects)
-                 (org-agenda-todo-ignore-scheduled nil)
-                 (org-agenda-dim-blocked-tasks 'dimmed)))))
+  `(tags-todo "-standby"
+              ((org-agenda-overriding-header
+                (zp/org-agenda-format-header-projects-stuck))
+               ,@(if (bound-and-true-p file)
+                     `((org-agenda-files ',file)))
+               ;; (org-agenda-skip-function 'zp/skip-non-stuck-projects)
+               (org-agenda-skip-function
+                '(progn
+                  (zp/skip-tasks-not-belonging-to-agenda-groups ',groups)
+                  (zp/skip-non-stuck-projects)))
+               (org-agenda-todo-ignore-scheduled nil)
+               (org-agenda-dim-blocked-tasks 'dimmed))))
 
 (defun zp/org-agenda-block-projects (&optional file)
   `(tags-todo "-standby-reading"
@@ -2855,25 +2854,25 @@ agenda settings after them."
                (org-agenda-dim-blocked-tasks nil))))
 
 (defun zp/org-agenda-block-projects-with-group-filter (groups &optional file)
-  (let ((groups-regex
-         (if (listp groups)
-             (zp/org-agenda-groups-format-regex-for-filtering groups)
-           groups)))
-   `(tags-todo ,(concat groups-regex "-standby")
-               ((org-agenda-overriding-header
-                 (zp/org-agenda-format-header-projects))
-                ,@(if (bound-and-true-p file)
-                      `((org-agenda-files ',file)))
-                (org-agenda-skip-function 'zp/skip-non-unstuck-projects-and-waiting)
-                (org-agenda-sorting-strategy
-                 '(user-defined-down priority-down category-keep))
-                (org-agenda-todo-ignore-scheduled nil)
-                (org-agenda-dim-blocked-tasks nil)
-                (org-super-agenda-groups
-                 '((:name "Waiting"
-                    :tag "waiting")
-                   (:name "Active"
-                    :anything)))))))
+  `(tags-todo "-standby"
+              ((org-agenda-overriding-header
+                (zp/org-agenda-format-header-projects))
+               ,@(if (bound-and-true-p file)
+                     `((org-agenda-files ',file)))
+               ;; (org-agenda-skip-function 'zp/skip-non-unstuck-projects-and-waiting)
+               (org-agenda-skip-function
+                '(progn
+                  (zp/skip-tasks-not-belonging-to-agenda-groups ',groups)
+                  (zp/skip-non-unstuck-projects-and-waiting)))
+               (org-agenda-sorting-strategy
+                '(user-defined-down priority-down category-keep))
+               (org-agenda-todo-ignore-scheduled nil)
+               (org-agenda-dim-blocked-tasks nil)
+               (org-super-agenda-groups
+                '((:name "Waiting"
+                   :tag "waiting")
+                  (:name "Active"
+                   :anything))))))
 
 (defun zp/org-agenda-groups-format-regex (list)
   "Format LIST of agenda groups as a regex"
@@ -2902,9 +2901,8 @@ agenda settings after them."
 HEADER is the string to be used as the header of the the agenda
 view.
 
-If GROUPS is a list, each string within it should be a possible
-value of the property AGENDA_GROUP.  Otherwise, GROUPS should be
-a regex to be plugged into ‘tags-todo’.
+GROUPS should be a list of strings of AGENDA_GROUPS to
+match (‘or’ is implied).
 
 If OTHER-GROUPS is a list or a regex, use it to filter the top
 agenda block instead of GROUPS.
@@ -2914,22 +2912,18 @@ It creates 4 blocks:
 - A ‘tags-todo’ block displaying the non-stuck projects
 - A ‘tags-todo’ block displaying the stuck projects
 - A ‘tags-todo’ block displaying the tasks"
-  (let ((groups-regex
-         (if (listp groups)
-             (zp/org-agenda-groups-format-regex-for-filtering groups)
-           groups))
-        (other-groups-regex
-         (if (listp other-groups)
-             (zp/org-agenda-groups-format-regex-for-filtering other-groups)
-           other-groups)))
-    `(,(zp/org-agenda-block-agenda-with-group-filter header
-                                                     (if (bound-and-true-p other-groups)
-                                                         other-groups
-                                                       groups)
-                                                     file)
-       ,(zp/org-agenda-block-projects-stuck-with-group-filter groups-regex file)
-       ,(zp/org-agenda-block-tasks-with-group-filter groups-regex file)
-       ,(zp/org-agenda-block-projects-with-group-filter groups-regex file))))
+  `(,(zp/org-agenda-block-agenda-with-group-filter
+      header
+      (if (bound-and-true-p other-groups)
+          other-groups
+        groups)
+      file)
+     ,(zp/org-agenda-block-projects-stuck-with-group-filter
+       groups file)
+     ,(zp/org-agenda-block-tasks-with-group-filter
+       groups file)
+     ,(zp/org-agenda-block-projects-with-group-filter
+       groups file)))
 
 (defun zp/org-agenda-block-tasks-special (&optional file)
   `(tags-todo "-standby/!WAIT|STRT"
@@ -5414,43 +5408,66 @@ Skip project and sub-project tasks, habits, and loose non-project tasks."
       parent-task)))
 
 (defun zp/org-task-in-agenda-groups-p (groups &optional match-groupless pom)
-  "Test whether a task is in agenda-group matched by GROUPS
+  "Test whether a task is in agenda-group matched by GROUPS.
 
 GROUPS can be a list or a regex.
 
-If MATCH-GROUPLESS is true, returns 0 when a task
-doesn’t have a group."
+If MATCH-GROUPLESS is non-nil, returns 0 when a task doesn’t have
+a group."
   (let ((groups-regex
          (if (listp groups)
              (zp/org-agenda-groups-format-regex groups)
            groups)))
     (save-restriction
       (widen)
-      (let ((task-group (org-entry-get (or pom (point)) "AGENDA_GROUP" 'selective)))
+      (let ((task-group (org-entry-get (or pom (point))
+                                       "AGENDA_GROUP"
+                                       'selective)))
         (cond (task-group
                (string-match-p groups-regex task-group))
               (match-groupless
                0))))))
 
-(defun zp/skip-tasks-not-belonging-to-agenda-groups (groups &optional include-groupless)
-  "Skip tasks if they aren’t part of GROUPS
+(defun zp/skip-tasks-not-belonging-to-agenda-groups (groups &optional exhaustive)
+  "Skip tasks if they aren’t part of GROUPS.
 
-GROUPS can either be a list or a regex.
+GROUPS is a list of AGENDA_GROUPS values to match.
 
-If INCLUDE-EMPTY is t, include groupless tasks."
+If EXHAUSTIVE is non-nil, the function will not skip groupless
+trees."
   (save-restriction
     (widen)
-    (let* ((next-headline (save-excursion (or (outline-next-heading) (point-max))))
-           (groups-regex (if (listp groups)
-                             (zp/org-agenda-groups-format-regex groups)
-                           groups))
-           (include-groupless-p (or include-groupless
-                                    (string-match-p "\\\\|\\^\\$" groups-regex))))
+    (let* ((next-headline (save-excursion
+                            (or (outline-next-heading)
+                                (point-max))))
+           (groups-regex (zp/org-agenda-groups-format-regex groups))
+           (property "AGENDA_GROUP")
+           (property-regex (concat "^:" property ":.*"))
+           (include-groupless-p (or exhaustive
+                                    (member nil groups))))
       (cond
         ((zp/org-task-in-agenda-groups-p groups-regex include-groupless-p)
          nil)
+        ((and include-groupless-p
+              (catch 'found-next
+                (while (re-search-backward (concat property-regex
+                                                   "$")
+                                           nil t)
+                  (if (org-entry-get (point) property)
+                      (throw 'found-next 't)))))
+         (outline-get-next-sibling))
+        ((catch 'found-next
+           (goto-char next-headline)
+           (while (re-search-forward (concat property-regex
+                                             "\\("
+                                             groups-regex
+                                             "\\)$")
+                                     nil t)
+             (if (org-entry-get (point) property)
+                 (throw 'found-next 't))))
+         (point))
         (t
-         next-headline)))))
+         (goto-char (point-max)))))))
 
 ;; 18.2.1 Narrowing to a subtree with bh/org-todo
 ;; (global-set-key (kbd "<f5>") 'bh/org-todo)
