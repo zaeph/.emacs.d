@@ -3844,7 +3844,7 @@ KEYANDHEADLINE should be a list of cons cells of the form (\"key\" . \"headline\
 ^^^^^^^^----------------------------------------------------------------------
 _o_: Life           _h_: Hacking            _u_: University    _a_: Awakening
 _m_: Media          _l_: Linux              _r_: Research      _p_: Psychotherapy
-_M_: Maintenance    _e_: Emacs
+_x_: Maintenance    _e_: Emacs
 ^^                  _t_: LaTeX
 
 ^^                  _c_: Contributing
@@ -3854,7 +3854,7 @@ _M_: Maintenance    _e_: Emacs
   ;; ("o" zp/hydra-org-refile-file-life/body :exit t)
   ("o" (zp/org-refile "/home/zaeph/org/life.org.gpg" "Life" current-prefix-arg) :exit t)
   ("m" (zp/org-refile "/home/zaeph/org/life.org.gpg" "Media" current-prefix-arg) :exit t)
-  ("M" (zp/org-refile "/home/zaeph/org/life.org.gpg" "Maintenance" current-prefix-arg) :exit t)
+  ("x" (zp/org-refile "/home/zaeph/org/life.org.gpg" "Maintenance" current-prefix-arg) :exit t)
   ("a" (zp/org-refile "/home/zaeph/org/life.org.gpg" "Awakening" current-prefix-arg) :exit t)
   ("p" (zp/org-refile "/home/zaeph/org/life.org.gpg" "Psychotherapy" current-prefix-arg) :exit t)
   ("u" (zp/org-refile "/home/zaeph/org/life.org.gpg" "University" current-prefix-arg) :exit t)
