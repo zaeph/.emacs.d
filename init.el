@@ -1142,6 +1142,28 @@ that date.  Leave point on the first amount."
     (notmuch-show-tag (list "+deleted" "-inbox" "-draft"))
     (notmuch-show-next-thread-show)))
 
+(defun zp/notmuch-search-refine (&optional new-search)
+  "Refine the current search results.
+
+Runs a new search by refining the current query string.
+
+If NEW-SEARCH is non-nil, creates a new search rather than
+replacing the current one."
+  (interactive "P")
+  (let* ((original-query notmuch-search-query-string)
+         (new-query (minibuffer-with-setup-hook
+                        (lambda ()
+                          (insert original-query " "))
+                      (notmuch-read-query "Refine search: ")))
+         (grouped-original-query (notmuch-group-disjunctive-query-string
+				  notmuch-search-query-string))
+         (grouped-new-query (notmuch-group-disjunctive-query-string
+                             new-query)))
+    (when (not (equal new-search '(4)))
+      (notmuch-bury-or-kill-this-buffer))
+    (notmuch-search grouped-new-query notmuch-search-oldest-first)))
+
+(define-key notmuch-search-mode-map "y" #'zp/notmuch-search-refine)
 (define-key notmuch-hello-mode-map "q" #'zp/notmuch-hello-quit)
 (define-key notmuch-search-mode-map "g" #'notmuch-refresh-this-buffer)
 
