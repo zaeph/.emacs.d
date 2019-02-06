@@ -3009,7 +3009,10 @@ It creates 4 blocks:
              (,(zp/org-agenda-block-agenda-week "Weekly Agenda")))
 
         ("n" "Task List"
-             (,@(zp/org-agenda-blocks-main "Life" '("life" "pro" nil) '("life" "pro" "media" nil))))
+             (,@(zp/org-agenda-blocks-main "Life" '("life" "pro") '("life" "pro" "media"))))
+
+        ("g" "Groupless Tasks"
+             (,@(zp/org-agenda-blocks-main "Groupless Tasks" '(nil))))
 
         ("j" "Journal entries"
              (,(zp/org-agenda-block-journal))
