@@ -1153,8 +1153,8 @@ replacing the current one."
   (let* ((original-query notmuch-search-query-string)
          (new-query (minibuffer-with-setup-hook
                         (lambda ()
-                          (insert original-query))
-                      (read-string "Refine search: ")))
+                          (insert original-query " "))
+                      (notmuch-read-query "Refine search: ")))
          (grouped-original-query (notmuch-group-disjunctive-query-string
 				  notmuch-search-query-string))
          (grouped-new-query (notmuch-group-disjunctive-query-string
