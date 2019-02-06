@@ -3353,6 +3353,8 @@ Check their respective dosctrings for more info."
 
 (defun zp/org-agenda-mode-config ()
   "For use with `org-agenda-mode'."
+  (local-set-key (kbd "M-n") 'org-agenda-next-date-line)
+  (local-set-key (kbd "M-p") 'org-agenda-previous-date-line)
   (local-set-key (kbd "k") 'zp/org-agenda-capture)
   (local-set-key (kbd "C-,") 'sunrise-sunset)
   (local-set-key (kbd "M-k") 'zp/toggle-org-habit-show-all-today)
