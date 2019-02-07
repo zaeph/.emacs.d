@@ -3664,11 +3664,8 @@ Check their respective dosctrings for more info."
 ;; ============== ORG-REFILE ==============
 ;; ========================================
 
-(setq org-refile-targets '(
-                           (nil :maxlevel . 9)
-                           (org-agenda-files :maxlevel . 1)
-                           (zp/org-agenda-files-life :maxlevel . 3)
-                           )
+(setq org-refile-targets '((nil :maxlevel . 9)
+                           (org-agenda-files :maxlevel . 1))
       org-refile-use-cache nil)
 
 
@@ -3843,21 +3840,29 @@ KEYANDHEADLINE should be a list of cons cells of the form (\"key\" . \"headline\
 (defhydra zp/hydra-org-refile (:foreign-keys run
                                :hint nil)
   "
-^Life^          ^Prog^          ^Uni^           ^Mental^
-^^^^^^^^----------------------------------------------------------
-_o_: Life       _h_: Hacking    _u_: University _a_: Awakening
-_b_: Media      _l_: Linux      _r_: Research   _p_: Psychotherapy
-^^              _e_: Emacs
+^Life^              ^Prog^                  ^Uni^              ^Mental^
+^^^^^^^^----------------------------------------------------------------------
+_o_: Life           _h_: Hacking            _u_: University    _a_: Awakening
+_m_: Media          _l_: Linux              _r_: Research      _p_: Psychotherapy
+_x_: Maintenance    _e_: Emacs
+^^                  _t_: LaTeX
+
+^^                  _c_: Contributing
+^^                  _b_: Troubleshooting
 
 "
   ;; ("o" zp/hydra-org-refile-file-life/body :exit t)
   ("o" (zp/org-refile "/home/zaeph/org/life.org.gpg" "Life" current-prefix-arg) :exit t)
-  ("b" (zp/org-refile "/home/zaeph/org/life.org.gpg" "Media" current-prefix-arg) :exit t)
+  ("m" (zp/org-refile "/home/zaeph/org/life.org.gpg" "Media" current-prefix-arg) :exit t)
+  ("x" (zp/org-refile "/home/zaeph/org/life.org.gpg" "Maintenance" current-prefix-arg) :exit t)
   ("a" (zp/org-refile "/home/zaeph/org/life.org.gpg" "Awakening" current-prefix-arg) :exit t)
   ("p" (zp/org-refile "/home/zaeph/org/life.org.gpg" "Psychotherapy" current-prefix-arg) :exit t)
   ("u" (zp/org-refile "/home/zaeph/org/life.org.gpg" "University" current-prefix-arg) :exit t)
   ("r" (zp/org-refile "/home/zaeph/org/life.org.gpg" "Research" current-prefix-arg) :exit t)
   ("h" (zp/org-refile "/home/zaeph/org/life.org.gpg" "Hacking" current-prefix-arg) :exit t)
+  ("c" (zp/org-refile "/home/zaeph/org/life.org.gpg" "Contributing" current-prefix-arg) :exit t)
+  ("b" (zp/org-refile "/home/zaeph/org/life.org.gpg" "Troubleshooting" current-prefix-arg) :exit t)
+  ("t" (zp/org-refile "/home/zaeph/org/life.org.gpg" "LaTeX" current-prefix-arg) :exit t)
   ("e" (zp/org-refile "/home/zaeph/org/life.org.gpg" "Emacs" current-prefix-arg) :exit t)
   ("l" (zp/org-refile "/home/zaeph/org/life.org.gpg" "Linux" current-prefix-arg) :exit t)
 
