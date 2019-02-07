@@ -3846,6 +3846,7 @@ _o_: Life           _h_: Hacking            _u_: University    _a_: Awakening
 _m_: Media          _l_: Linux              _r_: Research      _p_: Psychotherapy
 _x_: Maintenance    _e_: Emacs
 ^^                  _t_: LaTeX
+^^                  _g_: Git
 
 ^^                  _c_: Contributing
 ^^                  _b_: Troubleshooting
@@ -3865,6 +3866,7 @@ _x_: Maintenance    _e_: Emacs
   ("t" (zp/org-refile "/home/zaeph/org/life.org.gpg" "LaTeX" current-prefix-arg) :exit t)
   ("e" (zp/org-refile "/home/zaeph/org/life.org.gpg" "Emacs" current-prefix-arg) :exit t)
   ("l" (zp/org-refile "/home/zaeph/org/life.org.gpg" "Linux" current-prefix-arg) :exit t)
+  ("g" (zp/org-refile "/home/zaeph/org/life.org.gpg" "Git" current-prefix-arg) :exit t)
 
   ("j" org-refile-goto-last-stored "Jump to last refile" :exit t)
   ("w" org-refile "zp/org-refile" :exit t)
