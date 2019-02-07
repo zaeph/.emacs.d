@@ -2274,7 +2274,7 @@ return `nil'."
         (when (derived-mode-p 'org-agenda-mode)
           (org-agenda-maybe-redo))))))
 
-(run-with-idle-timer 300 t #'zp/org-agenda-redo-all)
+;; (run-with-idle-timer 300 t #'zp/org-agenda-redo-all)
 
 
 
