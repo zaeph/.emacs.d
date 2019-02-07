@@ -3069,8 +3069,10 @@ It creates 4 blocks:
              ((org-agenda-files zp/org-agenda-files-life)))
 
         ("l" "Hacking"
-             (,@(zp/org-agenda-blocks-main "Hacking" '("hack")))
-             ((org-agenda-files zp/org-agenda-files-life)))
+             (,@(zp/org-agenda-blocks-main "Hacking" '("hack"))))
+
+        ("c" "Contributing & Troubleshooting"
+             (,@(zp/org-agenda-blocks-main "Contributing & Troubleshooting" '("contrib"))))
 
         ("d" "Deadlines"
              (,(zp/org-agenda-block-deadines)))
