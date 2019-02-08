@@ -3794,7 +3794,7 @@ the filename)."
                                        (find-file-noselect file)) ;Otherwise, try to find the file by name (Note, default-directory matters here if it isn't absolute)
                 (or (if (not (listp headline-or-path))
                         (org-find-exact-headline-in-buffer headline-or-path)
-                      (org-find-olp `(,(buffer-file-name) ,@headline)))
+                      (org-find-olp `(,(buffer-file-name) ,@headline-or-path)))
                     (error "Can't find headline-or-path `%s'" headline-or-path))))
          (filepath (buffer-file-name (marker-buffer pos))) ;If we're given a relative name, find absolute path
          (rfloc (list headline-or-path filepath nil pos)))
