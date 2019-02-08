@@ -3459,7 +3459,7 @@ Check their respective dosctrings for more info."
   (local-set-key (kbd "D") 'zp/toggle-org-agenda-include-deadlines)
   (local-set-key (kbd "S") 'zp/toggle-org-agenda-include-scheduled)
   (local-set-key (kbd "M-d") 'zp/toggle-org-deadline-warning-days-range)
-  (local-set-key (kbd "g") 'zp/org-agenda-benchmark)
+  (local-set-key (kbd "r") 'zp/org-agenda-benchmark)
   (local-set-key (kbd "h") 'zp/toggle-org-agenda-cmp-user-defined)
   (local-set-key (kbd "F") 'zp/toggle-org-agenda-todo-ignore-future-scheduled)
   (local-set-key (kbd "W") 'zp/toggle-org-agenda-projects-include-waiting)
