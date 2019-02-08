@@ -2050,11 +2050,11 @@ return `nil'."
 ;;                         (69 . (:foreground "gray20"))))
 
 ;; DEFCON theme
-(setq org-priority-faces '((65 . (:inherit org-priority-face-a))
-                           (66 . (:inherit org-priority-face-b))
-                           (67 . (:inherit org-priority-face-c))
-                           (68 . (:inherit org-priority-face-d))
-                           (69 . (:inherit org-priority-face-e))))
+(setq org-priority-faces '((?A . (:inherit org-priority-face-a))
+                           (?B . (:inherit org-priority-face-b))
+                           (?C . (:inherit org-priority-face-c))
+                           (?D . (:inherit org-priority-face-d))
+                           (?E . (:inherit org-priority-face-e))))
 (setq org-tags-column -77)              ;Default: -77
 ;; Default: auto OR -80.
 ;; 89 and not 90 because of org-agenda-category-icon-alist
