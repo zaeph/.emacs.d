@@ -3941,8 +3941,40 @@ KEYANDHEADLINE should be a list of cons cells of the form (\"key\" . \"headline\
                              ("a" . "AUR"))))
 
 
+(defhydra zp/hydra-org-refile-maintenance (:foreign-keys run
+                                           :hint nil
+                                           :exit t)
+  "
+^Maintenance^
+^^----------------------------------------------------------------------
+_c_: Cleaning
+_h_: Health
+_s_: Supplies
+
+"
+  ;; ("o" zp/hydra-org-refile-file-life/body :exit t)
+  ("c" (zp/org-refile-to "/home/zaeph/org/life.org.gpg"
+                         '("Maintenance" "Cleaning")
+                         current-prefix-arg))
+  ("h" (zp/org-refile-to "/home/zaeph/org/life.org.gpg"
+                         '("Maintenance" "Health")
+                         current-prefix-arg))
+  ("s" (zp/org-refile-to "/home/zaeph/org/life.org.gpg"
+                         '("Maintenance" "Supplies")
+                         current-prefix-arg))
+
+  ("C" zp/hydra-org-refile-chain-toggle (if zp/hydra-org-refile-chain
+                                            "[x]"
+                                          "[ ]") :exit nil)
+
+  ("j" org-refile-goto-last-stored "Jump to last refile")
+  ("w" zp/org-refile "zp/org-refile")
+  ("q" nil "cancel")
+  ("<backspace>" zp/hydra-org-refile/body "Back to menu"))
+
 (defhydra zp/hydra-org-refile (:foreign-keys run
-                               :hint nil)
+                               :hint nil
+                               :exit t)
   "
 ^Life^              ^Prog^                  ^Uni^              ^Mental^
 ^^^^^^^^----------------------------------------------------------------------
@@ -3958,28 +3990,28 @@ _x_: Maintenance
 ^^^^^^                                                         _C_: ?C? chain
 "
   ;; ("o" zp/hydra-org-refile-file-life/body :exit t)
-  ("i" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" "Inbox" current-prefix-arg) :exit t)
-  ("o" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" "Life" current-prefix-arg) :exit t)
-  ("m" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" "Media" current-prefix-arg) :exit t)
-  ("x" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" "Maintenance" current-prefix-arg) :exit t)
-  ("a" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" "Awakening" current-prefix-arg) :exit t)
-  ("p" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" "Psychotherapy" current-prefix-arg) :exit t)
-  ("u" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" "University" current-prefix-arg) :exit t)
-  ("r" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" "Research" current-prefix-arg) :exit t)
-  ("h" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" "Hacking" current-prefix-arg) :exit t)
-  ("c" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" "Contributing" current-prefix-arg) :exit t)
-  ("b" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" "Troubleshooting" current-prefix-arg) :exit t)
-  ("t" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" "LaTeX" current-prefix-arg) :exit t)
-  ("e" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" "Emacs" current-prefix-arg) :exit t)
-  ("l" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" "Linux" current-prefix-arg) :exit t)
-  ("g" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" "Git" current-prefix-arg) :exit t)
+  ("i" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" "Inbox" current-prefix-arg))
+  ("o" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" "Life" current-prefix-arg))
+  ("m" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" "Media" current-prefix-arg))
+  ("x" zp/hydra-org-refile-maintenance/body)
+  ("a" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" "Awakening" current-prefix-arg))
+  ("p" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" "Psychotherapy" current-prefix-arg))
+  ("u" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" "University" current-prefix-arg))
+  ("r" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" "Research" current-prefix-arg))
+  ("h" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" "Hacking" current-prefix-arg))
+  ("c" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" "Contributing" current-prefix-arg))
+  ("b" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" "Troubleshooting" current-prefix-arg))
+  ("t" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" "LaTeX" current-prefix-arg))
+  ("e" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" "Emacs" current-prefix-arg))
+  ("l" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" "Linux" current-prefix-arg))
+  ("g" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" "Git" current-prefix-arg))
 
   ("C" zp/hydra-org-refile-chain-toggle (if zp/hydra-org-refile-chain
                                             "[x]"
-                                          "[ ]"))
+                                          "[ ]") :exit nil)
 
-  ("j" org-refile-goto-last-stored "Jump to last refile" :exit t)
-  ("w" zp/org-refile "zp/org-refile" :exit t)
+  ("j" org-refile-goto-last-stored "Jump to last refile")
+  ("w" zp/org-refile "zp/org-refile")
   ("q" nil "cancel"))
 
 (global-set-key (kbd "C-c C-w") 'zp/hydra-org-refile/body)
