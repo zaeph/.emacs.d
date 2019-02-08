@@ -2556,6 +2556,70 @@ return `nil'."
 
 
 ;; ========================================
+;; ============= ORG-PRIORITY =============
+;; ========================================
+
+(defvar zp/hydra-org-priority-chain nil
+  "When non-nil, make zp/hydra-org-priority chain the commands.")
+
+(defun zp/hydra-org-priority-chain-toggle ()
+  "Toggle zp/hydra-org-priority-chain."
+  (interactive)
+  (if zp/hydra-org-priority-chain
+      (setq-local zp/hydra-org-priority-chain nil)
+    (setq-local zp/hydra-org-priority-chain t)))
+
+(defun zp/hydra-org-priority-set (&optional action show)
+  "Change the priority of an item, and possibly chain the commands."
+  (interactive)
+  (let ((in-agenda (eq major-mode 'org-agenda-mode)))
+    (if in-agenda
+        (org-agenda-priority action)
+      (org-priority action show))
+    (when (and zp/hydra-org-priority-chain
+               (zp/hydra-org-priority-goto-sibling))
+      (zp/hydra-org-priority/body))))
+
+(defun zp/hydra-org-priority-goto-sibling (&optional previous)
+  (interactive)
+  (let ((in-agenda (eq major-mode 'org-agenda-mode))
+        (fun-agenda (if previous
+                        'org-agenda-previous-item
+                      'org-agenda-next-item)))
+    (cond (in-agenda
+           (funcall fun-agenda 1))
+          (t
+           (org-goto-sibling (if previous t))))))
+
+(defhydra zp/hydra-org-priority (:foreign-keys run
+                                 :hint nil)
+  "
+_a_: #A    _p_: previous    _C_: ?C? chain
+_b_: #B    _n_: next
+_c_: #C
+_d_: #D
+_e_: #E    _SPC_: remove
+
+"
+  ("C" zp/hydra-org-priority-chain-toggle (if zp/hydra-org-priority-chain
+                                              "[x]"
+                                            "[ ]"))
+  ("a" (zp/hydra-org-priority-set ?a) :exit t)
+  ("b" (zp/hydra-org-priority-set ?b) :exit t)
+  ("c" (zp/hydra-org-priority-set ?c) :exit t)
+  ("d" (zp/hydra-org-priority-set ?d) :exit t)
+  ("e" (zp/hydra-org-priority-set ?e) :exit t)
+
+  ("p" (zp/hydra-org-priority-goto-sibling t))
+  ("n" (zp/hydra-org-priority-goto-sibling))
+
+  ("SPC" (zp/hydra-org-priority-set 'remove) :exit t)
+
+  ("q" nil "cancel"))
+
+
+
+;; ========================================
 ;; ============== ORG-AGENDA ==============
 ;; ========================================
 
@@ -3385,6 +3449,7 @@ Check their respective dosctrings for more info."
   (local-set-key (kbd "M-p") 'org-agenda-previous-date-line)
   (local-set-key (kbd "k") 'zp/org-agenda-capture)
   (local-set-key (kbd "C-,") 'sunrise-sunset)
+  (local-set-key (kbd ",") 'zp/hydra-org-priority/body)
   (local-set-key (kbd "M-k") 'zp/toggle-org-habit-show-all-today)
   (local-set-key (kbd "M-t") 'org-agenda-todo-yesterday)
   (local-set-key (kbd "D") 'zp/toggle-org-agenda-include-deadlines)
