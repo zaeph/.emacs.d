@@ -3711,34 +3711,41 @@ Check their respective dosctrings for more info."
 
 
 
-(defun zp/org-refile-internal (file headline &optional arg)
+(defun zp/org-refile-internal (file headline-or-path &optional arg)
   "Refile to a specific location.
+
 With a 'C-u' ARG argument, we jump to that location (see
 `org-refile').
-Use `org-agenda-refile' in `org-agenda' mode."
-  (let* ((pos (with-current-buffer (or (get-buffer file)        ;Is the file open in a buffer already?
+Use `org-agenda-refile' in `org-agenda' mode.
+
+If HEADLINE-OR-PATH is a string, interprets it as a heading.  If
+HEADLINE-OR-PATH is a list, interprets it as an olp path (without
+the filename)."
+  (let* ((pos (with-current-buffer (or (get-buffer file) ;Is the file open in a buffer already?
                                        (find-file-noselect file)) ;Otherwise, try to find the file by name (Note, default-directory matters here if it isn't absolute)
-                (or (org-find-exact-headline-in-buffer headline)
-                    (error "Can't find headline `%s'" headline))))
-         (filepath (buffer-file-name (marker-buffer pos)));If we're given a relative name, find absolute path
-         (rfloc (list headline filepath nil pos)))
+                (or (if (not (listp headline-or-path))
+                        (org-find-exact-headline-in-buffer headline-or-path)
+                      (org-find-olp `(,(buffer-file-name) ,@headline)))
+                    (error "Can't find headline-or-path `%s'" headline-or-path))))
+         (filepath (buffer-file-name (marker-buffer pos))) ;If we're given a relative name, find absolute path
+         (rfloc (list headline-or-path filepath nil pos)))
     (if (and (eq major-mode 'org-agenda-mode) (not (and arg (listp arg)))) ;Don't use org-agenda-refile if we're just jumping
         (org-agenda-refile nil rfloc)
       (org-refile arg nil rfloc))))
 
-(defun zp/org-refile-to (file headline &optional arg)
+(defun zp/org-refile-to (file headline-or-path &optional arg)
   "Refile to HEADLINE in FILE. Clean up org-capture if it's activated.
 With a `C-u` ARG, just jump to the headline."
   (interactive "P")
   (let ((is-capturing (and (boundp 'org-capture-mode) org-capture-mode)))
     (cond
      ((and arg (listp arg))         ;Are we jumping?
-      (zp/org-refile-internal file headline arg))
+      (zp/org-refile-internal file headline-or-path arg))
      ;; Are we in org-capture-mode?
      (is-capturing              ;Minor mode variable that's defined when capturing
-      (zp/org-capture-refile-internal file headline arg))
+      (zp/org-capture-refile-internal file headline-or-path arg))
      (t
-      (zp/org-refile-internal file headline arg)))
+      (zp/org-refile-internal file headline-or-path arg)))
     (cond ((or arg is-capturing)
            (setq hydra-deactivate t))
           (zp/hydra-org-refile-chain
@@ -3757,7 +3764,7 @@ With a `C-u` ARG, just jump to the headline."
           (zp/hydra-org-refile-chain
            (zp/hydra-org-refile/body)))))
 
-(defun zp/org-capture-refile-internal (file headline &optional arg)
+(defun zp/org-capture-refile-internal (file headline-or-path &optional arg)
   "Copied from ‘org-capture-refile’ since it doesn't allow
 passing arguments. This does."
   (unless (eq (org-capture-get :type 'local) 'entry)
@@ -3773,7 +3780,7 @@ passing arguments. This does."
       (with-current-buffer (or base (current-buffer))
         (org-with-wide-buffer
          (goto-char pos)
-         (zp/org-refile-internal file headline arg))))
+         (zp/org-refile-internal file headline-or-path arg))))
     (when kill-buffer (kill-buffer base))))
 
 (defmacro zp/make-hydra-org-refile (hydraname name file keyandheadline)
