@@ -2658,11 +2658,15 @@ _e_: #E    _SPC_: remove
       org-agenda-clockreport-parameter-plist '(:link t :maxlevel 2 :fileskip0 t)
       )
 
-(defun zp/org-agenda-benchmark ()
+(defun zp/org-agenda-benchmark (&optional arg)
   "Rebuild the agenda and display the time it took to do so."
-  (interactive)
-  (with-timer "Rebuilding agenda buffer"
-    (org-agenda-redo)))
+  (interactive "P")
+  (cond ((equal arg '(4))
+         (with-timer "Rebuilding agenda buffer"
+           (zp/org-agenda-redo-all)))
+        (t
+         (with-timer "Rebuilding agenda buffer"
+           (org-agenda-redo)))))
 
 
 
