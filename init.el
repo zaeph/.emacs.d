@@ -3675,6 +3675,16 @@ Check their respective dosctrings for more info."
 (setq org-outline-path-complete-in-steps nil
       org-refile-use-outline-path nil)
 
+(defvar zp/hydra-org-refile-chain nil
+  "When non-nil, make zp/hydra-org-refile chain the commands.")
+
+(defun zp/hydra-org-refile-chain-toggle ()
+  "Toggle zp/hydra-org-refile-chain."
+  (interactive)
+  (if zp/hydra-org-refile-chain
+      (setq-local zp/hydra-org-refile-chain nil)
+    (setq-local zp/hydra-org-refile-chain t)))
+
 (defun zp/org-refile-with-paths (&optional arg default-buffer rfloc msg)
   (interactive "P")
   (let ((org-refile-use-outline-path 1)
@@ -3716,7 +3726,7 @@ Use `org-agenda-refile' in `org-agenda' mode."
         (org-agenda-refile nil rfloc)
       (org-refile arg nil rfloc))))
 
-(defun zp/org-refile (file headline &optional arg)
+(defun zp/org-refile-to (file headline &optional arg)
   "Refile to HEADLINE in FILE. Clean up org-capture if it's activated.
 With a `C-u` ARG, just jump to the headline."
   (interactive "P")
@@ -3729,8 +3739,23 @@ With a `C-u` ARG, just jump to the headline."
       (zp/org-capture-refile-internal file headline arg))
      (t
       (zp/org-refile-internal file headline arg)))
-    (when (or arg is-capturing)
-      (setq hydra-deactivate t))))
+    (cond ((or arg is-capturing)
+           (setq hydra-deactivate t))
+          (zp/hydra-org-refile-chain
+           (zp/hydra-org-refile/body)))))
+
+(defun zp/org-refile (&optional arg)
+  (interactive "P")
+  (let ((is-capturing (and (boundp 'org-capture-mode) org-capture-mode)))
+    (cond
+      (is-capturing
+       (org-capture-refile arg))
+     (t
+      (org-refile arg)))
+    (cond ((or arg is-capturing)
+           (setq hydra-deactivate t))
+          (zp/hydra-org-refile-chain
+           (zp/hydra-org-refile/body)))))
 
 (defun zp/org-capture-refile-internal (file headline &optional arg)
   "Copied from ‘org-capture-refile’ since it doesn't allow
@@ -3760,7 +3785,7 @@ KEYANDHEADLINE should be a list of cons cells of the form (\"key\" . \"headline\
      ,name
      ,@(cl-loop for kv in keyandheadline
           collect (list (car kv)
-                        (list 'zp/org-refile
+                        (list 'zp/org-refile-to
                               file
                               (cdr kv)
                               'current-prefix-arg)
@@ -3845,34 +3870,40 @@ KEYANDHEADLINE should be a list of cons cells of the form (\"key\" . \"headline\
   "
 ^Life^              ^Prog^                  ^Uni^              ^Mental^
 ^^^^^^^^----------------------------------------------------------------------
-_o_: Life           _h_: Hacking            _u_: University    _a_: Awakening
-_m_: Media          _l_: Linux              _r_: Research      _p_: Psychotherapy
-_x_: Maintenance    _e_: Emacs
+_i_: Inbox          _h_: Hacking            _u_: University    _a_: Awakening
+_o_: Life           _l_: Linux              _r_: Research      _p_: Psychotherapy
+_m_: Media          _e_: Emacs
+_x_: Maintenance
 ^^                  _t_: LaTeX
 ^^                  _g_: Git
 
 ^^                  _c_: Contributing
 ^^                  _b_: Troubleshooting
-
+^^^^^^                                                         _C_: ?C? chain
 "
   ;; ("o" zp/hydra-org-refile-file-life/body :exit t)
-  ("o" (zp/org-refile "/home/zaeph/org/life.org.gpg" "Life" current-prefix-arg) :exit t)
-  ("m" (zp/org-refile "/home/zaeph/org/life.org.gpg" "Media" current-prefix-arg) :exit t)
-  ("x" (zp/org-refile "/home/zaeph/org/life.org.gpg" "Maintenance" current-prefix-arg) :exit t)
-  ("a" (zp/org-refile "/home/zaeph/org/life.org.gpg" "Awakening" current-prefix-arg) :exit t)
-  ("p" (zp/org-refile "/home/zaeph/org/life.org.gpg" "Psychotherapy" current-prefix-arg) :exit t)
-  ("u" (zp/org-refile "/home/zaeph/org/life.org.gpg" "University" current-prefix-arg) :exit t)
-  ("r" (zp/org-refile "/home/zaeph/org/life.org.gpg" "Research" current-prefix-arg) :exit t)
-  ("h" (zp/org-refile "/home/zaeph/org/life.org.gpg" "Hacking" current-prefix-arg) :exit t)
-  ("c" (zp/org-refile "/home/zaeph/org/life.org.gpg" "Contributing" current-prefix-arg) :exit t)
-  ("b" (zp/org-refile "/home/zaeph/org/life.org.gpg" "Troubleshooting" current-prefix-arg) :exit t)
-  ("t" (zp/org-refile "/home/zaeph/org/life.org.gpg" "LaTeX" current-prefix-arg) :exit t)
-  ("e" (zp/org-refile "/home/zaeph/org/life.org.gpg" "Emacs" current-prefix-arg) :exit t)
-  ("l" (zp/org-refile "/home/zaeph/org/life.org.gpg" "Linux" current-prefix-arg) :exit t)
-  ("g" (zp/org-refile "/home/zaeph/org/life.org.gpg" "Git" current-prefix-arg) :exit t)
+  ("i" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" "Inbox" current-prefix-arg) :exit t)
+  ("o" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" "Life" current-prefix-arg) :exit t)
+  ("m" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" "Media" current-prefix-arg) :exit t)
+  ("x" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" "Maintenance" current-prefix-arg) :exit t)
+  ("a" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" "Awakening" current-prefix-arg) :exit t)
+  ("p" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" "Psychotherapy" current-prefix-arg) :exit t)
+  ("u" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" "University" current-prefix-arg) :exit t)
+  ("r" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" "Research" current-prefix-arg) :exit t)
+  ("h" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" "Hacking" current-prefix-arg) :exit t)
+  ("c" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" "Contributing" current-prefix-arg) :exit t)
+  ("b" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" "Troubleshooting" current-prefix-arg) :exit t)
+  ("t" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" "LaTeX" current-prefix-arg) :exit t)
+  ("e" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" "Emacs" current-prefix-arg) :exit t)
+  ("l" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" "Linux" current-prefix-arg) :exit t)
+  ("g" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" "Git" current-prefix-arg) :exit t)
+
+  ("C" zp/hydra-org-refile-chain-toggle (if zp/hydra-org-refile-chain
+                                            "[x]"
+                                          "[ ]"))
 
   ("j" org-refile-goto-last-stored "Jump to last refile" :exit t)
-  ("w" org-refile "zp/org-refile" :exit t)
+  ("w" zp/org-refile "zp/org-refile" :exit t)
   ("q" nil "cancel"))
 
 (global-set-key (kbd "C-c C-w") 'zp/hydra-org-refile/body)
