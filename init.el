@@ -2636,14 +2636,14 @@ return `nil'."
 (defhydra zp/hydra-org-priority (:foreign-keys run
                                  :hint nil)
   "
-_a_: #A    _p_: previous    _C_: ?C? chain
+_a_: #A    _p_: previous    _x_: ?x? chain
 _b_: #B    _n_: next
 _c_: #C
 _d_: #D
 _e_: #E    _SPC_: remove
 
 "
-  ("C" zp/hydra-org-priority-chain-toggle (if zp/hydra-org-priority-chain
+  ("x" zp/hydra-org-priority-chain-toggle (if zp/hydra-org-priority-chain
                                               "[x]"
                                             "[ ]"))
   ("a" (zp/hydra-org-priority-set ?a) :exit t)
