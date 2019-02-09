@@ -4022,9 +4022,9 @@ _s_: Supplies
 ^^^^^^^^----------------------------------------------------------------------
 _i_: Inbox          _h_: Hacking            _u_: University    _a_: Awakening
 _o_: Life           _l_: Linux              _r_: Research      _p_: Psychotherapy
-_m_: Media          _e_: Emacs
-_x_: Maintenance
-^^                  _t_: LaTeX
+_s_: Social         _e_: Emacs
+_m_: Media
+_x_: Maintenance    _t_: LaTeX
 ^^                  _g_: Git
 
 ^^                  _c_: Contributing
@@ -4034,6 +4034,7 @@ _x_: Maintenance
   ;; ("o" zp/hydra-org-refile-file-life/body :exit t)
   ("i" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" "Inbox" current-prefix-arg))
   ("o" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" "Life" current-prefix-arg))
+  ("s" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" "Social" current-prefix-arg))
   ("m" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" "Media" current-prefix-arg))
   ("x" zp/hydra-org-refile-maintenance/body)
   ("a" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" "Awakening" current-prefix-arg))
