@@ -2295,6 +2295,7 @@ return `nil'."
   (local-set-key (kbd "C-x n f") 'zp/org-narrow-forwards)
   (local-set-key (kbd "C-x n b") 'zp/org-narrow-backwards)
   (local-set-key (kbd "C-x n w") 'zp/org-widen)
+  (local-set-key (kbd "C-c ,") 'zp/hydra-org-priority/body)
   (local-set-key (kbd "M-p") 'org-metaup)
   (local-set-key (kbd "M-n") 'org-metadown)
   (local-set-key (kbd "M-[") 'org-metaleft)
