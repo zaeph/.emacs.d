@@ -5989,6 +5989,10 @@ will not be modified."
 
 (add-hook 'org-capture-before-finalize-hook #'zp/org-set-created-property)
 
+;; Align tags in templates before finalising
+(add-hook 'org-capture-before-finalize-hook #'org-align-all-tags)
+
+
 
 
 ;; Ediff in dired
