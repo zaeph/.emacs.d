@@ -3714,21 +3714,21 @@ subtemplate to use."
 
         ("j" "Journal")
         ("jj" "Journal" entry (file+headline "/home/zaeph/org/journal.org.gpg" "Life")
-         "* %^{Title|Entry}\n%T\n\n%?")
+         "* %^{Title|Entry}\n%T\n\n%?" :full-frame t)
         ("ja" "Awakening" entry (file+headline "/home/zaeph/org/journal.org.gpg" "Awakening")
-         "* %^{Title|Entry}\n%T\n\n%?")
+         "* %^{Title|Entry}\n%T\n\n%?" :full-frame t)
         ("jp" "Psychotherapy" entry (file+headline "/home/zaeph/org/journal.org.gpg" "Psychotherapy")
-         "* %^{Title|Entry}\n%T\n\n%?")
+         "* %^{Title|Entry}\n%T\n\n%?" :full-frame t)
         ("jw" "Writing" entry (file+headline "/home/zaeph/org/journal.org.gpg" "Writing")
-         "* %^{Title|Entry} %^g\n%T\n\n%?")
+         "* %^{Title|Entry} %^g\n%T\n\n%?" :full-frame t)
         ("jr" "Research" entry (file+headline "/home/zaeph/org/journal.org.gpg" "Research")
-         "* %^{Title|Entry}\n%T\n\n%?")
+         "* %^{Title|Entry}\n%T\n\n%?" :full-frame t)
         ("ju" "University" entry (file+headline "/home/zaeph/org/journal.org.gpg" "University")
-         "* %^{Title|Entry}\n%T\n\n%?")
+         "* %^{Title|Entry}\n%T\n\n%?" :full-frame t)
         ("jh" "Hacking" entry (file+headline "/home/zaeph/org/journal.org.gpg" "Hacking")
-         "* %^{Title|Entry}\n%T\n\n%?")
+         "* %^{Title|Entry}\n%T\n\n%?" :full-frame t)
         ("js" "Swimming" entry (file+headline "/home/zaeph/org/journal.org.gpg" "Swimming")
-         "* %^{Title|Entry}\n%T\n\n%?")
+         "* %^{Title|Entry}\n%T\n\n%?" :full-frame t)
 
         ;; Daily Record of Dysfunctional Thoughts
         ("D" "Record Dysfunctional Thoughts" entry (file+headline "/home/zaeph/org/journal.org.gpg" "Psychotherapy")
@@ -3816,12 +3816,13 @@ subtemplate to use."
   "Save the window configuration before `org-capture'."
   (setq zp/org-capture-before-config (current-window-configuration)))
 
-(defun zp/org-capture-mode-delete-other-windows-if-journal ()
-  "Maximise the capture frame if the destination file contains `journal'."
-  (if (string-match-p (regexp-quote "journal") (buffer-name))
-      (delete-other-windows)))
+(defun zp/org-capture-make-full-frame ()
+  "Maximise the org-capture frame if :full-frame is non-nil."
+  (let ((full-frame (plist-get org-capture-plist :full-frame)))
+    (if full-frame
+        (delete-other-windows))))
 
-(add-hook 'org-capture-mode-hook 'zp/org-capture-mode-delete-other-windows-if-journal)
+(add-hook 'org-capture-mode-hook 'zp/org-capture-make-full-frame)
 
 
 
