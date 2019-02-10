@@ -1987,6 +1987,9 @@ return `nil'."
 (setq org-blank-before-new-entry (quote ((heading)
                                          (plain-list-item . auto))))
 
+;; Prevent blank-lines from being displayed between headings in folded state
+(setq org-cycle-separator-lines 0)
+
 ;; Add curly quotes to list of pre- and post-matches for emphasis markers
 (setq org-emphasis-regexp-components '("-       ('‘\"“’{" "-    .,:!?;'’\"”)}\\[" "     
 " "." 1))
