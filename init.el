@@ -2289,6 +2289,19 @@ return `nil'."
         (zp/play-sound-turn-page))
     (message "Couldn’t find a previous position.")))
 
+;; Better C-<return> in narrowed buffers
+(defun zp/org-insert-heading-respect-content-and-narrow (&optional invisible-ok)
+  "Insert heading with `org-insert-heading-respect-content' set to t.
+
+Also prevents the insertion of blank lines when creating a
+heading at the end of a narrowed buffer."
+  (interactive)
+  (let ((next-heading (save-excursion (outline-get-next-sibling))))
+    (org-insert-heading '(4) invisible-ok)
+    (when (and (not next-heading)
+               (buffer-narrowed-p))
+      (delete-char 1))))
+
 ;; Hook
 (defun org-mode-config ()
   "Modify keymaps used by `org-mode'."
