@@ -1975,7 +1975,7 @@ return `nil'."
       org-export-in-background t
       org-export-with-sub-superscripts nil
       org-image-actual-width nil ;Ensures that images displayed within emacs can be resized with #+ATTR_ORG:
-      org-hide-emphasis-markers nil     ;Fontification
+      org-hide-emphasis-markers nil               ;Fontification
       org-ellipsis "…"
       org-track-ordered-property-with-tag "ORDERED"
       ;; org-tags-exclude-from-inheritance '("project")
