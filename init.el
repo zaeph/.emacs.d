@@ -1983,6 +1983,10 @@ return `nil'."
       org-catch-invisible-edits 'show
       org-footnote-define-inline 1)
 
+;; Prevent auto insertion of blank-lines before heading but not for lists
+(setq org-blank-before-new-entry (quote ((heading)
+                                         (plain-list-item . auto))))
+
 ;; Add curly quotes to list of pre- and post-matches for emphasis markers
 (setq org-emphasis-regexp-components '("-       ('‘\"“’{" "-    .,:!?;'’\"”)}\\[" "     
 " "." 1))
