@@ -2743,6 +2743,8 @@ _e_: #E    _SPC_: remove
 
 (zp/update-org-agenda-files)
 
+(run-at-time "06:00" 86400 #'zp/org-agenda-redo-all)
+
 ;; Force habits to be shown if they’ve been disabled the previous day
 (run-at-time "06:00" 86400 '(lambda () (setq org-habit-show-habits t)))
 
