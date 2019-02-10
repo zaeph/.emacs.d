@@ -3633,8 +3633,20 @@ Check their respective dosctrings for more info."
     (zp/letterboxd-set-duration)
    title))
 
+(defvar zp/org-capture-web-title nil
+  "Title of the webpage captured by org-capture-web.sh.")
+(defvar zp/org-capture-web-url nil
+  "URL of the webpage captured by org-capture-web.sh.")
 
+(defun zp/org-capture-web (title url template)
+  "Capture the website based on the info provided by org-capture-web.sh.
 
+TITLE and URL are those of the webpage.  TEMPLATE is the
+subtemplate to use."
+  (interactive)
+  (setq zp/org-capture-web-title title)
+  (setq zp/org-capture-web-url url)
+  (org-capture nil (concat "W" template)))
 
 (setq org-capture-templates
       '(("n" "Note" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
@@ -3710,7 +3722,19 @@ Check their respective dosctrings for more info."
          "* Record of Dysfunctional Thoughts\n%T\n** Situation\n%?\n** Emotions\n** Thoughts")
 
         ("a" "Meditation session" entry (file+headline "/home/zaeph/org/projects/awakening/awakening.org.gpg" "Sessions")
-         "* DONE Session%^{SESSION_DURATION}p\n%t" :immediate-finish t)))
+         "* DONE Session%^{SESSION_DURATION}p\n%t" :immediate-finish t)
+
+        ("W" "Web")
+        ("Wr" "Read" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
+         "* TODO Read [[%(print zp/org-capture-web-url)][%(print zp/org-capture-web-title)]] :web:" :add-created t)
+        ("Wi" "Investigate" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
+         "* TODO Investigate [[%(print zp/org-capture-web-url)][%(print zp/org-capture-web-title)]] :web:" :add-created t)
+        ("Ww" "Watch" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
+         "* TODO Watch [[%(print zp/org-capture-web-url)][%(print zp/org-capture-web-title)]] :web:" :add-created t)))
+
+
+
+(zp/convert-m-to-hm "145")
 
 (defvar zp/swimming-workout-default nil)
 (setq zp/swimming-workout-default "
