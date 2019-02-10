@@ -1983,7 +1983,7 @@ return `nil'."
       ;; org-tags-exclude-from-inheritance '("project")
       org-tags-exclude-from-inheritance nil
       org-agenda-hide-tags-regexp "recurring\\|waiting\\|standby"
-      org-catch-invisible-edits 'show
+      org-catch-invisible-edits 'error
       org-footnote-define-inline 1)
 
 ;; Prevent auto insertion of blank-lines before heading but not for lists
