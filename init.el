@@ -2946,7 +2946,7 @@ agenda settings after them."
                   (:name "Scheduled today"
                    :and (:scheduled today
                          :not (:habit t)))
-                  (:name "Tasks"
+                  (:name "Active"
                    :and (:scheduled nil
                          :not (:tag "waiting")))
                   (:name "Scheduled later"
