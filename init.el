@@ -1995,6 +1995,10 @@ return `nil'."
 (setq org-emphasis-regexp-components '("-       ('‘\"“’{" "-    .,:!?;'’\"”)}\\[" "     
 " "." 1))
 
+;; Enable resetting checks plain-list when marking a repeated tasks DONE
+;; Set the RESET_CHECK_BOXES property to t for the heading
+(require 'org-checklist)
+
 ;; (eval-after-load 'org '(require 'org-pdfview))
 
 (add-to-list 'org-file-apps
