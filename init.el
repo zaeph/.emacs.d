@@ -2302,6 +2302,19 @@ heading at the end of a narrowed buffer."
                (buffer-narrowed-p))
       (delete-char 1))))
 
+;; Better M-<return> in narrowed buffers
+(defun zp/org-meta-return-respect-narrowing (&optional arg)
+  (interactive "P")
+  (let ((next-heading (save-excursion (outline-next-heading))))
+    (org-meta-return arg)
+    (when (and (not next-heading)
+               (buffer-narrowed-p))
+      (if (org-at-table-p)
+          (save-excursion
+            (goto-char (point-max))
+            (org-delete-backward-char 1))
+        (delete-char 1)))))
+
 ;; Hook
 (defun org-mode-config ()
   "Modify keymaps used by `org-mode'."
