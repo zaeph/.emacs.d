@@ -2326,6 +2326,8 @@ heading at the end of a narrowed buffer."
   (local-set-key (kbd "C-c C-x r") 'zp/org-set-appt-warntime)
   (local-set-key (kbd "C-c C-x l") 'zp/org-set-location)
   (local-set-key (kbd "C-c C-x d") 'org-delete-property)
+  (local-set-key (kbd "C-<return>") 'zp/org-insert-heading-respect-content-and-narrowing)
+  (local-set-key (kbd "M-<return>") 'zp/org-meta-return-respect-narrowing)
   (local-set-key (kbd "C-c C-x D") 'org-insert-drawer)
   (local-set-key (kbd "S-<backspace>") 'zp/kill-indirect-buffer)
   (local-set-key (kbd "C-x n o") 'zp/org-overview)
