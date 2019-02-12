@@ -3839,14 +3839,17 @@ subtemplate to use."
 
         ("W" "Web")
         ("Wr" "Read" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
-         "* TODO Read [[%(print zp/org-capture-web-url)][%(print zp/org-capture-web-title)%?]] :web:"
-         :add-created t)
+              "* TODO Read [[%(print zp/org-capture-web-url)][%(print zp/org-capture-web-title)%?]] :web:"
+              :add-created t)
         ("Wi" "Investigate" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
-         "* TODO Investigate [[%(print zp/org-capture-web-url)][%(print zp/org-capture-web-title)%?]] :web:"
-         :add-created t)
+              "* TODO Investigate [[%(print zp/org-capture-web-url)][%(print zp/org-capture-web-title)%?]] :web:"
+              :add-created t)
+        ("Wb" "Browse" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
+              "* TODO Browse [[%(print zp/org-capture-web-url)][%(print zp/org-capture-web-title)%?]] :web:"
+              :add-created t)
         ("Ww" "Watch" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
-         "* TODO Watch [[%(print zp/org-capture-web-url)][%(print zp/org-capture-web-title)%?]] :web:"
-         :add-created t)))
+              "* TODO Watch [[%(print zp/org-capture-web-url)][%(print zp/org-capture-web-title)%?]] :web:"
+              :add-created t)))
 
 
 
