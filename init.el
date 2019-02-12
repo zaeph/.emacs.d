@@ -4022,7 +4022,7 @@ With a `C-u` ARG, just jump to the headline."
   (let ((is-capturing (and (boundp 'org-capture-mode) org-capture-mode)))
     (cond
       (is-capturing
-       (org-capture-refile arg))
+       (org-capture-refile))
      (t
       (org-refile arg)))
     (cond ((or arg is-capturing)
