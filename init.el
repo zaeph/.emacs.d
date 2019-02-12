@@ -385,6 +385,9 @@ that date.  Leave point on the first amount."
         ?A ?B ?C ?D ?E ?F ?G ?H ?I ?J ?K ?L ?M
         ?N ?O ?P ?Q ?R ?S ?T ?U ?V ?W ?X ?Y ?Z))
 
+(setq semantic-inhibit-functions
+      (list (lambda () (not (eq major-mode org-mode)))))
+
 
 
 ;; ========================================
