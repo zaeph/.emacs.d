@@ -1101,6 +1101,14 @@ that date.  Leave point on the first amount."
 (require 'orgalist)
 (add-hook 'message-mode-hook #'orgalist-mode)
 
+;; Set the marks for inserted text with message-mark-inserted-region
+(setq message-mark-insert-begin
+      "--------------------------------[START]--------------------------------
+"
+      message-mark-insert-end
+      "
+---------------------------------[END]---------------------------------")
+
 
 (setq notmuch-fcc-dirs
       `((,(zp/get-string-from-file "/home/zaeph/org/pp/private/email") .
