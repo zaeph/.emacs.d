@@ -3859,7 +3859,7 @@ subtemplate to use."
               "* TODO Browse [[%(print zp/org-capture-web-url)][%(print zp/org-capture-web-title)%?]] :web:"
               :add-created t)
         ("Ww" "Watch" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
-              "* TODO Watch [[%(print zp/org-capture-web-url)][%(print zp/org-capture-web-title)%?]] :web:"
+              "* TODO Watch [[%(print zp/org-capture-web-url)][%(print zp/org-capture-web-title)%?]] :video:"
               :add-created t)))
 
 
