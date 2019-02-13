@@ -2827,7 +2827,7 @@ _e_: #E    _SPC_: remove
         (ps-landscape-mode t)
         (ps-print-header nil)
         (ps-default-bg t))
-      org-agenda-clockreport-parameter-plist '(:link t :maxlevel 2 :fileskip0 t)
+      org-agenda-clockreport-parameter-plist '(:link t :narrow 50 :maxlevel 2 :fileskip0 t)
       )
 
 (defun zp/org-agenda-benchmark (&optional arg)
