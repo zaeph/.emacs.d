@@ -2845,7 +2845,7 @@ _e_: #E    _SPC_: remove
 (setq org-agenda-clock-consistency-checks '(:max-duration "10:00"
                                             :min-duration 0
                                             :max-gap "0:05"
-                                            :gap-ok-around ("4:00" "13:00" "19:30")
+                                            :gap-ok-around ("4:00" "12:30" "19:30")
                                             :default-face zp/org-agenda-block-info-face
                                             :gap-face nil
                                             :no-end-time-face nil
