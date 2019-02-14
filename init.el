@@ -4033,10 +4033,13 @@ With a `C-u` ARG, just jump to the headline."
 
 (defun zp/org-refile (&optional arg)
   (interactive "P")
-  (let ((is-capturing (and (boundp 'org-capture-mode) org-capture-mode)))
+  (let ((is-capturing (and (boundp 'org-capture-mode) org-capture-mode))
+        (is-agenda (derived-mode-p 'org-agenda-mode)))
     (cond
       (is-capturing
        (org-capture-refile))
+      (is-agenda
+       (org-agenda-refile))
      (t
       (org-refile arg)))
     (cond ((or arg is-capturing)
