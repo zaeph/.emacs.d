@@ -4177,9 +4177,10 @@ _s_: Supplies
                          '("Maintenance" "Supplies")
                          current-prefix-arg))
 
-  ("C" zp/hydra-org-refile-chain-toggle (if zp/hydra-org-refile-chain
-                                            "[x]"
-                                          "[ ]") :exit nil)
+  ("C" zp/hydra-org-refile-chain-toggle (concat (if zp/hydra-org-refile-chain
+                                                    "[x]"
+                                                  "[ ]")
+                                                " chain") :exit nil)
 
   ("j" org-refile-goto-last-stored "Jump to last refile")
   ("w" zp/org-refile "zp/org-refile")
@@ -4201,7 +4202,7 @@ _x_: Maintenance    _t_: LaTeX
 
 ^^                  _c_: Contributing
 ^^                  _b_: Troubleshooting
-^^^^^^                                                         _C_: ?C? chain
+
 "
   ;; ("o" zp/hydra-org-refile-file-life/body :exit t)
   ("i" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" "Inbox" current-prefix-arg))
@@ -4221,9 +4222,10 @@ _x_: Maintenance    _t_: LaTeX
   ("l" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" "Linux" current-prefix-arg))
   ("g" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" "Git" current-prefix-arg))
 
-  ("C" zp/hydra-org-refile-chain-toggle (if zp/hydra-org-refile-chain
-                                            "[x]"
-                                          "[ ]") :exit nil)
+  ("C" zp/hydra-org-refile-chain-toggle (concat (if zp/hydra-org-refile-chain
+                                                    "[x]"
+                                                  "[ ]")
+                                                " chain") :exit nil)
 
   ("j" org-refile-goto-last-stored "Jump to last refile")
   ("w" zp/org-refile "zp/org-refile")
