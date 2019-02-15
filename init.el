@@ -3112,9 +3112,13 @@ agenda settings after them."
                      `((org-agenda-files ',file)))
                ;; (org-agenda-skip-function 'zp/skip-non-stuck-projects)
                (org-agenda-skip-function
-                '(progn
-                  (zp/skip-tasks-not-belonging-to-agenda-groups ',groups)
-                  (zp/skip-non-stuck-projects)))
+                '(let ((skip-groups (zp/skip-tasks-not-belonging-to-agenda-groups ',groups t))
+                        (eob (max-char)))
+                   (if (equal skip-groups eob)
+                       eob
+                     (when skip-groups
+                       (goto-char skip-groups))
+                     (zp/skip-non-stuck-projects))))
                (org-agenda-todo-ignore-scheduled nil)
                (org-agenda-dim-blocked-tasks 'dimmed))))
 
@@ -3138,9 +3142,13 @@ agenda settings after them."
                      `((org-agenda-files ',file)))
                ;; (org-agenda-skip-function 'zp/skip-non-unstuck-projects-and-waiting)
                (org-agenda-skip-function
-                '(progn
-                  (zp/skip-tasks-not-belonging-to-agenda-groups ',groups)
-                  (zp/skip-non-unstuck-projects-and-waiting)))
+                '(let ((skip-groups (zp/skip-tasks-not-belonging-to-agenda-groups ',groups t))
+                       (eob (max-char)))
+                  (if (equal skip-groups eob)
+                      eob
+                    (when skip-groups
+                      (goto-char skip-groups))
+                    (zp/skip-non-unstuck-projects-and-waiting))))
                (org-agenda-sorting-strategy
                 '(user-defined-down priority-down category-keep))
                (org-agenda-todo-ignore-scheduled nil)
