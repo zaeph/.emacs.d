@@ -3065,9 +3065,9 @@ agenda settings after them."
    (mapcar (lambda (arg)
              (if (not arg)
                  "^$"
-                 (concat ".*\\b"
+                 (concat "\\b"
                          arg
-                         "\\b.*")))
+                         "\\b")))
            list)
    "\\|"))
 
@@ -5722,7 +5722,7 @@ Skip project and sub-project tasks, habits, and loose non-project tasks."
 
 GROUPS can be a list or a regex.
 
-If MATCH-GROUPLESS is non-nil, returns 0 when a task doesn’t have
+If MATCH-GROUPLESS is non-nil, returns -1 when a task doesn’t have
 a group."
   (let ((groups-regex
          (if (listp groups)
@@ -5736,7 +5736,7 @@ a group."
         (cond (task-group
                (string-match-p groups-regex task-group))
               (match-groupless
-               0))))))
+               -1))))))
 
 (defun zp/skip-tasks-not-belonging-to-agenda-groups (groups &optional exhaustive)
   "Skip tasks if they aren’t part of GROUPS.
