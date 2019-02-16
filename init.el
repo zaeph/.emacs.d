@@ -132,6 +132,13 @@
   (when (< emacs-major-version 24)
     ;; For important compatibility libraries like cl-lib
     (add-to-list 'package-archives '("gnu" . (concat proto "://elpa.gnu.org/packages/")))))
+
+;; Disable org’s ELPA packages
+(setq package-load-list '(all
+                          (org nil)
+                          (org-plus-contrib nil)
+                          ))
+
 (package-initialize)
 
 ;; org-elpa
