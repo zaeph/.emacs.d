@@ -5755,29 +5755,30 @@ trees."
            (property-regex (concat "^:" property ":.*"))
            (include-groupless-p (or exhaustive
                                     (member nil groups))))
-      (cond
-        ((zp/org-task-in-agenda-groups-p groups-regex include-groupless-p)
-         nil)
-        ((and include-groupless-p
-              (catch 'found-next
-                (while (re-search-backward (concat property-regex
-                                                   "$")
-                                           nil t)
-                  (if (org-entry-get (point) property)
-                      (throw 'found-next 't)))))
-         (outline-get-next-sibling))
-        ((catch 'found-next
-           (goto-char next-headline)
-           (while (re-search-forward (concat property-regex
-                                             "\\("
-                                             groups-regex
-                                             "\\)$")
-                                     nil t)
-             (if (org-entry-get (point) property)
-                 (throw 'found-next 't))))
-         (outline-next-heading))
-        (t
-         (goto-char (point-max)))))))
+      (save-excursion
+        (cond
+          ((zp/org-task-in-agenda-groups-p groups-regex include-groupless-p)
+           nil)
+          ((and include-groupless-p
+                (catch 'found-next
+                  (while (re-search-backward (concat property-regex
+                                                     "$")
+                                             nil t)
+                    (if (org-entry-get (point) property)
+                        (throw 'found-next 't)))))
+           (outline-get-next-sibling))
+          ((catch 'found-next
+             (goto-char next-headline)
+             (while (re-search-forward (concat property-regex
+                                               "\\("
+                                               groups-regex
+                                               "\\)$")
+                                       nil t)
+               (if (org-entry-get (point) property)
+                   (throw 'found-next 't))))
+           (outline-next-heading))
+          (t
+           (goto-char (point-max))))))))
 
 ;; 18.2.1 Narrowing to a subtree with bh/org-todo
 ;; (global-set-key (kbd "<f5>") 'bh/org-todo)
