@@ -2969,9 +2969,13 @@ agenda settings after them."
                ;; (org-agenda-skip-function 'zp/skip-non-tasks-and-scheduled))))
                ;; (org-agenda-skip-function 'bh/skip-non-tasks)
                (org-agenda-skip-function
-                '(progn
-                  (zp/skip-tasks-not-belonging-to-agenda-groups ',groups)
-                  (bh/skip-non-tasks)))
+                '(let ((skip-groups (zp/skip-tasks-not-belonging-to-agenda-groups ',groups))
+                       (eob (max-char)))
+                  (if (equal skip-groups eob)
+                      eob
+                    (when skip-groups
+                      (goto-char skip-groups))
+                    (bh/skip-non-tasks))))
                ;; (org-agenda-todo-ignore-scheduled 'all)
                (org-super-agenda-groups
                 '((:name "Overdue"
