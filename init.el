@@ -4169,12 +4169,16 @@ KEYANDHEADLINE should be a list of cons cells of the form (\"key\" . \"headline\
   "
 ^Maintenance^
 ^^----------------------------------------------------------------------
+_x_: General
 _c_: Cleaning
 _h_: Health
 _s_: Supplies
 
 "
   ;; ("o" zp/hydra-org-refile-file-life/body :exit t)
+  ("x" (zp/org-refile-to "/home/zaeph/org/life.org.gpg"
+                         '("Maintenance")
+                         current-prefix-arg))
   ("c" (zp/org-refile-to "/home/zaeph/org/life.org.gpg"
                          '("Maintenance" "Cleaning")
                          current-prefix-arg))
