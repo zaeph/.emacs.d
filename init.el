@@ -2839,7 +2839,9 @@ _e_: #E    _SPC_: remove
       )
 
 (defun zp/org-agenda-benchmark (&optional arg)
-  "Rebuild the agenda and display the time it took to do so."
+  "Rebuild the agenda and display the time it took to do so.
+
+With a prefix argument, do so in all agenda buffers."
   (interactive "P")
   (cond ((equal arg '(4))
          (with-timer "Rebuilding agenda buffer"
