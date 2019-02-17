@@ -6361,6 +6361,8 @@ Every ELEM in LIST is formatted as follows:
 ;; Other toggles
 
 ;; Actions
+(global-set-key (kbd "C-x r q") 'save-buffers-kill-terminal) ;magnar
+(global-set-key (kbd "C-x C-c") 'delete-frame)               ;magnars
 (global-set-key (kbd "C-c c") 'calendar)
 (global-set-key (kbd "C-c n") 'org-capture)
 (global-set-key (kbd "C-c N") 'org-noter)
