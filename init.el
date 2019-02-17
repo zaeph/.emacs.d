@@ -5747,7 +5747,7 @@ trees."
           ((and include-groupless-p
                 (catch 'found-next
                   (while (re-search-backward (concat property-regex
-                                                     "$")
+                                                     ".*$")
                                              nil t)
                     (if (org-entry-get (point) property)
                         (throw 'found-next 't)))))
@@ -5757,7 +5757,7 @@ trees."
              (while (re-search-forward (concat property-regex
                                                "\\("
                                                groups-regex
-                                               "\\)$")
+                                               "\\).*$")
                                        nil t)
                (if (org-entry-get (point) property)
                    (throw 'found-next 't))))
