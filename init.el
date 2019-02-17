@@ -5761,7 +5761,7 @@ trees."
                                        nil t)
                (if (org-entry-get (point) property)
                    (throw 'found-next 't))))
-           (outline-next-heading))
+           (outline-previous-heading))
           (t
            (goto-char (point-max))))))))
 
