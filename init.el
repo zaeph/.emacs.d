@@ -2969,13 +2969,8 @@ agenda settings after them."
                ;; (org-agenda-skip-function 'zp/skip-non-tasks-and-scheduled))))
                ;; (org-agenda-skip-function 'bh/skip-non-tasks)
                (org-agenda-skip-function
-                '(let ((skip-groups (zp/skip-tasks-not-belonging-to-agenda-groups ',groups))
-                       (eob (max-char)))
-                  (if (equal skip-groups eob)
-                      eob
-                    (when skip-groups
-                      (goto-char skip-groups))
-                    (bh/skip-non-tasks))))
+                '(or (zp/skip-tasks-not-belonging-to-agenda-groups ',groups)
+                  (bh/skip-non-tasks)))
                ;; (org-agenda-todo-ignore-scheduled 'all)
                (org-super-agenda-groups
                 '((:name "Overdue"
@@ -3012,13 +3007,8 @@ agenda settings after them."
                      `((org-agenda-files ',file)))
                ;; (org-agenda-skip-function 'zp/skip-non-stuck-projects)
                (org-agenda-skip-function
-                '(let ((skip-groups (zp/skip-tasks-not-belonging-to-agenda-groups ',groups t))
-                        (eob (max-char)))
-                   (if (equal skip-groups eob)
-                       eob
-                     (when skip-groups
-                       (goto-char skip-groups))
-                     (zp/skip-non-stuck-projects))))
+                '(or (zp/skip-tasks-not-belonging-to-agenda-groups ',groups t)
+                  (zp/skip-non-stuck-projects)))
                (org-agenda-todo-ignore-scheduled nil)
                (org-agenda-dim-blocked-tasks 'dimmed))))
 
@@ -3042,13 +3032,8 @@ agenda settings after them."
                      `((org-agenda-files ',file)))
                ;; (org-agenda-skip-function 'zp/skip-non-unstuck-projects-and-waiting)
                (org-agenda-skip-function
-                '(let ((skip-groups (zp/skip-tasks-not-belonging-to-agenda-groups ',groups t))
-                       (eob (max-char)))
-                  (if (equal skip-groups eob)
-                      eob
-                    (when skip-groups
-                      (goto-char skip-groups))
-                    (zp/skip-non-unstuck-projects-and-waiting))))
+                '(or (zp/skip-tasks-not-belonging-to-agenda-groups ',groups t)
+                  (zp/skip-non-unstuck-projects-and-waiting)))
                (org-agenda-sorting-strategy
                 '(user-defined-down priority-down category-keep))
                (org-agenda-todo-ignore-scheduled nil)
@@ -3065,9 +3050,9 @@ agenda settings after them."
    (mapcar (lambda (arg)
              (if (not arg)
                  "^$"
-                 (concat ".*\\b"
+                 (concat "\\b"
                          arg
-                         "\\b.*")))
+                         "\\b")))
            list)
    "\\|"))
 
@@ -5722,7 +5707,7 @@ Skip project and sub-project tasks, habits, and loose non-project tasks."
 
 GROUPS can be a list or a regex.
 
-If MATCH-GROUPLESS is non-nil, returns 0 when a task doesn’t have
+If MATCH-GROUPLESS is non-nil, returns -1 when a task doesn’t have
 a group."
   (let ((groups-regex
          (if (listp groups)
@@ -5736,7 +5721,7 @@ a group."
         (cond (task-group
                (string-match-p groups-regex task-group))
               (match-groupless
-               0))))))
+               -1))))))
 
 (defun zp/skip-tasks-not-belonging-to-agenda-groups (groups &optional exhaustive)
   "Skip tasks if they aren’t part of GROUPS.
@@ -5755,29 +5740,30 @@ trees."
            (property-regex (concat "^:" property ":.*"))
            (include-groupless-p (or exhaustive
                                     (member nil groups))))
-      (cond
-        ((zp/org-task-in-agenda-groups-p groups-regex include-groupless-p)
-         nil)
-        ((and include-groupless-p
-              (catch 'found-next
-                (while (re-search-backward (concat property-regex
-                                                   "$")
-                                           nil t)
-                  (if (org-entry-get (point) property)
-                      (throw 'found-next 't)))))
-         (outline-get-next-sibling))
-        ((catch 'found-next
-           (goto-char next-headline)
-           (while (re-search-forward (concat property-regex
-                                             "\\("
-                                             groups-regex
-                                             "\\)$")
-                                     nil t)
-             (if (org-entry-get (point) property)
-                 (throw 'found-next 't))))
-         (outline-next-heading))
-        (t
-         (goto-char (point-max)))))))
+      (save-excursion
+        (cond
+          ((zp/org-task-in-agenda-groups-p groups-regex include-groupless-p)
+           nil)
+          ((and include-groupless-p
+                (catch 'found-next
+                  (while (re-search-backward (concat property-regex
+                                                     ".*$")
+                                             nil t)
+                    (if (org-entry-get (point) property)
+                        (throw 'found-next 't)))))
+           (outline-get-next-sibling))
+          ((catch 'found-next
+             (goto-char next-headline)
+             (while (re-search-forward (concat property-regex
+                                               "\\("
+                                               groups-regex
+                                               "\\).*$")
+                                       nil t)
+               (if (org-entry-get (point) property)
+                   (throw 'found-next 't))))
+           (outline-previous-heading))
+          (t
+           (goto-char (point-max))))))))
 
 ;; 18.2.1 Narrowing to a subtree with bh/org-todo
 ;; (global-set-key (kbd "<f5>") 'bh/org-todo)
