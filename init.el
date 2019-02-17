@@ -2188,6 +2188,7 @@ return `nil'."
         ("^opsec$" "~/org/svg/icons/cyber-security-b.svg" nil nil :ascent center)
         ("^git$" "~/org/svg/icons/git.svg" nil nil :ascent center)
         ("^media$" "~/org/svg/icons/library.svg" nil nil :ascent center)
+        ("^music$" "~/org/svg/icons/compact-disc.svg" nil nil :ascent center)
         ("^tex$" "~/org/svg/icons/file-2-p.svg" nil nil :ascent center)
         ("^inbox$" "~/org/svg/icons/gmail.svg" nil nil :ascent center)
         ("^awakening$" "~/org/svg/icons/aperture-green.svg" nil nil :ascent center)
@@ -3212,6 +3213,10 @@ It creates 4 blocks:
              (,@(zp/org-agenda-blocks-main "Media" '("media")))
              ((org-agenda-files zp/org-agenda-files-life)))
 
+        ("B" "Music"
+             (,@(zp/org-agenda-blocks-main "Music" '("music")))
+             ((org-agenda-files zp/org-agenda-files-life)))
+
         ("l" "Hacking"
              (,@(zp/org-agenda-blocks-main "Hacking" '("hack"))))
 
@@ -4094,9 +4099,8 @@ _i_: Inbox          _h_: Hacking            _u_: University    _a_: Awakening
 _o_: Life           _l_: Linux              _r_: Research      _p_: Psychotherapy
 _s_: Social         _e_: Emacs
 _m_: Media
-_x_: Maintenance    _t_: LaTeX
-^^                  _g_: Git
-
+_M_: Music          _t_: LaTeX
+_x_: Maintenance    _g_: Git
 ^^                  _c_: Contributing
 ^^                  _b_: Troubleshooting
 
@@ -4106,6 +4110,7 @@ _x_: Maintenance    _t_: LaTeX
   ("o" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" "Life" current-prefix-arg))
   ("s" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" "Social" current-prefix-arg))
   ("m" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" "Media" current-prefix-arg))
+  ("M" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" "Music" current-prefix-arg))
   ("x" zp/hydra-org-refile-maintenance/body)
   ("a" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" "Awakening" current-prefix-arg))
   ("p" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" "Psychotherapy" current-prefix-arg))
