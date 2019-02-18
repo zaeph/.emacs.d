@@ -2247,7 +2247,7 @@ return `nil'."
 (defun zp/org-narrow-to-subtree ()
   "Move to the next subtree at same level, and narrow the buffer to it."
   (interactive)
-  (org-narrow-to-subtree)
+  (call-interactively 'org-narrow-to-subtree)
   (message "Narrowing to tree at point.")
   (zp/play-sound-turn-page))
 
@@ -2256,7 +2256,7 @@ return `nil'."
   (interactive)
   (let ((pos-before (point)))
     (setq-local zp/org-narrow-previous-position pos-before))
-  (widen)
+  (org-widen)
   (message "Removing narrowing.")
   (zp/play-sound-turn-page))
 
