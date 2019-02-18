@@ -1117,11 +1117,31 @@ that date.  Leave point on the first amount."
 ---------------------------------[END]---------------------------------")
 
 
+
+(defvar zp/private-email (zp/get-string-from-file "/home/zaeph/org/pp/private/email")
+  "My private email.")
+
+(defvar zp/work-email (zp/get-string-from-file "/home/zaeph/org/pp/work/email")
+  "My work email.")
+
+(defun zp/notmuch-get-email-alias-regexp (email alias)
+  "Format regex for matching aliases in notmuch-fcc-dirs."
+  (let ((email (cond
+                 ((equal email "work")
+                  zp/work-email)
+                 ((equal email "private")
+                  zp/private-email)
+                 (t
+                  email))))
+    (regexp-quote (replace-regexp-in-string "@" (concat "+" alias "@") email))))
+
 (setq notmuch-fcc-dirs
-      `((,(zp/get-string-from-file "/home/zaeph/org/pp/private/email") .
-          "private/sent -inbox +sent -unread")
-        (,(zp/get-string-from-file "/home/zaeph/org/pp/work/email") .
-          "work/sent -inbox +sent -unread")))
+      `((,zp/private-email .
+                           "private/sent -inbox +sent -unread")
+        (,zp/work-email .
+                        "work/sent -inbox +sent -unread")
+        (,(zp/notmuch-get-email-alias-regexp "work" "org") .
+          "work/sent -inbox +sent -unread +org")))
 
 ;; (setq notmuch-user-name
 ;;                   (lambda ()
