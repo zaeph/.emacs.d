@@ -1258,11 +1258,31 @@ When REPLACE is non-nil, do not create another buffer.  See also
       mml-secure-openpgp-sign-with-sender t
       mml-secure-openpgp-encrypt-to-self t)
 
-(add-hook 'message-mode-hook #'flyspell-mode)
 (add-hook 'message-mode-hook #'electric-quote-local-mode)
 ;; (add-hook 'message-mode-hook #'footnote-mode)
-(add-hook 'message-mode-hook (lambda ()
-                                (zp/helm-ispell-preselect "French")))
+
+(defvar zp/message-mode-ispell-alist nil
+  "Alist of emails and the language they typically use.
+The language should be the name of a valid Ispell dictionary.")
+
+(setq zp/message-mode-ispell-alist
+      `((,zp/email-private . "french")
+        (,zp/email-work . "french")
+        (,zp/email-org . "british")))
+
+(defun zp/message-mode-flyspell-auto ()
+  "Start Ispell with the language associated with the email.
+
+Looks for the email in the ‘From:’ field and chooses a language
+based on ‘zp/message-mode-ispell-alist’."
+  (let* ((sender (message-sendmail-envelope-from))
+         (language (cdr (assoc sender zp/message-mode-ispell-alist))))
+    (zp/ispell-switch-dictionary language)))
+
+(add-hook 'message-setup-hook #'zp/message-mode-flyspell-auto)
+
+(remove-hook 'message-mode-hook (lambda ()
+                                (zp/helm-ispell-preselect "English")))
 
 (setq electric-quote-context-sensitive 1)
 
