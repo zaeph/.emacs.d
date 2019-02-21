@@ -6365,7 +6365,8 @@ Every ELEM in LIST is formatted as follows:
 (define-key zp/toggle-map "f" #'auto-fill-mode)
 (define-key zp/toggle-map "F" #'flycheck-mode)
 (define-key zp/toggle-map "l" #'toggle-truncate-lines)
-(define-key zp/toggle-map "q" #'toggle-debug-on-quit)
+(define-key zp/toggle-map "q" #'electric-quote-local-mode)
+(define-key zp/toggle-map "Q" #'toggle-debug-on-quit)
 (define-key zp/toggle-map "t" #'zp/switch-theme)
 
 (global-set-key (kbd "C-c \\") 'picture-mode)
