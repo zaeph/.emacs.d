@@ -443,11 +443,18 @@ that date.  Leave point on the first amount."
       zp/ispell-completion-data '(("English" . "british")
                                  ("French" . "french")))
 
-(defun zp/ispell-switch-dictionary (candidate)
+(defun zp/ispell-switch-dictionary (language)
+  "Change the Ispell dictionary to LANGUAGE.
+
+LANGUAGE should be the name of an Ispell dictionary."
   (interactive)
-  (if (eq candidate ispell-local-dictionary)
-      (message "Dictionary is already loaded for this language")
-    (ispell-change-dictionary candidate)))
+  (let ((name (car (rassoc language zp/ispell-completion-data))))
+    (if (eq language ispell-local-dictionary)
+        (message "Dictionary is already loaded for this language")
+      (let ((inhibit-message t))
+        (ispell-change-dictionary language)
+        (flyspell-mode))
+      (message (concat "Local Ispell dictionary set to " name)))))
 
 (defun zp/ispell-query-dictionary ()
   (if (not (y-or-n-p "Writing in English? "))
