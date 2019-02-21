@@ -3736,7 +3736,7 @@ subtemplate to use."
 
 (setq org-capture-templates
       '(("n" "Note" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
-         "* %?")
+         "* %?" :add-created t)
         ("f" "Todo" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
          "* TODO %?" :add-created t)
         ("F" "Todo + Clock" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
