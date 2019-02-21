@@ -1248,6 +1248,12 @@ When REPLACE is non-nil, do not create another buffer.  See also
 
 (setq electric-quote-context-sensitive 1)
 
+(defun zp/notmuch-show-mode-config ()
+  "Modify keymaps used by ‘notmuch-show-mode’."
+  (local-set-key (kbd "C-c C-o") #'goto-address-at-point))
+
+(add-hook 'notmuch-show-mode-hook #'zp/notmuch-show-mode-config)
+
 
 
 ;; ========================================
