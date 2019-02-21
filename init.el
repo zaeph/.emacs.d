@@ -6072,8 +6072,10 @@ will not be modified."
   (let* ((created (or NAME org-created-property-name))
          (fmt (if active "<%s>" "[%s]"))
          (now (format fmt (format-time-string "%Y-%m-%d %a %H:%M")))
+         (is-capturing (and (boundp 'org-capture-mode) org-capture-mode))
          (add-created (plist-get org-capture-plist :add-created)))
-    (unless (or (not add-created)
+    (unless (or (and is-capturing
+                     (not add-created))
                 (org-entry-get (point) created nil))
       (org-set-property created now))))
 
