@@ -1126,29 +1126,40 @@ LANGUAGE should be the name of an Ispell dictionary."
 
 
 
-(defvar zp/private-email (zp/get-string-from-file "/home/zaeph/org/pp/private/email")
-  "My private email.")
+(defvar zp/email-private (zp/get-string-from-file "/home/zaeph/org/pp/private/email")
+  "Email used for private communications.")
 
-(defvar zp/work-email (zp/get-string-from-file "/home/zaeph/org/pp/work/email")
-  "My work email.")
+(defvar zp/email-work (zp/get-string-from-file "/home/zaeph/org/pp/work/email")
+  "Email used for work-related communications.")
 
-(defun zp/notmuch-get-email-alias-regexp (email alias)
-  "Format regex for matching aliases in notmuch-fcc-dirs."
-  (let ((email (cond
-                 ((equal email "work")
-                  zp/work-email)
-                 ((equal email "private")
-                  zp/private-email)
-                 (t
-                  email))))
-    (regexp-quote (replace-regexp-in-string "@" (concat "+" alias "@") email))))
+(defun zp/notmuch-get-email-with-alias (email alias &optional regex)
+  "Create email alias from EMAIL and ALIAS.
+If REGEX is non-nil, creates a regex to match the email alias."
+  (let* ((email (cond
+                  ((equal email "work")
+                   zp/email-work)
+                  ((equal email "private")
+                   zp/email-private)
+                  (t
+                   email)))
+         (aliased-email (replace-regexp-in-string "@"
+                                                  (concat "+" alias "@")
+                                                  email)))
+    (if regex
+        (regexp-quote aliased-email)
+      aliased-email)))
+
+(defvar zp/email-org (zp/notmuch-get-email-with-alias "work" "org")
+  "Email alias used for the org-mode mailing list.")
+
+(defun zp/notmuch-fcc-email-format-regex (email))
 
 (setq notmuch-fcc-dirs
-      `((,zp/private-email .
-                           "private/sent -inbox +sent -unread")
-        (,zp/work-email .
-                        "work/sent -inbox +sent -unread")
-        (,(zp/notmuch-get-email-alias-regexp "work" "org") .
+      `((,(regexp-quote zp/email-private) .
+          "private/sent -inbox +sent -unread")
+        (,(regexp-quote zp/email-work) .
+          "work/sent -inbox +sent -unread")
+        (,(regexp-quote zp/email-org) .
           "work/sent -inbox +sent -unread +org")))
 
 ;; (setq notmuch-user-name
