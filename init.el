@@ -451,9 +451,8 @@ LANGUAGE should be the name of an Ispell dictionary."
   (let ((name (car (rassoc language zp/ispell-completion-data))))
     (if (eq language ispell-local-dictionary)
         (message "Dictionary is already loaded for this language")
-      (let ((inhibit-message t))
-        (ispell-change-dictionary language)
-        (flyspell-mode))
+      (setq ispell-local-dictionary language)
+      (flyspell-mode)
       (message (concat "Local Ispell dictionary set to " name)))))
 
 (defun zp/ispell-query-dictionary ()
