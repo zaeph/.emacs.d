@@ -1098,6 +1098,7 @@ that date.  Leave point on the first amount."
 (setq message-sendmail-envelope-from 'header)
 (setq notmuch-always-prompt-for-sender t)
 (setq mml-enable-flowed t)
+(setq message-kill-buffer-on-exit t)
 
 ;; Enforce f=f in message-mode
 ;; Disabled because it’s bad practice according to the netiquette
