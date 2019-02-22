@@ -2046,7 +2046,9 @@ return `nil'."
 
 ;; Options
 (setq org-clock-into-drawer "LOGBOOK-CLOCK"
+      ;; org-clock-into-drawer nil
       org-log-into-drawer "LOGBOOK-NOTES"
+      ;; org-log-into-drawer nil
       org-log-state-notes-insert-after-drawers nil
       org-special-ctrl-a/e 't
       ;; org-log-into-drawer nil
