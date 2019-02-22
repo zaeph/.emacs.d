@@ -1141,12 +1141,12 @@ If REGEX is non-nil, creates a regex to match the email alias."
                    zp/email-private)
                   (t
                    email)))
-         (aliased-email (replace-regexp-in-string "@"
+         (email-alias (replace-regexp-in-string "@"
                                                   (concat "+" alias "@")
                                                   email)))
     (if regex
-        (regexp-quote aliased-email)
-      aliased-email)))
+        (regexp-quote email-alias)
+      email-alias)))
 
 (defvar zp/email-org (zp/notmuch-get-email-with-alias "work" "org")
   "Email alias used for the org-mode mailing list.")
