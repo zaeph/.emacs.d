@@ -1112,9 +1112,6 @@ LANGUAGE should be the name of an Ispell dictionary."
 ;;   (use-hard-newlines t 'always))
 ;; (add-hook 'message-mode-hook #'zp/message-mode-use-hard-newlines)
 
-(require 'orgalist)
-(add-hook 'message-mode-hook #'orgalist-mode)
-
 ;; Set the marks for inserted text with message-mark-inserted-region
 (setq message-mark-insert-begin
       "--------------------------------[START]--------------------------------
@@ -1257,9 +1254,6 @@ When REPLACE is non-nil, do not create another buffer.  See also
       mml-secure-openpgp-sign-with-sender t
       mml-secure-openpgp-encrypt-to-self t)
 
-(add-hook 'message-mode-hook #'electric-quote-local-mode)
-;; (add-hook 'message-mode-hook #'footnote-mode)
-
 (defvar zp/message-mode-ispell-alist nil
   "Alist of emails and the language they typically use.
 The language should be the name of a valid Ispell dictionary.")
@@ -1278,12 +1272,14 @@ based on ‘zp/message-mode-ispell-alist’."
          (language (cdr (assoc sender zp/message-mode-ispell-alist))))
     (zp/ispell-switch-dictionary language)))
 
-(add-hook 'message-setup-hook #'zp/message-mode-flyspell-auto)
-
-(remove-hook 'message-mode-hook (lambda ()
-                                (zp/helm-ispell-preselect "English")))
-
 (setq electric-quote-context-sensitive 1)
+
+(require 'orgalist)
+(add-hook 'message-setup-hook #'flyspell-mode)
+(add-hook 'message-setup-hook #'orgalist-mode)
+(add-hook 'message-setup-hook #'zp/message-mode-flyspell-auto)
+(add-hook 'message-setup-hook #'electric-quote-local-mode)
+;; (add-hook 'message-mode-hook #'footnote-mode)
 
 (defun zp/notmuch-show-mode-config ()
   "Modify keymaps used by ‘notmuch-show-mode’."
