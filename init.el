@@ -1223,6 +1223,162 @@ When REPLACE is non-nil, do not create another buffer.  See also
     (notmuch-search grouped-query notmuch-search-oldest-first)))
 ;; -----------------------------------------------------------------------------
 
+;; -----------------------------------------------------------------------------
+;; Movements for message-mode
+
+(defun zp/message-goto-bottom-1 ()
+  (let ((newline message-signature-insert-empty-line))
+    (goto-char (point-max))
+    (when (re-search-backward message-signature-separator nil t)
+      (end-of-line (if newline -1 0)))
+    (point)))
+
+(defun zp/message-goto-bottom ()
+  "Go to the end of the message or buffer.
+Go to the end of the message (before signature) or, if already there, go to the
+end of the buffer."
+  (interactive)
+  (let ((old-position (point))
+        (message-position (save-excursion (message-goto-body) (point)))
+        (newline message-signature-insert-empty-line))
+    (zp/message-goto-bottom-1)
+    (when (equal (point) old-position)
+      (goto-char (point-max)))))
+
+(defun zp/message-goto-top-1 ()
+  "Go to the beginning of the message."
+  (interactive)
+  (message-goto-body-1)
+  (point))
+
+(defun zp/message-goto-top ()
+  "Go to the beginning of the message or buffer.
+Go to the beginning of the message or, if already there, go to the
+beginning of the buffer."
+  (interactive)
+  (let ((old-position (point)))
+    (zp/message-goto-top-1)
+    (when (equal (point) old-position)
+      (goto-char (point-min)))))
+
+(defun zp/message-goto-body-1 ()
+  "Go to the beginning of the body of the message."
+  (zp/message-goto-top-1)
+  (forward-line 2)
+  (point))
+
+(defun zp/message-goto-body ()
+  "Move point to the beginning of the message body."
+  (interactive)
+  (let ((old-position (point))
+        (greeting (save-excursion
+                    (zp/message-goto-top-1)
+                    (re-search-forward "^[^>]+.*,$" (point-at-eol) t)))
+        (modified))
+    (zp/message-goto-top-1)
+    (cond (greeting
+           (forward-line 2))
+          ((re-search-forward "writes:$" (point-at-eol) t)
+           (insert "\n\n")
+           (forward-char -2)
+           (setq modified t))
+          (t
+           (insert "\n")
+           (forward-char -1)
+           (setq modified t)))
+    ;; (cond ((re-search-forward "writes:$" (point-at-eol) t)
+    ;;        (beginning-of-line)
+    ;;        (insert "\n\n")
+    ;;        (forward-char -2))
+    ;;       ((re-search-forward "^[^>]+.*,$" (line-end-position) t)
+    ;;        (zp/message-goto-body-1))
+    ;;       (t
+    ;;        (insert "\n")
+    ;;        (forward-char -1)))
+    (when (and (not modified)
+               (equal (point) old-position))
+      (zp/message-goto-top-1)
+      (goto-char (1- (line-end-position))))))
+
+(defun zp/message-goto-body-end-1 ()
+  (zp/message-goto-bottom-1)
+  (re-search-backward "[^[:space:]]")
+  (end-of-line)
+  (point))
+
+(defun zp/message-goto-body-end ()
+  (interactive)
+  (let* ((old-position (point))
+         (top-posting (save-excursion
+                        (zp/message-goto-top-1)
+                        (re-search-forward "writes:$" nil t)
+                        (when (< old-position (line-beginning-position 0))
+                          (line-beginning-position))))
+         (sign-off (save-excursion
+                     (or
+                      (progn
+                        (zp/message-goto-bottom-1)
+                        (beginning-of-line)
+                        (re-search-forward "^[^>]+.*,$" (line-end-position) t))
+                      (and top-posting
+                           (progn
+                             (goto-char top-posting)
+                             (beginning-of-line -1)
+                             (re-search-forward "^[^>]+.*,$" (line-end-position) t))))))
+         (modified))
+    (if sign-off
+        (progn
+          (goto-char sign-off)
+          (beginning-of-line 0)
+          (re-search-backward "^[^>[:space:]]+" nil t)
+          (end-of-line))
+      (cond (top-posting
+             (goto-char top-posting)
+             (insert "\n\n")
+             (forward-char -2)
+             (setq modified t))
+            (t
+             (zp/message-kill-to-signature)
+             (unless (bolp) (insert "\n"))
+             (insert "\n")
+             (setq modified t))))
+    (when (and (not modified)
+               (equal (point) old-position))
+      (goto-char (1- sign-off)))))
+
+(defun zp/message-kill-to-signature (&optional arg)
+  "Kill all text up to the signature.
+If a numeric argument or prefix arg is given, leave that number
+of lines before the signature intact."
+  (interactive "P")
+  (let ((newline message-signature-insert-empty-line))
+    (save-excursion
+      (save-restriction
+        (let ((point (point)))
+	  (narrow-to-region point (point-max))
+	  (message-goto-signature)
+	  (unless (eobp)
+	    (if (and arg (numberp arg))
+	        (forward-line (- -1 arg))
+	      (end-of-line (if newline -2 -1))))
+	  (unless (= point (point))
+	    (kill-region point (point))
+	    (unless (bolp)
+	      (insert "\n"))))))))
+
+(defun zp/message-kill-to-signature (&optional arg)
+  (interactive "P")
+  (let ((newline message-signature-insert-empty-line)
+        (at-end (save-excursion (= (point) (zp/message-goto-bottom-1)))))
+    (when at-end
+        (error "Already at end"))
+    (message-kill-to-signature arg)
+    (unless (bolp) (insert "\n"))
+    (when newline
+      (insert "\n")
+      (forward-char -1))))
+;; -----------------------------------------------------------------------------
+
 (define-key notmuch-search-mode-map "y" #'notmuch-search-refine)
 (define-key notmuch-hello-mode-map "q" #'zp/notmuch-hello-quit)
 (define-key notmuch-search-mode-map "g" #'notmuch-refresh-this-buffer)
@@ -1274,11 +1430,65 @@ based on ‘zp/message-mode-ispell-alist’."
 
 (setq electric-quote-context-sensitive 1)
 
+(defun zp/message-sendmail-envelope-to ()
+  "Return the envelope to."
+  (save-excursion
+    (goto-char (point-min))
+    (when (re-search-forward "^To: " nil t)
+      (substring-no-properties
+     (buffer-substring
+      (point)
+      (point-at-eol))))))
+
+(defun zp/message-retrieve-to ()
+  "Create a list of emails from ‘To:’."
+  (let ((to-raw (zp/message-sendmail-envelope-to))
+        (emails))
+    (with-temp-buffer
+      (insert to-raw)
+      (goto-char (point-min))
+      (while (< (point) (point-max))
+        (let ((bound (save-excursion
+                       (if (re-search-forward "," nil t)
+                           (progn (forward-char -1)
+                                  (point))
+                         (point-max)))))
+          (re-search-forward "@")
+          (if (re-search-backward " " nil t)
+              (forward-char)
+            (goto-char (point-min)))
+          (setq framed (looking-at-p "<"))
+          (push (substring-no-properties
+                 (buffer-substring (if framed
+                                       (1+ (point))
+                                     (point))
+                                   (if framed
+                                       (1- bound)
+                                     bound)))
+                emails)
+          (goto-char (1+ bound))))
+      (setq email-list emails))))
+
+(defun zp/notmuch-confirm-before-sending (&optional arg)
+  (interactive "P")
+  (if (y-or-n-p "Ready to send? ")
+      (notmuch-mua-send-and-exit arg)))
+
+(defun zp/notmuch-message-mode-config ()
+  "Modify keymaps used by ‘notmuch-show-mode’."
+  (local-set-key (kbd "C-c C-c") #'zp/notmuch-confirm-before-sending)
+  (local-set-key (kbd "C-c C-b") #'zp/message-goto-body)
+  (local-set-key (kbd "C-c C-.") #'zp/message-goto-body-end)
+  (local-set-key (kbd "M-<") #'zp/message-goto-top)
+  (local-set-key (kbd "M->") #'zp/message-goto-bottom)
+  (local-set-key (kbd "C-c C-z") #'zp/message-kill-to-signature))
+
 (require 'orgalist)
 (add-hook 'message-setup-hook #'flyspell-mode)
 (add-hook 'message-setup-hook #'orgalist-mode)
-(add-hook 'message-setup-hook #'zp/message-mode-flyspell-auto)
+(add-hook 'message-setup-hook #'zp/message-flyspell-auto)
 (add-hook 'message-setup-hook #'electric-quote-local-mode)
+(add-hook 'message-setup-hook #'zp/notmuch-message-mode-config)
 ;; (add-hook 'message-mode-hook #'footnote-mode)
 
 (defun zp/notmuch-show-mode-config ()
