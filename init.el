@@ -1281,7 +1281,8 @@ beginning of the buffer."
     (zp/message-goto-top-1)
     (cond (greeting
            (forward-line 2))
-          ((re-search-forward "writes:$" (point-at-eol) t)
+          ((save-excursion
+             (re-search-forward "writes:$" (point-at-eol) t))
            (insert "\n\n")
            (forward-char -2)
            (setq modified t))
@@ -1428,7 +1429,7 @@ The language should be the name of a valid Ispell dictionary.")
 Looks for the email in the ‘From:’ field and chooses a language
 based on ‘zp/message-mode-ispell-alist’."
   (let* ((sender (message-sendmail-envelope-from))
-         (language (cdr (assoc sender zp/message-mode-ispell-alist))))
+         (language (cdr (assoc sender zp/message-ispell-alist))))
     (zp/ispell-switch-dictionary language)))
 
 (setq electric-quote-context-sensitive 1)
