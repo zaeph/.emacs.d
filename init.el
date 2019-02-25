@@ -453,7 +453,10 @@ LANGUAGE should be the name of an Ispell dictionary."
         (message "Dictionary is already loaded for this language")
       (setq ispell-local-dictionary language)
       (flyspell-mode)
-      (message (concat "Local Ispell dictionary set to " name)))))
+      (message (concat "Local Ispell dictionary set to " name)))
+    (when flyspell-mode
+      (flyspell-mode -1)
+      (flyspell-mode))))
 
 (defun zp/ispell-query-dictionary ()
   (if (not (y-or-n-p "Writing in English? "))
