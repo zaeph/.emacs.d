@@ -1410,16 +1410,16 @@ of lines before the signature intact."
       mml-secure-openpgp-sign-with-sender t
       mml-secure-openpgp-encrypt-to-self t)
 
-(defvar zp/message-mode-ispell-alist nil
+(defvar zp/message-ispell-alist nil
   "Alist of emails and the language they typically use.
 The language should be the name of a valid Ispell dictionary.")
 
-(setq zp/message-mode-ispell-alist
+(setq zp/message-ispell-alist
       `((,zp/email-private . "french")
         (,zp/email-work . "french")
         (,zp/email-org . "british")))
 
-(defun zp/message-mode-flyspell-auto ()
+(defun zp/message-flyspell-auto ()
   "Start Ispell with the language associated with the email.
 
 Looks for the email in the ‘From:’ field and chooses a language
