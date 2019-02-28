@@ -3449,13 +3449,13 @@ It creates 4 blocks:
 (org-super-agenda-mode)
 
 (setq org-agenda-custom-commands
-      `(("N" "Agenda"
+      `(("n" "Agenda"
              (,(zp/org-agenda-block-agenda "Agenda" org-agenda-files)))
 
         ("k" "Weekly agenda (-recurring)"
              (,(zp/org-agenda-block-agenda-week "Weekly Agenda")))
 
-        ("n" "Task List"
+        ("l" "Life"
              (,@(zp/org-agenda-blocks-main "Life" '("life" "pro") '("life" "pro" "media"))))
 
         ("g" "Groupless Tasks"
@@ -3493,7 +3493,7 @@ It creates 4 blocks:
              (,@(zp/org-agenda-blocks-main "Music" '("music")))
              ((org-agenda-files zp/org-agenda-files-life)))
 
-        ("l" "Hacking"
+        ("h" "Hacking"
              (,@(zp/org-agenda-blocks-main "Hacking" '("hack"))))
 
         ("c" "Contributing & Troubleshooting"
