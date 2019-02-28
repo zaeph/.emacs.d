@@ -4012,6 +4012,8 @@ subtemplate to use."
          "* %^{Title|Entry}\n%T\n\n%?" :full-frame t)
         ("jh" "Hacking" entry (file+headline "/home/zaeph/org/journal.org.gpg" "Hacking")
          "* %^{Title|Entry}\n%T\n\n%?" :full-frame t)
+        ("jm" "Music" entry (file+headline "/home/zaeph/org/journal.org.gpg" "Music")
+         "* %^{Title|Entry}\n%T\n\n%?" :full-frame t)
         ("js" "Swimming" entry (file+headline "/home/zaeph/org/journal.org.gpg" "Swimming")
          "* %^{Title|Entry}\n%T\n\n%?" :full-frame t)
 
