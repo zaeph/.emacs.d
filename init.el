@@ -3203,7 +3203,7 @@ agenda settings after them."
           :pred (lambda (item)
                   (zp/org-super-agenda-item-in-agenda-groups-p item ',groups))))
 
-(defun zp/org-agenda-block-agenda (header &optional file)
+(defun zp/org-agenda-block-agenda-main (header &optional file)
   `(agenda ""
            ((org-agenda-overriding-header
              (zp/org-agenda-format-header-main ,header))
@@ -3211,9 +3211,19 @@ agenda settings after them."
                   `((org-agenda-files ',file)))
             (org-agenda-span 'day)
             (org-super-agenda-groups
-             '(,(zp/org-super-agenda-groups "Life" '("life" "pro"))
+             '(,(zp/org-super-agenda-groups "Life" '("life"))
+               ,(zp/org-super-agenda-groups "Professional" '("pro"))
+               ,(zp/org-super-agenda-groups "Maintenance" '("mx"))
                ,(zp/org-super-agenda-groups "Hacking" '("hack"))
                ,(zp/org-super-agenda-groups "Media" '("media")))))))
+
+(defun zp/org-agenda-block-agenda (header &optional file)
+  `(agenda ""
+           ((org-agenda-overriding-header
+             (zp/org-agenda-format-header-main ,header))
+            ,@(if (bound-and-true-p file)
+                  `((org-agenda-files ',file)))
+            (org-agenda-span 'day))))
 
 (defun zp/org-agenda-block-header (header)
   `(agenda ""
@@ -3466,13 +3476,22 @@ It creates 4 blocks:
 
 (setq org-agenda-custom-commands
       `(("n" "Agenda"
-             (,(zp/org-agenda-block-agenda "Agenda" org-agenda-files)))
+             (,(zp/org-agenda-block-agenda-main "Agenda" org-agenda-files)))
+
+        ("N" "Agenda (w/o groups)"
+             (,(zp/org-agenda-block-agenda "Agenda (w/o groups)" org-agenda-files)))
 
         ("k" "Weekly agenda (-recurring)"
              (,(zp/org-agenda-block-agenda-week "Weekly Agenda")))
 
         ("l" "Life"
-             (,@(zp/org-agenda-blocks-main "Life" '("life" "pro") '("life" "pro" "media"))))
+             (,@(zp/org-agenda-blocks-main "Life" '("life" "pro" "mx"))))
+
+        ("L" "Life (strict)"
+             (,@(zp/org-agenda-blocks-main "Life (strict)" '("life"))))
+
+        ("p" "Professional"
+             (,@(zp/org-agenda-blocks-main "Professional" '("pro"))))
 
         ("g" "Groupless Tasks"
              (,@(zp/org-agenda-blocks-main "Groupless Tasks" '(nil))))
