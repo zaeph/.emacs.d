@@ -4830,6 +4830,18 @@ running."
 ;;            (scroll-right current-scroll)
 ;;            (scroll-left goal t)))))))
 
+(defun zp/org-noter (arg)
+  "Start org-noter session.
+
+In org-agenda, visit the subtree first."
+  (interactive "P")
+  (if (derived-mode-p 'org-agenda-mode)
+      (let ((marker (get-text-property (point) 'org-marker)))
+        (with-current-buffer (marker-buffer marker)
+          (goto-char marker)
+          (org-noter arg)))
+    (org-noter arg)))
+
 
 
 ;; ========================================
@@ -6686,7 +6698,7 @@ Every ELEM in LIST is formatted as follows:
 (global-set-key (kbd "C-x C-c") 'delete-frame)               ;magnars
 (global-set-key (kbd "C-c c") 'calendar)
 (global-set-key (kbd "C-c n") 'org-capture)
-(global-set-key (kbd "C-c N") 'org-noter)
+(global-set-key (kbd "C-c N") 'zp/org-noter)
 (global-set-key (kbd "C-c C-=") 'increment-integer-at-point)
 (global-set-key (kbd "C-c C--") 'decrement-integer-at-point)
 (global-set-key (kbd "C-c d") 'zp/helm-ispell-preselect)
