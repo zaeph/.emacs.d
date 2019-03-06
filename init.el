@@ -4406,7 +4406,7 @@ _s_: Supplies
                                :hint nil
                                :exit t)
   "
-^Life^              ^Prog^                  ^Uni^              ^Mental^
+^Life^              ^Prog^                  ^Pro^              ^Mental^
 ^^^^^^^^----------------------------------------------------------------------
 _i_: Inbox          _h_: Hacking            _u_: University    _a_: Awakening
 _o_: Life           _l_: Linux              _r_: Research      _p_: Psychotherapy
