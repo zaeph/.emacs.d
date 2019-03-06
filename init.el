@@ -3365,7 +3365,7 @@ agenda settings after them."
 
 
 
-(defun zp/org-agenda-blocks-main (header groups &optional other-groups file)
+(defun zp/org-agenda-blocks-main (header groups &optional file)
   "Format the main agenda blocks.
 
 HEADER is the string to be used as the header of the the agenda
@@ -3373,9 +3373,6 @@ view.
 
 GROUPS should be a list of strings of AGENDA_GROUPS to
 match (‘or’ is implied).
-
-If OTHER-GROUPS is a list or a regex, use it to filter the top
-agenda block instead of GROUPS.
 
 It creates 4 blocks:
 - An ‘agenda’ block displaying the HEADER and the date
