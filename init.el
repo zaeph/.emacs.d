@@ -2457,7 +2457,18 @@ return `nil'."
               (org-paste-subtree level tree-text))))))))
 
 ;; Category icons
-(setq org-agenda-category-icon-alist
+(defvar zp/org-agenda-include-category-icons nil
+  "When non-nil, show category icons in the agenda")
+
+(defvar zp/org-agenda-category-icon-alist nil
+  "Alist of category icon to be displayed in agenda views.
+
+Custom variable to hold the content when the icons are toggled
+off.")
+
+(setq zp/org-agenda-include-category-icons t)
+
+(setq zp/org-agenda-category-icon-alist
       '(("^emacs$" "~/org/svg/icons/spacemacs.svg" nil nil :ascent center)
         ("^elisp$" "~/org/svg/icons/spacemacs-elisp.svg" nil nil :ascent center)
         ("^linux$" "~/org/svg/icons/nixos.svg" nil nil :ascent center)
@@ -2476,6 +2487,9 @@ return `nil'."
         ("^research$" "~/org/svg/icons/research.svg" nil nil :ascent center)
         ("^swim$" "~/org/svg/icons/foxhound-3.svg" nil nil :ascent center)
         (".*" '(space . (:width (24))) nil nil :ascent center)))
+
+;; Shows icons by default
+(setq org-agenda-category-icon-alist zp/org-agenda-category-icon-alist)
 
 ;; Babel
 (require 'ob-async)
@@ -3114,6 +3128,8 @@ With a prefix argument, do so in all agenda buffers."
         (add-to-list 'word-list "-deadlines" t))
     (if (eq org-habit-show-habits nil)
         (add-to-list 'word-list "-habits" t))
+    (if (eq zp/org-agenda-include-category-icons nil)
+        (add-to-list 'word-list "-icons" t))
     (if (eq zp/org-agenda-include-scheduled nil)
         (add-to-list 'word-list "-scheduled" t))
     (let ((word-list-formatted (s-join ";" word-list)))
@@ -3679,6 +3695,20 @@ It creates 4 blocks:
          (org-agenda-redo)
          (message "Scheduled: Visible"))))
 
+(defun zp/toggle-org-agenda-category-icons ()
+  "Toggle the inclusion of category icons in the agenda."
+  (interactive)
+  (cond (zp/org-agenda-include-category-icons
+         (setq org-agenda-category-icon-alist nil
+               zp/org-agenda-include-category-icons nil)
+         (org-agenda-redo)
+         (message "Icons: Hidden"))
+        (t
+         (setq org-agenda-category-icon-alist zp/org-agenda-category-icon-alist
+               zp/org-agenda-include-category-icons t)
+         (org-agenda-redo)
+         (message "Icons: Visible"))))
+
 (defun zp/toggle-org-agenda-cmp-user-defined ()
   "Toggle the skip function used by the agenda."
   (interactive)
@@ -3851,6 +3881,7 @@ Check their respective dosctrings for more info."
   (local-set-key (kbd "C-,") 'sunrise-sunset)
   (local-set-key (kbd ",") 'zp/hydra-org-priority/body)
   (local-set-key (kbd "M-k") 'zp/toggle-org-habit-show-all-today)
+  (local-set-key (kbd "M-i") 'zp/toggle-org-agenda-category-icons)
   (local-set-key (kbd "M-t") 'org-agenda-todo-yesterday)
   (local-set-key (kbd "D") 'zp/toggle-org-agenda-include-deadlines)
   (local-set-key (kbd "S") 'zp/toggle-org-agenda-include-scheduled)
