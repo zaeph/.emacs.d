@@ -3209,10 +3209,17 @@ agenda settings after them."
              (zp/org-agenda-format-header-main ,header))
             ,@(if (bound-and-true-p file)
                   `((org-agenda-files ',file)))
+            (org-agenda-span 'day)
             (org-super-agenda-groups
              '(,(zp/org-super-agenda-groups "Life" '("life" "pro"))
                ,(zp/org-super-agenda-groups "Hacking" '("hack"))
                ,(zp/org-super-agenda-groups "Media" '("media")))))))
+
+(defun zp/org-agenda-block-header (header)
+  `(agenda ""
+           ((org-agenda-overriding-header
+             (zp/org-agenda-format-header-main ,header))
+            (org-agenda-files nil)
             (org-agenda-span 'day))))
 
 (defun zp/org-agenda-block-agenda-with-group-filter (header groups &optional file)
@@ -3375,12 +3382,8 @@ It creates 4 blocks:
 - A ‘tags-todo’ block displaying the non-stuck projects
 - A ‘tags-todo’ block displaying the stuck projects
 - A ‘tags-todo’ block displaying the tasks"
-  `(,(zp/org-agenda-block-agenda-with-group-filter
-      header
-      (if (bound-and-true-p other-groups)
-          other-groups
-        groups)
-      file)
+  `(,(zp/org-agenda-block-header
+      header)
      ,(zp/org-agenda-block-projects-stuck-with-group-filter
        groups file)
      ,(zp/org-agenda-block-projects-with-group-filter
