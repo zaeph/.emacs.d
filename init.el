@@ -3191,12 +3191,35 @@ agenda settings after them."
 ;; ================ BLOCKS ================
 ;; ========================================
 
+(defun zp/org-super-agenda-item-in-agenda-groups-p (item groups)
+  "Check if ITEM is in agenda GROUPS."
+  (let ((marker (or (get-text-property 0 'org-marker item)
+                    (get-text-property 0 'org-hd-marker item))))
+    (zp/org-task-in-agenda-groups-p groups nil marker)))
+
+(defun zp/org-super-agenda-groups (header groups)
+  "Create org-super-agenda section for GROUPS with HEADER."
+  `(:name ,header
+          :pred (lambda (item)
+                  (zp/org-super-agenda-item-in-agenda-groups-p item ',groups))))
+
 (defun zp/org-agenda-block-agenda (header &optional file)
   `(agenda ""
            ((org-agenda-overriding-header
              (zp/org-agenda-format-header-main ,header))
             ,@(if (bound-and-true-p file)
                   `((org-agenda-files ',file)))
+            (org-agenda-span 'day)
+            (org-super-agenda-groups
+             '(,(zp/org-super-agenda-groups "Life" '("life" "pro"))
+               ,(zp/org-super-agenda-groups "Hacking" '("hack"))
+               ,(zp/org-super-agenda-groups "Media" '("media")))))))
+
+(defun zp/org-agenda-block-header (header)
+  `(agenda ""
+           ((org-agenda-overriding-header
+             (zp/org-agenda-format-header-main ,header))
+            (org-agenda-files nil)
             (org-agenda-span 'day))))
 
 (defun zp/org-agenda-block-agenda-with-group-filter (header groups &optional file)
@@ -3359,17 +3382,13 @@ It creates 4 blocks:
 - A ‘tags-todo’ block displaying the non-stuck projects
 - A ‘tags-todo’ block displaying the stuck projects
 - A ‘tags-todo’ block displaying the tasks"
-  `(,(zp/org-agenda-block-agenda-with-group-filter
-      header
-      (if (bound-and-true-p other-groups)
-          other-groups
-        groups)
-      file)
+  `(,(zp/org-agenda-block-header
+      header)
      ,(zp/org-agenda-block-projects-stuck-with-group-filter
        groups file)
-     ,(zp/org-agenda-block-projects-with-group-filter
-       groups file)
      ,(zp/org-agenda-block-tasks-with-group-filter
+       groups file)
+     ,(zp/org-agenda-block-projects-with-group-filter
        groups file)))
 
 (defun zp/org-agenda-block-tasks-special (&optional file)
