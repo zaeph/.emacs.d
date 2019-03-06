@@ -3386,9 +3386,9 @@ It creates 4 blocks:
       header)
      ,(zp/org-agenda-block-projects-stuck-with-group-filter
        groups file)
-     ,(zp/org-agenda-block-projects-with-group-filter
-       groups file)
      ,(zp/org-agenda-block-tasks-with-group-filter
+       groups file)
+     ,(zp/org-agenda-block-projects-with-group-filter
        groups file)))
 
 (defun zp/org-agenda-block-tasks-special (&optional file)
