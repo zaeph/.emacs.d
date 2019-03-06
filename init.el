@@ -3531,6 +3531,9 @@ It creates 4 blocks:
         ("h" "Hacking"
              (,@(zp/org-agenda-blocks-main "Hacking" '("hack"))))
 
+        ("o" "OPSEC"
+             (,@(zp/org-agenda-blocks-main "OPSEC" '("opsec"))))
+
         ("c" "Contributing & Troubleshooting"
              (,@(zp/org-agenda-blocks-main "Contributing & Troubleshooting" '("contrib"))))
 
