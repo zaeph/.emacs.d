@@ -3191,12 +3191,28 @@ agenda settings after them."
 ;; ================ BLOCKS ================
 ;; ========================================
 
+(defun zp/org-super-agenda-item-in-agenda-groups-p (item groups)
+  "Check if ITEM is in agenda GROUPS."
+  (let ((marker (or (get-text-property 0 'org-marker item)
+                    (get-text-property 0 'org-hd-marker item))))
+    (zp/org-task-in-agenda-groups-p groups nil marker)))
+
+(defun zp/org-super-agenda-groups (header groups)
+  "Create org-super-agenda section for GROUPS with HEADER."
+  `(:name ,header
+          :pred (lambda (item)
+                  (zp/org-super-agenda-item-in-agenda-groups-p item ',groups))))
+
 (defun zp/org-agenda-block-agenda (header &optional file)
   `(agenda ""
            ((org-agenda-overriding-header
              (zp/org-agenda-format-header-main ,header))
             ,@(if (bound-and-true-p file)
                   `((org-agenda-files ',file)))
+            (org-super-agenda-groups
+             '(,(zp/org-super-agenda-groups "Life" '("life" "pro"))
+               ,(zp/org-super-agenda-groups "Hacking" '("hack"))
+               ,(zp/org-super-agenda-groups "Media" '("media")))))))
             (org-agenda-span 'day))))
 
 (defun zp/org-agenda-block-agenda-with-group-filter (header groups &optional file)
