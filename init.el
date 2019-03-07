@@ -2852,16 +2852,18 @@ off.")
 ;; ================= IVY ==================
 ;; ========================================
 
-(defun zp/counsel-grep-or-swiper (&optional initial-input)
+(defun zp/counsel-grep-or-swiper (&optional arg)
   "Call ‘swiper’ for small buffers and ‘counsel-grep’ for large ones.
 Wrapper to always use swiper for gpg-encrypted files and
 indirect-buffers."
-  (interactive)
-  (if-let ((file (buffer-file-name))
-           (ext (file-name-extension (buffer-file-name)))
-           (is-not-gpg (not (equal ext "gpg"))))
-      (counsel-grep-or-swiper)
-    (swiper)))
+  (interactive "P")
+  (let* ((file (buffer-file-name))
+         (ext (if file (file-name-extension file))))
+    (if (or (equal arg '(4))                      ;Forcing?
+            (not file)                            ;Indirect buffer?
+            (string= ext "gpg"))                  ;Encrypted buffer?
+        (swiper)
+      (counsel-grep-or-swiper))))
 
 ;; Use rg insted of grep
 (setq counsel-grep-base-command "rg -i -M 120 --no-heading --line-number --color never %s %s")
