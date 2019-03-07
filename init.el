@@ -4461,31 +4461,33 @@ _s_: Supplies
 _i_: Inbox          _h_: Hacking            _u_: University    _a_: Awakening
 _o_: Life           _l_: Linux              _r_: Research      _p_: Psychotherapy
 _s_: Social         _e_: Emacs
-_m_: Media
+_m_: Media          _E_: Elisp
 _M_: Music          _t_: LaTeX
 _x_: Maintenance    _g_: Git
 ^^                  _c_: Contributing
 ^^                  _b_: Troubleshooting
+^^
 
 "
   ;; ("o" zp/hydra-org-refile-file-life/body :exit t)
-  ("i" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" "Inbox" current-prefix-arg))
-  ("o" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" "Life" current-prefix-arg))
-  ("s" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" "Social" current-prefix-arg))
-  ("m" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" "Media" current-prefix-arg))
-  ("M" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" "Music" current-prefix-arg))
+  ("i" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Inbox") current-prefix-arg))
+  ("o" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Life") current-prefix-arg))
+  ("s" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Social") current-prefix-arg))
+  ("m" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Media") current-prefix-arg))
+  ("M" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Music") current-prefix-arg))
   ("x" zp/hydra-org-refile-maintenance/body)
-  ("a" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" "Awakening" current-prefix-arg))
-  ("p" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" "Psychotherapy" current-prefix-arg))
-  ("u" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" "University" current-prefix-arg))
-  ("r" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" "Research" current-prefix-arg))
-  ("h" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" "Hacking" current-prefix-arg))
-  ("c" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" "Contributing" current-prefix-arg))
-  ("b" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" "Troubleshooting" current-prefix-arg))
-  ("t" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" "LaTeX" current-prefix-arg))
-  ("e" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" "Emacs" current-prefix-arg))
-  ("l" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" "Linux" current-prefix-arg))
-  ("g" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" "Git" current-prefix-arg))
+  ("a" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Awakening") current-prefix-arg))
+  ("p" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Psychotherapy") current-prefix-arg))
+  ("u" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("University") current-prefix-arg))
+  ("r" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Research") current-prefix-arg))
+  ("h" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Hacking") current-prefix-arg))
+  ("c" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Contributing") current-prefix-arg))
+  ("b" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Troubleshooting") current-prefix-arg))
+  ("t" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("LaTeX") current-prefix-arg))
+  ("e" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Emacs") current-prefix-arg))
+  ("E" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Elisp") current-prefix-arg))
+  ("l" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Linux") current-prefix-arg))
+  ("g" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Git") current-prefix-arg))
 
   ("C" zp/hydra-org-refile-chain-toggle (concat (if zp/hydra-org-refile-chain
                                                     "[x]"
