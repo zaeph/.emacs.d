@@ -2852,13 +2852,25 @@ off.")
 ;; ================= IVY ==================
 ;; ========================================
 
+(defun zp/counsel-grep-or-swiper (&optional initial-input)
+  "Call ‘swiper’ for small buffers and ‘counsel-grep’ for large ones.
+Wrapper to always use swiper for gpg-encrypted files and
+indirect-buffers."
+  (interactive)
+  (if-let ((file (buffer-file-name))
+           (ext (file-name-extension (buffer-file-name)))
+           (is-not-gpg (not (equal ext "gpg"))))
+      (counsel-grep-or-swiper)
+    (swiper)))
+
 (ivy-mode 1)
 (setq ivy-use-virtual-buffers t)
 (setq enable-recursive-minibuffers t)
 (setq ivy-count-format "(%d/%d) "
       ivy-height 10                     ;Default
       counsel-find-file-at-point t)
-(global-set-key "\C-s" 'swiper)
+;; (global-set-key "\C-s" 'swiper)
+(global-set-key "\C-s" 'zp/counsel-grep-or-swiper)
 (global-set-key (kbd "C-c C-r") 'ivy-resume)
 (global-set-key (kbd "<f6>") 'ivy-resume)
 ;; (global-set-key (kbd "C-x C-b") 'ivy-switch-buffer)
