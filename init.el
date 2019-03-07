@@ -3287,7 +3287,8 @@ agenda settings after them."
             (org-agenda-skip-function
              '(org-agenda-skip-entry-if
                'todo '("CXLD")))
-            (org-agenda-dim-blocked-tasks 'dimmed))))
+            (org-agenda-dim-blocked-tasks 'dimmed)
+            (org-deadline-warning-days 0))))
 
 (defun zp/org-agenda-block-agenda-week-appointments-only (header &optional file)
   `(agenda ""
