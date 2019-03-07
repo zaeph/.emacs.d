@@ -3289,6 +3289,19 @@ agenda settings after them."
                'todo '("CXLD")))
             (org-agenda-dim-blocked-tasks 'dimmed))))
 
+(defun zp/org-agenda-block-agenda-week-appointments-only (header &optional file)
+  `(agenda ""
+           ((org-agenda-overriding-header
+             (zp/org-agenda-format-header-main ,header))
+            ,@(if (bound-and-true-p file)
+                  `((org-agenda-files ',file)))
+            (org-agenda-span 'week)
+            (org-agenda-tag-filter-preset '("-recurring"))
+            (org-agenda-skip-function
+             '(org-agenda-skip-entry-if
+               'todo '("CXLD") 'scheduled 'deadline))
+            (org-agenda-dim-blocked-tasks 'dimmed))))
+
 (defun zp/org-agenda-block-tasks (&optional file)
   `(tags-todo "-recurring-standby-reading"
               ((org-agenda-overriding-header
@@ -3517,6 +3530,9 @@ It creates 4 blocks:
 
         ("k" "Weekly agenda (-recurring)"
              (,(zp/org-agenda-block-agenda-week "Weekly Agenda")))
+
+        ("K" "Weekly appointments (-recurring)"
+             (,(zp/org-agenda-block-agenda-week-appointments-only "Weekly Appointments")))
 
         ("l" "Life"
              (,@(zp/org-agenda-blocks-main "Life" '("life" "pro" "mx"))))
