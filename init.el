@@ -2975,28 +2975,30 @@ indirect-buffers."
            (org-goto-sibling (if previous t))))))
 
 (defhydra zp/hydra-org-priority (:foreign-keys run
-                                 :hint nil)
+                                 :hint nil
+                                 :exit t)
   "
-_a_: #A    _p_: previous    _x_: ?x? chain
+_a_: #A    _p_: previous
 _b_: #B    _n_: next
 _c_: #C
 _d_: #D
 _e_: #E    _SPC_: remove
 
 "
-  ("x" zp/hydra-org-priority-chain-toggle (if zp/hydra-org-priority-chain
-                                              "[x]"
-                                            "[ ]"))
-  ("a" (zp/hydra-org-priority-set ?a) :exit t)
-  ("b" (zp/hydra-org-priority-set ?b) :exit t)
-  ("c" (zp/hydra-org-priority-set ?c) :exit t)
-  ("d" (zp/hydra-org-priority-set ?d) :exit t)
-  ("e" (zp/hydra-org-priority-set ?e) :exit t)
+  ("x" zp/hydra-org-priority-chain-toggle (concat (if zp/hydra-org-priority-chain
+                                                      "[x]"
+                                                    "[ ]")
+                                                  " chain") :exit nil)
+  ("a" (zp/hydra-org-priority-set ?a))
+  ("b" (zp/hydra-org-priority-set ?b))
+  ("c" (zp/hydra-org-priority-set ?c))
+  ("d" (zp/hydra-org-priority-set ?d))
+  ("e" (zp/hydra-org-priority-set ?e))
 
-  ("p" (zp/hydra-org-priority-goto-sibling t))
-  ("n" (zp/hydra-org-priority-goto-sibling))
+  ("p" (zp/hydra-org-priority-goto-sibling t) :exit nil)
+  ("n" (zp/hydra-org-priority-goto-sibling) :exit nil)
 
-  ("SPC" (zp/hydra-org-priority-set 'remove) :exit t)
+  ("SPC" (zp/hydra-org-priority-set 'remove))
 
   ("q" nil "cancel"))
 
