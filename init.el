@@ -2863,6 +2863,9 @@ indirect-buffers."
       (counsel-grep-or-swiper)
     (swiper)))
 
+;; Use rg insted of grep
+(setq counsel-grep-base-command "rg -i -M 120 --no-heading --line-number --color never %s %s")
+
 (ivy-mode 1)
 (setq ivy-use-virtual-buffers t)
 (setq enable-recursive-minibuffers t)
