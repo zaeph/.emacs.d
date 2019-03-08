@@ -4439,9 +4439,8 @@ KEYANDHEADLINE should be a list of cons cells of the form (\"key\" . \"headline\
                              ("a" . "AUR"))))
 
 
-(defhydra zp/hydra-org-refile-maintenance (:foreign-keys run
-                                           :hint nil
-                                           :exit t)
+(defhydra zp/hydra-org-refile-maintenance (:color teal
+                                           :hint nil)
   "
 ^Maintenance^
 ^^----------------------------------------------------------------------
@@ -4475,9 +4474,8 @@ _s_: Supplies
   ("q" nil "cancel")
   ("<backspace>" zp/hydra-org-refile/body "Back to menu"))
 
-(defhydra zp/hydra-org-refile-media (:foreign-keys run
-                                     :hint nil
-                                     :exit t)
+(defhydra zp/hydra-org-refile-media (:color teal
+                                     :hint nil)
   "
 ^Media^
 ^^----------------------------------------------------------------------
@@ -4507,9 +4505,8 @@ _f_: Film
   ("q" nil "cancel")
   ("<backspace>" zp/hydra-org-refile/body "Back to menu"))
 
-(defhydra zp/hydra-org-refile (:foreign-keys run
-                               :hint nil
-                               :exit t)
+(defhydra zp/hydra-org-refile (:color teal
+                               :hint nil)
   "
 ^Life^              ^Prog^                  ^Pro^              ^Mental^
 ^^^^^^^^----------------------------------------------------------------------
