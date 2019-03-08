@@ -2477,6 +2477,7 @@ off.")
         ("^git$" "~/org/svg/icons/git.svg" nil nil :ascent center)
         ("^media$" "~/org/svg/icons/library.svg" nil nil :ascent center)
         ("^music$" "~/org/svg/icons/compact-disc.svg" nil nil :ascent center)
+        ("^film$" "~/org/svg/icons/film.svg" nil nil :ascent center)
         ("^tex$" "~/org/svg/icons/file-2-p.svg" nil nil :ascent center)
         ("^inbox$" "~/org/svg/icons/gmail.svg" nil nil :ascent center)
         ("^awakening$" "~/org/svg/icons/aperture-green.svg" nil nil :ascent center)
@@ -3574,12 +3575,13 @@ It creates 4 blocks:
         ;;      ((org-agenda-files zp/org-agenda-files-media)))
 
         ("b" "Media"
-             (,@(zp/org-agenda-blocks-main "Media" '("media")))
-             ((org-agenda-files zp/org-agenda-files-life)))
+             (,@(zp/org-agenda-blocks-main "Media" '("media"))))
 
         ("B" "Music"
-             (,@(zp/org-agenda-blocks-main "Music" '("music")))
-             ((org-agenda-files zp/org-agenda-files-life)))
+             (,@(zp/org-agenda-blocks-main "Music" '("music"))))
+
+        ("f" "Film"
+             (,@(zp/org-agenda-blocks-main "Film" '("film"))))
 
         ("h" "Hacking"
              (,@(zp/org-agenda-blocks-main "Hacking" '("hack"))))
