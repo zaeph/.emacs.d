@@ -4445,14 +4445,14 @@ KEYANDHEADLINE should be a list of cons cells of the form (\"key\" . \"headline\
   "
 ^Maintenance^
 ^^----------------------------------------------------------------------
-_x_: General
+_._: General
 _c_: Cleaning
 _h_: Health
 _s_: Supplies
 
 "
   ;; ("o" zp/hydra-org-refile-file-life/body :exit t)
-  ("x" (zp/org-refile-to "/home/zaeph/org/life.org.gpg"
+  ("." (zp/org-refile-to "/home/zaeph/org/life.org.gpg"
                          '("Maintenance")
                          current-prefix-arg))
   ("c" (zp/org-refile-to "/home/zaeph/org/life.org.gpg"
@@ -4475,6 +4475,38 @@ _s_: Supplies
   ("q" nil "cancel")
   ("<backspace>" zp/hydra-org-refile/body "Back to menu"))
 
+(defhydra zp/hydra-org-refile-media (:foreign-keys run
+                                     :hint nil
+                                     :exit t)
+  "
+^Media^
+^^----------------------------------------------------------------------
+_._: General
+_m_: Music
+_f_: Film
+
+"
+  ;; ("o" zp/hydra-org-refile-file-life/body :exit t)
+  ("." (zp/org-refile-to "/home/zaeph/org/life.org.gpg"
+                         '("Media")
+                         current-prefix-arg))
+  ("m" (zp/org-refile-to "/home/zaeph/org/life.org.gpg"
+                         '("Music")
+                         current-prefix-arg))
+  ("f" (zp/org-refile-to "/home/zaeph/org/life.org.gpg"
+                         '("Film")
+                         current-prefix-arg))
+
+  ("C" zp/hydra-org-refile-chain-toggle (concat (if zp/hydra-org-refile-chain
+                                                    "[x]"
+                                                  "[ ]")
+                                                " chain") :exit nil)
+
+  ("j" org-refile-goto-last-stored "Jump to last refile")
+  ("w" zp/org-refile "zp/org-refile")
+  ("q" nil "cancel")
+  ("<backspace>" zp/hydra-org-refile/body "Back to menu"))
+
 (defhydra zp/hydra-org-refile (:foreign-keys run
                                :hint nil
                                :exit t)
@@ -4484,9 +4516,9 @@ _s_: Supplies
 _i_: Inbox          _h_: Hacking            _u_: University    _a_: Awakening
 _o_: Life           _l_: Linux              _r_: Research      _p_: Psychotherapy
 _s_: Social         _e_: Emacs
-_m_: Media          _E_: Elisp
-_M_: Music          _t_: LaTeX
-_x_: Maintenance    _g_: Git
+^^                  _E_: Elisp
+_x_: Maintenance    _t_: LaTeX
+_m_: Media          _g_: Git
 ^^                  _c_: Contributing
 ^^                  _b_: Troubleshooting
 ^^
@@ -4496,9 +4528,10 @@ _x_: Maintenance    _g_: Git
   ("i" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Inbox") current-prefix-arg))
   ("o" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Life") current-prefix-arg))
   ("s" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Social") current-prefix-arg))
-  ("m" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Media") current-prefix-arg))
-  ("M" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Music") current-prefix-arg))
+  ;; ("m" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Media") current-prefix-arg))
+  ("M" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Media") current-prefix-arg))
   ("x" zp/hydra-org-refile-maintenance/body)
+  ("m" zp/hydra-org-refile-media/body)
   ("a" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Awakening") current-prefix-arg))
   ("p" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Psychotherapy") current-prefix-arg))
   ("u" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("University") current-prefix-arg))
