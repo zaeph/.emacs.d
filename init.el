@@ -3984,20 +3984,23 @@ Check their respective dosctrings for more info."
          (m (% min 60)))
     (format "%1s:%02d" h m)))
 
+(defvar zp/org-capture-web-action nil
+  "Action to be taken on the webpage captured by org-capture-web.sh.")
 (defvar zp/org-capture-web-title nil
   "Title of the webpage captured by org-capture-web.sh.")
 (defvar zp/org-capture-web-url nil
   "URL of the webpage captured by org-capture-web.sh.")
 
-(defun zp/org-capture-web (title url template)
+(defun zp/org-capture-web (action title url)
   "Capture the website based on the info provided by org-capture-web.sh.
 
 TITLE and URL are those of the webpage.  TEMPLATE is the
 subtemplate to use."
   (interactive)
+  (setq zp/org-capture-web-action action)
   (setq zp/org-capture-web-title title)
   (setq zp/org-capture-web-url url)
-  (org-capture nil (concat "W" template)))
+  (org-capture nil (concat "Wa")))
 
 (defvar zp/org-capture-web-letterboxd-title nil
   "Title of the film captured by org-capture-web.sh.")
@@ -4117,17 +4120,8 @@ URL is the url to the Letterboxd page of the film."
              "* DONE Session%^{SESSION_DURATION}p\n%t" :immediate-finish t)
 
         ("W" "Web")
-        ("Wr" "Read" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
-              "* TODO Read [[%(print zp/org-capture-web-url)][%(print zp/org-capture-web-title)%?]] :web:"
-              :add-created t)
-        ("Wi" "Investigate" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
-              "* TODO Investigate [[%(print zp/org-capture-web-url)][%(print zp/org-capture-web-title)%?]] :web:"
-              :add-created t)
-        ("Wb" "Browse" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
-              "* TODO Browse [[%(print zp/org-capture-web-url)][%(print zp/org-capture-web-title)%?]] :web:"
-              :add-created t)
-        ("Ww" "Watch" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
-              "* TODO Watch [[%(print zp/org-capture-web-url)][%(print zp/org-capture-web-title)%?]] :video:"
+        ("Wa" "Automatic template" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
+              "* TODO %(print zp/org-capture-web-action) [[%(print zp/org-capture-web-url)][%(print zp/org-capture-web-title)%?]] :web:"
               :add-created t)
         ("Wf" "S: Film" entry (file+olp "/home/zaeph/org/life.org.gpg" "Film" "List")
               ,zp/org-capture-web-letterboxd-template
