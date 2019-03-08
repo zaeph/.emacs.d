@@ -3978,66 +3978,11 @@ Check their respective dosctrings for more info."
 
 ;;; Helper functions
 
-(defun zp/letterboxd-format-link (&optional title)
-  (let* ((title (if title
-                    title
-                  (read-string "Title: ")))
-         (domain "https://letterboxd.com/film/")
-         (search "https://letterboxd.com/search/films/")
-         (title-no-symbols (replace-regexp-in-string " *:\\|,\\|’" "" title))
-         (title-formatted (replace-regexp-in-string
-                           " " "-" (downcase title-no-symbols)))
-         (url-guessed (concat domain title-formatted))
-         (verify (y-or-n-p "Would you like to verify the link?"))
-         (url (if verify
-                  (progn
-                    (browse-url-xdg-open url-guessed)
-                    (if (y-or-n-p "Did the link work?")
-                        url-guessed
-                      (browse-url-xdg-open (concat search title))
-                      (read-string "Letterboxd URL: ")))
-                url-guessed))
-         (url-description "Letterboxd"))
-    ;; (org-insert-link nil url title)))
-    (concat "[[" url "][" url-description "]]")))
-
-(defun zp/letterboxd-set-link ()
-  (let* ((title (read-string "Title: "))
-         (title-formatted (zp/letterboxd-format-link title)))
-    (org-set-property "MEDIA_LINK" title-formatted)
-    title))
-
 (defun zp/convert-m-to-hm (min-str)
   (let* ((min (string-to-number min-str))
          (h (/ min 60))
          (m (% min 60)))
     (format "%1s:%02d" h m)))
-
-(defun zp/letterboxd-set-duration (&optional min-str)
-  "Return duration as a string formated as H:MM from MIN-STR."
-  (let* ((min-str (if min-str min-str (read-string "Duration (min): ")))
-         (hm-str (if (string= min-str "") "???"
-                   (zp/convert-m-to-hm min-str))))
-    (org-set-property "MEDIA_DURATION" hm-str)))
-
-(defun zp/letterboxd-set-director (&optional director)
-  (let ((director (if director
-                      director
-                    (read-string "Director: "))))
-    (org-set-property "MEDIA_DIRECTOR" director)))
-
-(defun zp/letterboxd-set-year (&optional year)
-  (let ((year (if year
-                  year
-                (read-string "Year: "))))
-    (org-set-property "MEDIA_YEAR" year)))
-
-(defun zp/letterboxd-capture ()
-  (let ((title (zp/letterboxd-set-link)))
-    (zp/letterboxd-set-director)
-    (zp/letterboxd-set-year)
-    (zp/letterboxd-set-duration)
-   title))
 
 (defvar zp/org-capture-web-title nil
   "Title of the webpage captured by org-capture-web.sh.")
@@ -4054,17 +3999,56 @@ subtemplate to use."
   (setq zp/org-capture-web-url url)
   (org-capture nil (concat "W" template)))
 
+(defvar zp/org-capture-web-letterboxd-title nil
+  "Title of the film captured by org-capture-web.sh.")
+(defvar zp/org-capture-web-letterboxd-url nil
+  "Letterboxd URL of the film captured by org-capture-web.sh.")
+(defvar zp/org-capture-web-letterboxd-director nil
+  "Name of the director of the film captured by
+  org-capture-web.sh.")
+(defvar zp/org-capture-web-letterboxd-year nil
+  "Year of the film captured by org-capture-web.sh.")
+(defvar zp/org-capture-web-letterboxd-duration nil
+  "Duration of the film captured by org-capture-web.sh.")
+(defvar zp/org-capture-web-letterboxd-template nil
+  "Default template for capturing films from Letterboxd with org-capture.web.sh.")
+
+(defun zp/org-capture-web-letterboxd (title url director year duration)
+  "Capture a film based on the info provided by org-capture-web.sh.
+
+TITLE, DIRECTOR, YEAR and DURATION are related to the film.
+
+URL is the url to the Letterboxd page of the film."
+  (let ((duration-str (if (string= duration "")
+                          "???"
+                        (zp/convert-m-to-hm duration))))
+    (setq zp/org-capture-web-letterboxd-title title)
+    (setq zp/org-capture-web-letterboxd-url url)
+    (setq zp/org-capture-web-letterboxd-director director)
+    (setq zp/org-capture-web-letterboxd-year year)
+    (setq zp/org-capture-web-letterboxd-duration duration-str)
+    (org-capture nil "Wf")))
+
+(setq zp/org-capture-web-letterboxd-template
+      "* %(print zp/org-capture-web-letterboxd-title)%?
+:PROPERTIES:
+:MEDIA_LINK: [[%(print zp/org-capture-web-letterboxd-url)][Letterboxd]]
+:MEDIA_DIRECTOR: %(print zp/org-capture-web-letterboxd-director)
+:MEDIA_YEAR: %(print zp/org-capture-web-letterboxd-year)
+:MEDIA_DURATION: %(print zp/org-capture-web-letterboxd-duration)
+:END:")
+
 (setq org-capture-templates
-      '(("n" "Note" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
-         "* %?" :add-created t)
+      `(("n" "Note" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
+             "* %?" :add-created t)
         ("f" "Todo" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
-         "* TODO %?" :add-created t)
+             "* TODO %?" :add-created t)
         ("F" "Todo + Clock" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
-         "* TODO %?\n"  :add-created t :clock-in t)
+             "* TODO %?\n" :add-created t :clock-in t)
         ("r" "Todo with Context" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
-         "* TODO %?\n%a" :add-created t)
+             "* TODO %?\n%a" :add-created t)
         ("R" "Todo with Context + Clock" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
-         "* TODO %?\n%a" :add-created t :clock-in t)
+             "* TODO %?\n%a" :add-created t :clock-in t)
         ;; ("r" "Todo + Reminder" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
         ;;  "* TODO %?\nSCHEDULED: %^T\n:PROPERTIES:\n:APPT_WARNTIME:  %^{APPT_WARNTIME|5|15|30|60}\n:END:")
         ;; ("T" "Todo (with keyword selection)" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
@@ -4076,9 +4060,9 @@ subtemplate to use."
         ;; ("C" "Todo + Clock (with keyword selection)" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
         ;;  "* %^{State|TODO|NEXT} %?" :clock-in t)
         ("d" "Date" entry (file+headline "/home/zaeph/org/life.org.gpg" "Calendar")
-         "* %?\n" :add-created t)
+             "* %?\n" :add-created t)
         ("e" "Date + Context" entry (file+headline "/home/zaeph/org/life.org.gpg" "Calendar")
-         "* %?\n%a" :add-created t)
+             "* %?\n%a" :add-created t)
 
         ;; ("D" "Date + Reminder" entry (file+headline "/home/zaeph/org/life.org.gpg" "Calendar")
         ;;  "* %?\n%^T\n\n%^{APPT_WARNTIME}p")
@@ -4086,51 +4070,51 @@ subtemplate to use."
         ;;  "* %?\n%^T%^{APPT_WARNTIME}p")
 
         ("p" "Phone-call" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
-         "* TODO Phone-call with %^{Interlocutor|Nicolas|Mum}%?\n:STATES:\n- State \"TODO\"       from              %U\n:END:" :clock-in t)
+             "* TODO Phone-call with %^{Interlocutor|Nicolas|Mum}%?\n:STATES:\n- State \"TODO\"       from              %U\n:END:" :clock-in t)
         ("m" "Meeting" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
-         "* TODO Meeting with %^{Meeting with}%?" :clock-in t)
+             "* TODO Meeting with %^{Meeting with}%?" :clock-in t)
 
         ("s" "Special")
         ("ss" "Code Snippet" entry (file "/home/zaeph/org/projects/hacking/snippets.org.gpg")
-         ;; Prompt for tag and language
-         "* %?\t%^g\n#+BEGIN_SRC %^{language}\n\n#+END_SRC")
+              ;; Prompt for tag and language
+              "* %?\t%^g\n#+BEGIN_SRC %^{language}\n\n#+END_SRC")
         ;; ("sf" "Film recommendation" entry (file+olp "/home/zaeph/org/media.org.gpg" "Films" "List")
         ;;  "* %(zp/org-capture-set-media-link-letterboxd)%?%^{MEDIA_DIRECTOR}p%^{MEDIA_YEAR}p%^{MEDIA_DURATION}p")
         ;; ("sf" "Film recommendation" entry (file+olp "/home/zaeph/org/media.org.gpg" "Films" "List")
         ;;  "* %(zp/letterboxd-set-link)%?%^{MEDIA_DIRECTOR}p%^{MEDIA_YEAR}p%(zp/letterboxd-set-duration)")
-        ("sf" "Film recommendation" entry (file+olp "/home/zaeph/org/media.org.gpg" "Films" "List")
-         "* %(zp/letterboxd-capture)")
-        ("sF" "Film recommendation (insert at top)" entry (file+olp "/home/zaeph/org/media.org.gpg" "Films" "List")
-         "* %(zp/letterboxd-capture)" :prepend t)
+        ("sf" "Film" entry (file+olp "/home/zaeph/org/media.org.gpg" "Films" "List")
+              "* %(zp/letterboxd-capture)")
+        ("sF" "Film (insert at top)" entry (file+olp "/home/zaeph/org/media.org.gpg" "Films" "List")
+              "* %(zp/letterboxd-capture)" :prepend t)
         ("sw" "Swimming workout" entry (file+weektree+prompt "/home/zaeph/org/sports/swimming/swimming.org.gpg")
-         "* DONE Training%^{SWIM_DISTANCE}p%^{SWIM_DURATION}p\n%t%(print zp/swimming-workout-default)")
+              "* DONE Training%^{SWIM_DISTANCE}p%^{SWIM_DURATION}p\n%t%(print zp/swimming-workout-default)")
 
         ("j" "Journal")
         ("jj" "Journal" entry (file+headline "/home/zaeph/org/journal.org.gpg" "Life")
-         "* %^{Title|Entry}\n%T\n\n%?" :full-frame t)
+              "* %^{Title|Entry}\n%T\n\n%?" :full-frame t)
         ("ja" "Awakening" entry (file+headline "/home/zaeph/org/journal.org.gpg" "Awakening")
-         "* %^{Title|Entry}\n%T\n\n%?" :full-frame t)
+              "* %^{Title|Entry}\n%T\n\n%?" :full-frame t)
         ("jp" "Psychotherapy" entry (file+headline "/home/zaeph/org/journal.org.gpg" "Psychotherapy")
-         "* %^{Title|Entry}\n%T\n\n%?" :full-frame t)
+              "* %^{Title|Entry}\n%T\n\n%?" :full-frame t)
         ("jw" "Writing" entry (file+headline "/home/zaeph/org/journal.org.gpg" "Writing")
-         "* %^{Title|Entry} %^g\n%T\n\n%?" :full-frame t)
+              "* %^{Title|Entry} %^g\n%T\n\n%?" :full-frame t)
         ("jr" "Research" entry (file+headline "/home/zaeph/org/journal.org.gpg" "Research")
-         "* %^{Title|Entry}\n%T\n\n%?" :full-frame t)
+              "* %^{Title|Entry}\n%T\n\n%?" :full-frame t)
         ("ju" "University" entry (file+headline "/home/zaeph/org/journal.org.gpg" "University")
-         "* %^{Title|Entry}\n%T\n\n%?" :full-frame t)
+              "* %^{Title|Entry}\n%T\n\n%?" :full-frame t)
         ("jh" "Hacking" entry (file+headline "/home/zaeph/org/journal.org.gpg" "Hacking")
-         "* %^{Title|Entry}\n%T\n\n%?" :full-frame t)
+              "* %^{Title|Entry}\n%T\n\n%?" :full-frame t)
         ("jm" "Music" entry (file+headline "/home/zaeph/org/journal.org.gpg" "Music")
-         "* %^{Title|Entry}\n%T\n\n%?" :full-frame t)
+              "* %^{Title|Entry}\n%T\n\n%?" :full-frame t)
         ("js" "Swimming" entry (file+headline "/home/zaeph/org/journal.org.gpg" "Swimming")
-         "* %^{Title|Entry}\n%T\n\n%?" :full-frame t)
+              "* %^{Title|Entry}\n%T\n\n%?" :full-frame t)
 
         ;; Daily Record of Dysfunctional Thoughts
         ("D" "Record Dysfunctional Thoughts" entry (file+headline "/home/zaeph/org/journal.org.gpg" "Psychotherapy")
-         "* Record of Dysfunctional Thoughts\n%T\n** Situation\n%?\n** Emotions\n** Thoughts")
+             "* Record of Dysfunctional Thoughts\n%T\n** Situation\n%?\n** Emotions\n** Thoughts")
 
         ("a" "Meditation session" entry (file+headline "/home/zaeph/org/projects/awakening/awakening.org.gpg" "Sessions")
-         "* DONE Session%^{SESSION_DURATION}p\n%t" :immediate-finish t)
+             "* DONE Session%^{SESSION_DURATION}p\n%t" :immediate-finish t)
 
         ("W" "Web")
         ("Wr" "Read" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
@@ -4144,7 +4128,10 @@ subtemplate to use."
               :add-created t)
         ("Ww" "Watch" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
               "* TODO Watch [[%(print zp/org-capture-web-url)][%(print zp/org-capture-web-title)%?]] :video:"
-              :add-created t)))
+              :add-created t)
+        ("Wf" "S: Film" entry (file+olp "/home/zaeph/org/life.org.gpg" "Film" "List")
+              ,zp/org-capture-web-letterboxd-template
+              :prepend t)))
 
 
 
