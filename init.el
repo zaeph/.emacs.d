@@ -4270,8 +4270,8 @@ URL is the url to the Letterboxd page of the film."
   "Toggle zp/hydra-org-refile-chain."
   (interactive)
   (if zp/hydra-org-refile-indirect
-      (setq zp/hydra-org-refile-indirect nil)
-    (setq zp/hydra-org-refile-indirect t)))
+      (setq-local zp/hydra-org-refile-indirect nil)
+    (setq-local zp/hydra-org-refile-indirect t)))
 
 (defun zp/org-refile-with-paths (&optional arg default-buffer rfloc msg)
   (interactive "P")
