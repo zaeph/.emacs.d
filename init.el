@@ -3000,8 +3000,7 @@ When LOWER is non-nil, raise the priority instead."
            (org-agenda-todo current-prefix-arg))
           (t
            (org-todo)))
-    (when zp/hydra-org-priority-chain
-      (zp/hydra-org-priority/body))))
+    (zp/hydra-org-priority/body)))
 
 (defhydra zp/hydra-org-priority (:color blue
                                  :hint nil)
@@ -4248,7 +4247,7 @@ URL is the url to the Letterboxd page of the film."
 
 (setq org-refile-targets '((nil :maxlevel . 9)
                            (org-agenda-files :maxlevel . 1))
-      org-refile-use-cache nil)
+      org-refile-use-cache t)
 
 
 (setq org-outline-path-complete-in-steps nil
@@ -4263,6 +4262,16 @@ URL is the url to the Letterboxd page of the film."
   (if zp/hydra-org-refile-chain
       (setq-local zp/hydra-org-refile-chain nil)
     (setq-local zp/hydra-org-refile-chain t)))
+
+(defvar zp/hydra-org-refile-indirect t
+  "When non-nil, jumping to a refile point is done in an indirect buffer.")
+
+(defun zp/hydra-org-refile-indirect-toggle ()
+  "Toggle zp/hydra-org-refile-chain."
+  (interactive)
+  (if zp/hydra-org-refile-indirect
+      (setq zp/hydra-org-refile-indirect nil)
+    (setq zp/hydra-org-refile-indirect t)))
 
 (defun zp/org-refile-with-paths (&optional arg default-buffer rfloc msg)
   (interactive "P")
@@ -4320,8 +4329,21 @@ With a `C-u` ARG, just jump to the headline."
         (arg (or arg
                  current-prefix-arg)))
     (cond
-     ((and arg (listp arg))         ;Are we jumping?
-      (zp/org-refile-internal file headline-or-path arg))
+     ((and arg (listp arg))             ;Are we jumping?
+      (let ((org-indirect-buffer-display 'current-window)
+            (buffer)
+            (indirect zp/hydra-org-refile-indirect))
+        (if (not indirect)
+            (zp/org-refile-internal file headline-or-path arg)
+          (save-window-excursion
+            (org-with-wide-buffer
+             (zp/org-refile-internal file headline-or-path arg)
+             (org-tree-to-indirect-buffer)
+             (setq buffer (current-buffer))))
+          (switch-to-buffer buffer)
+          (org-overview)
+          (org-cycle))
+        (zp/play-sound-turn-page)))
      ;; Are we in org-capture-mode?
      (is-capturing              ;Minor mode variable that's defined when capturing
       (zp/org-capture-refile-internal file headline-or-path arg))
@@ -4381,10 +4403,17 @@ passing arguments. This does."
                                                      "[ ]")
                                                    " chain") :exit nil)
 
-     ("j" org-refile-goto-last-stored "Jump to last refile")
-     ("w" zp/org-refile "zp/org-refile")
+     ("I" zp/hydra-org-refile-indirect-toggle (concat (if zp/hydra-org-refile-indirect
+                                                          "[x]"
+                                                        "[ ]")
+                                                      " indirect") :exit nil)
+
+     ("j" org-refile-goto-last-stored "jump to last")
+     ("w" zp/org-refile "refile")
+     ("p" zp/org-refile-with-paths "refile+paths")
+     ("0" (zp/org-refile-with-paths '(64)) "reset cache" :exit nil)
      ("q" nil "cancel")
-     ("<backspace>" ,return "Back to menu")))
+     ("<backspace>" ,return "back")))
 
 
 
@@ -4407,7 +4436,7 @@ _f_: Film
 
 (defhydra-org-refile zp/hydra-org-refile-maintenance zp/hydra-org-refile/body
   "
-_._: Maintenance
+Maintenance
 ^^----------------------------------------------------------------------
 _._: Root
 _c_: Cleaning
@@ -4428,7 +4457,7 @@ _._: Root
 _l_: List
 
 "
-  ("." (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Film")))
+  ("." (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Music")))
   ("l" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Music" "List of classical pieces"))))
 
 (defhydra-org-refile zp/hydra-org-refile-film zp/hydra-org-refile-media/body
@@ -4452,7 +4481,7 @@ _d_: Watched
 ^Life^              ^Prog^                  ^Pro^              ^Mental^
 ^^^^^^^^----------------------------------------------------------------------
 _i_: Inbox          _h_: Hacking            _u_: University    _a_: Awakening
-_o_: Life           _l_: Linux              _r_: Research      _p_: Psychotherapy
+_o_: Life           _l_: Linux              _r_: Research      _P_: Psychotherapy
 _s_: Social         _e_: Emacs
 ^^                  _E_: Elisp
 _x_: Maintenance    _t_: LaTeX
@@ -4470,7 +4499,7 @@ _m_: Media          _g_: Git
   ("x" zp/hydra-org-refile-maintenance/body)
   ("X" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Maintenance")))
   ("a" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Awakening")))
-  ("p" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Psychotherapy")))
+  ("P" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Psychotherapy")))
   ("u" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("University")))
   ("r" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Research")))
   ("h" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Hacking")))
@@ -4487,8 +4516,15 @@ _m_: Media          _g_: Git
                                                   "[ ]")
                                                 " chain") :exit nil)
 
-  ("j" org-refile-goto-last-stored "Jump to last refile")
-  ("w" zp/org-refile "zp/org-refile")
+  ("I" zp/hydra-org-refile-indirect-toggle (concat (if zp/hydra-org-refile-indirect
+                                                          "[x]"
+                                                        "[ ]")
+                                                      " indirect") :exit nil)
+
+  ("j" org-refile-goto-last-stored "jump to last")
+  ("w" zp/org-refile "refile")
+  ("p" zp/org-refile-with-paths "refile+paths")
+  ("0" (zp/org-refile-with-paths '(64)) "reset cache" :exit nil)
   ("q" nil "cancel"))
 
 
