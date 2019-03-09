@@ -2612,7 +2612,7 @@ off.")
   (local-set-key (kbd "C-c C-x l") 'zp/org-set-location)
   (local-set-key (kbd "C-c C-x d") 'org-delete-property)
   (local-set-key (kbd "C-c C-x D") 'org-insert-drawer)
-  (local-set-key (kbd "S-<backspace>") 'zp/kill-indirect-buffer)
+  (local-set-key (kbd "S-<backspace>") 'zp/org-kill-indirect-buffer)
   (local-set-key (kbd "C-x n o") 'zp/org-overview)
   (local-set-key (kbd "C-x n u") 'zp/org-narrow-up-heading)
   (local-set-key (kbd "C-x n y") 'zp/org-narrow-previous-heading)
@@ -6843,7 +6843,7 @@ Every ELEM in LIST is formatted as follows:
         (kill-buffer-and-window))
     (error "There is only one window in the frame.")))
 
-(defun zp/kill-indirect-buffer ()
+(defun zp/org-kill-indirect-buffer ()
   "Kill the current buffer if it is an indirect buffer."
   (interactive)
   (if (not (eq (buffer-base-buffer) nil))
