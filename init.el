@@ -7650,7 +7650,7 @@ time is displayed."
        (prog1 ,body
          (let ((elapsed
                 (float-time (time-subtract (current-time) ,nowvar))))
-           (message "%s... done (%.3fs)" ,title elapsed))))))
+           (message "%s...done (%.3fs)" ,title elapsed))))))
 
 
 
