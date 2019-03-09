@@ -4359,12 +4359,12 @@ With a `C-u` ARG, just jump to the headline."
             (indirect zp/hydra-org-refile-indirect))
         (if (not indirect)
             (zp/org-refile-internal file headline-or-path arg)
-          (save-window-excursion
-            (org-with-wide-buffer
-             (zp/org-refile-internal file headline-or-path arg)
-             (org-tree-to-indirect-buffer)
-             (setq buffer (current-buffer))))
-          (switch-to-buffer buffer)
+          (zp/org-refile-internal file headline-or-path arg)
+          (org-tree-to-indirect-buffer)
+          (setq buffer (current-buffer))
+          (mode-line-other-buffer)
+          (bury-buffer)
+          (switch-to-buffer buffer t)
           (let ((org-startup-folded nil))
             (org-set-startup-visibility))
           (org-overview)
