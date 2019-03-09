@@ -2255,7 +2255,8 @@ return `nil'."
 ;; (add-hook 'org-clock-in-hook 'zp/org-todo-started)
 
 ;; Options
-(setq org-clock-into-drawer "LOGBOOK-CLOCK"
+(setq org-agenda-inhibit-startup nil
+      org-clock-into-drawer "LOGBOOK-CLOCK"
       ;; org-clock-into-drawer nil
       org-log-into-drawer "LOGBOOK-NOTES"
       ;; org-log-into-drawer nil
@@ -4341,6 +4342,8 @@ With a `C-u` ARG, just jump to the headline."
              (org-tree-to-indirect-buffer)
              (setq buffer (current-buffer))))
           (switch-to-buffer buffer)
+          (let ((org-startup-folded nil))
+            (org-set-startup-visibility))
           (org-overview)
           (org-cycle))
         (zp/play-sound-turn-page)))
@@ -6908,6 +6911,8 @@ windows."
       (setq org-last-indirect-buffer nil))
   (balance-windows)
   (other-window 1)
+  (let ((org-startup-folded nil))
+    (org-set-startup-visibility))
   (unless (string-match-p "Record of Dysfunctional Thoughts" (buffer-name))
     (org-overview)
     (org-cycle))
