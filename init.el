@@ -4413,12 +4413,30 @@ passing arguments. This does."
 
      ("j" org-refile-goto-last-stored "jump to last")
      ("w" zp/org-refile "refile")
-     ("p" zp/org-refile-with-paths "refile+paths")
+     ("W" zp/org-refile-with-paths "refile+paths")
      ("0" (zp/org-refile-with-paths '(64)) "reset cache" :exit nil)
      ("q" nil "cancel")
      ("<backspace>" ,return "back")))
 
 
+
+(defhydra-org-refile zp/hydra-org-refile-calendars zp/hydra-org-refile/body
+  "
+^Calendars^
+^^----------------------------------------------------------------------
+_o_: Life
+_p_: Psychotherapy
+_m_: Media
+_n_: Nicolas
+_s_: Social
+
+"
+
+  ("o" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Life" "Calendar")))
+  ("p" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Psychotherapy" "Calendar")))
+  ("m" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Media" "Calendar")))
+  ("n" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Social" "Nicolas" "Calendar")))
+  ("s" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Social" "Calendar"))))
 
 (defhydra-org-refile zp/hydra-org-refile-media zp/hydra-org-refile/body
   "
@@ -4484,12 +4502,12 @@ _d_: Watched
 ^Life^              ^Prog^                  ^Pro^              ^Mental^
 ^^^^^^^^----------------------------------------------------------------------
 _i_: Inbox          _h_: Hacking            _u_: University    _a_: Awakening
-_o_: Life           _l_: Linux              _r_: Research      _P_: Psychotherapy
+_o_: Life           _l_: Linux              _r_: Research      _p_: Psychotherapy
 _s_: Social         _e_: Emacs
 ^^                  _E_: Elisp
 _x_: Maintenance    _t_: LaTeX
 _m_: Media          _g_: Git
-^^                  _c_: Contributing
+_c_: Calendars      _B_: Contributing
 ^^                  _b_: Troubleshooting
 
 "
@@ -4500,13 +4518,14 @@ _m_: Media          _g_: Git
   ("m" zp/hydra-org-refile-media/body)
   ("M" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Media")))
   ("x" zp/hydra-org-refile-maintenance/body)
+  ("c" zp/hydra-org-refile-calendars/body)
   ("X" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Maintenance")))
   ("a" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Awakening")))
-  ("P" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Psychotherapy")))
+  ("p" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Psychotherapy")))
   ("u" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("University")))
   ("r" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Research")))
   ("h" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Hacking")))
-  ("c" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Contributing")))
+  ("B" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Contributing")))
   ("b" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Troubleshooting")))
   ("t" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("LaTeX")))
   ("e" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Emacs")))
@@ -4526,7 +4545,7 @@ _m_: Media          _g_: Git
 
   ("j" org-refile-goto-last-stored "jump to last")
   ("w" zp/org-refile "refile")
-  ("p" zp/org-refile-with-paths "refile+paths")
+  ("W" zp/org-refile-with-paths "refile+paths")
   ("0" (zp/org-refile-with-paths '(64)) "reset cache" :exit nil)
   ("q" nil "cancel"))
 
