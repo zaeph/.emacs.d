@@ -4461,6 +4461,44 @@ _s_: Social
   ("n" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Social" "Nicolas" "Calendar")))
   ("s" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Social" "Calendar"))))
 
+(defhydra-org-refile zp/hydra-org-refile-music zp/hydra-org-refile-media/body
+  "
+^Music^
+^^----------------------------------------------------------------------
+_._: Root
+_l_: List
+
+"
+  ("." (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Music")))
+  ("l" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Music" "List of classical pieces"))))
+
+(defhydra-org-refile zp/hydra-org-refile-books zp/hydra-org-refile-media/body
+  "
+^Books^
+^^----------------------------------------------------------------------
+_._: Root
+_l_: List
+_d_: Read
+
+"
+  ("." (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Books")))
+  ("l" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Books" "List")))
+  ("d" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Books" "Read"))))
+
+(defhydra-org-refile zp/hydra-org-refile-film zp/hydra-org-refile-media/body
+  "
+^Film^
+^^----------------------------------------------------------------------
+_._: Root
+_l_: List
+_d_: Watched
+
+"
+  ;; ("o" zp/hydra-org-refile-file-life/body :exit t)
+  ("." (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Film")))
+  ("l" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Film" "List")))
+  ("d" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Film" "Watched"))))
+
 (defhydra-org-refile zp/hydra-org-refile-media zp/hydra-org-refile/body
   "
 ^Media^
@@ -4468,6 +4506,7 @@ _s_: Social
 _._: Root
 _m_: Music
 _f_: Film
+_b_: Books
 
 "
 
@@ -4476,6 +4515,8 @@ _f_: Film
   ("M" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Music")))
   ("f" zp/hydra-org-refile-film/body)
   ("F" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Film")))
+  ("b" zp/hydra-org-refile-books/body)
+  ("B" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Books")))
   ("W" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Film" "Watched"))))
 
 (defhydra-org-refile zp/hydra-org-refile-maintenance zp/hydra-org-refile/body
@@ -4492,31 +4533,6 @@ _s_: Supplies
   ("c" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Maintenance" "Cleaning")))
   ("h" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Maintenance" "Health")))
   ("s" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Maintenance" "Supplies"))))
-
-(defhydra-org-refile zp/hydra-org-refile-music zp/hydra-org-refile-media/body
-  "
-^Music^
-^^----------------------------------------------------------------------
-_._: Root
-_l_: List
-
-"
-  ("." (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Music")))
-  ("l" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Music" "List of classical pieces"))))
-
-(defhydra-org-refile zp/hydra-org-refile-film zp/hydra-org-refile-media/body
-  "
-^Film^
-^^----------------------------------------------------------------------
-_._: Root
-_l_: List
-_d_: Watched
-
-"
-  ;; ("o" zp/hydra-org-refile-file-life/body :exit t)
-  ("." (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Film")))
-  ("l" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Film" "List")))
-  ("d" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Film" "Watched"))))
 
 
 (defhydra zp/hydra-org-refile (:color teal
