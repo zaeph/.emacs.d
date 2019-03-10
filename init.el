@@ -2470,38 +2470,51 @@ off.")
 (setq zp/org-agenda-include-category-icons t)
 
 (setq zp/org-agenda-category-icon-alist
-      '(("^emacs$" "~/org/svg/icons/spacemacs.svg" nil nil :ascent center)
-        ("^elisp$" "~/org/svg/icons/spacemacs-elisp.svg" nil nil :ascent center)
-        ("^linux$" "~/org/svg/icons/nixos.svg" nil nil :ascent center)
-        ("^opsec$" "~/org/svg/icons/cyber-security-b.svg" nil nil :ascent center)
-        ("^curios$" "~/org/svg/icons/question.svg" nil nil :ascent center)
-        ("^cooking$" "~/org/svg/icons/salad.svg" nil nil :ascent center)
-        ("^plants$" "~/org/svg/icons/sansevieria.svg" nil nil :ascent center)
-        ("^mx$" "~/org/svg/icons/recycle.svg" nil nil :ascent center)
-        ("^style$" "~/org/svg/icons/suit.svg" nil nil :ascent center)
-        ("^health$" "~/org/svg/icons/health.svg" nil nil :ascent center)
-        ("^animals$" "~/org/svg/icons/animals.svg" nil nil :ascent center)
-        ("^supplies$" "~/org/svg/icons/box.svg" nil nil :ascent center)
-        ("^nicolas$" "~/org/svg/icons/leaf.svg" nil nil :ascent center)
-        ("^social$" "~/org/svg/icons/happy.svg" nil nil :ascent center)
-        ("^psy$" "~/org/svg/icons/solution.svg" nil nil :ascent center)
-        ("^grooming$" "~/org/svg/icons/razor.svg" nil nil :ascent center)
-        ("^journal$" "~/org/svg/icons/scroll-2-p.svg" nil nil :ascent center)
-        ("^cleaning$" "~/org/svg/icons/bucket.svg" nil nil :ascent center)
-        ("^university$" "~/org/svg/icons/aperture-yellow.svg" nil nil :ascent center)
-        ("^git$" "~/org/svg/icons/git.svg" nil nil :ascent center)
-        ("^media$" "~/org/svg/icons/library.svg" nil nil :ascent center)
-        ("^music$" "~/org/svg/icons/compact-disc.svg" nil nil :ascent center)
-        ("^film$" "~/org/svg/icons/film.svg" nil nil :ascent center)
-        ("^tex$" "~/org/svg/icons/file-2-p.svg" nil nil :ascent center)
+      '(
+        ;; Life
         ("^inbox$" "~/org/svg/icons/gmail.svg" nil nil :ascent center)
+        ("^curios$" "~/org/svg/icons/question.svg" nil nil :ascent center)
+        ("^style$" "~/org/svg/icons/suit.svg" nil nil :ascent center)
+        ("^nicolas$" "~/org/svg/icons/leaf.svg" nil nil :ascent center)
+        ("^swim$" "~/org/svg/icons/swimming-pool.svg" nil nil :ascent center)
         ("^awakening$" "~/org/svg/icons/aperture-green.svg" nil nil :ascent center)
+        ("^journal$" "~/org/svg/icons/scroll-2-p.svg" nil nil :ascent center)
+        ("^psy$" "~/org/svg/icons/solution.svg" nil nil :ascent center)
+
+        ;; Professional
+        ("^research$" "~/org/svg/icons/research.svg" nil nil :ascent center)
+        ("^university$" "~/org/svg/icons/aperture-yellow.svg" nil nil :ascent center)
+
+        ;; Hacking
         ("^hack$" "~/org/svg/icons/engineering-2.svg" nil nil :ascent center)
+        ("^emacs$" "~/org/svg/icons/spacemacs.svg" nil nil :ascent center)
         ("^python$" "~/org/svg/icons/python.svg" nil nil :ascent center)
         ("^contrib$" "~/org/svg/icons/chill.svg" nil nil :ascent center)
         ("^bug$" "~/org/svg/icons/cross.svg" nil nil :ascent center)
-        ("^research$" "~/org/svg/icons/research.svg" nil nil :ascent center)
-        ("^swim$" "~/org/svg/icons/swimming-pool.svg" nil nil :ascent center)
+        ("^elisp$" "~/org/svg/icons/spacemacs-elisp.svg" nil nil :ascent center)
+        ("^tex$" "~/org/svg/icons/file-2-p.svg" nil nil :ascent center)
+        ("^linux$" "~/org/svg/icons/nixos.svg" nil nil :ascent center)
+        ("^opsec$" "~/org/svg/icons/cyber-security-b.svg" nil nil :ascent center)
+        ("^git$" "~/org/svg/icons/git.svg" nil nil :ascent center)
+
+        ;; Media
+        ("^media$" "~/org/svg/icons/library.svg" nil nil :ascent center)
+        ("^books$" "~/org/svg/icons/book-2.svg" nil nil :ascent center)
+        ("^trackers$" "~/org/svg/icons/share.svg" nil nil :ascent center)
+        ("^music$" "~/org/svg/icons/compact-disc.svg" nil nil :ascent center)
+        ("^film$" "~/org/svg/icons/film.svg" nil nil :ascent center)
+
+        ;; Maintenance
+        ("^mx$" "~/org/svg/icons/recycle.svg" nil nil :ascent center)
+        ("^cooking$" "~/org/svg/icons/salad.svg" nil nil :ascent center)
+        ("^plants$" "~/org/svg/icons/sansevieria.svg" nil nil :ascent center)
+        ("^animals$" "~/org/svg/icons/animals.svg" nil nil :ascent center)
+        ("^health$" "~/org/svg/icons/health.svg" nil nil :ascent center)
+        ("^supplies$" "~/org/svg/icons/box.svg" nil nil :ascent center)
+        ("^social$" "~/org/svg/icons/happy.svg" nil nil :ascent center)
+        ("^grooming$" "~/org/svg/icons/razor.svg" nil nil :ascent center)
+        ("^cleaning$" "~/org/svg/icons/bucket.svg" nil nil :ascent center)
+
         (".*" '(space . (:width (24))) nil nil :ascent center)))
 
 ;; Shows icons by default
