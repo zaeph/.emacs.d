@@ -4536,10 +4536,10 @@ _s_: Supplies
 
 "
   ("." (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Maintenance")))
-  ("c" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Maintenance" "Cleaning")))
-  ("k" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Maintenance" "Cooking")))
-  ("h" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Maintenance" "Health")))
-  ("s" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Maintenance" "Supplies"))))
+  ("c" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Cleaning")))
+  ("k" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Cooking")))
+  ("h" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Health")))
+  ("s" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Supplies"))))
 
 
 (defhydra zp/hydra-org-refile (:color teal
