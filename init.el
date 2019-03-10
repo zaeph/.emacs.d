@@ -4525,12 +4525,14 @@ Maintenance
 ^^----------------------------------------------------------------------
 _._: Root
 _c_: Cleaning
+_k_: Cooking
 _h_: Health
 _s_: Supplies
 
 "
   ("." (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Maintenance")))
   ("c" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Maintenance" "Cleaning")))
+  ("k" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Maintenance" "Cooking")))
   ("h" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Maintenance" "Health")))
   ("s" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Maintenance" "Supplies"))))
 
