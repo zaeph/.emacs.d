@@ -3614,6 +3614,9 @@ It creates 4 blocks:
         ("K" "Weekly appointments (-recurring)"
              (,(zp/org-agenda-block-agenda-week-appointments-only "Weekly Appointments")))
 
+        ("i" "Inbox"
+             (,@(zp/org-agenda-blocks-main "Inbox" '("inbox"))))
+
         ("l" "Life"
              (,@(zp/org-agenda-blocks-main "Life" '("life" "pro" "mx"))))
 
