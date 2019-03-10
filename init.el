@@ -2474,6 +2474,7 @@ off.")
         ("^elisp$" "~/org/svg/icons/spacemacs-elisp.svg" nil nil :ascent center)
         ("^linux$" "~/org/svg/icons/nixos.svg" nil nil :ascent center)
         ("^opsec$" "~/org/svg/icons/cyber-security-b.svg" nil nil :ascent center)
+        ("^curios$" "~/org/svg/icons/question.svg" nil nil :ascent center)
         ("^cooking$" "~/org/svg/icons/salad.svg" nil nil :ascent center)
         ("^plants$" "~/org/svg/icons/sansevieria.svg" nil nil :ascent center)
         ("^mx$" "~/org/svg/icons/recycle.svg" nil nil :ascent center)
@@ -4549,17 +4550,19 @@ _s_: Supplies
 ^^^^^^^^----------------------------------------------------------------------
 _i_: Inbox          _h_: Hacking            _u_: University    _a_: Awakening
 _o_: Life           _l_: Linux              _r_: Research      _p_: Psychotherapy
-_s_: Social         _e_: Emacs
-_n_: Nicolas        _E_: Elisp
-^^                  _t_: LaTeX
-_x_: Maintenance    _g_: Git
-_m_: Media          _b_: Troubleshooting
-_c_: Calendars      _B_: Contributing
+_O_: Curiosities    _e_: Emacs
+_s_: Social         _E_: Elisp
+_n_: Nicolas        _t_: LaTeX
+^^                  _g_: Git
+_x_: Maintenance    _b_: Troubleshooting
+_m_: Media          _B_: Contributing
+_c_: Calendars
 
 "
   ;; ("o" zp/hydra-org-refile-file-life/body :exit t)
   ("i" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Inbox")))
   ("o" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Life")))
+  ("O" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Curiosities")))
   ("s" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Social")))
   ("n" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Social" "Nicolas")))
   ("m" zp/hydra-org-refile-media/body)
@@ -4586,9 +4589,9 @@ _c_: Calendars      _B_: Contributing
                                                 " chain") :exit nil)
 
   ("I" zp/hydra-org-refile-indirect-toggle (concat (if zp/hydra-org-refile-indirect
-                                                          "[x]"
-                                                        "[ ]")
-                                                      " indirect") :exit nil)
+                                                       "[x]"
+                                                     "[ ]")
+                                                   " indirect") :exit nil)
 
   ("j" org-refile-goto-last-stored "jump to last")
   ("w" zp/org-refile "refile")
