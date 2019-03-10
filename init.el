@@ -2324,7 +2324,7 @@ return `nil'."
 
 (setq org-todo-keywords '(
         ;; Default
-        (sequence "TODO(t)" "NEXT(n)" "STRT(S)" "|" "DONE(d)")
+        (sequence "TODO(t)" "NEXT(n)" "STRT(S!)" "|" "DONE(d)")
         ;; Action
         ;; (sequence "SCHD(m!)" "PREP(!)" "READ(r!)" "DBRF(D!)" "REVW(R!)" "|" "DONE(d!)")
         ;; Extra
