@@ -3703,7 +3703,7 @@ It creates 4 blocks:
 
 
 ;; (setq org-agenda-sorting-strategy
-(setq org-agenda-sorting-strategy '((agenda habit-down time-up scheduled-up deadline-up priority-down category-keep)
+(setq org-agenda-sorting-strategy '((agenda habit-down deadline-up time-up scheduled-up priority-down category-keep)
                                     (tags priority-down category-keep)
                                     ;; (tags category-keep priority-down)
                                     (todo priority-down category-keep)
