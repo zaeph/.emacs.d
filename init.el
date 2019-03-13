@@ -2480,6 +2480,7 @@ off.")
         ("^awakening$" "~/org/svg/icons/aperture-green.svg" nil nil :ascent center)
         ("^journal$" "~/org/svg/icons/scroll-2-p.svg" nil nil :ascent center)
         ("^psy$" "~/org/svg/icons/solution.svg" nil nil :ascent center)
+        ("^anki$" "~/org/svg/icons/anki-2-p.svg" nil nil :ascent center)
 
         ;; Professional
         ("^research$" "~/org/svg/icons/research.svg" nil nil :ascent center)
