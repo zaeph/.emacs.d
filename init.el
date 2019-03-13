@@ -4488,11 +4488,13 @@ _s_: Social
 ^Music^
 ^^----------------------------------------------------------------------
 _._: Root
-_l_: List
+_c_: Classical
+_J_: Jazz
 
 "
   ("." (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Music")))
-  ("l" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Music" "List of classical pieces"))))
+  ("c" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Music" "List of classical pieces")))
+  ("J" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Music" "List of jazz pieces"))))
 
 (defhydra-org-refile zp/hydra-org-refile-books zp/hydra-org-refile-media/body
   "
