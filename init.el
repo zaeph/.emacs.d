@@ -3620,10 +3620,13 @@ It creates 4 blocks:
              (,@(zp/org-agenda-blocks-main "Inbox" '("inbox"))))
 
         ("l" "Life"
-             (,@(zp/org-agenda-blocks-main "Life" '("life" "pro" "mx"))))
+             (,@(zp/org-agenda-blocks-main "Life" '("life" "pro" "mx" "curios"))))
 
         ("L" "Life (strict)"
              (,@(zp/org-agenda-blocks-main "Life (strict)" '("life"))))
+
+        ("c" "Curiosities"
+             (,@(zp/org-agenda-blocks-main "Curiosities" '("curios"))))
 
         ("p" "Professional"
              (,@(zp/org-agenda-blocks-main "Professional" '("pro"))))
@@ -3670,7 +3673,7 @@ It creates 4 blocks:
         ("o" "OPSEC"
              (,@(zp/org-agenda-blocks-main "OPSEC" '("opsec"))))
 
-        ("c" "Contributing & Troubleshooting"
+        ("C" "Contributing & Troubleshooting"
              (,@(zp/org-agenda-blocks-main "Contributing & Troubleshooting" '("contrib"))))
 
         ("d" "Deadlines"
