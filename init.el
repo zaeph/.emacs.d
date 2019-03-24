@@ -3328,6 +3328,7 @@ agenda settings after them."
             (org-super-agenda-groups
              '(,(zp/org-super-agenda-groups "Life" '("life"))
                ,(zp/org-super-agenda-groups "Professional" '("pro"))
+               ,(zp/org-super-agenda-groups "Curiosities" '("curios"))
                ,(zp/org-super-agenda-groups "Maintenance" '("mx"))
                ,(zp/org-super-agenda-groups "Hacking" '("hack"))
                ,(zp/org-super-agenda-groups "Media" '("media")))))))
@@ -3620,7 +3621,7 @@ It creates 4 blocks:
              (,@(zp/org-agenda-blocks-main "Inbox" '("inbox"))))
 
         ("l" "Life"
-             (,@(zp/org-agenda-blocks-main "Life" '("life" "pro" "mx" "curios"))))
+             (,@(zp/org-agenda-blocks-main "Life" '("life" "pro" "mx"))))
 
         ("L" "Life (strict)"
              (,@(zp/org-agenda-blocks-main "Life (strict)" '("life"))))
