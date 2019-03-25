@@ -4202,6 +4202,14 @@ URL is the url to the Letterboxd page of the film."
         ("D" "Record Dysfunctional Thoughts" entry (file+headline "/home/zaeph/org/journal.org.gpg" "Psychotherapy")
              "* Record of Dysfunctional Thoughts\n%T\n** Situation\n%?\n** Emotions\n** Thoughts")
 
+        ;; Pain Diary
+        ("P" "Pain Diary" entry (file+olp "/home/zaeph/org/life.org.gpg" "Psychotherapy" "Pain Diary")
+             "* Entry: %U
+** What were you doing or what happened?
+%?
+** What did you start struggling with psychologically?
+** What thoughts came up in association with that struggle?")
+
         ("a" "Meditation session" entry (file+headline "/home/zaeph/org/projects/awakening/awakening.org.gpg" "Sessions")
              "* DONE Session%^{SESSION_DURATION}p\n%t" :immediate-finish t)
 
