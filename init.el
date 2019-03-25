@@ -2508,6 +2508,7 @@ off.")
 
         ;; Maintenance
         ("^mx$" "~/org/svg/icons/recycle.svg" nil nil :ascent center)
+        ("^fin$" "~/org/svg/icons/money-p.svg" nil nil :ascent center)
         ("^cooking$" "~/org/svg/icons/salad.svg" nil nil :ascent center)
         ("^plants$" "~/org/svg/icons/sansevieria.svg" nil nil :ascent center)
         ("^animals$" "~/org/svg/icons/animals.svg" nil nil :ascent center)
@@ -4480,6 +4481,7 @@ _p_: Psychotherapy
 _m_: Media
 _n_: Nicolas
 _s_: Social
+_f_: Finances
 
 "
 
@@ -4487,7 +4489,8 @@ _s_: Social
   ("p" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Psychotherapy" "Calendar")))
   ("m" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Media" "Calendar")))
   ("n" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Social" "Nicolas" "Calendar")))
-  ("s" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Social" "Calendar"))))
+  ("s" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Social" "Calendar")))
+  ("f" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Finances" "Calendar"))))
 
 (defhydra-org-refile zp/hydra-org-refile-music zp/hydra-org-refile-media/body
   "
@@ -4558,12 +4561,14 @@ _c_: Cleaning
 _k_: Cooking
 _h_: Health
 _s_: Supplies
+_f_: Finances
 
 "
   ("." (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Maintenance")))
   ("c" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Cleaning")))
   ("k" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Cooking")))
   ("h" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Health")))
+  ("f" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Finances")))
   ("s" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Supplies"))))
 
 
