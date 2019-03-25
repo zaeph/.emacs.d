@@ -4490,10 +4490,14 @@ _m_: Media
 _n_: Nicolas
 _s_: Social
 _f_: Finances
+_h_: Hacking
+_u_: University
 
 "
 
   ("o" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Life" "Calendar")))
+  ("h" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Hacking" "Calendar")))
+  ("u" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("University" "Calendar")))
   ("p" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Psychotherapy" "Calendar")))
   ("m" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Media" "Calendar")))
   ("n" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Social" "Nicolas" "Calendar")))
