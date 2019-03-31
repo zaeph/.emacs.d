@@ -3782,7 +3782,8 @@ It creates 4 blocks:
 
 ;; Good example for a toggle based on variables
 (defun zp/toggle-org-habit-show-all-today ()
-  "Toggle the display of habits between showing only the habits due today, and showing all of them."
+  "Toggle the display of habits between showing only the habits
+due today, and showing all of them."
   (interactive)
   (cond ((bound-and-true-p org-habit-show-all-today)
          (setq org-habit-show-all-today nil)
