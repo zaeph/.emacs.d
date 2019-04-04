@@ -4216,7 +4216,7 @@ URL is the url to the Letterboxd page of the film."
 
         ("W" "Web")
         ("Wa" "Automatic template" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
-              "* TODO %(print zp/org-capture-web-action) [[%(print zp/org-capture-web-url)][%(print zp/org-capture-web-title)%?]] :web:"
+              "* TODO %(print zp/org-capture-web-action) [[%?%(print zp/org-capture-web-url)][%(print zp/org-capture-web-title)]] :web:"
               :add-created t)
         ("Wf" "S: Film" entry (file+olp "/home/zaeph/org/life.org.gpg" "Film" "List")
               ,zp/org-capture-web-letterboxd-template
