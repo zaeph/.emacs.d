@@ -3098,8 +3098,8 @@ _e_: #E    _SPC_: remove
       org-agenda-include-deadlines 'all
       zp/projects-include-waiting t
       zp/org-agenda-include-scheduled 'all
-      org-agenda-cmp-user-defined 'zp/org-agenda-sort-special
-      zp/org-agenda-sorting-strategy-user-defined 'special
+      org-agenda-cmp-user-defined 'zp/org-agenda-sort-wait
+      zp/org-agenda-sorting-strategy-user-defined 'priority
       org-agenda-window-setup 'current-window
       org-deadline-warning-days 30
       org-agenda-tags-todo-honor-ignore-options 1
@@ -3248,8 +3248,8 @@ With a prefix argument, do so in all agenda buffers."
   "Format header blocks in org-agenda, and display important
 agenda settings after them."
   (let ((word-list ()))
-    (if (eq zp/org-agenda-sorting-strategy-user-defined 'priority)
-        (add-to-list 'word-list "+#↓" t))
+    (if (eq zp/org-agenda-sorting-strategy-user-defined 'special)
+        (add-to-list 'word-list "+S↓" t))
     (if (eq org-agenda-todo-ignore-scheduled 'future)
         (add-to-list 'word-list "-future" t))
     (let ((header-formatted (zp/org-agenda-format-header-align header))
@@ -3277,8 +3277,8 @@ important agenda settings after them."
   (let* ((tags-column org-agenda-tags-column)
          (header "Scheduled")
          (word-list ()))
-    (if (eq zp/org-agenda-sorting-strategy-user-defined 'priority)
-        (add-to-list 'word-list "+#↓" t))
+    (if (eq zp/org-agenda-sorting-strategy-user-defined 'special)
+        (add-to-list 'word-list "+S↓" t))
     (if (eq org-agenda-todo-ignore-scheduled 'future)
         (add-to-list 'word-list "-future" t))
     (if (eq org-agenda-todo-ignore-scheduled nil)
@@ -3293,8 +3293,8 @@ agenda settings after them."
   (let* ((tags-column org-agenda-tags-column)
          (header "Projects")
          (word-list ()))
-    (if (eq zp/org-agenda-sorting-strategy-user-defined 'priority)
-        (add-to-list 'word-list "+#↓" t))
+    (if (eq zp/org-agenda-sorting-strategy-user-defined 'special)
+        (add-to-list 'word-list "+S↓" t))
     (if (eq zp/projects-include-waiting nil)
         (add-to-list 'word-list "-waiting" t))
     (let ((header-formatted (zp/org-agenda-format-header-align header))
