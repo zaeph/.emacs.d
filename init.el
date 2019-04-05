@@ -3625,7 +3625,7 @@ It creates 4 blocks:
              (,@(zp/org-agenda-blocks-main "Life" '("life" "pro" "mx"))))
 
         ("L" "Life (strict)"
-             (,@(zp/org-agenda-blocks-main "Life (strict)" '("life"))))
+             (,@(zp/org-agenda-blocks-main "Life (strict)" '("life" "mx"))))
 
         ("c" "Curiosities"
              (,@(zp/org-agenda-blocks-main "Curiosities" '("curios"))))
