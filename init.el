@@ -2564,7 +2564,9 @@ off.")
   (when (not (equal arg '(4)))
       (beginning-of-buffer))
   (recenter-top-bottom)
-  (org-display-inline-images)
+  ;; Do not redisplay images if in indirect buffer
+  (if (buffer-file-name)
+      (org-display-inline-images))
   (zp/play-sound-turn-page))
 
 (defun zp/org-show-all (arg)
@@ -2576,7 +2578,9 @@ off.")
   (if (not (eq arg 4))
       (beginning-of-buffer))
   (recenter-top-bottom)
-  (org-display-inline-images)
+  ;; Do not redisplay images if in indirect buffer
+  (if (buffer-file-name)
+      (org-display-inline-images))
   (zp/play-sound-turn-page))
 
 ;; org-narrow movements
