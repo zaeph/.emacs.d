@@ -4232,16 +4232,16 @@ URL is the url to the Letterboxd page of the film."
 
 (defvar zp/swimming-workout-default nil)
 (setq zp/swimming-workout-default "
-|-----+---------------------------|
-| 500 | warmup crawl/fly          |
-| 500 | 100 pull / 100 pull fast  |
-| 500 | 50 fly / 100 crawl        |
-| 500 | 100 pull / 100 pull fast  |
-| 500 | 50 fly / 100 crawl        |
-| 500 | 100 pull / 100 pull fast  |
-| 500 | 50 fly / 100 crawl        |
-| 100 | warmdown                  |
-|-----+---------------------------|")
+|-----+-------------------------------------|
+| 500 | warmup crawl/fly                    |
+| 500 | 100 pull / 100 pull fast / 100 kick |
+| 500 | 50 fly / 100 crawl                  |
+| 500 | 100 pull / 100 pull fast / 100 kick |
+| 500 | 50 fly / 100 crawl                  |
+| 500 | 100 pull / 100 pull fast / 100 kick |
+| 500 | 50 fly / 100 crawl                  |
+| 100 | warmdown                            |
+|-----+-------------------------------------|")
 
 (setq zp/org-agenda-capture-templates
       '(("f" "Todo" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
