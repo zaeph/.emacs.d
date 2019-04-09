@@ -4599,11 +4599,11 @@ _o_: Life           _l_: Linux              _r_: Research      _p_: Psychotherap
 _O_: Curiosities    _e_: Emacs
 _s_: Social         _E_: Elisp
 _n_: Nicolas        _t_: LaTeX
-^^                  _g_: Git
-_x_: Maintenance    _b_: Troubleshooting
-_m_: Media          _B_: Contributing
+_S_: Swimming       _g_: Git
+^^                  _b_: Troubleshooting
+_x_: Maintenance    _B_: Contributing
+_m_: Media
 _c_: Calendars
-
 "
   ;; ("o" zp/hydra-org-refile-file-life/body :exit t)
   ("i" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Inbox")))
@@ -4611,6 +4611,7 @@ _c_: Calendars
   ("O" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Curiosities")))
   ("s" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Social")))
   ("n" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Social" "Nicolas")))
+  ("S" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Swimming")))
   ("m" zp/hydra-org-refile-media/body)
   ("M" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Media")))
   ("x" zp/hydra-org-refile-maintenance/body)
