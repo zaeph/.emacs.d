@@ -7440,6 +7440,8 @@ mouse-1: Previous buffer\nmouse-3: Next buffer")
   (set-face-attribute 'secondary-selection nil :background "#3B3273")
   (set-face-attribute 'lui-track-bar nil :background "RoyalBlue4")
   (set-face-attribute 'org-column nil :background "#1F1F1F")
+  (set-face-attribute 'org-block nil :foreground nil :inherit 'default :background "#1F1F1F")
+  (set-face-attribute 'org-block-begin-line nil :background "#2E2E2E")
 
 
   (set-face-attribute 'zp/org-agenda-block-info-face nil
@@ -7505,6 +7507,8 @@ mouse-1: Previous buffer\nmouse-3: Next buffer")
   (set-face-attribute 'secondary-selection nil :background "#d3ccff")
   (set-face-attribute 'lui-track-bar nil :background "RoyalBlue1")
   (set-face-attribute 'org-column nil :background "#F0E4BE")
+  (set-face-attribute 'org-block nil :foreground nil :inherit 'default :background "#F0E6BE")
+  (set-face-attribute 'org-block-begin-line nil :background "#DBD2AE")
 
 
   (set-face-attribute 'diff-hl-change nil :foreground "#3a81c3" :background "#3a81c3")
