@@ -366,6 +366,9 @@ that date.  Leave point on the first amount."
 ;; line-number-mode
 ;; (setq display-line-numbers 'relative)
 
+;; Fountain
+(setq fountain-export-font "Courier Prime")
+
 
 
 ;; ========================================
