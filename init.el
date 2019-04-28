@@ -2793,6 +2793,7 @@ off.")
         ("p j" . "/home/zaeph/org/projects/lang/ja/ja.org.gpg")
         ("p g" . "/home/zaeph/org/projects/lang/de/de.org.gpg")
         ;; Activism
+        ("p a" . "/home/zaeph/org/projects/activism/politics/politics.org.gpg")
         ;; ("p a d"  . "[DATA EXPUNGED]")
         ;; ("p a s"  . "[DATA EXPUNGED]")
         ;; ("p a c"  . "[DATA EXPUNGED]")
@@ -2807,7 +2808,7 @@ off.")
       (mapcar 'cdr zp/org-agenda-files-music-alist)
 
       zp/org-agenda-files-awakening-alist
-      '(("p a" . "/home/zaeph/org/projects/awakening/awakening.org.gpg"))
+      '(("p A" . "/home/zaeph/org/projects/awakening/awakening.org.gpg"))
       zp/org-agenda-files-awakening
       (mapcar 'cdr zp/org-agenda-files-awakening-alist)
 
