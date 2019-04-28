@@ -2496,6 +2496,9 @@ off.")
         ("^anki$" "~/org/svg/icons/anki-2-p.svg" nil nil :ascent center)
         ("^plan$" "~/org/svg/icons/planning-p.svg" nil nil :ascent center)
 
+        ;; Activism
+        ("^pol$" "~/org/svg/icons/fist.svg" nil nil :ascent center)
+
         ;; Professional
         ("^research$" "~/org/svg/icons/research.svg" nil nil :ascent center)
         ("^university$" "~/org/svg/icons/aperture-yellow.svg" nil nil :ascent center)
@@ -3346,9 +3349,10 @@ agenda settings after them."
             (org-super-agenda-groups
              '(,(zp/org-super-agenda-groups "Life" '("life"))
                ,(zp/org-super-agenda-groups "Professional" '("pro"))
-               ,(zp/org-super-agenda-groups "Curiosities" '("curios"))
+               ,(zp/org-super-agenda-groups "Activism" '("act"))
                ,(zp/org-super-agenda-groups "Maintenance" '("mx"))
                ,(zp/org-super-agenda-groups "Hacking" '("hack"))
+               ,(zp/org-super-agenda-groups "Curiosities" '("curios"))
                ,(zp/org-super-agenda-groups "Media" '("media")))))))
 
 (defun zp/org-agenda-block-agenda (header &optional file)
@@ -3639,13 +3643,16 @@ It creates 4 blocks:
              (,@(zp/org-agenda-blocks-main "Inbox" '("inbox"))))
 
         ("l" "Life"
-             (,@(zp/org-agenda-blocks-main "Life" '("life" "pro" "mx"))))
+             (,@(zp/org-agenda-blocks-main "Life" '("life" "pro" "act" "mx"))))
 
         ("L" "Life (strict)"
              (,@(zp/org-agenda-blocks-main "Life (strict)" '("life" "mx"))))
 
         ("c" "Curiosities"
              (,@(zp/org-agenda-blocks-main "Curiosities" '("curios"))))
+
+        ("a" "Activism"
+             (,@(zp/org-agenda-blocks-main "Activism" '("act"))))
 
         ("p" "Professional"
              (,@(zp/org-agenda-blocks-main "Professional" '("pro"))))
@@ -4503,7 +4510,8 @@ passing arguments. This does."
 ^Calendars^
 ^^----------------------------------------------------------------------
 _o_: Life
-_p_: Psychotherapy
+_P_: Psychotherapy
+_p_: Politics
 _m_: Media
 _n_: Nicolas
 _s_: Social
@@ -4514,9 +4522,10 @@ _u_: University
 "
 
   ("o" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Life" "Calendar")))
+  ("p" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Politics" "Calendar")))
   ("h" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Hacking" "Calendar")))
   ("u" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("University" "Calendar")))
-  ("p" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Psychotherapy" "Calendar")))
+  ("P" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Psychotherapy" "Calendar")))
   ("m" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Media" "Calendar")))
   ("n" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Social" "Nicolas" "Calendar")))
   ("s" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Social" "Calendar")))
@@ -4605,12 +4614,12 @@ _f_: Finances
 (defhydra zp/hydra-org-refile (:color teal
                                :hint nil)
   "
-^Life^              ^Prog^                  ^Pro^              ^Mental^
+^Life^              ^Prog^                  ^Pro^ & Act        ^Mental^
 ^^^^^^^^----------------------------------------------------------------------
-_i_: Inbox          _h_: Hacking            _u_: University    _a_: Awakening
-_o_: Life           _l_: Linux              _r_: Research      _p_: Psychotherapy
+_i_: Inbox          _h_: Hacking            _u_: University    _A_: Awakening
+_o_: Life           _l_: Linux              _r_: Research      _P_: Psychotherapy
 _O_: Curiosities    _e_: Emacs
-_s_: Social         _E_: Elisp
+_s_: Social         _E_: Elisp              _p_: Politics
 _n_: Nicolas        _t_: LaTeX
 _S_: Swimming       _g_: Git
 ^^                  _b_: Troubleshooting
@@ -4631,8 +4640,9 @@ _c_: Calendars
   ("x" zp/hydra-org-refile-maintenance/body)
   ("c" zp/hydra-org-refile-calendars/body)
   ("X" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Maintenance")))
-  ("a" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Awakening")))
-  ("p" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Psychotherapy")))
+  ("A" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Awakening")))
+  ("P" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Psychotherapy")))
+  ("p" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Politics")))
   ("u" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("University")))
   ("r" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Research")))
   ("h" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Hacking")))
