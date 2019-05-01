@@ -2545,6 +2545,16 @@ off.")
           '(lambda ()
             (setq org-ditaa-jar-path "/usr/share/java/ditaa/ditaa-0.11.jar")))
 
+;; LaTeX export
+(setq org-format-latex-options
+      '(:foreground default
+        :background default
+        :scale 3.0
+        :html-foreground "Black"
+        :html-background "Transparent"
+        :html-scale 1.0
+        :matchers ("begin" "$1" "$" "$$" "\\(" "\\[")))
+
 ;; Deactivated since migrated to Linux
 (org-babel-do-load-languages 'org-babel-load-languages
                              '((R . t)
