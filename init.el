@@ -2542,8 +2542,8 @@ off.")
 ;; Babel
 (require 'ob-async)
 (add-hook 'ob-async-pre-execute-src-block-hook
-        '(lambda ()
-           (setq org-ditaa-jar-path "/usr/share/java/ditaa/ditaa-0.11.jar")))
+          '(lambda ()
+            (setq org-ditaa-jar-path "/usr/share/java/ditaa/ditaa-0.11.jar")))
 
 ;; Deactivated since migrated to Linux
 (org-babel-do-load-languages 'org-babel-load-languages
