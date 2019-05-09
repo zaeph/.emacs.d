@@ -4163,6 +4163,20 @@ URL is the url to the Letterboxd page of the film."
 :MEDIA_DURATION: %(print zp/org-capture-web-letterboxd-duration)
 :END:")
 
+(defun zp/org-capture-web-kill-new (title url)
+  "Make website the latest kill in the kill ring.
+
+Based on the info provided by org-capture-web.sh.
+
+TITLE and URL are those of the webpage."
+  (interactive)
+  (kill-new (concat "[["
+                    url
+                    "]["
+                    title
+                    "]]"))
+  (message "Link added to kill-ring."))
+
 (setq org-capture-templates
       `(("n" "Note" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
              "* %?" :add-created t)
