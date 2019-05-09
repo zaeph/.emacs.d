@@ -2547,7 +2547,7 @@ off.")
 
 ;; LaTeX export
 (setq org-format-latex-options
-      '(:foreground default
+      '(:foreground auto
         :background default
         :scale 3.0
         :html-foreground "Black"
