@@ -2703,6 +2703,8 @@ off.")
   (local-set-key (kbd "M-]") 'org-metaright)
   (local-set-key (kbd "M-{") 'org-shiftmetaleft)
   (local-set-key (kbd "M-}") 'org-shiftmetaright)
+  (local-set-key (kbd "C-a") 'org-beginning-of-line)
+  (local-set-key (kbd "C-e") 'org-end-of-line)
   ;; (local-set-key (kbd "C-c C-w") 'org-refile)
   ;; (local-set-key (kbd "C-c C-S-w") 'zp/org-refile-with-paths)
   )
@@ -3010,8 +3012,6 @@ indirect-buffers."
   )
 
 (define-key olivetti-mode-map (kbd "M-I") 'zp/olivetti-toggle-hide-mode-line)
-(define-key olivetti-mode-map (kbd "C-a") 'org-beginning-of-line)
-(define-key olivetti-mode-map (kbd "C-e") 'org-end-of-line)
 
 ;; (add-hook 'olivetti-mode-hook #'electric-quote-local-mode)
 ;; (setq olivetti-mode-hook nil)
