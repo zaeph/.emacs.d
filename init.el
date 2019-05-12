@@ -3010,6 +3010,8 @@ indirect-buffers."
   )
 
 (define-key olivetti-mode-map (kbd "M-I") 'zp/olivetti-toggle-hide-mode-line)
+(define-key olivetti-mode-map (kbd "C-a") 'org-beginning-of-line)
+(define-key olivetti-mode-map (kbd "C-e") 'org-end-of-line)
 
 ;; (add-hook 'olivetti-mode-hook #'electric-quote-local-mode)
 ;; (setq olivetti-mode-hook nil)
