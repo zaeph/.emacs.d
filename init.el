@@ -4124,7 +4124,8 @@ subtemplate to use."
   (setq zp/org-capture-web-action action)
   (setq zp/org-capture-web-title title)
   (setq zp/org-capture-web-url url)
-  (org-capture nil (concat "Wa")))
+  (org-capture nil (concat "Wa"))
+  (message (concat "Link added to template: \n" url)))
 
 (defvar zp/org-capture-web-letterboxd-title nil
   "Title of the film captured by org-capture-web.sh.")
@@ -4177,7 +4178,7 @@ TITLE and URL are those of the webpage."
                     "]["
                     title
                     "]]"))
-  (message "Link added to kill-ring."))
+  (message (concat "Link added to kill-ring: \n" url)))
 
 (setq org-capture-templates
       `(("n" "Note" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
