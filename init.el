@@ -1201,7 +1201,7 @@ If REGEX is non-nil, creates a regex to match the email alias."
 (define-key notmuch-search-mode-map "d"
   (lambda (&optional untrash beg end)
     "mark thread as spam"
-    (interactive (cons current-prefix-arg (notmuch-search-interactive-region)))
+    (interactive (cons current-prefix-arg (notmuch-interactive-region)))
     (if untrash
         (notmuch-search-tag (list "-deleted"))
       (notmuch-search-tag (list "+deleted" "-inbox")) beg end)
@@ -1210,7 +1210,7 @@ If REGEX is non-nil, creates a regex to match the email alias."
 (define-key notmuch-show-mode-map "d"
   (lambda (&optional beg end)
     "mark thread as spam"
-    (interactive (notmuch-search-interactive-region))
+    (interactive (notmuch-interactive-region))
     (notmuch-show-tag (list "+deleted" "-inbox" "-draft"))
     (notmuch-show-next-thread-show)))
 
