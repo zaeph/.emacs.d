@@ -1164,6 +1164,9 @@ If REGEX is non-nil, creates a regex to match the email alias."
 (defvar zp/email-org (zp/notmuch-get-email-with-alias "work" "org")
   "Email alias used for the org-mode mailing list.")
 
+(defvar zp/email-dev (zp/notmuch-get-email-with-alias "work" "dev")
+  "Email alias used for general dev work.")
+
 (defun zp/notmuch-fcc-email-format-regex (email))
 
 (setq notmuch-fcc-dirs
@@ -1172,7 +1175,9 @@ If REGEX is non-nil, creates a regex to match the email alias."
         (,(regexp-quote zp/email-work) .
           "work/sent -inbox +sent -unread")
         (,(regexp-quote zp/email-org) .
-          "work/sent -inbox +sent -unread +org")))
+          "work/sent -inbox +sent -unread +org")
+        (,(regexp-quote zp/email-dev) .
+          "work/sent -inbox +sent -unread +dev")))
 
 ;; (setq notmuch-user-name
 ;;                   (lambda ()
@@ -1434,7 +1439,8 @@ The language should be the name of a valid Ispell dictionary.")
 (setq zp/message-ispell-alist
       `((,zp/email-private . "french")
         (,zp/email-work . "french")
-        (,zp/email-org . "british")))
+        (,zp/email-org . "british")
+        (,zp/email-dev . "british")))
 
 (defun zp/message-flyspell-auto ()
   "Start Ispell with the language associated with the email.
