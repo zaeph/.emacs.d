@@ -2761,43 +2761,36 @@ off.")
    alist))
 
 
-(setq zp/shortcut-files-alist
-      '(("e" . "/home/zaeph/.emacs.d/init.el")
-        ("I" . "/home/zaeph/org/info.org.gpg"))
-      zp/ledger-files-alist
-      '(("l l" . "/home/zaeph/org/ledger/main.ledger.gpg")
+(setq zp/shortcuts-alist
+      '(
+        ;; Misc
+        ("e" . "/home/zaeph/.emacs.d/init.el")
+        ("I" . "/home/zaeph/org/info.org.gpg")
+        ("p d" . "/ssh:asus:/home/zaeph/Downloads/Sharing/dl.org")
+
+        ;; Ledger
+        ("l l" . "/home/zaeph/org/ledger/main.ledger.gpg")
         ("l s" . "/home/zaeph/org/ledger/main-schedule.ledger.gpg")
         ;; ("l f" . "/home/zaeph/org/ledger/french-house.ledger.gpg")
-        )
-      zp/research-files-alist
-      '(("p t" . "/home/zaeph/org/projects/university/research/thesis/thesis.tex")
-        ("p T" . "/home/zaeph/org/projects/university/research/presentation/presentation.tex")
+
+        ;; Research
+        ("p T" . "/home/zaeph/org/projects/university/research/thesis/thesis.tex")
+        ;; ("p T" . "/home/zaeph/org/projects/university/research/presentation/presentation.tex")
         ("p b" . "/home/zaeph/org/bib/monty-python.bib")
         ("p B" . "/home/zaeph/org/projects/university/research/thesis/bibliography/bibliography.tex")
         ;; ("p c" . "/home/zaeph/org/projects/university/research/sty/zaeph.sty")
         ;; ("p C" . "/home/zaeph/org/projects/university/research/sty/presentation.sty")
-        )
-      zp/misc-files-alist
-      '(;; ("p d" . "/tmp/asus/home/zaeph/Downloads/Sharing/dl.org")
-        ("p d" . "/ssh:asus:/home/zaeph/Downloads/Sharing/dl.org"))
+        ;; ("p d" . "/tmp/asus/home/zaeph/Downloads/Sharing/dl.org")
 
-      zp/journal-files-alist
-      '(("j" . "/home/zaeph/org/journal.org.gpg")
-        ;; ("j a" . "/home/zaeph/org/projects/awakening/journal.org.gpg")
-        ;; ("j p" . "/home/zaeph/org/projects/psychotherapy/journal.org.gpg")
-        ;; ("j w" . "/home/zaeph/org/projects/writing/journal.org.gpg")
-        ;; ("j u" . "/home/zaeph/org/projects/university/journal.org.gpg")
-        ;; ("j r" . "/home/zaeph/org/projects/university/research/journal.org.gpg")
-        ;; ("j h" . "/home/zaeph/org/projects/hacking/journal.org.gpg")
-        ;; ("j s" . "/home/zaeph/org/sports/swimming/journal.org.gpg")
-        )
-      zp/journal-files
-      (mapcar 'cdr zp/journal-files-alist)
+        ;; Journal
+        ("j" . "/home/zaeph/org/journal.org.gpg")
 
-      zp/org-agenda-files-projects-alist
-      '(("p w" . "/home/zaeph/org/projects/writing/writing.org.gpg")
+        ;; Projects
+        ("p w" . "/home/zaeph/org/projects/writing/writing.org.gpg")
         ;; ("p t" . "/home/zaeph/org/projects/tavocat/tavocat.org.gpg")
         ;; ("p k". "/home/zaeph/org/projects/kendeskiñ/kendeskiñ.org.gpg")
+        ("p t" . "/home/zaeph/org/projects/typography/typography.org.gpg")
+
         ;; University
         ("p u" . "/home/zaeph/org/projects/university/university.org.gpg")
         ("p r" . "/home/zaeph/org/projects/university/research/research.org.gpg")
@@ -2808,74 +2801,45 @@ off.")
         ;; ("p c i"     . "/home/zaeph/org/projects/university/classes/university/lit/lit.org.gpg")
         ;; ("p c s"     . "/home/zaeph/org/projects/university/classes/university/syn/syn.org.gpg")
         ;; ("p c t"     . "/home/zaeph/org/projects/university/classes/espe/tronc-commun.org.gpg")
+
         ;; Languages
         ("p j" . "/home/zaeph/org/projects/lang/ja/ja.org.gpg")
         ("p g" . "/home/zaeph/org/projects/lang/de/de.org.gpg")
+
         ;; Activism
         ("p a" . "/home/zaeph/org/projects/activism/politics/politics.org.gpg")
         ;; ("p a d"  . "[DATA EXPUNGED]")
         ;; ("p a s"  . "[DATA EXPUNGED]")
         ;; ("p a c"  . "[DATA EXPUNGED]")
         ;; ("p a m"  . "[DATA EXPUNGED]")
-        )
-      zp/org-agenda-files-projects
-      (mapcar 'cdr zp/org-agenda-files-projects-alist)
 
-      zp/org-agenda-files-music-alist
-      '(("p P" ."/home/zaeph/org/piano.org.gpg"))
-      zp/org-agenda-files-music
-      (mapcar 'cdr zp/org-agenda-files-music-alist)
+        ;; Music
+        ("p P" ly-raw string "\"/home/zaeph/org/piano.org.gpg\"")
 
-      zp/org-agenda-files-awakening-alist
-      '(("p A" . "/home/zaeph/org/projects/awakening/awakening.org.gpg"))
-      zp/org-agenda-files-awakening
-      (mapcar 'cdr zp/org-agenda-files-awakening-alist)
+        ;; Awakening
+        ("p A" . "/home/zaeph/org/projects/awakening/awakening.org.gpg")
 
-      zp/org-agenda-files-psychotherapy-alist
-      '(("p p" . "/home/zaeph/org/projects/psychotherapy/psychotherapy.org.gpg"))
-      zp/org-agenda-files-psychotherapy
-      (mapcar 'cdr zp/org-agenda-files-psychotherapy-alist)
-
-      zp/org-agenda-files-sports-alist
-      '(("p s" . "/home/zaeph/org/sports/swimming/swimming.org.gpg")
+        ;; Psychotherapy
+        ("p p" . "/home/zaeph/org/projects/psychotherapy/psychotherapy.org.gpg")
+        ;; Sports
+        ("p s" . "/home/zaeph/org/sports/swimming/swimming.org.gpg")
         ;; ("p R" . "/home/zaeph/org/sports/running/running.org.gpg")
-        )
-      zp/org-agenda-files-sports
-      (mapcar 'cdr zp/org-agenda-files-sports-alist)
 
-      zp/org-agenda-files-hacking-alist
-      '(("p h e" . "/home/zaeph/org/projects/hacking/emacs/emacs.org.gpg")
+        ;; Hacking
+        ("p h e" . "/home/zaeph/org/projects/hacking/emacs/emacs.org.gpg")
         ("p h l" . "/home/zaeph/org/projects/hacking/linux/linux.org.gpg")
         ("p h o" . "/home/zaeph/org/projects/hacking/opsec/opsec.org.gpg")
         ("p h h" . "/home/zaeph/org/projects/hacking/hacking.org.gpg")
-        ("p h p" . "/home/zaeph/org/projects/hacking/python/python.org.gpg"))
-      zp/org-agenda-files-hacking
-      (mapcar 'cdr zp/org-agenda-files-hacking-alist)
+        ("p h p" . "/home/zaeph/org/projects/hacking/python/python.org.gpg")
 
-      zp/org-agenda-files-media-alist
-      '(("b" . "/home/zaeph/org/media.org.gpg"))
-      zp/org-agenda-files-media
-      (mapcar 'cdr zp/org-agenda-files-media-alist)
+        ;; Media
+        ("b" . "/home/zaeph/org/media.org.gpg")
 
-      zp/org-agenda-files-life-alist
-      '(("o" . "/home/zaeph/org/life.org.gpg"))
-      zp/org-agenda-files-life
-      (mapcar 'cdr zp/org-agenda-files-life-alist))
+        ;; Life
+        ("o" . "/home/zaeph/org/life.org.gpg")))
 
 (defun zp/set-shortcuts-all ()
-  (zp/set-shortcuts zp/shortcut-files-alist)
-  (zp/set-shortcuts zp/ledger-files-alist)
-  (zp/set-shortcuts zp/research-files-alist)
-  (zp/set-shortcuts zp/misc-files-alist)
-  (zp/set-shortcuts zp/journal-files-alist)
-  (zp/set-shortcuts zp/org-agenda-files-projects-alist)
-  (zp/set-shortcuts zp/org-agenda-files-awakening-alist)
-  (zp/set-shortcuts zp/org-agenda-files-psychotherapy-alist)
-  (zp/set-shortcuts zp/org-agenda-files-music-alist)
-  (zp/set-shortcuts zp/org-agenda-files-sports-alist)
-  (zp/set-shortcuts zp/org-agenda-files-hacking-alist)
-  (zp/set-shortcuts zp/org-agenda-files-media-alist)
-  (zp/set-shortcuts zp/org-agenda-files-life-alist))
+  (zp/set-shortcuts zp/shortcuts-alist))
 
 ;; (zp/set-shortcuts-all)
 
@@ -3191,7 +3155,7 @@ With a prefix argument, do so in all agenda buffers."
 
 (defun zp/update-org-agenda-files ()
   (interactive)
-  (setq org-agenda-files zp/org-agenda-files-life)
+  (setq org-agenda-files '("/home/zaeph/org/life.org.gpg"))
   (zp/set-shortcuts-all))
 
 (zp/update-org-agenda-files)
@@ -3693,8 +3657,7 @@ It creates 4 blocks:
                ,(zp/org-agenda-block-reading-next-and-started)
                ,(zp/org-agenda-block-reading-list))
              ((org-agenda-tag-filter-preset (list "+reading"))
-              (org-agenda-hide-tags-regexp "reading")
-              (org-agenda-files zp/org-agenda-files-life)))
+              (org-agenda-hide-tags-regexp "reading")))
 
         ;; ("b" "Media"
         ;;      (,(zp/org-agenda-block-agenda "Media")
