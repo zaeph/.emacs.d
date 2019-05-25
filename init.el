@@ -2501,6 +2501,7 @@ off.")
         ("^psy$" "~/org/svg/icons/solution.svg" nil nil :ascent center)
         ("^anki$" "~/org/svg/icons/anki-2-p.svg" nil nil :ascent center)
         ("^plan$" "~/org/svg/icons/planning-p.svg" nil nil :ascent center)
+        ("^typography$" "~/org/svg/icons/typography.svg" nil nil :ascent center)
 
         ;; Activism
         ("^pol$" "~/org/svg/icons/fist.svg" nil nil :ascent center)
@@ -4618,10 +4619,11 @@ _i_: Inbox          _h_: Hacking            _u_: University    _A_: Awakening
 _o_: Life           _l_: Linux              _r_: Research      _P_: Psychotherapy
 _O_: Curiosities    _e_: Emacs
 _s_: Social         _E_: Elisp              _p_: Politics
-_n_: Nicolas        _t_: LaTeX
+_n_: Nicolas        _T_: LaTeX
 _S_: Swimming       _g_: Git
-^^                  _b_: Troubleshooting
-_x_: Maintenance    _B_: Contributing
+_t_: Typography     _b_: Troubleshooting
+^^                  _B_: Contributing
+_x_: Maintenance
 _m_: Media
 _c_: Calendars
 
@@ -4635,6 +4637,7 @@ _c_: Calendars
   ("S" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Swimming")))
   ("m" zp/hydra-org-refile-media/body)
   ("M" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Media")))
+  ("t" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Typography")))
   ("x" zp/hydra-org-refile-maintenance/body)
   ("c" zp/hydra-org-refile-calendars/body)
   ("X" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Maintenance")))
@@ -4646,7 +4649,7 @@ _c_: Calendars
   ("h" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Hacking")))
   ("B" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Contributing")))
   ("b" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Troubleshooting")))
-  ("t" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("LaTeX")))
+  ("T" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("LaTeX")))
   ("e" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Emacs")))
   ("E" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Elisp")))
   ("l" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Linux")))
