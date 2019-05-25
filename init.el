@@ -4808,6 +4808,8 @@ appt-list when an item is marked as DONE."
         "Herbal Tea             10/Herbal Tea: Remove tea bag"
         "Timebox                25/Finish and Reflect + 5/Back to it"
         "Break                  30/Back to it"
+        "Charge Phone           30/Unplug Phone"
+        "Charge Tablet          30/Unplug Tablet"
         ))
 
 (defun zp/chronos-edit-selected-line-time (time prefix)
