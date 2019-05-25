@@ -7372,7 +7372,7 @@ mouse-1: Previous buffer\nmouse-3: Next buffer")
 (defun zp/set-fonts ()
   ;; Default font
   (set-face-attribute 'default nil
-                      :font "Sarasa Term SC" :height 106 :weight 'normal)
+                      :font "Sarasa Term J" :height 106 :weight 'normal)
   ;; variable-pitch & fixed-pitch
   (set-face-attribute 'variable-pitch nil
                       :font "Bliss Pro Prog" :height 1.3)
