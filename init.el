@@ -2975,15 +2975,15 @@ indirect-buffers."
 (setq-default olivetti-body-width 0.6
               olivetti-minimum-body-width 80)
 
-(defun zp/olivetti-toggle-hide-mode-line ()
-  (interactive)
-  (olivetti-toggle-hide-mode-line)
-  (toggle-frame-fullscreen)
-  ;; (mode-line-other-buffer)
-  ;; (mode-line-other-buffer)
-  )
+;; (defun zp/olivetti-toggle-hide-mode-line ()
+;;   (interactive)
+;;   (olivetti-toggle-hide-mode-line)
+;;   (toggle-frame-fullscreen)
+;;   ;; (mode-line-other-buffer)
+;;   ;; (mode-line-other-buffer)
+;;   )
 
-(define-key olivetti-mode-map (kbd "M-I") 'zp/olivetti-toggle-hide-mode-line)
+;; (define-key olivetti-mode-map (kbd "M-I") 'zp/olivetti-toggle-hide-mode-line)
 
 ;; (add-hook 'olivetti-mode-hook #'electric-quote-local-mode)
 ;; (setq olivetti-mode-hook nil)
@@ -3650,7 +3650,7 @@ It creates 4 blocks:
 
         ("j" "Journal entries"
              (,(zp/org-agenda-block-journal))
-             ((org-agenda-files zp/journal-files)))
+             ((org-agenda-files '("/home/zaeph/org/journal.org.gpg"))))
 
         ("r" "Reading (-standby)"
              (,(zp/org-agenda-block-agenda "Reading")
