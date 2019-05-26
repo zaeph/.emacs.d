@@ -6577,12 +6577,14 @@ will not be modified."
 ;; Conditional APPT_WARNTIME
 (defun zp/org-set-appt-warntime-if-timestamp ()
   "Prompt for APPT_WARNTIME if the heading as a timestamp."
-  (save-excursion
-    (org-back-to-heading t)
-    (let ((end (save-excursion (outline-next-heading) (point))) ts)
-      (when (re-search-forward org-stamp-time-of-day-regexp
-                               end t)
-        (zp/org-set-appt-warntime)))))
+  (let ((warntime (org-entry-get (point) "APPT_WARNTIME")))
+    (unless warntime
+      (save-excursion
+        (org-back-to-heading t)
+        (let ((end (save-excursion (outline-next-heading) (point))) ts)
+          (when (re-search-forward org-stamp-time-of-day-regexp
+                                   end t)
+            (zp/org-set-appt-warntime)))))))
 
 (defadvice org-insert-time-stamp (after add-appt activate)
   (zp/org-set-appt-warntime-if-timestamp))
