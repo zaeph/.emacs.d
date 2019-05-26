@@ -3971,10 +3971,13 @@ Based on `org-agenda-set-property'."
   (interactive)
   (zp/org-agenda-set-property 'org-delete-property))
 
-(defun zp/org-set-appt-warntime ()
+(defun zp/org-set-appt-warntime (&optional arg)
   "Set the `APPT_WARNTIME' property."
-  (interactive)
-  (org-set-property "APPT_WARNTIME" (org-read-property-value "APPT_WARNTIME")))
+  (interactive "P")
+  (if arg
+      (org-delete-property "APPT_WARNTIME")
+    (org-set-property "APPT_WARNTIME" (org-read-property-value "APPT_WARNTIME"))))
+
 (defun zp/org-agenda-set-appt-warntime (arg)
   "Set the `APPT_WARNTIME' for the current entry in the agenda."
   (interactive "P")
