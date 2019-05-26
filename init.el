@@ -1834,7 +1834,7 @@ Modifies ‘diff-command’ and ‘diff-switches’ to use ‘git diff’."
 (require 'latex)
 
 ;; Set default library
-(setq-default TeX-engine 'xetex
+(setq-default TeX-engine 'luatex
               TeX-save-query nil
               TeX-parse-self t
               TeX-auto-save t
