@@ -7396,10 +7396,10 @@ mouse-1: Previous buffer\nmouse-3: Next buffer")
   (set-face-attribute 'default nil
                       :font "Sarasa Term J" :height 106 :weight 'normal)
   ;; variable-pitch & fixed-pitch
-  (set-face-attribute 'variable-pitch nil
-                      :font "Bliss Pro Prog" :height 1.3)
   ;; (set-face-attribute 'variable-pitch nil
-  ;;                  :family "Equity" :height 1.6 :slant 'normal)
+  ;;                     :font "Bliss Pro Prog" :height 1.3)
+  (set-face-attribute 'variable-pitch nil
+                   :family "Equity Text A" :height 158 :slant 'normal)
   (set-face-attribute 'fixed-pitch-serif nil
                       :font "Iosevka Prog Slab" :height 1.0)
 
