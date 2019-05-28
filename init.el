@@ -6940,8 +6940,6 @@ Every ELEM in LIST is formatted as follows:
 ;; Toggle modes
 (define-prefix-command 'zp/toggle-map)
 (define-key ctl-x-map "t" 'zp/toggle-map)
-(define-key zp/toggle-map "c" #'zp/toggle-font-default)
-(define-key zp/toggle-map "v" #'zp/toggle-font-variable)
 (define-key zp/toggle-map "d" #'toggle-debug-on-error)
 (define-key zp/toggle-map "e" #'toggle-debug-on-error)
 (define-key zp/toggle-map "f" #'auto-fill-mode)
@@ -6950,10 +6948,13 @@ Every ELEM in LIST is formatted as follows:
 (define-key zp/toggle-map "q" #'electric-quote-local-mode)
 (define-key zp/toggle-map "Q" #'toggle-debug-on-quit)
 (define-key zp/toggle-map "t" #'zp/switch-theme)
+(define-key zp/toggle-map "v" #'zp/variable-pitch-mode)
+(define-key zp/toggle-map "c" #'zp/toggle-font-default)
+(define-key zp/toggle-map "V" #'zp/toggle-font-variable)
+
 
 (global-set-key (kbd "C-c \\") 'picture-mode)
 (global-set-key (kbd "C-c u") 'visual-line-mode)
-(global-set-key (kbd "C-c y") 'zp/variable-pitch-mode)
 (global-set-key (kbd "C-c s") 'scroll-bar-mode)
 (global-set-key (kbd "C-c H") 'global-hl-line-mode)
 (global-set-key (kbd "C-c g") 'display-line-numbers-mode)
