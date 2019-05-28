@@ -6948,9 +6948,8 @@ Every ELEM in LIST is formatted as follows:
 (define-key zp/toggle-map "q" #'electric-quote-local-mode)
 (define-key zp/toggle-map "Q" #'toggle-debug-on-quit)
 (define-key zp/toggle-map "t" #'zp/switch-theme)
-(define-key zp/toggle-map "v" #'zp/variable-pitch-mode)
 (define-key zp/toggle-map "c" #'zp/toggle-font-default)
-(define-key zp/toggle-map "V" #'zp/toggle-font-variable)
+(define-key zp/toggle-map "v" #'zp/toggle-font-variable)
 
 
 (global-set-key (kbd "C-c \\") 'picture-mode)
@@ -6986,6 +6985,7 @@ Every ELEM in LIST is formatted as follows:
 (global-set-key (kbd "C-c C-=") 'increment-integer-at-point)
 (global-set-key (kbd "C-c C--") 'decrement-integer-at-point)
 (global-set-key (kbd "C-c d") 'zp/helm-ispell-preselect)
+(global-set-key (kbd "C-c y") 'zp/variable-pitch-mode)
 (global-set-key (kbd "C-c R") 'org-display-inline-images)
 (global-set-key (kbd "C-c P") 'package-list-packages)
 (global-set-key (kbd "H-h") 'er/expand-region)
