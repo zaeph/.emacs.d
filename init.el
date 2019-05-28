@@ -6940,7 +6940,8 @@ Every ELEM in LIST is formatted as follows:
 ;; Toggle modes
 (define-prefix-command 'zp/toggle-map)
 (define-key ctl-x-map "t" 'zp/toggle-map)
-(define-key zp/toggle-map "c" #'column-number-mode)
+(define-key zp/toggle-map "c" #'zp/toggle-font-default)
+(define-key zp/toggle-map "v" #'zp/toggle-font-variable)
 (define-key zp/toggle-map "d" #'toggle-debug-on-error)
 (define-key zp/toggle-map "e" #'toggle-debug-on-error)
 (define-key zp/toggle-map "f" #'auto-fill-mode)
@@ -7426,23 +7427,61 @@ mouse-1: Previous buffer\nmouse-3: Next buffer")
         (set-face-attribute face nil :weight weight)
       (set-face-attribute face nil :weight 'normal))))
 
-(defun zp/set-fonts ()
-  ;; Default font
-  (set-face-attribute 'default nil
-                      :font "Sarasa Term J" :height 106 :weight 'normal)
-  ;; variable-pitch & fixed-pitch
-  ;; (set-face-attribute 'variable-pitch nil
-  ;;                     :font "Bliss Pro Prog" :height 1.3)
-  (set-face-attribute 'variable-pitch nil
-                   :family "Equity Text A" :height 158 :slant 'normal)
-  (set-face-attribute 'fixed-pitch-serif nil
-                      :font "Iosevka Prog Slab" :height 1.0)
+(defvar zp/current-font-default nil
+  "Preset-name of the current default font.")
 
-  ;; CJK fonts
-  ;; (set-fontset-font (frame-parameter nil 'font) 'han '("Noto Sans CJK JP"))
-  ;; (set-fontset-font (frame-parameter nil 'font) 'japanese-jisx0208 '("Noto Sans CJK JP"))
-  ;; (set-fontset-font (frame-parameter nil 'font) 'hangul '("Noto Sans CJK KR"))
-  )
+(defun zp/set-font-default (font)
+  "Change default font.
+FONT is a preset."
+  (pcase font
+    ((or "iosevka" "sarasa")
+     (set-face-attribute 'default nil
+                         :font "Sarasa Term Prog J" :height 113)
+     (setq zp/current-font-default "sarasa"))
+    ("operator"
+     (set-face-attribute 'default nil
+                         :font "Operator Mono Prog" :height 122)
+     (setq zp/current-font-default "operator"))
+    ;; ("gintronic"
+    ;;  (set-face-attribute 'default nil
+    ;;                      :font "Gintronic Prog" :height 113)
+    ;;  (setq zp/current-font-default "gintronic"))
+    ))
+
+(defvar zp/current-font-variable nil
+  "Preset-name of the current variable font.")
+
+(defun zp/set-font-variable (font)
+  "Change variable font.
+FONT is a preset."
+  (pcase font
+    ("bliss"
+     (set-face-attribute 'variable-pitch nil
+                         :font "Bliss Pro Prog" :height 158)
+     (setq zp/current-font-variable "bliss"))
+    ("equity"
+     (set-face-attribute 'variable-pitch nil
+                         :font "Equity Text A" :height 158)
+     (setq zp/current-font-variable "equity"))))
+
+(zp/set-font-default "sarasa")
+(zp/set-font-variable "equity")
+
+(defun zp/toggle-font-default ()
+  "Toggle between default font-presets."
+  (interactive)
+  (pcase zp/current-font-default
+    ("sarasa" (zp/set-font-default "operator"))
+    ("operator" (zp/set-font-default "sarasa"))))
+
+(defun zp/toggle-font-variable ()
+  "Toggle between variable font-presets."
+  (interactive)
+  (pcase zp/current-font-variable
+    ("bliss" (zp/set-font-variable "equity"))
+    ("equity" (zp/set-font-variable "bliss"))))
+
+
 
 ;; Fonts for emoji
 ;; (when (member "Symbola" (font-family-list))
@@ -7490,7 +7529,6 @@ mouse-1: Previous buffer\nmouse-3: Next buffer")
   (interactive)
   (setq zp/emacs-theme "dark")
   (load-theme 'base16-atelier-sulphurpool t)
-  (zp/set-fonts)
 
   (set-face-attribute 'default nil :foreground "#BCAF8E" :background "#141414")
   (set-face-attribute 'org-todo nil :foreground "darkred")
@@ -7556,7 +7594,6 @@ mouse-1: Previous buffer\nmouse-3: Next buffer")
   (interactive)
   (setq zp/emacs-theme "light")
   (load-theme 'base16-google-light t)
-  (zp/set-fonts)
 
   ;; (set-face-attribute 'org-todo-box nil :inverse-video t :foreground "white" :height 0.8 :weight 'bold :box nil)
   ;; (set-face-attribute 'default nil :background "cornsilk1") ;fff8dc
