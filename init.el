@@ -2291,7 +2291,7 @@ return `nil'."
       org-export-in-background t
       org-export-with-sub-superscripts nil
       org-image-actual-width nil ;Ensures that images displayed within emacs can be resized with #+ATTR_ORG:
-      org-hide-emphasis-markers nil               ;Fontification
+      org-hide-emphasis-markers t               ;Fontification
       org-ellipsis "…"
       org-track-ordered-property-with-tag "ORDERED"
       ;; org-tags-exclude-from-inheritance '("project")
@@ -2682,6 +2682,40 @@ off.")
         (zp/play-sound-turn-page))
     (message "Couldn’t find a previous position.")))
 
+;; Toggle fontifications
+(defun zp/org-toggle-emphasis-markers (&optional arg)
+  "Toggle emphasis markers."
+  (interactive "p")
+  (let ((markers org-hide-emphasis-markers))
+    (if markers
+        (setq-local org-hide-emphasis-markers nil)
+      (setq-local org-hide-emphasis-markers t))
+    (when arg
+      (font-lock-fontify-buffer))))
+
+(defun zp/org-toggle-link-display (&optional arg)
+  "Toggle the literal or descriptive display of links in the current buffer."
+  (interactive "p")
+  (if org-link-descriptive (remove-from-invisibility-spec '(org-link))
+    (add-to-invisibility-spec '(org-link)))
+  (setq-local org-link-descriptive (not org-link-descriptive))
+  (when arg
+    (font-lock-fontify-buffer)))
+
+(defun zp/org-toggle-fontifications (&optional arg)
+  "Toggle emphasis markers or the link display.
+
+Without a C-u argument, toggle the emphasis markers.
+
+With a C-u argument, toggle the link display."
+  (interactive "P")
+  (let ((markers org-hide-emphasis-markers)
+        (links org-link-descriptive))
+    (if arg
+        (zp/org-toggle-link-display)
+      (zp/org-toggle-emphasis-markers))
+    (font-lock-fontify-buffer)))
+
 ;; Hook
 (defun org-mode-config ()
   "Modify keymaps used by `org-mode'."
@@ -2713,6 +2747,7 @@ off.")
   (local-set-key (kbd "C-a") 'org-beginning-of-line)
   (local-set-key (kbd "C-e") 'org-end-of-line)
   (local-set-key (kbd "M-I") 'org-indent-mode)
+  (local-set-key (kbd "M-*") 'zp/org-toggle-fontifications)
   ;; (local-set-key (kbd "C-c C-w") 'org-refile)
   ;; (local-set-key (kbd "C-c C-S-w") 'zp/org-refile-with-paths)
   )
