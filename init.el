@@ -7711,12 +7711,20 @@ LIST is the variable holding the list of variable font-presets."
   (zp/pdf-view-midnight-mode-theme)
   )
 
+(defun zp/pdf-view-update-midnight ()
+  "Update pdf-view’s colour theme."
+  (dolist (buffer (buffer-list))
+    (with-current-buffer buffer
+      (when (derived-mode-p 'pdf-view-mode)
+        (pdf-view-midnight-minor-mode)))))
+
 (defun zp/switch-theme ()
   (interactive)
   (cond ((string= zp/emacs-theme "dark")
          (zp/light-theme))
         ((string= zp/emacs-theme "light")
-         (zp/dark-theme))))
+         (zp/dark-theme)))
+  (zp/pdf-view-update-midnight))
 
 
 
@@ -7856,7 +7864,8 @@ See ‘zp/time-of-day-sections’ and ‘zp/daytimep’ for more info."
            (zp/dark-theme))
           (t
            (when print-message
-             (message "Nothing to do."))))))
+             (message "Nothing to do."))))
+    (zp/pdf-view-update-midnight)))
 
 (defun zp/switch-theme-auto ()
   "Automatically switch theme based on time-of-day.
