@@ -1618,7 +1618,7 @@ based on ‘zp/message-mode-ispell-alist’."
 
 (defun zp/pdf-view-continuous-toggle ()
   (interactive)
-  (cond ((eq pdf-view-continuous nil)
+  (cond ((not pdf-view-continuous)
          (setq pdf-view-continuous t)
          (message "Page scrolling: Continous"))
         (t
