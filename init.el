@@ -7497,30 +7497,14 @@ FONT is a preset."
            zp/line-spacing 0.1)))
   (zp/update-line-spacing))
 
+(zp/set-font "sarasa")
+(zp/set-font-variable "equity")
+
 
 
 ;; Font toggling
 (defvar zp/current-font-variable nil
   "Name of the current variable font-preset.")
-
-(defun zp/set-font-variable (font)
-  "Change variable font.
-FONT is a preset."
-  (pcase font
-    ("bliss"
-     (set-face-attribute 'variable-pitch nil
-                         :font "Bliss Pro Prog" :height 158)
-     (setq zp/current-font-variable "bliss"
-           zp/line-spacing-variable nil))
-    ("equity"
-     (set-face-attribute 'variable-pitch nil
-                         :font "Equity Text A" :height 158)
-     (setq zp/current-font-variable "equity"
-           zp/line-spacing-variable nil)))
-  (zp/update-line-spacing))
-
-(zp/set-font "sarasa")
-(zp/set-font-variable "equity")
 
 (defvar zp/list-font-default nil
   "List of default font-presets.")
@@ -7528,8 +7512,29 @@ FONT is a preset."
 (defvar zp/list-font-variable nil
   "List of variable font-presets.")
 
+(defun zp/set-font-variable (font)
+  "Change variable font.
+FONT is a preset."
+  (pcase font
+    ("equity"
+     (set-face-attribute 'variable-pitch nil
+                         :font "Equity Text A" :height 158)
+     (setq zp/current-font-variable "equity"
+           zp/line-spacing-variable nil))
+    ("bliss"
+     (set-face-attribute 'variable-pitch nil
+                         :font "Bliss Pro Prog" :height 158)
+     (setq zp/current-font-variable "bliss"
+           zp/line-spacing-variable nil))
+    ("typewriter"
+     (set-face-attribute 'variable-pitch nil
+                         :font "ITC American Typewriter Std" :height 158)
+     (setq zp/current-font-variable "typewriter"
+           zp/line-spacing-variable 0.3)))
+  (zp/update-line-spacing))
+
 (setq zp/list-font-default '("sarasa" "operator" "gintronic"))
-(setq zp/list-font-variable '("equity" "bliss"))
+(setq zp/list-font-variable '("equity" "bliss" "typewriter"))
 
 (defun zp/toggle-font (type current list)
   "Toggle between font-presets.
