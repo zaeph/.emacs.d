@@ -7520,21 +7520,6 @@ FONT is a preset."
            zp/line-spacing 0.1)))
   (zp/update-line-spacing))
 
-(zp/set-font "sarasa")
-(zp/set-font-variable "equity")
-
-
-
-;; Font toggling
-(defvar zp/current-font-variable nil
-  "Name of the current variable font-preset.")
-
-(defvar zp/list-font-default nil
-  "List of default font-presets.")
-
-(defvar zp/list-font-variable nil
-  "List of variable font-presets.")
-
 (defun zp/set-font-variable (font)
   "Change variable font.
 FONT is a preset."
@@ -7555,6 +7540,21 @@ FONT is a preset."
      (setq zp/current-font-variable "typewriter"
            zp/line-spacing-variable 0.3)))
   (zp/update-line-spacing))
+
+(zp/set-font "sarasa")
+(zp/set-font-variable "equity")
+
+
+
+;; Font toggling
+(defvar zp/current-font-variable nil
+  "Name of the current variable font-preset.")
+
+(defvar zp/list-font-default nil
+  "List of default font-presets.")
+
+(defvar zp/list-font-variable nil
+  "List of variable font-presets.")
 
 (setq zp/list-font-default '("sarasa" "operator" "gintronic"))
 (setq zp/list-font-variable '("equity" "bliss" "typewriter"))
