@@ -1609,8 +1609,18 @@ based on ‘zp/message-mode-ispell-alist’."
 ;; pdf-tools
 (pdf-tools-install)
 (define-key pdf-view-mode-map (kbd "m") 'pdf-view-midnight-minor-mode)
-(define-key pdf-view-mode-map (kbd "S") 'zp/toggle-pdf-view-auto-slice-minor-mode)
+(define-key pdf-view-mode-map (kbd "s") 'zp/toggle-pdf-view-auto-slice-minor-mode)
+(define-key pdf-view-mode-map (kbd "M") 'pdf-view-set-slice-using-mouse)
 (define-key pdf-view-mode-map (kbd "c") 'zp/pdf-view-continuous-toggle)
+(define-key pdf-view-mode-map (kbd "w") 'pdf-view-fit-width-to-window)
+
+(define-prefix-command 'slice-map)
+(define-key pdf-view-mode-map (kbd "S") 'slice-map)
+(define-key pdf-view-mode-map (kbd "S b") 'pdf-view-set-slice-from-bounding-box)
+(define-key pdf-view-mode-map (kbd "S m") 'pdf-view-set-slice-using-mouse)
+(define-key pdf-view-mode-map (kbd "S r") 'pdf-view-reset-slice)
+
+(define-key pdf-links-minor-mode-map (kbd "f") 'pdf-view-fit-page-to-window)
 (add-hook #'pdf-view-mode-hook #'pdf-view-midnight-minor-mode)
 (add-hook #'pdf-view-mode-hook #'pdf-view-auto-slice-minor-mode)
 
