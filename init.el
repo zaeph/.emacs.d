@@ -7427,28 +7427,32 @@ mouse-1: Previous buffer\nmouse-3: Next buffer")
         (set-face-attribute face nil :weight weight)
       (set-face-attribute face nil :weight 'normal))))
 
-(defvar zp/current-font-default nil
-  "Preset-name of the current default font.")
+(defvar zp/current-font nil
+  "Name of the current default font-preset.")
 
-(defun zp/set-font-default (font)
+(defun zp/set-font (font)
   "Change default font.
 FONT is a preset."
   (pcase font
     ((or "iosevka" "sarasa")
      (set-face-attribute 'default nil
                          :font "Sarasa Term Prog J" :height 113)
-     (setq zp/current-font-default "sarasa"))
+     (setq zp/current-font "sarasa"
+           zp/line-spacing nil))
     ("operator"
      (set-face-attribute 'default nil
                          :font "Operator Mono Prog" :height 122)
-     (setq zp/current-font-default "operator"))
+     (setq zp/current-font "operator"
+           zp/line-spacing 0.1))
     ("gintronic"
      (set-face-attribute 'default nil
                          :font "Gintronic Prog" :height 113)
-     (setq zp/current-font-default "gintronic"))))
+     (setq zp/current-font "gintronic"
+           zp/line-spacing 0.1)))
+  (zp/update-line-spacing))
 
 (defvar zp/current-font-variable nil
-  "Preset-name of the current variable font.")
+  "Name of the current variable font-preset.")
 
 (defun zp/set-font-variable (font)
   "Change variable font.
@@ -7457,13 +7461,16 @@ FONT is a preset."
     ("bliss"
      (set-face-attribute 'variable-pitch nil
                          :font "Bliss Pro Prog" :height 158)
-     (setq zp/current-font-variable "bliss"))
+     (setq zp/current-font-variable "bliss"
+           zp/line-spacing-variable nil))
     ("equity"
      (set-face-attribute 'variable-pitch nil
                          :font "Equity Text A" :height 158)
-     (setq zp/current-font-variable "equity"))))
+     (setq zp/current-font-variable "equity"
+           zp/line-spacing-variable nil)))
+  (zp/update-line-spacing))
 
-(zp/set-font-default "sarasa")
+(zp/set-font "sarasa")
 (zp/set-font-variable "equity")
 
 (defvar zp/list-font-default nil
@@ -7487,8 +7494,9 @@ LIST is the variable holding the list of font-presets."
          (next-p (car (cdr (member current list))))
          (next (if next-p next-p (car list))))
     (pcase type
-      ("default" (zp/set-font-default next))
+      ("default" (zp/set-font next))
       ("variable" (zp/set-font-variable next)))
+    (zp/update-line-spacing)
     (message (concat "Font switched to " (capitalize next)))))
 
 (defun zp/toggle-font-default ()
@@ -7496,7 +7504,7 @@ LIST is the variable holding the list of font-presets."
 CURRENT is the variable holding the current default font-preset.
 LIST is the variable holding the list of default font-presets."
   (interactive)
-  (zp/toggle-font "default" zp/current-font-default zp/list-font-default))
+  (zp/toggle-font "default" zp/current-font zp/list-font-default))
 
 (defun zp/toggle-font-variable ()
   "Toggle between default font-presets.
@@ -7524,26 +7532,41 @@ LIST is the variable holding the list of variable font-presets."
 
 (defvar zp/line-spacing line-spacing
   "Default line-spacing.")
-(defvar zp/line-spacing-variable-pitch 5
+(defvar zp/line-spacing-variable nil
   "Default line-spacing for variable-pitch-mode.")
 
-;; (setq zp/line-spacing nil
-;;       zp/line-spacing-variable-pitch 5)
+
+(defun zp/update-line-spacing ()
+  "Update line-spacing based on font-preset and mode."
+  (if zp/variable-pitch-mode-toggle
+      (setq line-spacing zp/line-spacing-variable)
+    (setq-default line-spacing zp/line-spacing)
+    (setq line-spacing zp/line-spacing)))
+
+(defun zp/update-line-spacing ()
+  "Update line-spacing based on font-preset and mode.
+Act on all buffers."
+  (dolist (buffer (buffer-list))
+    (with-current-buffer buffer
+      (if zp/variable-pitch-mode-toggle
+          (setq line-spacing zp/line-spacing-variable)
+        (setq line-spacing zp/line-spacing)
+        (setq-default line-spacing zp/line-spacing)))))
 
 (make-variable-buffer-local
  (defvar zp/variable-pitch-mode-toggle nil
    "State of customised variable-pitch-mode."))
+
 (defun zp/variable-pitch-mode ()
   "Enable variable-pitch-mode and changes line-spacing."
   (interactive)
-  (cond ((bound-and-true-p zp/variable-pitch-mode-toggle)
+  (cond (zp/variable-pitch-mode-toggle
          (variable-pitch-mode)
-         (setq line-spacing zp/line-spacing
-               zp/variable-pitch-mode-toggle nil))
+         (setq zp/variable-pitch-mode-toggle nil))
         (t
          (variable-pitch-mode)
-         (setq line-spacing zp/line-spacing-variable-pitch
-               zp/variable-pitch-mode-toggle 1))))
+         (setq zp/variable-pitch-mode-toggle 1)))
+  (zp/update-line-spacing))
 
 
 (defvar zp/emacs-theme nil
