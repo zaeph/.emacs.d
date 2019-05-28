@@ -7442,11 +7442,10 @@ FONT is a preset."
      (set-face-attribute 'default nil
                          :font "Operator Mono Prog" :height 122)
      (setq zp/current-font-default "operator"))
-    ;; ("gintronic"
-    ;;  (set-face-attribute 'default nil
-    ;;                      :font "Gintronic Prog" :height 113)
-    ;;  (setq zp/current-font-default "gintronic"))
-    ))
+    ("gintronic"
+     (set-face-attribute 'default nil
+                         :font "Gintronic Prog" :height 113)
+     (setq zp/current-font-default "gintronic"))))
 
 (defvar zp/current-font-variable nil
   "Preset-name of the current variable font.")
@@ -7467,19 +7466,44 @@ FONT is a preset."
 (zp/set-font-default "sarasa")
 (zp/set-font-variable "equity")
 
-(defun zp/toggle-font-default ()
-  "Toggle between default font-presets."
+(defvar zp/list-font-default nil
+  "List of default font-presets.")
+
+(defvar zp/list-font-variable nil
+  "List of variable font-presets.")
+
+(setq zp/list-font-default '("sarasa" "operator" "gintronic"))
+(setq zp/list-font-variable '("equity" "bliss"))
+
+(defun zp/toggle-font (type current list)
+  "Toggle between font-presets.
+
+TYPE is the type of fonts to toggle.
+CURRENT is the variable holding the current font-preset.
+LIST is the variable holding the list of font-presets."
   (interactive)
-  (pcase zp/current-font-default
-    ("sarasa" (zp/set-font-default "operator"))
-    ("operator" (zp/set-font-default "sarasa"))))
+  (let* ((current current)
+         (list list)
+         (next-p (car (cdr (member current list))))
+         (next (if next-p next-p (car list))))
+    (pcase type
+      ("default" (zp/set-font-default next))
+      ("variable" (zp/set-font-variable next)))
+    (message (concat "Font switched to " (capitalize next)))))
+
+(defun zp/toggle-font-default ()
+  "Toggle between default font-presets.
+CURRENT is the variable holding the current default font-preset.
+LIST is the variable holding the list of default font-presets."
+  (interactive)
+  (zp/toggle-font "default" zp/current-font-default zp/list-font-default))
 
 (defun zp/toggle-font-variable ()
-  "Toggle between variable font-presets."
+  "Toggle between default font-presets.
+CURRENT is the variable holding the current variable font-preset.
+LIST is the variable holding the list of variable font-presets."
   (interactive)
-  (pcase zp/current-font-variable
-    ("bliss" (zp/set-font-variable "equity"))
-    ("equity" (zp/set-font-variable "bliss"))))
+  (zp/toggle-font "variable" zp/current-font-variable zp/list-font-variable))
 
 
 
