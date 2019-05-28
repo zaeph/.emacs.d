@@ -1614,7 +1614,7 @@ based on ‘zp/message-mode-ispell-alist’."
 (add-hook #'pdf-view-mode-hook #'pdf-view-midnight-minor-mode)
 (add-hook #'pdf-view-mode-hook #'pdf-view-auto-slice-minor-mode)
 
-(setq pdf-view-continuous t)
+(setq pdf-view-continuous nil)
 
 (defun zp/pdf-view-continuous-toggle ()
   (interactive)
