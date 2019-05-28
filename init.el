@@ -5567,6 +5567,18 @@ commas and space."
 ;;                    :urgency "critical"
 ;;                       :sound-name "/home/zaeph/SFX/Misc/rimshot.mp3")
 
+;; Source: https://gitlab.com/marcowahl/herald-the-mode-lined
+(defun herald-the-mode-line ()
+  "Show the modeline in the minibuffer.
+Use case: when the modeline is to short for its content this
+command reveals the other lines."
+  (interactive)
+  (message
+   "%s"
+   (format-mode-line
+    (or mode-line-format
+        hide-mode-line))))
+
 
 
 ;; ========================================
@@ -6995,6 +7007,7 @@ Every ELEM in LIST is formatted as follows:
 (global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
 (global-set-key (kbd "C-c T") 'zp/switch-theme)
 (global-set-key (kbd "H-.") 'zp/echo-buffer-name)
+(global-set-key (kbd "H-M-.") 'herald-the-mode-line)
 (global-set-key (kbd "H-/") 'zp/echo-clock-string)
 (global-set-key (kbd "H-y") 'zp/helm-bibtex-with-local-bibliography)
 (global-set-key (kbd "H-M-y") 'zp/helm-bibtex-select-bib)
