@@ -7428,6 +7428,51 @@ mouse-1: Previous buffer\nmouse-3: Next buffer")
         (set-face-attribute face nil :weight weight)
       (set-face-attribute face nil :weight 'normal))))
 
+
+
+;; ========================================
+;; ================ FONTS =================
+;; ========================================
+
+(calendar-set-date-style 'iso)
+
+;; Line spacing
+(setq-default line-spacing nil)
+
+(defvar zp/line-spacing line-spacing
+  "Default line-spacing.")
+(defvar zp/line-spacing-variable nil
+  "Default line-spacing for variable-pitch-mode.")
+
+;; Custom variable-pitch-mode
+(make-variable-buffer-local
+ (defvar zp/variable-pitch-mode-toggle nil
+   "State of customised variable-pitch-mode."))
+
+(defun zp/variable-pitch-mode ()
+  "Enable variable-pitch-mode and changes line-spacing."
+  (interactive)
+  (cond (zp/variable-pitch-mode-toggle
+         (variable-pitch-mode)
+         (setq zp/variable-pitch-mode-toggle nil))
+        (t
+         (variable-pitch-mode)
+         (setq zp/variable-pitch-mode-toggle 1)))
+  (zp/update-line-spacing))
+
+(defun zp/update-line-spacing ()
+  "Update line-spacing based on font-preset and mode.
+Act on all buffers."
+  (dolist (buffer (buffer-list))
+    (with-current-buffer buffer
+      (if zp/variable-pitch-mode-toggle
+          (setq line-spacing zp/line-spacing-variable)
+        (setq line-spacing zp/line-spacing)
+        (setq-default line-spacing zp/line-spacing)))))
+
+
+
+;; Font setting
 (defvar zp/current-font nil
   "Name of the current default font-preset.")
 
@@ -7452,6 +7497,9 @@ FONT is a preset."
            zp/line-spacing 0.1)))
   (zp/update-line-spacing))
 
+
+
+;; Font toggling
 (defvar zp/current-font-variable nil
   "Name of the current variable font-preset.")
 
@@ -7516,59 +7564,9 @@ LIST is the variable holding the list of variable font-presets."
 
 
 
-;; Fonts for emoji
-;; (when (member "Symbola" (font-family-list))
-;;   (set-fontset-font t 'unicode "Symbola" nil 'prepend))
-
-;; Other fonts
-;; :font "Source Code Pro" :height 100 :weight 'normal
-;; :font "PragmataPro" :height 100 :weight 'normal
-;; :font "Fira Code" :height 100 :weight 'normal
-;; :font "Hack" :height 100 :weight 'normal
-
-
-
-;; Line spacing
-(setq-default line-spacing nil)
-
-(defvar zp/line-spacing line-spacing
-  "Default line-spacing.")
-(defvar zp/line-spacing-variable nil
-  "Default line-spacing for variable-pitch-mode.")
-
-
-(defun zp/update-line-spacing ()
-  "Update line-spacing based on font-preset and mode."
-  (if zp/variable-pitch-mode-toggle
-      (setq line-spacing zp/line-spacing-variable)
-    (setq-default line-spacing zp/line-spacing)
-    (setq line-spacing zp/line-spacing)))
-
-(defun zp/update-line-spacing ()
-  "Update line-spacing based on font-preset and mode.
-Act on all buffers."
-  (dolist (buffer (buffer-list))
-    (with-current-buffer buffer
-      (if zp/variable-pitch-mode-toggle
-          (setq line-spacing zp/line-spacing-variable)
-        (setq line-spacing zp/line-spacing)
-        (setq-default line-spacing zp/line-spacing)))))
-
-(make-variable-buffer-local
- (defvar zp/variable-pitch-mode-toggle nil
-   "State of customised variable-pitch-mode."))
-
-(defun zp/variable-pitch-mode ()
-  "Enable variable-pitch-mode and changes line-spacing."
-  (interactive)
-  (cond (zp/variable-pitch-mode-toggle
-         (variable-pitch-mode)
-         (setq zp/variable-pitch-mode-toggle nil))
-        (t
-         (variable-pitch-mode)
-         (setq zp/variable-pitch-mode-toggle 1)))
-  (zp/update-line-spacing))
-
+;; ========================================
+;; ================ THEME =================
+;; ========================================
 
 (defvar zp/emacs-theme nil
   "Theme currently used by Emacs.")
@@ -7714,6 +7712,49 @@ Act on all buffers."
          (zp/light-theme))
         ((string= zp/emacs-theme "light")
          (zp/dark-theme))))
+
+
+
+;; Old stuff
+;; Mark 1
+;; (load-theme 'base16-atelier-sulphurpool t)
+
+;; SML (Modeline)
+;; (setq sml/no-confirm-load-theme t)
+;; (setq sml/theme 'dark)
+;; (setq sml/name-width '20)
+;; (sml/setup)
+
+;; Old theme switch
+;; (setq dark-theme 'base16-ateliersulphurpool-dark
+;;       light-theme 'base16-solarized-light)
+;; (setq theme-mode 'dark-theme)
+
+;; (defun switch-theme-mode ()
+;;   "Switch the theme between dark and light mode."
+;;   (interactive)
+;;   (if (not (eq theme-mode 'dark))
+;;       (progn
+;;      (load-theme dark-theme t)
+;;      (set-face-attribute 'org-done nil :foreground "spring green")
+;;      (set-face-attribute 'org-hide nil :foreground "#202746")
+;;      (set-face-attribute 'helm-selection nil :background "RoyalBlue4")
+;;      (set-face-attribute 'region nil :background "RoyalBlue4")
+;;      (set-face-attribute 'org-agenda-dimmed-todo-face nil :foreground "SkyBlue4")
+;;      (set-face-attribute 'org-agenda-clocking nil :background "RoyalBlue4")
+;;      (setq theme-mode 'dark))
+;;     (progn
+;;       (load-theme light-theme t)
+;;       (set-face-attribute 'org-hide nil :foreground "#fdf6e3")
+;;       (set-face-attribute 'helm-selection nil :background "RoyalBlue4")
+;;       (set-face-attribute 'region nil :background "RoyalBlue4")
+;;       (set-face-attribute 'org-agenda-dimmed-todo-face nil :foreground "LightSteelBlue3")
+;;       (set-face-attribute 'org-agenda-clocking nil :background "RoyalBlue4")
+;;       (setq theme-mode 'light))))
+
+;; (switch-theme-mode)
+
+
 
 ;; -----------------------------------------------------------------------------
 ;; Switch theme based on time-of-day
@@ -8016,102 +8057,6 @@ time is displayed."
 ;;               (org-paste-subtree level tree-text))))))))
 
 
-
-;; ========================================
-;; ================ THEME =================
-;; ========================================
-
-;; Mark 1
-;; (load-theme 'base16-atelier-sulphurpool t)
-
-;; SML (Modeline)
-;; (setq sml/no-confirm-load-theme t)
-;; (setq sml/theme 'dark)
-;; (setq sml/name-width '20)
-;; (sml/setup)
-
-;; Old theme switch
-;; (setq dark-theme 'base16-ateliersulphurpool-dark
-;;       light-theme 'base16-solarized-light)
-;; (setq theme-mode 'dark-theme)
-
-;; (defun switch-theme-mode ()
-;;   "Switch the theme between dark and light mode."
-;;   (interactive)
-;;   (if (not (eq theme-mode 'dark))
-;;       (progn
-;;      (load-theme dark-theme t)
-;;      (set-face-attribute 'org-done nil :foreground "spring green")
-;;      (set-face-attribute 'org-hide nil :foreground "#202746")
-;;      (set-face-attribute 'helm-selection nil :background "RoyalBlue4")
-;;      (set-face-attribute 'region nil :background "RoyalBlue4")
-;;      (set-face-attribute 'org-agenda-dimmed-todo-face nil :foreground "SkyBlue4")
-;;      (set-face-attribute 'org-agenda-clocking nil :background "RoyalBlue4")
-;;      (setq theme-mode 'dark))
-;;     (progn
-;;       (load-theme light-theme t)
-;;       (set-face-attribute 'org-hide nil :foreground "#fdf6e3")
-;;       (set-face-attribute 'helm-selection nil :background "RoyalBlue4")
-;;       (set-face-attribute 'region nil :background "RoyalBlue4")
-;;       (set-face-attribute 'org-agenda-dimmed-todo-face nil :foreground "LightSteelBlue3")
-;;       (set-face-attribute 'org-agenda-clocking nil :background "RoyalBlue4")
-;;       (setq theme-mode 'light))))
-
-;; (switch-theme-mode)
-
-
-
-;; ========================================
-;; ================ FONTS =================
-;; ========================================
-
-(calendar-set-date-style 'iso)
-
-;;; One of the first function I've written in emacs
-;;; I don't really have a need for it now, but it still works just fine.
-
-;; (defun switch-main-font ()
-;;   "Switch the main font."
-;;   (interactive)
-;;   (cond ((or
-;;        (eq (boundp 'main-font) nil)
-;;        (eq main-font 'pragmata-font))
-;;       ;; (set-face-attribute 'default nil
-;;       ;;                  :family "Source Code Pro" :height 110 :weight 'normal)           ;Necessary to reset weight
-;;       (set-face-attribute 'default nil
-;;                           :family "PragmataPro Mono" :height 100 :weight 'normal)
-;;       (set-face-attribute 'bold nil
-;;                           :weight 'normal)
-;;       (set-face-attribute 'bold nil
-;;                           :weight 'bold)
-;;       (setq-default line-spacing nil)
-;;       ;; (switch-cjk-font "Noto Sans CJK JP Regular")
-;;       (setq main-font 'source-font))
-;;      ((eq main-font 'source-font)
-;;       (set-face-attribute 'default nil
-;;                           :family "Source Code Pro" :height 100 :weight 'normal)
-;;       (set-face-attribute 'bold nil
-;;                           :weight 'black)
-;;       (setq-default line-spacing nil)
-;;       ;; (switch-cjk-font "Unifont")
-;;       (setq main-font 'pragmata-font))))
-
-;;      ;; ((eq main-font 'consolas-font)
-;;      ;;  (set-face-attribute 'default nil
-;;      ;;                   :family "Unifont" :height 110)
-;;      ;;  (setq-default line-spacing 0.15)
-;;      ;;  (switch-cjk-font "Unifont")
-;;      ;;  (setq main-font 'unifont-font))))
-
-;; (defun switch-cjk-font (cjk-font)
-;;   "Switch the font used for CJK characters."
-;;   (interactive)
-;;   (set-fontset-font t 'hangul (font-spec :name cjk-font))
-;;   (set-fontset-font t 'japanese-jisx0208 (font-spec :name cjk-font))
-;;   (set-fontset-font t 'han (font-spec :name cjk-font)))
-
-;; (setq main-font 'source-font)
-;; (switch-main-font)
 
 ;; Prototype
 (add-to-list 'org-export-filter-timestamp-functions
