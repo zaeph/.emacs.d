@@ -2532,6 +2532,7 @@ off.")
 
         ;; Media
         ("^media$" "~/org/svg/icons/library.svg" nil nil :ascent center)
+        ("^news$" "~/org/svg/icons/world.svg" nil nil :ascent center)
         ("^books$" "~/org/svg/icons/book-2.svg" nil nil :ascent center)
         ("^trackers$" "~/org/svg/icons/share.svg" nil nil :ascent center)
         ("^music$" "~/org/svg/icons/compact-disc.svg" nil nil :ascent center)
@@ -2857,8 +2858,11 @@ With a C-u argument, toggle the link display."
         ;; ("p a c"  . "[DATA EXPUNGED]")
         ;; ("p a m"  . "[DATA EXPUNGED]")
 
+        ;; Media
+        ("p n" . "/home/zaeph/org/projects/media/news/news.org.gpg")
+
         ;; Music
-        ("p P" ly-raw string "\"/home/zaeph/org/piano.org.gpg\"")
+        ("p P" "/home/zaeph/org/piano.org.gpg")
 
         ;; Awakening
         ("p A" . "/home/zaeph/org/projects/awakening/awakening.org.gpg")
@@ -2884,8 +2888,6 @@ With a C-u argument, toggle the link display."
 
 (defun zp/set-shortcuts-all ()
   (zp/set-shortcuts zp/shortcuts-alist))
-
-;; (zp/set-shortcuts-all)
 
 ;; ========================================
 ;; ================= HELM =================
@@ -4622,6 +4624,7 @@ _d_: Watched
 ^^----------------------------------------------------------------------
 _._: Root
 _m_: Music
+_n_: News
 _f_: Film
 _b_: Books
 
@@ -4630,6 +4633,7 @@ _b_: Books
   ("." (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Media")))
   ("m" zp/hydra-org-refile-music/body)
   ("M" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Music")))
+  ("n" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("News")))
   ("f" zp/hydra-org-refile-film/body)
   ("F" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Film")))
   ("b" zp/hydra-org-refile-books/body)
