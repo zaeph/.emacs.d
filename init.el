@@ -7508,51 +7508,49 @@ Act on all buffers."
   "Change default font.
 FONT is a preset."
   (let ((current zp/current-font))
-    (when (equal current font)
-      (error "Font already loaded")))
-  (pcase font
-    ("sarasa"
-     (set-face-attribute 'default nil
-                         :font "Sarasa Term Prog J" :height 113)
-     (setq zp/line-spacing nil))
-    ("operator"
-     (set-face-attribute 'default nil
-                         :font "Operator Mono Prog" :height 122)
-     (setq zp/line-spacing 0.1))
-    ("gintronic"
-     (set-face-attribute 'default nil
-                         :font "Gintronic Prog" :height 113)
-     (setq zp/line-spacing 0.1)))
-  (setq zp/current-font font)
-  (zp/update-line-spacing)
-  (message (concat "Font switched to " (capitalize font))))
+    (unless (equal current font)
+      (pcase font
+        ("sarasa"
+         (set-face-attribute 'default nil
+                             :font "Sarasa Term Prog J" :height 113)
+         (setq zp/line-spacing nil))
+        ("operator"
+         (set-face-attribute 'default nil
+                             :font "Operator Mono Prog" :height 122)
+         (setq zp/line-spacing 0.1))
+        ("gintronic"
+         (set-face-attribute 'default nil
+                             :font "Gintronic Prog" :height 113)
+         (setq zp/line-spacing 0.1)))
+      (setq zp/current-font font)
+      (zp/update-line-spacing)
+      (message (concat "Font switched to " (capitalize font))))))
 
 (defun zp/set-font-variable (font)
   "Change variable font.
 FONT is a preset."
   (let ((current zp/current-font-variable))
-    (when (equal current font)
-      (error "Variable font already loaded")))
-  (pcase font
-    ("equity"
-     (set-face-attribute 'variable-pitch nil
-                         :font "Equity Text A" :height 158)
-     (setq zp/line-spacing-variable nil))
-    ("guyot"
-     (set-face-attribute 'variable-pitch nil
-                         :font "Guyot Text" :height 152)
-     (setq zp/line-spacing-variable 0.3))
-    ("bliss"
-     (set-face-attribute 'variable-pitch nil
-                         :font "Bliss Pro Prog" :height 158)
-     (setq zp/line-spacing-variable nil))
-    ("typewriter"
-     (set-face-attribute 'variable-pitch nil
-                         :font "ITC American Typewriter Std" :height 158)
-     (setq zp/line-spacing-variable 0.3)))
-  (setq zp/current-font-variable font)
-  (zp/update-line-spacing)
-  (message (concat "Variable font switched to " (capitalize font))))
+    (unless (equal current font)
+      (pcase font
+        ("equity"
+         (set-face-attribute 'variable-pitch nil
+                             :font "Equity Text A" :height 158)
+         (setq zp/line-spacing-variable nil))
+        ("guyot"
+         (set-face-attribute 'variable-pitch nil
+                             :font "Guyot Text" :height 152)
+         (setq zp/line-spacing-variable 0.3))
+        ("bliss"
+         (set-face-attribute 'variable-pitch nil
+                             :font "Bliss Pro Prog" :height 158)
+         (setq zp/line-spacing-variable nil))
+        ("typewriter"
+         (set-face-attribute 'variable-pitch nil
+                             :font "ITC American Typewriter Std" :height 158)
+         (setq zp/line-spacing-variable 0.3)))
+      (setq zp/current-font-variable font)
+      (zp/update-line-spacing)
+      (message (concat "Variable font switched to " (capitalize font))))))
 
 (zp/set-font "sarasa")
 (zp/set-font-variable "equity")
