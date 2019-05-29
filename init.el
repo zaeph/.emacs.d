@@ -7502,47 +7502,58 @@ Act on all buffers."
 (defvar zp/current-font nil
   "Name of the current default font-preset.")
 
+(defvar zp/current-font-variable nil
+  "Name of the current variable font-preset.")
+
 (defun zp/set-font (font)
   "Change default font.
 FONT is a preset."
+  (let ((current zp/current-font))
+    (when (equal current font)
+      (error "Font already loaded")))
   (pcase font
-    ((or "iosevka" "sarasa")
+    ("sarasa"
      (set-face-attribute 'default nil
                          :font "Sarasa Term Prog J" :height 113)
-     (setq zp/current-font "sarasa"
-           zp/line-spacing nil))
+     (setq zp/line-spacing nil))
     ("operator"
      (set-face-attribute 'default nil
                          :font "Operator Mono Prog" :height 122)
-     (setq zp/current-font "operator"
-           zp/line-spacing 0.1))
+     (setq zp/line-spacing 0.1))
     ("gintronic"
      (set-face-attribute 'default nil
                          :font "Gintronic Prog" :height 113)
-     (setq zp/current-font "gintronic"
-           zp/line-spacing 0.1)))
-  (zp/update-line-spacing))
+     (setq zp/line-spacing 0.1)))
+  (setq zp/current-font font)
+  (zp/update-line-spacing)
+  (message (concat "Font switched to " (capitalize font))))
 
 (defun zp/set-font-variable (font)
   "Change variable font.
 FONT is a preset."
+  (let ((current zp/current-font-variable))
+    (when (equal current font)
+      (error "Variable font already loaded")))
   (pcase font
     ("equity"
      (set-face-attribute 'variable-pitch nil
                          :font "Equity Text A" :height 158)
-     (setq zp/current-font-variable "equity"
-           zp/line-spacing-variable nil))
+     (setq zp/line-spacing-variable nil))
+    ("guyot"
+     (set-face-attribute 'variable-pitch nil
+                         :font "Guyot Text" :height 152)
+     (setq zp/line-spacing-variable 0.3))
     ("bliss"
      (set-face-attribute 'variable-pitch nil
                          :font "Bliss Pro Prog" :height 158)
-     (setq zp/current-font-variable "bliss"
-           zp/line-spacing-variable nil))
+     (setq zp/line-spacing-variable nil))
     ("typewriter"
      (set-face-attribute 'variable-pitch nil
                          :font "ITC American Typewriter Std" :height 158)
-     (setq zp/current-font-variable "typewriter"
-           zp/line-spacing-variable 0.3)))
-  (zp/update-line-spacing))
+     (setq zp/line-spacing-variable 0.3)))
+  (setq zp/current-font-variable font)
+  (zp/update-line-spacing)
+  (message (concat "Variable font switched to " (capitalize font))))
 
 (zp/set-font "sarasa")
 (zp/set-font-variable "equity")
@@ -7553,14 +7564,14 @@ FONT is a preset."
 (defvar zp/current-font-variable nil
   "Name of the current variable font-preset.")
 
-(defvar zp/list-font-default nil
+(defvar zp/list-fonts nil
   "List of default font-presets.")
 
-(defvar zp/list-font-variable nil
+(defvar zp/list-fonts-variable nil
   "List of variable font-presets.")
 
-(setq zp/list-font-default '("sarasa" "operator" "gintronic"))
-(setq zp/list-font-variable '("equity" "bliss" "typewriter"))
+(setq zp/list-fonts '("sarasa" "operator" "gintronic"))
+(setq zp/list-fonts-variable '("equity" "guyot" "bliss" "typewriter"))
 
 (defun zp/toggle-font (type current list)
   "Toggle between font-presets.
@@ -7576,22 +7587,40 @@ LIST is the variable holding the list of font-presets."
     (pcase type
       ("default" (zp/set-font next))
       ("variable" (zp/set-font-variable next)))
-    (zp/update-line-spacing)
-    (message (concat "Font switched to " (capitalize next)))))
+    (zp/update-line-spacing)))
 
 (defun zp/toggle-font-default ()
   "Toggle between default font-presets.
 CURRENT is the variable holding the current default font-preset.
 LIST is the variable holding the list of default font-presets."
   (interactive)
-  (zp/toggle-font "default" zp/current-font zp/list-font-default))
+  (zp/toggle-font "default" zp/current-font zp/list-fonts))
 
 (defun zp/toggle-font-variable ()
   "Toggle between default font-presets.
 CURRENT is the variable holding the current variable font-preset.
 LIST is the variable holding the list of variable font-presets."
   (interactive)
-  (zp/toggle-font "variable" zp/current-font-variable zp/list-font-variable))
+  (zp/toggle-font "variable" zp/current-font-variable zp/list-fonts-variable))
+
+
+
+;; Select font with Helm
+(defun zp/helm-select-font (&optional font)
+  (interactive)
+  (let ((current zp/current-font))
+    (helm :sources '((name . "*HELM - Font selection*")
+                     (candidates . zp/list-fonts)
+                     (action . (("Change font" . zp/set-font))))
+          :preselect current)))
+
+(defun zp/helm-select-font-variable (&optional font)
+  (interactive)
+  (let ((current zp/current-font-variable))
+    (helm :sources '((name . "*HELM - Font selection*")
+                     (candidates . zp/list-fonts-variable)
+                     (action . (("Change font" . zp/set-font-variable))))
+          :preselect current)))
 
 
 
