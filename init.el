@@ -6972,8 +6972,8 @@ Every ELEM in LIST is formatted as follows:
 (define-key zp/toggle-map "q" #'electric-quote-local-mode)
 (define-key zp/toggle-map "Q" #'toggle-debug-on-quit)
 (define-key zp/toggle-map "t" #'zp/switch-theme)
-(define-key zp/toggle-map "c" #'zp/toggle-font-default)
-(define-key zp/toggle-map "v" #'zp/toggle-font-variable)
+(define-key zp/toggle-map "c" #'zp/helm-select-font)
+(define-key zp/toggle-map "v" #'zp/helm-select-font-variable)
 
 
 (global-set-key (kbd "C-c \\") 'picture-mode)
