@@ -6973,9 +6973,7 @@ Every ELEM in LIST is formatted as follows:
 (define-key zp/toggle-map "q" #'electric-quote-local-mode)
 (define-key zp/toggle-map "Q" #'toggle-debug-on-quit)
 (define-key zp/toggle-map "t" #'zp/switch-theme)
-(define-key zp/toggle-map "c" #'zp/helm-select-font)
-(define-key zp/toggle-map "v" #'zp/helm-select-font-variable)
-
+(define-key zp/toggle-map "c" #'zp/helm-select-font-dwim)
 
 (global-set-key (kbd "C-c \\") 'picture-mode)
 (global-set-key (kbd "C-c u") 'visual-line-mode)
@@ -7621,6 +7619,15 @@ LIST is the variable holding the list of variable font-presets."
                      (candidates . zp/list-fonts-variable)
                      (action . (("Change font" . zp/set-font-variable))))
           :preselect current)))
+
+(defun zp/helm-select-font-dwim ()
+  "Select the font-preset to use.
+
+If in variable-pitch-mode, change the variable font-preset."
+  (interactive)
+  (if zp/variable-pitch-mode-toggle
+      (zp/helm-select-font-variable)
+    (zp/helm-select-font)))
 
 
 
