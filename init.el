@@ -485,11 +485,6 @@ LANGUAGE should be the name of an Ispell dictionary."
         (candidates . zp/ispell-completion-data)
         (action . zp/helm-ispell-actions)))
 
-(defun zp/helm-ispell ()
-  (interactive)
-  (let ((current ispell-local-dictionary))
-    (helm :sources '(zp/helm-source-ispell))))
-
 (defun zp/helm-ispell-preselect (&optional lang)
   (interactive)
   (let ((current ispell-local-dictionary))
