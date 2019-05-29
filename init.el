@@ -4968,7 +4968,8 @@ running."
 ;; (load "/home/zaeph/.emacs.d/pkg/org-noter/org-noter.el")
 (require 'org-noter)
 (setq org-noter-hide-other t
-      org-noter-auto-save-last-location t)
+      org-noter-auto-save-last-location t
+      org-noter-doc-split-fraction '(0.6 0.4))
 
 (add-hook #'org-noter-notes-mode-hook #'visual-line-mode)
 
