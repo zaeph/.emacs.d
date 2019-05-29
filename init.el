@@ -7692,8 +7692,7 @@ LIST is the variable holding the list of variable font-presets."
   (zp/org-format-face 'magit-tag :foreground "SpringGreen4")
 
   (zp/mode-line-theme "dark")
-  (zp/pdf-view-midnight-mode-theme)
-  )
+  (zp/pdf-view-midnight-mode-theme))
 
 (defun zp/light-theme ()
   (interactive)
