@@ -4936,7 +4936,6 @@ running."
                              (interactive)
                              (zp/chronos-edit-quick "+0:10:00" "10 min")))
   (local-set-key (kbd "a") 'helm-chronos-add-timer)
-  (local-set-key (kbd "q") 'zp/chronos-quit)
   )
 (setq chronos-mode-hook 'chronos-mode-config)
 
@@ -5857,14 +5856,26 @@ org-agenda context."
 
 
 
-(defun zp/switch-to-chronos (arg)
+(defun zp/switch-to-chronos (add)
+  "Switch to and from Chronos’s buffer.
+
+If ADD is non-nil, prompt for a new timer upon switching."
   (interactive "P")
-  (if (string-match "*chronos*" (buffer-name))
-      (zp/chronos-quit)
-    (if (or (eq (get-buffer "*chronos*") nil) (not (eq arg nil)))
-        (if (yes-or-no-p "There are no timer running. Would you like to create one?")
-            (call-interactively 'helm-chronos-add-timer))
-      (switch-to-buffer "*chronos*"))))
+  (cond ((string-match "*chronos*" (buffer-name))
+         (zp/chronos-quit))
+        ((get-buffer "*chronos*")
+         (switch-to-buffer "*chronos*")
+         (when add
+           (helm-chronos-add-timer)))
+        (t
+         (chronos-initialize))))
+
+(defun zp/switch-to-chronos-and-add ()
+  "Switch to and from Chronos’s buffer.
+
+If switching to Chronos’s buffer, also add a timer."
+  (interactive)
+  (zp/switch-to-chronos t))
 
 ;; (defun zp/switch-to-magit (arg)
 ;;   (interactive "P")
@@ -7044,6 +7055,7 @@ Every ELEM in LIST is formatted as follows:
 (global-set-key (kbd "H-o") 'zp/switch-to-agenda)
 (global-set-key (kbd "H-M-;") 'helm-chronos-add-timer)
 (global-set-key (kbd "H-;") 'zp/switch-to-chronos)
+(global-set-key (kbd "H-M-;") 'zp/switch-to-chronos-and-add)
 (global-set-key (kbd "M-o") 'mode-line-other-buffer)
 (global-set-key (kbd "H-j") 'other-window-reverse)
 (global-set-key (kbd "H-k") 'other-window)
