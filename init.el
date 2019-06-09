@@ -2504,6 +2504,7 @@ off.")
         ("^style$" "~/org/svg/icons/suit.svg" nil nil :ascent center)
         ("^nicolas$" "~/org/svg/icons/leaf.svg" nil nil :ascent center)
         ("^swim$" "~/org/svg/icons/wave.svg" nil nil :ascent center)
+        ("^run$" "~/org/svg/icons/running.svg" nil nil :ascent center)
         ("^awakening$" "~/org/svg/icons/aperture-green.svg" nil nil :ascent center)
         ("^journal$" "~/org/svg/icons/spellbook-p.svg" nil nil :ascent center)
         ("^psy$" "~/org/svg/icons/solution.svg" nil nil :ascent center)
@@ -2870,8 +2871,8 @@ With a C-u argument, toggle the link display."
         ;; Psychotherapy
         ("p p" . "/home/zaeph/org/projects/psychotherapy/psychotherapy.org.gpg")
         ;; Sports
-        ("p s" . "/home/zaeph/org/sports/swimming/swimming.org.gpg")
-        ;; ("p R" . "/home/zaeph/org/sports/running/running.org.gpg")
+        ("p S" . "/home/zaeph/org/sports/swimming/swimming.org.gpg")
+        ("p R" . "/home/zaeph/org/sports/running/running.org.gpg")
 
         ;; Hacking
         ("p h e" . "/home/zaeph/org/projects/hacking/emacs/emacs.org.gpg")
@@ -4671,8 +4672,9 @@ _O_: Curiosities    _e_: Emacs
 _s_: Social         _E_: Elisp              _p_: Politics
 _n_: Nicolas        _T_: LaTeX
 _S_: Swimming       _g_: Git
-_t_: Typography     _b_: Troubleshooting
-^^                  _B_: Contributing
+_R_: Running        _b_: Troubleshooting
+_t_: Typography     _B_: Contributing
+^^
 _x_: Maintenance
 _m_: Media
 _c_: Calendars
@@ -4685,6 +4687,7 @@ _c_: Calendars
   ("s" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Social")))
   ("n" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Social" "Nicolas")))
   ("S" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Swimming")))
+  ("R" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Running")))
   ("m" zp/hydra-org-refile-media/body)
   ("M" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Media")))
   ("t" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Typography")))
