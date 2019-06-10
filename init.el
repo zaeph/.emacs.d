@@ -2329,6 +2329,9 @@ return `nil'."
              '("\\.pdf\\'" . (lambda (file link)
                                (org-pdfview-open link))))
 
+;; Enforce French spacing when filling paragraphs
+(add-to-list 'fill-nobreak-predicate 'fill-french-nobreak-p)
+
 ;; (setq org-file-apps '(("\\.pdf\\'" lambda
 ;;                     (file link)
 ;;                     (org-pdfview-open link))
