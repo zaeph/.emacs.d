@@ -2742,33 +2742,38 @@ off.")
 
 (defun zp/org-overview (arg)
   (interactive "P")
-  (let ((pos-before (point)))
-    (setq-local zp/org-narrow-previous-position pos-before))
-  (widen)
-  (let ((org-startup-folded 'overview))
-    (org-set-startup-visibility))
-  (org-overview)
-  (when (not (equal arg '(4)))
-      (beginning-of-buffer))
-  (recenter-top-bottom)
-  ;; Do not redisplay images if in indirect buffer
-  (if (buffer-file-name)
+  (let ((pos-before (point))
+        (indirect (not (buffer-file-name)))
+        (org-startup-folded 'overview))
+    (setq-local zp/org-narrow-previous-position pos-before)
+    ;; Do not widen buffer if in indirect buffer
+    (unless indirect
+      (widen)
       (org-display-inline-images))
-  (zp/play-sound-turn-page))
+    ;; Fold drawers
+    (org-set-startup-visibility)
+    ;; Fold headings
+    (org-overview)
+    (when (not (equal arg '(4)))
+      (beginning-of-buffer))
+    (recenter-top-bottom)
+    (zp/play-sound-turn-page)))
 
 (defun zp/org-show-all (arg)
   (interactive "p")
-  (let ((pos-before (point)))
-    (setq-local zp/org-narrow-previous-position pos-before))
-  (widen)
-  (org-show-all)
-  (if (not (eq arg 4))
-      (beginning-of-buffer))
-  (recenter-top-bottom)
-  ;; Do not redisplay images if in indirect buffer
-  (if (buffer-file-name)
+  (let ((pos-before (point))
+        (indirect (not (buffer-file-name))))
+    (setq-local zp/org-narrow-previous-position pos-before)
+    ;; Do not widen buffer if in indirect buffer
+    (unless indirect
+      (widen)
       (org-display-inline-images))
-  (zp/play-sound-turn-page))
+    ;; Unfold everything
+    (org-show-all)
+    (when (not (eq arg 4))
+      (beginning-of-buffer))
+    (recenter-top-bottom)
+    (zp/play-sound-turn-page)))
 
 ;; org-narrow movements
 
