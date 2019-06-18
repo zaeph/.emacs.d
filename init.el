@@ -2252,6 +2252,19 @@ return `nil'."
 ;; Prefer cperl-mode to perl-mode
 (defalias 'perl-mode 'cperl-mode)
 
+(defun zp/perl-eval-region ()
+  "Run selected region as Perl code"
+  (interactive)
+  (shell-command-on-region (mark) (point) "perl"))
+
+(defun zp/perl-eval-buffer ()
+  "Run current buffer as Perl code"
+  (interactive)
+  (shell-command-on-region (point-min) (point-max) "perl"))
+
+(define-key cperl-mode-map (kbd "M-RET") 'zp/perl-eval-buffer)
+(define-key cperl-mode-map (kbd "<C-return>") 'zp/perl-eval-region)
+
 
 
 ;; ========================================
