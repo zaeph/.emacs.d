@@ -4605,6 +4605,41 @@ the filename)."
         (org-agenda-refile nil rfloc)
       (org-refile arg nil rfloc))))
 
+(defun zp/org-jump ()
+  "Jump to headline as defined in ‘org-refine-targets’."
+  (interactive)
+  (with-current-buffer (find-file-noselect "~/org/life.org.gpg")
+    (save-excursion
+      (let ((org-refile-targets '(("~/org/life.org.gpg" :maxlevel . 1)))
+            (org-refile-use-cache nil)
+            (org-refile-target-verify-function 'zp/org-refile-target-verify-exclude-separators)
+            ;; (org-refile-use-outline-path t)
+            )
+        (org-refile '(4))
+        (zp/org-tree-to-indirect-buffer-folded)))))
+
+(defun zp/org-refile-target-verify-exclude-separators ()
+  (let ((regex "^\\* -+.*-+$"))
+    ;; (message (buffer-substring-no-properties (point) (line-end-position)))
+    (if (re-search-forward regex (line-end-position) t)
+        nil
+      t)))
+
+(defun zp/org-tree-to-indirect-buffer-folded ()
+  "Clone tree to indirect buffer in a folded state."
+  (let ((org-indirect-buffer-display 'current-window)
+        (buffer))
+    (org-tree-to-indirect-buffer)
+    (setq buffer (current-buffer))
+    (mode-line-other-buffer)
+    (bury-buffer)
+    (switch-to-buffer buffer t)
+    (let ((org-startup-folded nil))
+      (org-set-startup-visibility))
+    (org-overview)
+    (org-cycle)
+    (zp/play-sound-turn-page)))
+
 (defun zp/org-refile-to (file headline-or-path &optional arg)
   "Refile to HEADLINE in FILE. Clean up org-capture if it's activated.
 With a ‘C-u’ ARG, just jump to the headline."
@@ -4868,7 +4903,8 @@ _c_: Calendars
                                                      "[ ]")
                                                    " indirect") :exit nil)
 
-  ("j" org-refile-goto-last-stored "jump to last")
+  ("j" zp/org-jump "jump")
+  ("J" org-refile-goto-last-stored "jump to last")
   ("w" zp/org-refile "refile")
   ("W" zp/org-refile-with-paths "refile+paths")
   ("0" (zp/org-refile-with-paths '(64)) "reset cache" :exit nil)
