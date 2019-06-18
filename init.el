@@ -4587,8 +4587,9 @@ Use `org-agenda-refile' in `org-agenda' mode.
 If HEADLINE-OR-PATH is a string, interprets it as a heading.  If
 HEADLINE-OR-PATH is a list, interprets it as an olp path (without
 the filename)."
-  (let* ((pos (with-current-buffer (or (get-buffer file) ;Is the file open in a buffer already?
-                                       (find-file-noselect file)) ;Otherwise, try to find the file by name (Note, default-directory matters here if it isn't absolute)
+  (let* ((pos (with-current-buffer
+                  (or (get-buffer file) ;Is the file open in a buffer already?
+                      (find-file-noselect file)) ;Otherwise, try to find the file by name (Note, default-directory matters here if it isn't absolute)
                 (or (if (not (listp headline-or-path))
                         (org-find-exact-headline-in-buffer headline-or-path)
                       (org-find-olp `(,(buffer-file-name) ,@headline-or-path)))
@@ -4601,7 +4602,7 @@ the filename)."
 
 (defun zp/org-refile-to (file headline-or-path &optional arg)
   "Refile to HEADLINE in FILE. Clean up org-capture if it's activated.
-With a `C-u` ARG, just jump to the headline."
+With a ‘C-u’ ARG, just jump to the headline."
   (interactive "P")
   (let ((is-capturing (and (boundp 'org-capture-mode) org-capture-mode))
         (arg (or arg
