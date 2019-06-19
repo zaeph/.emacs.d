@@ -5425,15 +5425,17 @@ In org-agenda, visit the subtree first."
 (defun zp/play-sound-turn-page ()
   (start-process-shell-command "play-sound" nil "notification-sound-org page"))
 
-(defmacro zp/advise-commands (advice-name commands class &rest body)
-  "Apply advice named ADVICE-NAME to multiple COMMANDS.
-
-The body of the advice is in BODY."
-  `(progn
-     ,@(mapcar (lambda (command)
-                 `(defadvice ,command (,class ,(intern (concat (symbol-name command) "-" advice-name)) activate)
-                    ,@body))
-               commands)))
+(defmacro zp/advise-commands (method commands where function)
+  (let ((where-keyword (intern-soft (concat ":" (symbol-name where)))))
+    `(progn
+       ,@(cond ((string= method 'add)
+                (mapcar (lambda (command)
+                          `(advice-add ',command ,where-keyword #',function))
+                        commands))
+               ((string= method 'remove)
+                (mapcar (lambda (command)
+                          `(advice-remove ',command  ',function))
+                        commands))))))
 
 
 
