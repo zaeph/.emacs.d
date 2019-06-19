@@ -2427,7 +2427,7 @@ return `nil'."
 (setq org-tags-column -77)              ;Default: -77
 ;; Default: auto OR -80.
 ;; 89 and not 90 because of org-agenda-category-icon-alist
-(setq org-agenda-tags-column -95)
+(setq org-agenda-tags-column -94)
 (setq org-habit-graph-column 50)
 
 (setq org-todo-state-tags-triggers
