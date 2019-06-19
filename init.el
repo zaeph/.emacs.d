@@ -4720,16 +4720,7 @@ With a ‘C-u’ ARG, just jump to the headline."
         (if (not indirect)
             (zp/org-refile-internal file headline-or-path arg)
           (zp/org-refile-internal file headline-or-path arg)
-          (org-tree-to-indirect-buffer)
-          (setq buffer (current-buffer))
-          (mode-line-other-buffer)
-          (bury-buffer)
-          (switch-to-buffer buffer t)
-          (let ((org-startup-folded nil))
-            (org-set-startup-visibility))
-          (org-overview)
-          (org-cycle))
-        (zp/play-sound-turn-page)))
+          (zp/org-tree-to-indirect-buffer-folded))))
      ;; Are we in org-capture-mode?
      (is-capturing              ;Minor mode variable that's defined when capturing
       (zp/org-capture-refile-internal file headline-or-path arg))
