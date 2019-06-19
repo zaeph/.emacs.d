@@ -2042,14 +2042,12 @@ return `nil'."
   (TeX-pin-region (region-beginning) (region-end))
   (deactivate-mark)
   (move-end-of-line 1)
-  (message "Narrowing to enviroment")
-  (zp/play-sound-turn-page))
+  (message "Narrowing to enviroment"))
 
 (defun zp/LaTeX-widen ()
   (interactive)
   (widen)
-  (message "Removing narrowing")
-  (zp/play-sound-turn-page))
+  (message "Removing narrowing"))
 
 (defun zp/LaTeX-narrow-forwards (&optional arg)
   (interactive "P")
@@ -2061,8 +2059,7 @@ return `nil'."
       (TeX-pin-region (region-beginning) (region-end))
       (deactivate-mark)
       (move-end-of-line 1))
-    (message "Narrowing to next frame")
-    (zp/play-sound-turn-page)))
+    (message "Narrowing to next frame")))
 
 (defun zp/LaTeX-narrow-backwards (&optional arg)
   (interactive "P")
@@ -2076,8 +2073,7 @@ return `nil'."
       (TeX-pin-region (region-beginning) (region-end))
       (deactivate-mark)
       (move-end-of-line 1))
-    (message "Narrowing to previous frame")
-    (zp/play-sound-turn-page)))
+    (message "Narrowing to previous frame")))
 
 (defun zp/LaTeX-narrow-up ()
   (interactive)
@@ -2087,8 +2083,7 @@ return `nil'."
   (call-interactively #'narrow-to-region)
   (deactivate-mark)
   (move-end-of-line 1)
-  (message "Narrowing to parent environment")
-  (zp/play-sound-turn-page))
+  (message "Narrowing to parent environment"))
 
 (define-key LaTeX-mode-map (kbd "C-x n e") #'zp/LaTeX-narrow-to-environment)
 (define-key LaTeX-mode-map (kbd "C-x n w") #'zp/LaTeX-widen)
@@ -2749,8 +2744,7 @@ off.")
     (unless indirectp
       (widen)
       (org-display-inline-images))
-    (zp/org-fold arg)
-    (zp/play-sound-turn-page)))
+    (zp/org-fold arg)))
 
 (defun zp/org-fold (arg)
   (interactive "P")
@@ -2780,8 +2774,7 @@ off.")
     (org-show-all)
     (when (not (eq arg 4))
       (beginning-of-buffer))
-    (recenter-top-bottom)
-    (zp/play-sound-turn-page)))
+    (recenter-top-bottom)))
 
 ;; org-narrow movements
 
@@ -2789,8 +2782,8 @@ off.")
   "Move to the next subtree at same level, and narrow the buffer to it."
   (interactive)
   (org-narrow-to-subtree)
-  (message "Narrowing to tree at point.")
-  (zp/play-sound-turn-page))
+  (zp/org-fold nil)
+  (message "Narrowing to tree at point."))
 
 (defun zp/org-widen ()
   "Move to the next subtree at same level, and narrow the buffer to it."
@@ -2798,8 +2791,7 @@ off.")
   (let ((pos-before (point)))
     (setq-local zp/org-narrow-previous-position pos-before))
   (widen)
-  (message "Removing narrowing.")
-  (zp/play-sound-turn-page))
+  (message "Removing narrowing."))
 
 (defun zp/org-narrow-forwards ()
   "Move to the next subtree at same level, and narrow the buffer to it."
@@ -2808,8 +2800,7 @@ off.")
   (org-forward-heading-same-level 1)
   (org-narrow-to-subtree)
   (zp/org-fold nil)
-  (message "Narrowing to next tree.")
-  (zp/play-sound-turn-page))
+  (message "Narrowing to next tree."))
 
 (defun zp/org-narrow-backwards ()
   "Move to the next subtree at same level, and narrow the buffer to it."
@@ -2818,8 +2809,7 @@ off.")
   (org-backward-heading-same-level 1)
   (org-narrow-to-subtree)
   (zp/org-fold nil)
-  (message "Narrowing to previous tree.")
-  (zp/play-sound-turn-page))
+  (message "Narrowing to previous tree."))
 
 (defun zp/org-narrow-up-heading (arg)
   "Move to the upper subtree, and narrow the buffer to it."
@@ -2835,8 +2825,7 @@ off.")
           (goto-char pos-before)
           (recenter-top-bottom)))
     (zp/org-fold arg)
-    (message "Narrowing to tree above.")
-    (zp/play-sound-turn-page)))
+    (message "Narrowing to tree above.")))
 
 (defun zp/org-narrow-up-heading-dwim (arg)
   "Narrow to the upper subtree, and narrow the buffer to it.
@@ -2857,8 +2846,7 @@ If on a level-1 heading, overview the file instead."
         (org-cycle)
         (org-narrow-to-subtree)
         (setq zp/org-narrow-previous-position nil)
-        (message "Narrowing to previously narrowed tree.")
-        (zp/play-sound-turn-page))
+        (message "Narrowing to previously narrowed tree."))
     (message "Couldn’t find a previous position.")))
 
 ;; Toggle fontifications
@@ -4702,8 +4690,7 @@ the filename)."
     (let ((org-startup-folded nil))
       (org-set-startup-visibility))
     (org-overview)
-    (org-cycle)
-    (zp/play-sound-turn-page)))
+    (org-cycle)))
 
 (defun zp/org-refile-to (file headline-or-path &optional arg)
   "Refile to HEADLINE in FILE. Clean up org-capture if it's activated.
@@ -5436,6 +5423,32 @@ In org-agenda, visit the subtree first."
                 (mapcar (lambda (command)
                           `(advice-remove ',command  ',function))
                         commands))))))
+
+(defun zp/movement--play-sound-turn-page (orig-fun &rest args)
+  (apply orig-fun args)
+  (zp/play-sound-turn-page))
+
+(zp/advise-commands
+ add
+ (zp/org-overview
+  zp/org-show-all
+  zp/org-narrow-to-subtree
+  zp/org-widen
+  zp/org-narrow-forwards
+  zp/org-narrow-backwards
+  zp/org-narrow-up-heading
+  zp/org-narrow-previous-heading
+  zp/org-refile-to
+  zp/org-kill-indirect-buffer
+  zp/org-kill-indirect-buffer-and-window
+  zp/org-agenda-tree-to-indirect-buffer
+  zp/LaTeX-narrow-to-environment
+  zp/LaTeX-widen
+  zp/LaTeX-narrow-forwards
+  zp/LaTeX-narrow-backwards
+  zp/LaTeX-narrow-up)
+ around
+ zp/movement--play-sound-turn-page)
 
 
 
@@ -7383,17 +7396,15 @@ Every ELEM in LIST is formatted as follows:
         (condition-case nil
             (kill-buffer-and-window)
           (error nil))
-        (message "Killed indirect buffer and window.")
-        (zp/play-sound-turn-page))
     (message "Not in an indirect buffer.")))
+        (message "Killed indirect buffer and window."))
 
 (defun zp/org-agenda-kill-other-buffer-and-window ()
   "Kill the other buffer and window if there is more than one window in `org-agenda’."
   (interactive)
   (if (not (string-match "*Org Agenda*" (buffer-name)))
       (other-window 1))
-  (zp/kill-other-buffer-and-window)
-  (zp/play-sound-turn-page))
+  (zp/kill-other-buffer-and-window))
 
 (defun zp/org-agenda-tree-to-indirect-buffer (arg)
   "Open current tasks in other window, narrow it, and balance
@@ -7412,8 +7423,7 @@ windows."
   (org-backward-heading-same-level 1)
   (widen)
   (org-reveal)
-  (org-narrow-to-subtree)
-  (zp/play-sound-turn-page))
+  (org-narrow-to-subtree))
 
 (defun zp/org-agenda-tree-to-indirect-buffer-without-grabbing-focus (arg)
   (interactive "P")
