@@ -2839,6 +2839,15 @@ off.")
     (message "Narrowing to tree above.")
     (zp/play-sound-turn-page)))
 
+(defun zp/org-narrow-up-heading-dwim (arg)
+  "Narrow to the upper subtree, and narrow the buffer to it.
+
+If on a level-1 heading, overview the file instead."
+  (interactive "P")
+  (if (equal (org-outline-level) 1)
+      (zp/org-overview arg)
+    (zp/org-narrow-up-heading arg)))
+
 (defun zp/org-narrow-previous-heading (arg)
   "Move to the previously narrowed tree, and narrow the buffer to it."
   (interactive "p")
@@ -2902,7 +2911,7 @@ With a C-u argument, toggle the link display."
   (local-set-key (kbd "S-<backspace>") 'zp/org-kill-indirect-buffer)
   (local-set-key (kbd "C-x n o") 'zp/org-overview)
   (local-set-key (kbd "C-x n a") 'zp/org-show-all)
-  (local-set-key (kbd "C-x n u") 'zp/org-narrow-up-heading)
+  (local-set-key (kbd "C-x n u") 'zp/org-narrow-up-heading-dwim)
   (local-set-key (kbd "C-x n y") 'zp/org-narrow-previous-heading)
   (local-set-key (kbd "C-x n s") 'zp/org-narrow-to-subtree)
   (local-set-key (kbd "C-x n f") 'zp/org-narrow-forwards)
