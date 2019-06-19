@@ -4671,7 +4671,7 @@ the filename)."
            (goto-char (point-max))
            nil)
           (t
-           t))
+           (zp/org-refile-target-verify-exclude-separators)))
     ))
 
 (defun zp/org-tree-to-indirect-buffer-folded ()
