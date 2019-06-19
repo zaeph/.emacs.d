@@ -4625,6 +4625,32 @@ the filename)."
         nil
       t)))
 
+(defun zp/org-jump-restricted ()
+  "Jump to headline as defined in ‘org-refine-targets’."
+  (interactive)
+  (save-excursion
+    (let ((org-refile-targets '((nil :maxlevel . 2)))
+          (org-refile-use-cache nil)
+          (org-refile-target-verify-function 'zp/org-refile-target-verify-restricted)
+          (org-refile-use-outline-path t)
+          (min (point-min))
+          (max (point-max)))
+      (org-refile '(4))
+      (zp/org-tree-to-indirect-buffer-folded))))
+
+(defun zp/org-refile-target-verify-restricted ()
+  (let ((regex "^\\* -+.*-+$"))
+    ;; (message (buffer-substring-no-properties (point) (line-end-position)))
+    (cond ((< (point) min)
+           (goto-char min)
+           nil)
+          ((> (point) max)
+           (goto-char (point-max))
+           nil)
+          (t
+           t))
+    ))
+
 (defun zp/org-tree-to-indirect-buffer-folded ()
   "Clone tree to indirect buffer in a folded state."
   (let ((org-indirect-buffer-display 'current-window)
