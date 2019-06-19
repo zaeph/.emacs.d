@@ -2664,6 +2664,7 @@ off.")
         ;; Hacking
         ("^hack$" "~/org/svg/icons/engineering-2.svg" nil nil :ascent center)
         ("^emacs$" "~/org/svg/icons/spacemacs.svg" nil nil :ascent center)
+        ("^org$" "~/org/svg/icons/org-mode-unicorn.svg" nil nil :ascent center)
         ("^python$" "~/org/svg/icons/python.svg" nil nil :ascent center)
         ("^perl$" "~/org/svg/icons/perl.svg" nil nil :ascent center)
         ("^contrib$" "~/org/svg/icons/chill.svg" nil nil :ascent center)
