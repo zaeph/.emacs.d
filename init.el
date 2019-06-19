@@ -2743,8 +2743,7 @@ off.")
 (defun zp/org-overview (arg)
   (interactive "P")
   (let ((pos-before (point))
-        (indirectp (not (buffer-file-name)))
-        (org-startup-folded 'overview))
+        (indirectp (not (buffer-file-name))))
     (setq-local zp/org-narrow-previous-position pos-before)
     ;; Do not widen buffer if in indirect buffer
     (unless indirectp
@@ -2755,7 +2754,8 @@ off.")
 
 (defun zp/org-fold (arg)
   (interactive "P")
-  (let ((indirectp (not (buffer-file-name))))
+  (let ((indirectp (not (buffer-file-name)))
+        (org-startup-folded 'overview))
     ;; Fold drawers
     (org-set-startup-visibility)
     ;; Fold trees
@@ -2765,8 +2765,7 @@ off.")
     (recenter-top-bottom)
     (save-excursion
       (goto-char (point-min))
-      (org-cycle)))
-  )
+      (org-cycle))))
 
 (defun zp/org-show-all (arg)
   (interactive "p")
