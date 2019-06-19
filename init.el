@@ -1541,7 +1541,7 @@ based on ‘zp/message-mode-ispell-alist’."
 (menu-bar-mode -1)
 (tool-bar-mode -1)
 (scroll-bar-mode 0)
-(fringe-mode 15)
+(fringe-mode 20)
 (show-paren-mode 1)
 (yas-global-mode 1)
 (column-number-mode 1)
