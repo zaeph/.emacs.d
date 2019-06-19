@@ -2251,6 +2251,7 @@ return `nil'."
 ;; ========================================
 
 ;; Prefer cperl-mode to perl-mode
+(require 'cperl-mode)
 (defalias 'perl-mode 'cperl-mode)
 
 (defun zp/perl-eval-region ()
