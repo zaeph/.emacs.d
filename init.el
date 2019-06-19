@@ -2804,7 +2804,7 @@ off.")
   (org-forward-heading-same-level 1)
   (org-narrow-to-subtree)
   (message "Narrowing to next tree.")
-  (zp/play-sound-turn-page))
+  (zp/org-overview nil))
 
 (defun zp/org-narrow-backwards ()
   "Move to the next subtree at same level, and narrow the buffer to it."
@@ -2813,7 +2813,7 @@ off.")
   (org-backward-heading-same-level 1)
   (org-narrow-to-subtree)
   (message "Narrowing to previous tree.")
-  (zp/play-sound-turn-page))
+  (zp/org-overview nil))
 
 (defun zp/org-narrow-up-heading (arg)
   "Move to the next subtree at same level, and narrow the buffer to it."
@@ -2829,8 +2829,7 @@ off.")
           (goto-char pos-before)
           (recenter-top-bottom)))
     (message "Narrowing to tree above.")
-    (zp/org-overview arg)
-    (zp/play-sound-turn-page)))
+    (zp/org-overview arg)))
 
 (defun zp/org-narrow-previous-heading (arg)
   "Move to the previously narrowed tree, and narrow the buffer to it."
