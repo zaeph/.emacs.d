@@ -7396,8 +7396,8 @@ Every ELEM in LIST is formatted as follows:
         (condition-case nil
             (kill-buffer-and-window)
           (error nil))
-    (message "Not in an indirect buffer.")))
         (message "Killed indirect buffer and window."))
+    (error "Not in an indirect buffer")))
 
 (defun zp/org-agenda-kill-other-buffer-and-window ()
   "Kill the other buffer and window if there is more than one window in `org-agenda’."
