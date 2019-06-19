@@ -2750,18 +2750,23 @@ off.")
     (unless indirectp
       (widen)
       (org-display-inline-images))
+    (zp/org-fold arg)
+    (zp/play-sound-turn-page)))
+
+(defun zp/org-fold (arg)
+  (interactive "P")
+  (let ((indirectp (not (buffer-file-name))))
     ;; Fold drawers
     (org-set-startup-visibility)
-    ;; Fold headings
+    ;; Fold trees
     (org-overview)
     (when (not (equal arg '(4)))
       (beginning-of-buffer))
     (recenter-top-bottom)
-    (when indirectp
-      (save-excursion
-        (goto-char (point-min))
-        (org-cycle)))
-    (zp/play-sound-turn-page)))
+    (save-excursion
+      (goto-char (point-min))
+      (org-cycle)))
+  )
 
 (defun zp/org-show-all (arg)
   (interactive "p")
@@ -2803,8 +2808,9 @@ off.")
   (widen)
   (org-forward-heading-same-level 1)
   (org-narrow-to-subtree)
+  (zp/org-fold nil)
   (message "Narrowing to next tree.")
-  (zp/org-overview nil))
+  (zp/play-sound-turn-page))
 
 (defun zp/org-narrow-backwards ()
   "Move to the next subtree at same level, and narrow the buffer to it."
@@ -2812,11 +2818,12 @@ off.")
   (widen)
   (org-backward-heading-same-level 1)
   (org-narrow-to-subtree)
+  (zp/org-fold nil)
   (message "Narrowing to previous tree.")
-  (zp/org-overview nil))
+  (zp/play-sound-turn-page))
 
 (defun zp/org-narrow-up-heading (arg)
-  "Move to the next subtree at same level, and narrow the buffer to it."
+  "Move to the upper subtree, and narrow the buffer to it."
   (interactive "P")
   (let ((pos-before (point)))
     (setq-local zp/org-narrow-previous-position pos-before)
@@ -2828,8 +2835,9 @@ off.")
         (progn
           (goto-char pos-before)
           (recenter-top-bottom)))
+    (zp/org-fold arg)
     (message "Narrowing to tree above.")
-    (zp/org-overview arg)))
+    (zp/play-sound-turn-page)))
 
 (defun zp/org-narrow-previous-heading (arg)
   "Move to the previously narrowed tree, and narrow the buffer to it."
