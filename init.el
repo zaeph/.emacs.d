@@ -274,7 +274,13 @@ that date.  Leave point on the first amount."
 (require 'ws-butler)
 (add-hook 'prog-mode-hook #'ws-butler-mode)
 
-(add-hook 'prog-mode-hook 'zp/whitespace-mode-lines-tail)
+(add-hook 'prog-mode-hook #'zp/whitespace-mode-lines-tail)
+
+(defun zp/enable-visual-line-fringe-indicators ()
+  "Enable visual line fringe indicators."
+  (setq-local visual-line-fringe-indicators '(left-curly-arrow right-curly-arrow)))
+
+(add-hook 'prog-mode-hook #'zp/enable-visual-line-fringe-indicators)
 
 (global-set-key (kbd "M-U") 'universal-argument)
 (global-set-key (kbd "M-SPC") 'delete-horizontal-space)
