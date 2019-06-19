@@ -2911,6 +2911,7 @@ With a C-u argument, toggle the link display."
   (local-set-key (kbd "C-e") 'org-end-of-line)
   (local-set-key (kbd "M-I") 'org-indent-mode)
   (local-set-key (kbd "M-*") 'zp/org-toggle-fontifications)
+  (local-set-key (kbd "C-c C-j") 'zp/org-jump-dwim)
   ;; (local-set-key (kbd "C-c C-w") 'org-refile)
   ;; (local-set-key (kbd "C-c C-S-w") 'zp/org-refile-with-paths)
   )
@@ -4610,6 +4611,24 @@ the filename)."
       (org-refile arg nil rfloc))))
 
 (defun zp/org-jump ()
+  (interactive)
+  (let ((org-refile-targets '((nil :maxlevel . 9)))
+        (org-refile-use-cache nil)
+        (org-refile-target-verify-function 'zp/org-refile-target-verify-exclude-separators)
+        (org-refile-use-outline-path t)
+        )
+    (org-refile '(4))
+    ;; (zp/org-tree-to-indirect-buffer-folded)
+    ))
+
+(defun zp/org-jump-dwim ()
+  (interactive)
+  (let ((indirectp (not (buffer-file-name))))
+    (if indirectp
+        (zp/org-jump-restricted)
+      (zp/org-jump))))
+
+(defun zp/org-jump-main ()
   "Jump to headline as defined in ‘org-refine-targets’."
   (interactive)
   (with-current-buffer (find-file-noselect "~/org/life.org.gpg")
@@ -4633,7 +4652,7 @@ the filename)."
   "Jump to headline as defined in ‘org-refine-targets’."
   (interactive)
   (save-excursion
-    (let ((org-refile-targets '((nil :maxlevel . 2)))
+    (let ((org-refile-targets '((nil :maxlevel . 9)))
           (org-refile-use-cache nil)
           (org-refile-target-verify-function 'zp/org-refile-target-verify-restricted)
           (org-refile-use-outline-path t)
@@ -4933,7 +4952,7 @@ _c_: Calendars
                                                      "[ ]")
                                                    " indirect") :exit nil)
 
-  ("j" zp/org-jump "jump")
+  ("j" zp/org-jump-main "jump")
   ("J" org-refile-goto-last-stored "jump to last")
   ("w" zp/org-refile "refile")
   ("W" zp/org-refile-with-paths "refile+paths")
