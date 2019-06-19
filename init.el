@@ -1541,7 +1541,7 @@ based on ‘zp/message-mode-ispell-alist’."
 (menu-bar-mode -1)
 (tool-bar-mode -1)
 (scroll-bar-mode 0)
-(fringe-mode 15)
+(fringe-mode 20)
 (show-paren-mode 1)
 (yas-global-mode 1)
 (column-number-mode 1)
@@ -2253,6 +2253,112 @@ return `nil'."
 
 
 ;; ========================================
+;; ================ VISUAL ================
+;; ========================================
+
+(define-fringe-bitmap 'left-curly-arrow
+    (vector #b0011111110000000
+            #b0011111110000000
+            #b0011111110000000
+            #b0011100000000000
+            #b0011100000000000
+            #b0011100000000000
+            #b0011100000000000
+            #b0011100001000000
+            #b0011100001100000
+            #b0011100001110000
+            #b0011111111111000
+            #b0011111111111100
+            #b0011111111111000
+            #b0000000001110000
+            #b0000000001100000
+            #b0000000001000000
+            )
+  16 16)
+
+(define-fringe-bitmap 'right-curly-arrow
+    (vector #b0000000111111100
+            #b0000000111111100
+            #b0000000111111100
+            #b0000000000011100
+            #b0000000000011100
+            #b0000000000011100
+            #b0000000000011100
+            #b0000001000011100
+            #b0000011000011100
+            #b0000111000011100
+            #b0001111111111100
+            #b0011111111111100
+            #b0001111111111100
+            #b0000111000000000
+            #b0000011000000000
+            #b0000001000000000
+            )
+  16 16)
+
+(define-fringe-bitmap 'left-arrow
+    (vector #b0000000001000000
+            #b0000000011000000
+            #b0000000111000000
+            #b0000001111000000
+            #b0000011110000000
+            #b0000111100000000
+            #b0001111111111100
+            #b0011111111111100
+            #b0011111111111100
+            #b0001111111111100
+            #b0000111100000000
+            #b0000011110000000
+            #b0000001111000000
+            #b0000000111000000
+            #b0000000011000000
+            #b0000000001000000
+            )
+  16 16)
+
+(define-fringe-bitmap 'right-arrow
+    (vector #b0000001000000000
+            #b0000001100000000
+            #b0000001110000000
+            #b0000001111000000
+            #b0000000111100000
+            #b0000000011110000
+            #b0011111111111000
+            #b0011111111111100
+            #b0011111111111100
+            #b0011111111111000
+            #b0000000011110000
+            #b0000000111100000
+            #b0000001111000000
+            #b0000001110000000
+            #b0000001100000000
+            #b0000001000000000
+            )
+  16 16)
+
+(define-fringe-bitmap 'right-triangle
+    (vector #b0000000000000000
+            #b0000000000000000
+            #b0011000000000000
+            #b0011110000000000
+            #b0011111100000000
+            #b0011111111000000
+            #b0011111111110000
+            #b0011111111111100
+            #b0011111111111100
+            #b0011111111110000
+            #b0011111111000000
+            #b0011111100000000
+            #b0011110000000000
+            #b0011000000000000
+            #b0000000000000000
+            #b0000000000000000
+            )
+  16 16)
+
+
+
+;; ========================================
 ;; ================= PERL =================
 ;; ========================================
 
@@ -2427,7 +2533,7 @@ return `nil'."
 (setq org-tags-column -77)              ;Default: -77
 ;; Default: auto OR -80.
 ;; 89 and not 90 because of org-agenda-category-icon-alist
-(setq org-agenda-tags-column -95)
+(setq org-agenda-tags-column -94)
 (setq org-habit-graph-column 50)
 
 (setq org-todo-state-tags-triggers
@@ -7707,7 +7813,7 @@ If in variable-pitch-mode, change the variable font-preset."
   (set-face-attribute 'region nil :background "RoyalBlue4")
   (set-face-attribute 'helm-selection nil :background "RoyalBlue4") ;Darker Royal Blue
   (set-face-attribute 'org-agenda-clocking nil :background "RoyalBlue4")
-  (set-face-attribute 'fringe nil :background "gray10")
+  (set-face-attribute 'fringe nil :background "gray10" :foreground "#ac9739")
   (set-face-attribute 'vertical-border nil :foreground "RoyalBlue1")
   (set-face-attribute 'org-agenda-structure nil :foreground "DodgerBlue1" :weight 'bold)
   (set-face-attribute 'hl-line nil :background "#1F1F3F")
@@ -7763,7 +7869,7 @@ If in variable-pitch-mode, change the variable font-preset."
   ;; (set-face-attribute 'org-todo-box nil :inverse-video t :foreground "white" :height 0.8 :weight 'bold :box nil)
   ;; (set-face-attribute 'default nil :background "cornsilk1") ;fff8dc
   (set-face-attribute 'default nil :foreground "#3c3836" :background "#fbf1c7")
-  (set-face-attribute 'fringe nil :background "#e6deb8")
+  (set-face-attribute 'fringe nil :background "#e6deb8" :foreground "#198844")
   (set-face-attribute 'org-hide nil :foreground "#fbf1c7")
   (set-face-attribute 'org-agenda-dimmed-todo-face nil :foreground "LightSlateBlue")
   (set-face-attribute 'org-scheduled-today nil :foreground "DodgerBlue4")
