@@ -2817,18 +2817,19 @@ off.")
 
 (defun zp/org-narrow-up-heading (arg)
   "Move to the next subtree at same level, and narrow the buffer to it."
-  (interactive "p")
+  (interactive "P")
   (let ((pos-before (point)))
     (setq-local zp/org-narrow-previous-position pos-before)
     (widen)
     (org-reveal)
     (outline-up-heading 1)
     (org-narrow-to-subtree)
-    (if (eq arg 4)
+    (if (equal arg '(4))
         (progn
           (goto-char pos-before)
           (recenter-top-bottom)))
     (message "Narrowing to tree above.")
+    (zp/org-overview arg)
     (zp/play-sound-turn-page)))
 
 (defun zp/org-narrow-previous-heading (arg)
