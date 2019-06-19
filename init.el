@@ -6675,9 +6675,11 @@ will not be modified."
     (unless (or (and is-capturing
                      (not add-created))
                 (org-entry-get (point) created nil))
+      (when is-capturing
+        (goto-char (point-min)))
       (org-set-property created now))))
 
-(add-hook 'org-capture-before-finalize-hook #'zp/org-set-created-property)
+(add-hook 'org-capture-prepare-finalize-hook #'zp/org-set-created-property)
 
 ;; Align tags in templates before finalising
 (add-hook 'org-capture-before-finalize-hook #'org-align-all-tags)
