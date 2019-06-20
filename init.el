@@ -4612,7 +4612,8 @@ the filename)."
                     (error "Can't find headline-or-olp `%s'" headline-or-olp))))
          (filepath (buffer-file-name (marker-buffer pos))) ;If we're given a relative name, find absolute path
          (rfloc (list headline-or-olp filepath nil pos)))
-    (if (and (eq major-mode 'org-agenda-mode) (not (and arg (listp arg)))) ;Don't use org-agenda-refile if we're just jumping
+    (if (and (eq major-mode 'org-agenda-mode)
+             (not arg)) ;Don't use org-agenda-refile if we're just jumping
         (org-agenda-refile nil rfloc)
       (org-refile arg nil rfloc))))
 
