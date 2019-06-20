@@ -2833,6 +2833,8 @@ off.")
 If on a level-1 heading, overview the file instead."
   (interactive "P")
   (if (equal (org-outline-level) 1)
+           (error "Already at the top heading"))
+  (if (equal (org-outline-level) 1)
       (zp/org-overview arg)
     (zp/org-narrow-up-heading arg)))
 
@@ -4625,12 +4627,13 @@ the filename)."
     ;; (zp/org-tree-to-indirect-buffer-folded)
     ))
 
-(defun zp/org-jump-dwim ()
-  (interactive)
-  (let ((indirectp (not (buffer-file-name))))
-    (if indirectp
-        (zp/org-jump-restricted)
-      (zp/org-jump))))
+(defun zp/org-jump-dwim (arg)
+  (interactive "P")
+  (pcase arg
+    ('(4) (if (buffer-narrowed-p)
+              (zp/org-jump-restricted)
+            (zp/org-jump)))
+    (_ (zp/hydra-org-jump/body))))
 
 (defun zp/org-jump-main ()
   "Jump to headline as defined in ‘org-refine-targets’."
@@ -4655,14 +4658,15 @@ the filename)."
 (defun zp/org-jump-restricted ()
   "Jump to headline as defined in ‘org-refine-targets’."
   (interactive)
-  (save-excursion
-    (let ((org-refile-targets '((nil :maxlevel . 9)))
+  (let ((indirectp (not (buffer-file-name)))
+        (org-refile-targets '((nil :maxlevel . 9)))
           (org-refile-use-cache nil)
           (org-refile-target-verify-function 'zp/org-refile-target-verify-restricted)
           (org-refile-use-outline-path t)
           (min (point-min))
           (max (point-max)))
-      (org-refile '(4))
+    (org-refile '(4))
+    (when indirectp
       (zp/org-tree-to-indirect-buffer-folded))))
 
 (defun zp/org-refile-target-verify-restricted ()
@@ -4770,204 +4774,6 @@ passing arguments. This does."
 
 
 
-(defmacro defhydra-org-refile (name &optional return docstring &rest body)
-  (declare (indent defun) (doc-string 3))
-  `(defhydra ,name (:color teal
-                    :hint nil)
-     ,docstring
-     ,@body
-
-     ("C" zp/hydra-org-refile-chain-toggle (concat (if zp/hydra-org-refile-chain
-                                                       "[x]"
-                                                     "[ ]")
-                                                   " chain") :exit nil)
-
-     ("I" zp/hydra-org-refile-indirect-toggle (concat (if zp/hydra-org-refile-indirect
-                                                          "[x]"
-                                                        "[ ]")
-                                                      " indirect") :exit nil)
-
-     ("j" org-refile-goto-last-stored "jump to last")
-     ("w" zp/org-refile "refile")
-     ("W" zp/org-refile-with-paths "refile+paths")
-     ("0" (zp/org-refile-with-paths '(64)) "reset cache" :exit nil)
-     ("q" nil "cancel")
-     ("<backspace>" ,return "back")))
-
-
-
-(defhydra-org-refile zp/hydra-org-refile-calendars zp/hydra-org-refile/body
-  "
-^Calendars^
-^^----------------------------------------------------------------------
-_o_: Life
-_P_: Psychotherapy
-_p_: Politics
-_m_: Media
-_n_: Nicolas
-_s_: Social
-_f_: Finances
-_h_: Hacking
-_u_: University
-
-"
-
-  ("o" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Life" "Calendar")))
-  ("p" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Politics" "Calendar")))
-  ("h" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Hacking" "Calendar")))
-  ("u" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("University" "Calendar")))
-  ("P" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Psychotherapy" "Calendar")))
-  ("m" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Media" "Calendar")))
-  ("n" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Social" "Nicolas" "Calendar")))
-  ("s" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Social" "Calendar")))
-  ("f" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Finances" "Calendar"))))
-
-(defhydra-org-refile zp/hydra-org-refile-music zp/hydra-org-refile-media/body
-  "
-^Music^
-^^----------------------------------------------------------------------
-_._: Root
-_c_: Classical
-_J_: Jazz
-
-"
-  ("." (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Music")))
-  ("c" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Music" "List of classical pieces")))
-  ("J" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Music" "List of jazz pieces"))))
-
-(defhydra-org-refile zp/hydra-org-refile-books zp/hydra-org-refile-media/body
-  "
-^Books^
-^^----------------------------------------------------------------------
-_._: Root
-_l_: List
-_d_: Read
-
-"
-  ("." (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Books")))
-  ("l" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Books" "List")))
-  ("d" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Books" "Read"))))
-
-(defhydra-org-refile zp/hydra-org-refile-film zp/hydra-org-refile-media/body
-  "
-^Film^
-^^----------------------------------------------------------------------
-_._: Root
-_l_: List
-_d_: Watched
-
-"
-  ;; ("o" zp/hydra-org-refile-file-life/body :exit t)
-  ("." (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Film")))
-  ("l" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Film" "List")))
-  ("d" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Film" "Watched"))))
-
-(defhydra-org-refile zp/hydra-org-refile-media zp/hydra-org-refile/body
-  "
-^Media^
-^^----------------------------------------------------------------------
-_._: Root
-_m_: Music
-_n_: News
-_f_: Film
-_b_: Books
-
-"
-
-  ("." (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Media")))
-  ("m" zp/hydra-org-refile-music/body)
-  ("M" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Music")))
-  ("n" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("News")))
-  ("f" zp/hydra-org-refile-film/body)
-  ("F" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Film")))
-  ("b" zp/hydra-org-refile-books/body)
-  ("B" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Books")))
-  ("W" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Film" "Watched"))))
-
-(defhydra-org-refile zp/hydra-org-refile-maintenance zp/hydra-org-refile/body
-  "
-Maintenance
-^^----------------------------------------------------------------------
-_._: Root
-_c_: Cleaning
-_k_: Cooking
-_h_: Health
-_s_: Supplies
-_f_: Finances
-
-"
-  ("." (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Maintenance")))
-  ("c" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Cleaning")))
-  ("k" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Cooking")))
-  ("h" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Health")))
-  ("f" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Finances")))
-  ("s" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Supplies"))))
-
-
-(defhydra zp/hydra-org-refile (:color teal
-                               :hint nil)
-  "
-^Life^              ^Prog^                  ^Pro^ & Act        ^Mental^
-^^^^^^^^----------------------------------------------------------------------
-_i_: Inbox          _h_: Hacking            _u_: University    _A_: Awakening
-_o_: Life           _l_: Linux              _r_: Research      _P_: Psychotherapy
-_O_: Curiosities    _e_: Emacs
-_s_: Social         _E_: Elisp              _p_: Politics
-_n_: Nicolas        _T_: LaTeX
-_S_: Swimming       _g_: Git
-_R_: Running        _b_: Troubleshooting
-_t_: Typography     _B_: Contributing
-^^
-_x_: Maintenance
-_m_: Media
-_c_: Calendars
-
-"
-  ;; ("o" zp/hydra-org-refile-file-life/body :exit t)
-  ("i" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Inbox")))
-  ("o" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Life")))
-  ("O" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Curiosities")))
-  ("s" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Social")))
-  ("n" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Social" "Nicolas")))
-  ("S" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Swimming")))
-  ("R" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Running")))
-  ("m" zp/hydra-org-refile-media/body)
-  ("M" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Media")))
-  ("t" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Typography")))
-  ("x" zp/hydra-org-refile-maintenance/body)
-  ("c" zp/hydra-org-refile-calendars/body)
-  ("X" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Maintenance")))
-  ("A" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Awakening")))
-  ("P" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Psychotherapy")))
-  ("p" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Politics")))
-  ("u" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("University")))
-  ("r" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Research")))
-  ("h" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Hacking")))
-  ("B" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Contributing")))
-  ("b" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Troubleshooting")))
-  ("T" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("LaTeX")))
-  ("e" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Emacs")))
-  ("E" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Elisp")))
-  ("l" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Linux")))
-  ("g" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Git")))
-
-  ("C" zp/hydra-org-refile-chain-toggle (concat (if zp/hydra-org-refile-chain
-                                                    "[x]"
-                                                  "[ ]")
-                                                " chain") :exit nil)
-
-  ("I" zp/hydra-org-refile-indirect-toggle (concat (if zp/hydra-org-refile-indirect
-                                                       "[x]"
-                                                     "[ ]")
-                                                   " indirect") :exit nil)
-
-  ("j" zp/org-jump-main "jump")
-  ("J" org-refile-goto-last-stored "jump to last")
-  ("w" zp/org-refile "refile")
-  ("W" zp/org-refile-with-paths "refile+paths")
-  ("0" (zp/org-refile-with-paths '(64)) "reset cache" :exit nil)
-  ("q" nil "cancel"))
-
 (defmacro zp/create-hydra-org-refile-protocol (protocol name docstring targets heads &optional back)
   (declare (indent defun) (doc-string 2))
   (let* ((protocol-name (symbol-name protocol))
@@ -5025,7 +4831,8 @@ _c_: Calendars
                                  "[ ]")
                                " chain") :exit nil)
                   ("w" zp/org-refile "refile")
-                  ("W" zp/org-refile-with-paths "refile+paths"))))
+                  ("W" zp/org-refile-with-paths "refile+paths")
+                  ("0" (zp/org-refile-with-paths '(64)) "reset cache" :exit nil))))
        ,@(when name `(("<backspace>" ,hydra-back "back")))
        ("q" nil "cancel"))))
 
@@ -5038,45 +4845,161 @@ _c_: Calendars
          ,name ,docstring ,targets ,heads ,back)))
 
 (zp/create-hydra-org-refile nil
-    "^^
-_i_: Inbox
-_o_: Life
-_c_: Calendars
+    "
+^Life^              ^Prog^                  ^Pro & Act^        ^Mental^
+^^^^^^^^----------------------------------------------------------------------
+_i_: Inbox          _h_: Hacking            _u_: University    _A_: Awakening
+_o_: Life           _l_: Linux              _r_: Research      _P_: Psychotherapy
+_O_: Curiosities    _e_: Emacs
+_s_: Social         _E_: Elisp              _p_: Politics
+_n_: Nicolas        _T_: LaTeX
+_S_: Swimming       _g_: Git
+_R_: Running        _b_: Troubleshooting
+_t_: Typography     _B_: Contributing
+^^
+_x_: Maintenance
 _m_: Media
+_c_: Calendars
 "
-  (("i" "/home/zaeph/org/life.org.gpg" "Inbox")
-   ("I" "/home/zaeph/org/life.org.gpg" "Inbox" "Test")
-   ("o" "/home/zaeph/org/life.org.gpg" "Life"))
-  (("m" media)
-   ("c" calendars)))
+  (("i" "~/org/life.org.gpg" "Inbox")
+   ("o" "~/org/life.org.gpg" "Life")
+   ("O" "~/org/life.org.gpg" "Curiosities")
+   ("s" "~/org/life.org.gpg" "Social")
+   ("n" "~/org/life.org.gpg" "Social" "Nicolas")
+   ("S" "~/org/life.org.gpg" "Swimming")
+   ("R" "~/org/life.org.gpg" "Running")
+   ("M" "~/org/life.org.gpg" "Media")
+   ("t" "~/org/life.org.gpg" "Typography")
+   ("X" "~/org/life.org.gpg" "Maintenance")
+   ("A" "~/org/life.org.gpg" "Awakening")
+   ("P" "~/org/life.org.gpg" "Psychotherapy")
+   ("p" "~/org/life.org.gpg" "Politics")
+   ("u" "~/org/life.org.gpg" "University")
+   ("r" "~/org/life.org.gpg" "Research")
+   ("h" "~/org/life.org.gpg" "Hacking")
+   ("B" "~/org/life.org.gpg" "Contributing")
+   ("b" "~/org/life.org.gpg" "Troubleshooting")
+   ("T" "~/org/life.org.gpg" "LaTeX")
+   ("e" "~/org/life.org.gpg" "Emacs")
+   ("E" "~/org/life.org.gpg" "Elisp")
+   ("l" "~/org/life.org.gpg" "Linux")
+   ("g" "~/org/life.org.gpg" "Git"))
+  (("c" calendars)
+   ("x" maintenance)
+   ("m" media)))
 
-(zp/create-hydra-org-refile media
-    "^^ (Media)
-_i_: Inbox
+(zp/create-hydra-org-refile calendars
+    "
+^Calendars^
+^^----------------------------------------------------------------------
 _o_: Life
-_c_: Calendars
+_P_: Psychotherapy
+_p_: Politics
 _m_: Media
+_n_: Nicolas
+_s_: Social
+_f_: Finances
+_h_: Hacking
+_u_: University
 "
-  (("i" "/home/zaeph/org/life.org.gpg" "Inbox")
-   ("o" "/home/zaeph/org/life.org.gpg" "Life"))
-  (("m" media)
-   ("c" calendars))
+  (("o" "/home/zaeph/org/life.org.gpg" "Life" "Calendar")
+   ("p" "/home/zaeph/org/life.org.gpg" "Politics" "Calendar")
+   ("h" "/home/zaeph/org/life.org.gpg" "Hacking" "Calendar")
+   ("u" "/home/zaeph/org/life.org.gpg" "University" "Calendar")
+   ("P" "/home/zaeph/org/life.org.gpg" "Psychotherapy" "Calendar")
+   ("m" "/home/zaeph/org/life.org.gpg" "Media" "Calendar")
+   ("n" "/home/zaeph/org/life.org.gpg" "Social" "Nicolas")
+   ("s" "/home/zaeph/org/life.org.gpg" "Social" "Calendar")
+   ("f" "/home/zaeph/org/life.org.gpg" "Finances" "Calendar"))
   nil)
 
-(macroexpand '(zp/create-hydra-org-refile "
-^^
-_i_: Inbox
-_o_: Life
-_m_: Media
-_c_: Calendars"
-                             (("i" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Inbox")))
-                              ("o" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Life"))))
-                             (("m" zp/hydra-org-refile-media/body)
-                              ("c" zp/hydra-org-refile-calendars/body))))
+(zp/create-hydra-org-refile maintenance
+    "
+Maintenance
+^^----------------------------------------------------------------------
+_._: Root
+_c_: Cleaning
+_k_: Cooking
+_h_: Health
+_s_: Supplies
+_f_: Finances
+"
+  (("." "/home/zaeph/org/life.org.gpg" "Maintenance")
+   ("c" "/home/zaeph/org/life.org.gpg" "Cleaning")
+   ("k" "/home/zaeph/org/life.org.gpg" "Cooking")
+   ("h" "/home/zaeph/org/life.org.gpg" "Health")
+   ("f" "/home/zaeph/org/life.org.gpg" "Finances")
+   ("s" "/home/zaeph/org/life.org.gpg" "Supplies"))
+  nil
+  nil)
 
-(zp/hydra-org-refile-new/body)
+(zp/create-hydra-org-refile media
+    "
+^Media^
+^^----------------------------------------------------------------------
+_._: Root
+_m_: Music
+_n_: News
+_f_: Film
+_b_: Books
+"
+  (("." "/home/zaeph/org/life.org.gpg" "Media")
+   ("M" "/home/zaeph/org/life.org.gpg" "Music")
+   ("n" "/home/zaeph/org/life.org.gpg" "News")
+   ("F" "/home/zaeph/org/life.org.gpg" "Film")
+   ("B" "/home/zaeph/org/life.org.gpg" "Books")
+   ("W" "/home/zaeph/org/life.org.gpg" "Film"))
+  (("m" music)
+   ("b" books)
+   ("f" film))
+  nil)
+
+(zp/create-hydra-org-refile film
+    "
+^Film^
+^^----------------------------------------------------------------------
+_._: Root
+_l_: List
+_d_: Read
+"
+  (("." "/home/zaeph/org/life.org.gpg" "Film")
+   ("l" "/home/zaeph/org/life.org.gpg" "Film" "List")
+   ("d" "/home/zaeph/org/life.org.gpg" "Film" "Watchedn"))
+  nil
+  media)
+
+(zp/create-hydra-org-refile books
+    "
+^Books^
+^^----------------------------------------------------------------------
+_._: Root
+_l_: List
+_d_: Read
+"
+  (("." "/home/zaeph/org/life.org.gpg" "Books")
+   ("l" "/home/zaeph/org/life.org.gpg" "Books" "List")
+   ("d" "/home/zaeph/org/life.org.gpg" "Books" "Watched"))
+  nil
+  media)
+
+(zp/create-hydra-org-refile music
+    "
+^Music^
+^^----------------------------------------------------------------------
+_._: Root
+_c_: Classical
+_J_: Jazz
+"
+  (("." "/home/zaeph/org/life.org.gpg" "Music")
+   ("c" "/home/zaeph/org/life.org.gpg" "Music" "List of classical pieces")
+   ("J" "/home/zaeph/org/life.org.gpg" "Music" "List of jazz pieces"))
+  nil
+  media)
+
+
 
 (global-set-key (kbd "C-c C-w") 'zp/hydra-org-refile/body)
+(global-set-key (kbd "C-c C-j") 'zp/hydra-org-jump/body)
 (define-key org-capture-mode-map (kbd "C-c C-w") 'zp/hydra-org-refile/body)
 (define-key org-mode-map (kbd "C-c C-w") 'zp/hydra-org-refile/body)
 (define-key org-agenda-mode-map (kbd "C-c C-w") 'zp/hydra-org-refile/body)
