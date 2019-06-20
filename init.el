@@ -4953,7 +4953,33 @@ _c_: Calendars
   ("0" (zp/org-refile-with-paths '(64)) "reset cache" :exit nil)
   ("q" nil "cancel"))
 
+(defmacro zp/create-hydra-org-refile (docstring targets other)
+  (let ((docstring-refile (concat "\nJUMP\n" docstring)))
+    ;; `(message ,docstring-refile)
+    `(defhydra zp/hydra-org-refile-new (:color teal
+                                        :hint nil)
+       ,docstring-refile
+       ,@targets
+       ,@other)))
 
+;; (macroexpand '(zp/create-hydra-org-refile "_i_ Inbox _o_ Life _m_ Media _c_ Calendars"
+;;                (("i" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Inbox")))
+;;                 ("o" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Life"))))
+;;                (("m" zp/hydra-org-refile-media/body)
+;;                 ("c" zp/hydra-org-refile-calendars/body))))
+
+(zp/create-hydra-org-refile "
+^^
+_i_: Inbox
+_o_: Life
+_m_: Media
+_c_: Calendars"
+                            (("i" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Inbox")))
+                             ("o" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Life"))))
+                            (("m" zp/hydra-org-refile-media/body)
+                             ("c" zp/hydra-org-refile-calendars/body)))
+
+(zp/hydra-org-refile-new/body)
 
 (global-set-key (kbd "C-c C-w") 'zp/hydra-org-refile/body)
 (define-key org-capture-mode-map (kbd "C-c C-w") 'zp/hydra-org-refile/body)
