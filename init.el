@@ -4591,25 +4591,25 @@ TITLE and URL are those of the webpage."
 
 
 
-(defun zp/org-refile-internal (file headline-or-path &optional arg)
+(defun zp/org-refile-internal (file headline-or-olp &optional arg)
   "Refile to a specific location.
 
 With a 'C-u' ARG argument, we jump to that location (see
 `org-refile').
 Use `org-agenda-refile' in `org-agenda' mode.
 
-If HEADLINE-OR-PATH is a string, interprets it as a heading.  If
-HEADLINE-OR-PATH is a list, interprets it as an olp path (without
+If HEADLINE-OR-OLP is a string, interprets it as a heading.  If
+HEADLINE-OR-OLP is a list, interprets it as an olp path (without
 the filename)."
   (let* ((pos (with-current-buffer
                   (or (get-buffer file) ;Is the file open in a buffer already?
                       (find-file-noselect file)) ;Otherwise, try to find the file by name (Note, default-directory matters here if it isn't absolute)
-                (or (if (not (listp headline-or-path))
-                        (org-find-exact-headline-in-buffer headline-or-path)
-                      (org-find-olp `(,(buffer-file-name) ,@headline-or-path)))
-                    (error "Can't find headline-or-path `%s'" headline-or-path))))
+                (or (if (not (listp headline-or-olp))
+                        (org-find-exact-headline-in-buffer headline-or-olp)
+                      (org-find-olp `(,(buffer-file-name) ,@headline-or-olp)))
+                    (error "Can't find headline-or-olp `%s'" headline-or-olp))))
          (filepath (buffer-file-name (marker-buffer pos))) ;If we're given a relative name, find absolute path
-         (rfloc (list headline-or-path filepath nil pos)))
+         (rfloc (list headline-or-olp filepath nil pos)))
     (if (and (eq major-mode 'org-agenda-mode) (not (and arg (listp arg)))) ;Don't use org-agenda-refile if we're just jumping
         (org-agenda-refile nil rfloc)
       (org-refile arg nil rfloc))))
@@ -4692,6 +4692,17 @@ the filename)."
     (org-overview)
     (org-cycle)))
 
+(defun zp/org-refile-to (file headline-or-olp &optional jump)
+  (let ((is-capturing (and (boundp 'org-capture-mode) org-capture-mode)))
+    (if is-capturing
+        (zp/capture-refile-internal)
+      (zp/org-refile-internal file headline-or-olp (if jump jump nil)))))
+
+(defun zp/org-jump-to (file headline-or-olp &optional jump)
+  (zp/org-refile-to file headline-or-olp t))
+
+(zp/org-refile-to "~/org/life.org.gpg" '("Inbox") t)
+
 (defun zp/org-refile-to (file headline-or-path &optional arg)
   "Refile to HEADLINE in FILE. Clean up org-capture if it's activated.
 With a ‘C-u’ ARG, just jump to the headline."
@@ -4700,19 +4711,17 @@ With a ‘C-u’ ARG, just jump to the headline."
         (arg (or arg
                  current-prefix-arg)))
     (cond
-     ((and arg (listp arg))             ;Are we jumping?
-      (let ((org-indirect-buffer-display 'current-window)
-            (buffer)
-            (indirect zp/hydra-org-refile-indirect))
-        (if (not indirect)
-            (zp/org-refile-internal file headline-or-path arg)
-          (zp/org-refile-internal file headline-or-path arg)
-          (zp/org-tree-to-indirect-buffer-folded))))
-     ;; Are we in org-capture-mode?
-     (is-capturing              ;Minor mode variable that's defined when capturing
-      (zp/org-capture-refile-internal file headline-or-path arg))
-     (t
-      (zp/org-refile-internal file headline-or-path arg)))
+      ((and arg (listp arg))                      ;Are we jumping?
+       (let ((org-indirect-buffer-display 'current-window)
+             (buffer)
+             (indirect zp/hydra-org-refile-indirect))
+         (zp/org-refile-internal file headline-or-path arg)
+         (when indirect (zp/org-tree-to-indirect-buffer-folded))))
+      ;; Are we in org-capture-mode?
+      (is-capturing   ;Minor mode variable that's defined when capturing
+       (zp/org-capture-refile-internal file headline-or-path arg))
+      (t
+       (zp/org-refile-internal file headline-or-path arg)))
     (cond ((or arg is-capturing)
            (setq hydra-deactivate t))
           (zp/hydra-org-refile-chain
@@ -4734,7 +4743,7 @@ With a ‘C-u’ ARG, just jump to the headline."
           (zp/hydra-org-refile-chain
            (zp/hydra-org-refile/body)))))
 
-(defun zp/org-capture-refile-internal (file headline-or-path &optional arg)
+(defun zp/org-capture-refile-internal (file headline-or-olp &optional arg)
   "Copied from ‘org-capture-refile’ since it doesn't allow
 passing arguments. This does."
   (unless (eq (org-capture-get :type 'local) 'entry)
@@ -4750,7 +4759,7 @@ passing arguments. This does."
       (with-current-buffer (or base (current-buffer))
         (org-with-wide-buffer
          (goto-char pos)
-         (zp/org-refile-internal file headline-or-path arg))))
+         (zp/org-refile-internal file headline-or-olp arg))))
     (when kill-buffer (kill-buffer base))))
 
 
@@ -4953,31 +4962,63 @@ _c_: Calendars
   ("0" (zp/org-refile-with-paths '(64)) "reset cache" :exit nil)
   ("q" nil "cancel"))
 
-(defmacro zp/create-hydra-org-refile (docstring targets other)
-  (let ((docstring-refile (concat "\nJUMP\n" docstring)))
+(defmacro zp/create-hydra-org-refile-protocol (protocol docstring targets other)
+  (declare (indent defun) (doc-string 2))
+  (let ((docstring-refile (concat "\n["
+                                  (upcase protocol)
+                                  "]\n" docstring "\n"))
+        (command (pcase protocol
+                   ("refile" 'zp/org-refile-to)
+                   ("jump" 'zp/org-jump-to))))
     ;; `(message ,docstring-refile)
-    `(defhydra zp/hydra-org-refile-new (:color teal
+    `(defhydra ,(intern (concat "zp/hydra-org-"
+                                protocol
+                                "-new")) (:color teal
                                         :hint nil)
        ,docstring-refile
-       ,@targets
-       ,@other)))
+       ;; ,@targets
+       ,@(mapcar (lambda (target)
+                   (let* ((key (car target))
+                          (file+olp (cdr target))
+                          (file (car file+olp))
+                          (olp (cdr file+olp)))
+                     `(,key (,command ,@file ',olp))))
+                 targets)
+       ,@other
+       ("j" zp/org-jump-main "jump")
+       ("w" zp/org-refile "refile")
+       ("W" zp/org-refile-with-paths "refile+paths"))))
 
-;; (macroexpand '(zp/create-hydra-org-refile "_i_ Inbox _o_ Life _m_ Media _c_ Calendars"
-;;                (("i" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Inbox")))
-;;                 ("o" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Life"))))
-;;                (("m" zp/hydra-org-refile-media/body)
-;;                 ("c" zp/hydra-org-refile-calendars/body))))
+(defmacro zp/create-hydra-org-refile (docstring targets other)
+  (declare (doc-string 1))
+  `(progn
+     (zp/create-hydra-org-refile-protocol "refile"
+         ,docstring ,targets ,other)
+     (zp/create-hydra-org-refile-protocol "jump"
+         ,docstring ,targets ,other)))
 
-(zp/create-hydra-org-refile "
+(zp/create-hydra-org-refile
+    "^^
+_i_: Inbox
+_o_: Life
+_c_: Calendars
+_m_: Media
+"
+    (("i" ("/home/zaeph/org/life.org.gpg" '("Inbox")))
+     ("o" ("/home/zaeph/org/life.org.gpg" '("Life"))))
+  (("m" zp/hydra-org-refile-media/body)
+   ("c" zp/hydra-org-refile-calendars/body)) )
+
+(macroexpand '(zp/create-hydra-org-refile "
 ^^
 _i_: Inbox
 _o_: Life
 _m_: Media
 _c_: Calendars"
-                            (("i" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Inbox")))
-                             ("o" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Life"))))
-                            (("m" zp/hydra-org-refile-media/body)
-                             ("c" zp/hydra-org-refile-calendars/body)))
+                             (("i" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Inbox")))
+                              ("o" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Life"))))
+                             (("m" zp/hydra-org-refile-media/body)
+                              ("c" zp/hydra-org-refile-calendars/body))))
 
 (zp/hydra-org-refile-new/body)
 
