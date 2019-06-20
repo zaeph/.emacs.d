@@ -4698,8 +4698,11 @@ the filename)."
         (zp/capture-refile-internal)
       (zp/org-refile-internal file headline-or-olp (if jump jump nil)))))
 
-(defun zp/org-jump-to (file headline-or-olp &optional jump)
-  (zp/org-refile-to file headline-or-olp t))
+(defun zp/org-jump-to (file headline-or-olp)
+  (let ((indirect zp/hydra-org-refile-indirect))
+    (zp/org-refile-to file headline-or-olp t)
+    (when indirect
+      (zp/org-tree-to-indirect-buffer-folded))))
 
 (zp/org-refile-to "~/org/life.org.gpg" '("Inbox") t)
 
@@ -4962,7 +4965,7 @@ _c_: Calendars
   ("0" (zp/org-refile-with-paths '(64)) "reset cache" :exit nil)
   ("q" nil "cancel"))
 
-(defmacro zp/create-hydra-org-refile-protocol (protocol docstring targets other)
+(defmacro zp/create-hydra-org-refile-protocol (protocol docstring targets heads)
   (declare (indent defun) (doc-string 2))
   (let ((docstring-refile (concat "\n["
                                   (upcase protocol)
@@ -4970,32 +4973,46 @@ _c_: Calendars
         (command (pcase protocol
                    ("refile" 'zp/org-refile-to)
                    ("jump" 'zp/org-jump-to))))
-    ;; `(message ,docstring-refile)
     `(defhydra ,(intern (concat "zp/hydra-org-"
                                 protocol
                                 "-new")) (:color teal
-                                        :hint nil)
+                                          :hint nil)
        ,docstring-refile
-       ;; ,@targets
        ,@(mapcar (lambda (target)
                    (let* ((key (car target))
                           (file+olp (cdr target))
                           (file (car file+olp))
                           (olp (cdr file+olp)))
-                     `(,key (,command ,@file ',olp))))
+                     `(,key (,command ,file ',olp))))
                  targets)
-       ,@other
+       ;; ,@other
+       ,@(mapcar (lambda (head)
+                   (let* ((key (car head))
+                          (name (symbol-name (cadr head)))
+                          (hydra (intern (concat "zp/hydra-org-refile-" name "/body")))
+                          )
+                     `(,key ,hydra)))
+                 heads)
        ("j" zp/org-jump-main "jump")
        ("w" zp/org-refile "refile")
-       ("W" zp/org-refile-with-paths "refile+paths"))))
+       ("W" zp/org-refile-with-paths "refile+paths")
+       ("C" zp/hydra-org-refile-chain-toggle (concat (if zp/hydra-org-refile-chain
+                                                         "[x]"
+                                                       "[ ]")
+                                                     " chain") :exit nil)
 
-(defmacro zp/create-hydra-org-refile (docstring targets other)
-  (declare (doc-string 1))
+       ("I" zp/hydra-org-refile-indirect-toggle (concat (if zp/hydra-org-refile-indirect
+                                                            "[x]"
+                                                          "[ ]")
+                                                        " indirect") :exit nil))))
+
+(defmacro zp/create-hydra-org-refile (docstring targets heads)
+  (declare (indent nil) (doc-string 1))
   `(progn
      (zp/create-hydra-org-refile-protocol "refile"
-         ,docstring ,targets ,other)
+         ,docstring ,targets ,heads)
      (zp/create-hydra-org-refile-protocol "jump"
-         ,docstring ,targets ,other)))
+         ,docstring ,targets ,heads)))
 
 (zp/create-hydra-org-refile
     "^^
@@ -5004,10 +5021,10 @@ _o_: Life
 _c_: Calendars
 _m_: Media
 "
-    (("i" ("/home/zaeph/org/life.org.gpg" '("Inbox")))
-     ("o" ("/home/zaeph/org/life.org.gpg" '("Life"))))
-  (("m" zp/hydra-org-refile-media/body)
-   ("c" zp/hydra-org-refile-calendars/body)) )
+    (("i" "/home/zaeph/org/life.org.gpg" "Inbox")
+     ("o" "/home/zaeph/org/life.org.gpg" "Life"))
+    (("m" media)
+     ("c" calendars)))
 
 (macroexpand '(zp/create-hydra-org-refile "
 ^^
