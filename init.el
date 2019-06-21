@@ -4617,16 +4617,49 @@ the filename)."
         (org-agenda-refile nil rfloc)
       (org-refile arg nil rfloc))))
 
+(setq org-refile-target-verify-function 'zp/org-refile-target-verify-exclude-separators)
+(setq org-refile-targets '((nil :maxlevel .9)))
+
 (defun zp/org-refile (&optional jump)
   (interactive "P")
-  (let ((org-refile-targets '((nil :maxlevel . 9)))
+  (let (;; (org-refile-targets '((nil :maxlevel . 9)))
+        (capturing (and (boundp 'org-capture-mode) org-capture-mode))
+        (in-agenda (derived-mode-p 'org-agenda-mode))
         (org-refile-use-outline-path t)
-        (org-refile-target-verify-function 'zp/org-refile-target-verify-exclude-separators))
-    (org-refile jump)))
+        ;; (org-refile-target-verify-function 'zp/org-refile-target-verify-exclude-separators)
+        target)
+    (when (org-before-first-heading-p)
+      (outline-next-heading))
+    (cond ((and (not jump)
+                capturing)
+           (org-capture-refile))
+          ((and (not jump)
+                in-agenda)
+           (org-agenda-refile))
+          (t
+           (org-refile jump)))
+    (setq target (point))))
+
+;; (defun zp/org-refile (&optional arg)
+;;   (interactive "P")
+;;   (let ((is-capturing (and (boundp 'org-capture-mode) org-capture-mode))
+;;         (is-agenda (derived-mode-p 'org-agenda-mode)))
+;;     (cond
+;;       (is-capturing
+;;        (org-capture-refile))
+;;       (is-agenda
+;;        (org-agenda-refile))
+;;      (t
+;;       (org-refile arg)))
+;;     (cond ((or arg is-capturing)
+;;            (setq hydra-deactivate t))
+;;           (zp/hydra-org-refile-chain
+;;            (zp/hydra-org-refile/body)))))
+
 
 (defun zp/org-jump ()
   (interactive)
-  (zp/org-refile t))
+  (goto-char (save-excursion (zp/org-refile t))))
 
 (defun zp/org-refile-dwim (arg)
   (interactive "P")
@@ -4649,11 +4682,8 @@ the filename)."
 
 If JUMP is non-nil, jump instead."
   (interactive "P")
-  (let ((org-refile-targets '(("~/org/life.org.gpg" :maxlevel . 1)))
-        (org-refile-target-verify-function 'zp/org-refile-target-verify-exclude-separators)
-        ;; (org-refile-use-outline-path t)
-        )
-    (org-refile jump)))
+  (let ((org-refile-targets '(("~/org/life.org.gpg" :maxlevel . 1))))
+    (zp/org-refile jump)))
 
 (defun zp/org-jump-main ()
   "Jump to headline in main org-agenda file (life.org.gpg)."
@@ -4689,22 +4719,26 @@ If JUMP is non-nil, jump instead."
 If JUMP is non-nil, jump instead."
   (interactive "P")
   (let ((org-refile-targets '((nil :maxlevel . 9)))
-        (org-refile-use-outline-path t)
+        ;; (org-refile-use-outline-path t)
         (org-refile-target-verify-function 'zp/org-refile-target-verify-restricted)
+        target
         ;; Restriction info for verify function
         (min (point-min))
         (max (point-max)))
-    (org-refile jump)))
+    (zp/org-refile jump)))
 
 (defun zp/org-jump-restricted ()
-  "Jump to headline in main org-agenda file (life.org.gpg)."
+  "Jump to headline in current org-agenda file (life.org.gpg)."
   (interactive)
-  (let ((indirectp (not (buffer-file-name))))
-    (if indirectp
-        (save-excursion
-          (zp/org-refile-restricted t)
-          (zp/org-tree-to-indirect-buffer-folded))
-      (zp/org-refile-restricted t))))
+  (let ((indirect (not (buffer-file-name)))
+        target
+        (buffer (current-buffer)))
+    (save-excursion
+      (setq target (zp/org-refile-restricted t)))
+    (when indirect (switch-to-buffer buffer))
+    (goto-char target)
+    (org-reveal)
+    (org-beginning-of-line)))
 
 (defun zp/org-tree-to-indirect-buffer-folded (arg)
   "Clone tree to indirect buffer in a folded state."
@@ -4736,22 +4770,6 @@ If JUMP is non-nil, jump instead."
     (zp/org-refile-to file headline-or-olp t)
     (when indirect
       (zp/org-tree-to-indirect-buffer-folded))))
-
-(defun zp/org-refile (&optional arg)
-  (interactive "P")
-  (let ((is-capturing (and (boundp 'org-capture-mode) org-capture-mode))
-        (is-agenda (derived-mode-p 'org-agenda-mode)))
-    (cond
-      (is-capturing
-       (org-capture-refile))
-      (is-agenda
-       (org-agenda-refile))
-     (t
-      (org-refile arg)))
-    (cond ((or arg is-capturing)
-           (setq hydra-deactivate t))
-          (zp/hydra-org-refile-chain
-           (zp/hydra-org-refile/body)))))
 
 (defun zp/org-capture-refile-internal (file headline-or-olp &optional arg)
   "Copied from ‘org-capture-refile’ since it doesn't allow
@@ -5470,8 +5488,9 @@ In org-agenda, visit the subtree first."
                         commands))))))
 
 (defun zp/movement--play-sound-turn-page (orig-fun &rest args)
-  (apply orig-fun args)
-  (zp/play-sound-turn-page))
+  (let ((return (apply orig-fun args)))
+    (zp/play-sound-turn-page)
+    return))
 
 (zp/advise-commands
  add
