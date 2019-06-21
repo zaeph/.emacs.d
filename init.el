@@ -3207,8 +3207,8 @@ indirect-buffers."
   "Toggle zp/hydra-org-priority-chain."
   (interactive)
   (if zp/hydra-org-priority-chain
-      (setq-local zp/hydra-org-priority-chain nil)
-    (setq-local zp/hydra-org-priority-chain t)))
+      (setq zp/hydra-org-priority-chain nil)
+    (setq zp/hydra-org-priority-chain t)))
 
 (defun zp/hydra-org-priority-set (&optional action show)
   "Change the priority of an item, and possibly chain the commands."
@@ -4554,18 +4554,28 @@ TITLE and URL are those of the webpage."
   "Toggle zp/hydra-org-refile-chain."
   (interactive)
   (if zp/hydra-org-refile-chain
-      (setq-local zp/hydra-org-refile-chain nil)
-    (setq-local zp/hydra-org-refile-chain t)))
+      (setq zp/hydra-org-refile-chain nil)
+    (setq zp/hydra-org-refile-chain t)))
 
-(defvar zp/hydra-org-refile-indirect t
+(defvar zp/hydra-org-jump-indirect t
   "When non-nil, jumping to a refile point is done in an indirect buffer.")
 
 (defun zp/hydra-org-jump-indirect-toggle ()
-  "Toggle zp/hydra-org-refile-chain."
+  "Toggle zp/hydra-org-jump-indirect."
   (interactive)
-  (if zp/hydra-org-refile-indirect
-      (setq-local zp/hydra-org-refile-indirect nil)
-    (setq-local zp/hydra-org-refile-indirect t)))
+  (if zp/hydra-org-jump-indirect
+      (setq zp/hydra-org-jump-indirect nil)
+    (setq zp/hydra-org-jump-indirect t)))
+
+(defvar zp/hydra-org-jump-dedicated-buffer nil
+  "When non-nil, jumping to a refile point is done in dedicated buffer.")
+
+(defun zp/hydra-org-jump-dedicated-buffer-toggle ()
+  "Toggle zp/hydra-org-dedicated-buffer."
+  (interactive)
+  (if zp/hydra-org-jump-dedicated-buffer
+      (setq zp/hydra-org-jump-dedicated-buffer nil)
+    (setq zp/hydra-org-jump-dedicated-buffer t)))
 
 (defun zp/org-refile-with-paths (&optional arg default-buffer rfloc msg)
   (interactive "P")
@@ -4691,7 +4701,8 @@ If JUMP is non-nil, jump instead."
   (with-current-buffer (find-file-noselect "~/org/life.org.gpg")
     (save-excursion
       (zp/org-refile-main t)
-      (zp/org-tree-to-indirect-buffer-folded))))
+      (zp/org-tree-to-indirect-buffer-folded
+       (if zp/hydra-org-jump-dedicated-buffer t nil)))))
 
 (defun zp/org-refile-target-verify-exclude-separators ()
   (let ((regex "^\\* -+.*-+$"))
@@ -4740,11 +4751,15 @@ If JUMP is non-nil, jump instead."
     (org-reveal)
     (org-beginning-of-line)))
 
-(defun zp/org-tree-to-indirect-buffer-folded (arg)
-  "Clone tree to indirect buffer in a folded state."
+(defun zp/org-tree-to-indirect-buffer-folded (&optional dedicated)
+  "Clone tree to indirect buffer in a folded state.
+
+When called with a C-u argument or when DEDICATED is non-nil,
+create a dedicated frame."
+  (interactive "P")
   (let ((org-indirect-buffer-display 'current-window)
         (buffer))
-    (org-tree-to-indirect-buffer)
+    (org-tree-to-indirect-buffer dedicated)
     (setq buffer (current-buffer))
     (mode-line-other-buffer)
     (bury-buffer)
@@ -4766,10 +4781,13 @@ If JUMP is non-nil, jump instead."
            (zp/hydra-org-refile/body)))))
 
 (defun zp/org-jump-to (file headline-or-olp)
-  (let ((indirect zp/hydra-org-refile-indirect))
+  (let ((indirect zp/hydra-org-jump-indirect))
     (zp/org-refile-to file headline-or-olp t)
     (when indirect
-      (zp/org-tree-to-indirect-buffer-folded))))
+      (zp/org-tree-to-indirect-buffer-folded
+       ;; Create a dedicated buffer?
+       (when zp/hydra-org-jump-dedicated-buffer
+         (not (zp/hydra-org-jump-dedicated-buffer-toggle)))))))
 
 (defun zp/org-capture-refile-internal (file headline-or-olp &optional arg)
   "Copied from ‘org-capture-refile’ since it doesn't allow
@@ -4812,8 +4830,16 @@ passing arguments. This does."
                     ('jump 'zp/org-jump-to)))
          (jumpingp (if (eq protocol 'jump) t)))
     `(defhydra ,hydra
-         (:color teal
-          :hint nil)
+         (
+          ;; :color teal
+          :foreign-keys warn
+          :exit (not zp/hydra-org-refile-chain)
+          :hint nil
+          :post (progn
+                  (setq zp/hydra-org-jump-dedicated-buffer nil)
+                  (setq zp/hydra-org-refile-chain nil)
+                  ;; (setq zp/hydra-org-jump-indirect nil)
+                  ))
        ,docstring-refile
        ;; Create targets
        ,@(mapcar (lambda (target)
@@ -4837,10 +4863,15 @@ passing arguments. This does."
        ;; Conditional actions
        ,@(cond (jumpingp
                 `(("C" zp/hydra-org-jump-indirect-toggle
-                       (concat (if zp/hydra-org-refile-indirect
+                       (concat (if zp/hydra-org-jump-indirect
                                    "[x]"
                                  "[ ]")
                                " indirect") :exit nil)
+                  ("J" zp/hydra-org-jump-dedicated-buffer-toggle
+                       (concat (if zp/hydra-org-jump-dedicated-buffer
+                                   "[x]"
+                                 "[ ]")
+                               " dedicated") :exit nil)
                   ("j" zp/org-jump-main "jump")))
                (t
                 `(("C" zp/hydra-org-refile-chain-toggle
