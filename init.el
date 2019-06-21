@@ -4776,9 +4776,7 @@ create a dedicated frame."
       (zp/org-refile-internal file headline-or-olp (if jump jump nil)))
     (cond (is-capturing
            ;; If capturing, deactivate hydra
-           (setq hydra-deactivate t))
-          (zp/hydra-org-refile-chain
-           (zp/hydra-org-refile/body)))))
+           (setq hydra-deactivate t)))))
 
 (defun zp/org-jump-to (file headline-or-olp)
   (let ((indirect zp/hydra-org-jump-indirect))
@@ -4833,13 +4831,8 @@ passing arguments. This does."
          (
           ;; :color teal
           :foreign-keys warn
-          :exit (not zp/hydra-org-refile-chain)
-          :hint nil
-          :post (progn
-                  (setq zp/hydra-org-jump-dedicated-buffer nil)
-                  (setq zp/hydra-org-refile-chain nil)
-                  ;; (setq zp/hydra-org-jump-indirect nil)
-                  ))
+          :exit t
+          :hint nil)
        ,docstring-refile
        ;; Create targets
        ,@(mapcar (lambda (target)
@@ -4858,7 +4851,7 @@ passing arguments. This does."
                                                       "-"
                                                       head-name
                                                       "/body"))))
-                     `(,key ,head-hydra)))
+                     `(,key ,head-hydra :exit t)))
                  heads)
        ;; Conditional actions
        ,@(cond (jumpingp
