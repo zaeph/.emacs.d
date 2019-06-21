@@ -4636,18 +4636,26 @@ the filename)."
             (zp/org-jump)))
     (_ (zp/hydra-org-jump/body))))
 
+(defun zp/org-refile-main (&optional jump)
+  "Refile to headline in main org-agenda file (life.org.gpg).
+
+If JUMP is non-nil, jump instead."
+  (interactive "P")
+  (let ((org-refile-targets '(("~/org/life.org.gpg" :maxlevel . 1)))
+        (org-refile-use-cache nil)
+        (org-refile-target-verify-function 'zp/org-refile-target-verify-exclude-separators)
+        ;; (org-refile-use-outline-path t)
+        )
+    (org-refile jump)
+    (when jump
+      (zp/org-tree-to-indirect-buffer-folded))))
+
 (defun zp/org-jump-main ()
-  "Jump to headline as defined in ‘org-refine-targets’."
+  "Jump to headline in main org-agenda file (life.org.gpg)."
   (interactive)
   (with-current-buffer (find-file-noselect "~/org/life.org.gpg")
     (save-excursion
-      (let ((org-refile-targets '(("~/org/life.org.gpg" :maxlevel . 1)))
-            (org-refile-use-cache nil)
-            (org-refile-target-verify-function 'zp/org-refile-target-verify-exclude-separators)
-            ;; (org-refile-use-outline-path t)
-            )
-        (org-refile '(4))
-        (zp/org-tree-to-indirect-buffer-folded)))))
+    (zp/org-refile-main t))))
 
 (defun zp/org-refile-target-verify-exclude-separators ()
   (let ((regex "^\\* -+.*-+$"))
@@ -4807,7 +4815,7 @@ passing arguments. This does."
                                    "[x]"
                                  "[ ]")
                                " chain") :exit nil)
-                  ("w" zp/org-refile "refile")
+                  ("w" zp/org-refile-main "refile")
                   ("W" zp/org-refile-with-paths "refile+paths")
                   ("0" (zp/org-refile-with-paths '(64)) "reset cache" :exit nil))))
        ,@(when name `(("<backspace>" ,hydra-back "back")))
