@@ -4541,7 +4541,7 @@ TITLE and URL are those of the webpage."
 
 (setq org-refile-targets '((nil :maxlevel . 9)
                            (org-agenda-files :maxlevel . 1))
-      org-refile-use-cache t)
+      org-refile-use-cache nil)
 
 
 (setq org-outline-path-complete-in-steps nil
@@ -4560,7 +4560,7 @@ TITLE and URL are those of the webpage."
 (defvar zp/hydra-org-refile-indirect t
   "When non-nil, jumping to a refile point is done in an indirect buffer.")
 
-(defun zp/hydra-org-refile-indirect-toggle ()
+(defun zp/hydra-org-jump-indirect-toggle ()
   "Toggle zp/hydra-org-refile-chain."
   (interactive)
   (if zp/hydra-org-refile-indirect
@@ -4617,16 +4617,24 @@ the filename)."
         (org-agenda-refile nil rfloc)
       (org-refile arg nil rfloc))))
 
+(defun zp/org-refile (&optional jump)
+  (interactive "P")
+  (let ((org-refile-targets '((nil :maxlevel . 9)))
+        (org-refile-use-outline-path t)
+        (org-refile-target-verify-function 'zp/org-refile-target-verify-exclude-separators))
+    (org-refile jump)))
+
 (defun zp/org-jump ()
   (interactive)
-  (let ((org-refile-targets '((nil :maxlevel . 9)))
-        (org-refile-use-cache nil)
-        (org-refile-target-verify-function 'zp/org-refile-target-verify-exclude-separators)
-        (org-refile-use-outline-path t)
-        )
-    (org-refile '(4))
-    ;; (zp/org-tree-to-indirect-buffer-folded)
-    ))
+  (zp/org-refile t))
+
+(defun zp/org-refile-dwim (arg)
+  (interactive "P")
+  (pcase arg
+    ('(4) (if (buffer-narrowed-p)
+              (zp/org-refile-restricted)
+            (zp/org-refile)))
+    (_ (zp/hydra-org-refile/body))))
 
 (defun zp/org-jump-dwim (arg)
   (interactive "P")
@@ -4642,20 +4650,18 @@ the filename)."
 If JUMP is non-nil, jump instead."
   (interactive "P")
   (let ((org-refile-targets '(("~/org/life.org.gpg" :maxlevel . 1)))
-        (org-refile-use-cache nil)
         (org-refile-target-verify-function 'zp/org-refile-target-verify-exclude-separators)
         ;; (org-refile-use-outline-path t)
         )
-    (org-refile jump)
-    (when jump
-      (zp/org-tree-to-indirect-buffer-folded))))
+    (org-refile jump)))
 
 (defun zp/org-jump-main ()
   "Jump to headline in main org-agenda file (life.org.gpg)."
   (interactive)
   (with-current-buffer (find-file-noselect "~/org/life.org.gpg")
     (save-excursion
-    (zp/org-refile-main t))))
+      (zp/org-refile-main t)
+      (zp/org-tree-to-indirect-buffer-folded))))
 
 (defun zp/org-refile-target-verify-exclude-separators ()
   (let ((regex "^\\* -+.*-+$"))
@@ -4663,20 +4669,6 @@ If JUMP is non-nil, jump instead."
     (if (re-search-forward regex (line-end-position) t)
         nil
       t)))
-
-(defun zp/org-jump-restricted ()
-  "Jump to headline as defined in ‘org-refine-targets’."
-  (interactive)
-  (let ((indirectp (not (buffer-file-name)))
-        (org-refile-targets '((nil :maxlevel . 9)))
-          (org-refile-use-cache nil)
-          (org-refile-target-verify-function 'zp/org-refile-target-verify-restricted)
-          (org-refile-use-outline-path t)
-          (min (point-min))
-          (max (point-max)))
-    (org-refile '(4))
-    (when indirectp
-      (zp/org-tree-to-indirect-buffer-folded))))
 
 (defun zp/org-refile-target-verify-restricted ()
   (let ((regex "^\\* -+.*-+$"))
@@ -4691,7 +4683,30 @@ If JUMP is non-nil, jump instead."
            (zp/org-refile-target-verify-exclude-separators)))
     ))
 
-(defun zp/org-tree-to-indirect-buffer-folded ()
+(defun zp/org-refile-restricted (&optional jump)
+  "Refile to headline in current file (life.org.gpg).
+
+If JUMP is non-nil, jump instead."
+  (interactive "P")
+  (let ((org-refile-targets '((nil :maxlevel . 9)))
+        (org-refile-use-outline-path t)
+        (org-refile-target-verify-function 'zp/org-refile-target-verify-restricted)
+        ;; Restriction info for verify function
+        (min (point-min))
+        (max (point-max)))
+    (org-refile jump)))
+
+(defun zp/org-jump-restricted ()
+  "Jump to headline in main org-agenda file (life.org.gpg)."
+  (interactive)
+  (let ((indirectp (not (buffer-file-name))))
+    (if indirectp
+        (save-excursion
+          (zp/org-refile-restricted t)
+          (zp/org-tree-to-indirect-buffer-folded))
+      (zp/org-refile-restricted t))))
+
+(defun zp/org-tree-to-indirect-buffer-folded (arg)
   "Clone tree to indirect buffer in a folded state."
   (let ((org-indirect-buffer-display 'current-window)
         (buffer))
@@ -4803,7 +4818,7 @@ passing arguments. This does."
                  heads)
        ;; Conditional actions
        ,@(cond (jumpingp
-                `(("C" zp/hydra-org-refile-indirect-toggle
+                `(("C" zp/hydra-org-jump-indirect-toggle
                        (concat (if zp/hydra-org-refile-indirect
                                    "[x]"
                                  "[ ]")
@@ -4835,20 +4850,20 @@ passing arguments. This does."
 ^^^^^^^^----------------------------------------------------------------------
 _i_: Inbox          _h_: Hacking            _u_: University    _A_: Awakening
 _o_: Life           _l_: Linux              _r_: Research      _P_: Psychotherapy
-_O_: Curiosities    _e_: Emacs
+_I_: Curiosities    _e_: Emacs
 _s_: Social         _E_: Elisp              _p_: Politics
-_n_: Nicolas        _T_: LaTeX
-_S_: Swimming       _g_: Git
-_R_: Running        _b_: Troubleshooting
-_t_: Typography     _B_: Contributing
-^^
+_n_: Nicolas        _O_: Org
+_S_: Swimming       _T_: LaTeX
+_R_: Running        _g_: Git
+_t_: Typography     _b_: Troubleshooting
+^^                  _B_: Contributing
 _x_: Maintenance
 _m_: Media
 _c_: Calendars
 "
   (("i" "~/org/life.org.gpg" "Inbox")
    ("o" "~/org/life.org.gpg" "Life")
-   ("O" "~/org/life.org.gpg" "Curiosities")
+   ("I" "~/org/life.org.gpg" "Curiosities")
    ("s" "~/org/life.org.gpg" "Social")
    ("n" "~/org/life.org.gpg" "Social" "Nicolas")
    ("S" "~/org/life.org.gpg" "Swimming")
@@ -4866,6 +4881,7 @@ _c_: Calendars
    ("b" "~/org/life.org.gpg" "Troubleshooting")
    ("T" "~/org/life.org.gpg" "LaTeX")
    ("e" "~/org/life.org.gpg" "Emacs")
+   ("O" "~/org/life.org.gpg" "Org")
    ("E" "~/org/life.org.gpg" "Elisp")
    ("l" "~/org/life.org.gpg" "Linux")
    ("g" "~/org/life.org.gpg" "Git"))
@@ -4986,7 +5002,7 @@ _J_: Jazz
 (global-set-key (kbd "C-c C-w") 'zp/hydra-org-refile/body)
 (global-set-key (kbd "C-c C-j") 'zp/hydra-org-jump/body)
 (define-key org-capture-mode-map (kbd "C-c C-w") 'zp/hydra-org-refile/body)
-(define-key org-mode-map (kbd "C-c C-w") 'zp/hydra-org-refile/body)
+(define-key org-mode-map (kbd "C-c C-w") 'zp/org-refile-dwim)
 (define-key org-agenda-mode-map (kbd "C-c C-w") 'zp/hydra-org-refile/body)
 
 
@@ -5468,6 +5484,8 @@ In org-agenda, visit the subtree first."
   zp/org-narrow-up-heading
   zp/org-narrow-previous-heading
   zp/org-refile-to
+  zp/org-refile-main
+  zp/org-refile-restricted
   zp/org-kill-indirect-buffer
   zp/org-kill-indirect-buffer-and-window
   zp/org-agenda-tree-to-indirect-buffer
