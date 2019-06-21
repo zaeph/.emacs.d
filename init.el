@@ -4714,30 +4714,6 @@ the filename)."
     (when indirect
       (zp/org-tree-to-indirect-buffer-folded))))
 
-(defun zp/org-refile-to (file headline-or-path &optional arg)
-  "Refile to HEADLINE in FILE. Clean up org-capture if it's activated.
-With a ‘C-u’ ARG, just jump to the headline."
-  (interactive "P")
-  (let ((is-capturing (and (boundp 'org-capture-mode) org-capture-mode))
-        (arg (or arg
-                 current-prefix-arg)))
-    (cond
-      ((and arg (listp arg))                      ;Are we jumping?
-       (let ((org-indirect-buffer-display 'current-window)
-             (buffer)
-             (indirect zp/hydra-org-refile-indirect))
-         (zp/org-refile-internal file headline-or-path arg)
-         (when indirect (zp/org-tree-to-indirect-buffer-folded))))
-      ;; Are we in org-capture-mode?
-      (is-capturing   ;Minor mode variable that's defined when capturing
-       (zp/org-capture-refile-internal file headline-or-path arg))
-      (t
-       (zp/org-refile-internal file headline-or-path arg)))
-    (cond ((or arg is-capturing)
-           (setq hydra-deactivate t))
-          (zp/hydra-org-refile-chain
-           (zp/hydra-org-refile/body)))))
-
 (defun zp/org-refile (&optional arg)
   (interactive "P")
   (let ((is-capturing (and (boundp 'org-capture-mode) org-capture-mode))
