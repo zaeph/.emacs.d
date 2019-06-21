@@ -4701,6 +4701,7 @@ If JUMP is non-nil, jump instead."
   (with-current-buffer (find-file-noselect "~/org/life.org.gpg")
     (save-excursion
       (zp/org-refile-main t)
+      ;; Create a dedicated buffer?
       (zp/org-tree-to-indirect-buffer-folded
        (if zp/hydra-org-jump-dedicated-buffer t nil)))))
 
