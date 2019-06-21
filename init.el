@@ -4714,7 +4714,7 @@ If JUMP is non-nil, jump instead."
            ;; If capturing, deactivate hydra
            (setq hydra-deactivate t))
           (zp/hydra-org-refile-chain
-           (zp/hydra-org-refile-new/body)))))
+           (zp/hydra-org-refile/body)))))
 
 (defun zp/org-jump-to (file headline-or-olp)
   (let ((indirect zp/hydra-org-refile-indirect))
