@@ -4808,15 +4808,26 @@ passing arguments. This does."
 
 
 
-(defmacro zp/create-hydra-org-refile-protocol (protocol name docstring targets heads &optional back)
+(defmacro zp/create-hydra-org-refile-protocol (protocol chain name docstring targets heads &optional back)
   (declare (indent defun) (doc-string 2))
   (let* ((protocol-name (symbol-name protocol))
          (hydra (intern (concat "zp/hydra-org-"
                                 protocol-name
+                                (when chain
+                                  "-chain")
                                 (when name
                                   (concat "-" (symbol-name name))))))
+         (hydra-sister (intern (concat "zp/hydra-org-"
+                                       protocol-name
+                                       (unless chain
+                                         "-chain")
+                                       (when name
+                                         (concat "-" (symbol-name name)))
+                                       "/body")))
          (hydra-back (intern (concat "zp/hydra-org-"
                                      protocol-name
+                                     (when chain
+                                       "-chain")
                                      (when back
                                        (concat "-" (symbol-name back)))
                                      "/body")))
@@ -4826,12 +4837,12 @@ passing arguments. This does."
          (command (pcase protocol
                     ('refile 'zp/org-refile-to)
                     ('jump 'zp/org-jump-to)))
-         (jumpingp (if (eq protocol 'jump) t)))
+         (jumping (if (eq protocol 'jump) t)))
     `(defhydra ,hydra
-         (
-          ;; :color teal
-          :foreign-keys warn
-          :exit t
+         (:foreign-keys warn
+          :exit ,(if chain nil t)
+          :pre ,(if chain `(setq zp/hydra-org-refile-chain t) nil)
+          :post ,(if chain `(setq zp/hydra-org-refile-chain nil) nil)
           :hint nil)
        ,docstring-refile
        ;; Create targets
@@ -4848,14 +4859,20 @@ passing arguments. This does."
                           (head-name (symbol-name (cadr head)))
                           (head-hydra (intern (concat "zp/hydra-org-"
                                                       protocol-name
-                                                      "-"
-                                                      head-name
+                                                      (when chain
+                                                        "-chain")
+                                                      "-" head-name
                                                       "/body"))))
                      `(,key ,head-hydra :exit t)))
                  heads)
        ;; Conditional actions
-       ,@(cond (jumpingp
-                `(("C" zp/hydra-org-jump-indirect-toggle
+       ("C" ,hydra-sister
+                       (concat (if zp/hydra-org-refile-chain
+                                   "[x]"
+                                 "[ ]")
+                               " chain") :exit t)
+       ,@(cond (jumping
+                `(("T" zp/hydra-org-jump-indirect-toggle
                        (concat (if zp/hydra-org-jump-indirect
                                    "[x]"
                                  "[ ]")
@@ -4867,23 +4884,22 @@ passing arguments. This does."
                                " dedicated") :exit nil)
                   ("j" zp/org-jump-main "jump")))
                (t
-                `(("C" zp/hydra-org-refile-chain-toggle
-                       (concat (if zp/hydra-org-refile-chain
-                                   "[x]"
-                                 "[ ]")
-                               " chain") :exit nil)
-                  ("w" zp/org-refile-main "refile")
+                `(("w" zp/org-refile-main "refile")
                   ("W" zp/org-refile-with-paths "refile+paths")
                   ("0" (zp/org-refile-with-paths '(64)) "reset cache" :exit nil))))
-       ,@(when name `(("<backspace>" ,hydra-back "back")))
+       ,@(when name `(("<backspace>" ,hydra-back "back" :exit t)))
        ("q" nil "cancel"))))
 
 (defmacro zp/create-hydra-org-refile (name docstring targets heads &optional back)
   (declare (indent 2) (doc-string 2))
   `(progn
-     (zp/create-hydra-org-refile-protocol refile
+     (zp/create-hydra-org-refile-protocol refile nil
          ,name ,docstring ,targets ,heads ,back)
-     (zp/create-hydra-org-refile-protocol jump
+     (zp/create-hydra-org-refile-protocol refile t
+         ,name ,docstring ,targets ,heads ,back)
+     (zp/create-hydra-org-refile-protocol jump nil
+       ,name ,docstring ,targets ,heads ,back)
+     (zp/create-hydra-org-refile-protocol jump t
          ,name ,docstring ,targets ,heads ,back)))
 
 (zp/create-hydra-org-refile nil
