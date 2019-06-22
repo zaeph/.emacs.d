@@ -5541,9 +5541,9 @@ In org-agenda, visit the subtree first."
   zp/org-narrow-backwards
   zp/org-narrow-up-heading
   zp/org-narrow-previous-heading
+  zp/org-refile
   zp/org-refile-to
   zp/org-refile-main
-  zp/org-refile-restricted
   zp/org-kill-indirect-buffer
   zp/org-kill-indirect-buffer-and-window
   zp/org-agenda-tree-to-indirect-buffer
