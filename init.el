@@ -4689,6 +4689,7 @@ the filename)."
     ('(4) (if (buffer-narrowed-p)
               (zp/org-refile-restricted)
             (zp/org-refile)))
+    ('(16) (zp/org-refile-to-other-buffer))
     (_ (zp/hydra-org-refile))))
 
 (defun zp/org-jump-dwim (arg)
@@ -4786,6 +4787,33 @@ create a dedicated frame."
       (org-set-startup-visibility))
     (org-overview)
     (org-cycle)))
+
+(defun zp/org-refile-to-other-buffer ()
+  (interactive)
+  (let* ((current (current-buffer))
+         (other (save-excursion
+                  (other-window 1)
+                  (current-buffer)))
+         olp
+         narrowed
+         (pos (with-current-buffer other
+                (save-excursion
+                  (zp/org-jump-dwim '(4))
+                  (setq olp (org-get-outline-path t))
+                  (setq narrowed (buffer-narrowed-p))
+                  (point-marker))))
+         (filepath (or (buffer-file-name other)
+                       (buffer-file-name (buffer-base-buffer other))))
+         (rfloc (list olp filepath nil pos)))
+    (org-refile nil nil rfloc)
+    (when narrowed
+      (with-current-buffer other
+        (zp/org-overview t t)))
+    (switch-to-buffer other)
+    (goto-char
+     (bookmark-get-position
+      (plist-get org-bookmark-names-plist :last-refile)))
+    (other-window -1)))
 
 (defun zp/org-refile-to (file headline-or-olp &optional jump)
   (let ((is-capturing (and (boundp 'org-capture-mode) org-capture-mode)))
