@@ -5602,7 +5602,7 @@ In org-agenda, visit the subtree first."
                         commands))
                ((string= method 'remove)
                 (mapcar (lambda (command)
-                          `(advice-remove ',command  ',function))
+                          `(advice-remove ',command  #',function))
                         commands))))))
 
 (defun zp/movement--play-sound-turn-page (orig-fun &rest args)
