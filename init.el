@@ -2735,7 +2735,12 @@ off.")
 (add-to-list 'safe-local-variable-values
              '( . nil))
 
-(defun zp/org-overview (arg)
+(defun zp/org-overview (arg &optional keep-restriction)
+  "Switch to overview mode, showing only top-level headlines.
+
+With a ‘C-u’ prefix, do not move point.
+
+When KEEP-RESTRICTION is non-nil, do not widen the buffer."
   (interactive "P")
   (let ((pos-before (point))
         (indirect (not (buffer-file-name))))
@@ -2744,7 +2749,8 @@ off.")
     (save-excursion
       (goto-char (point-min))
       (widen)
-      (if indirect
+      (if (or indirect
+              keep-restriction)
           (org-narrow-to-subtree)
         (org-display-inline-images)))
     (zp/org-fold arg)))
@@ -2757,8 +2763,8 @@ off.")
     (org-set-startup-visibility)
     ;; Fold trees
     (org-overview)
-    (when (not (equal arg '(4)))
-      (beginning-of-buffer))
+    (when (not arg)
+      (goto-char (point-min)))
     (recenter-top-bottom)
     (save-excursion
       (goto-char (point-min))
@@ -2775,8 +2781,8 @@ off.")
       (org-display-inline-images))
     ;; Unfold everything
     (org-show-all)
-    (when (not (eq arg 4))
-      (beginning-of-buffer))
+    (when (not arg)
+      (goto-char (point-min)))
     (recenter-top-bottom)))
 
 ;; org-narrow movements
@@ -5588,7 +5594,6 @@ In org-agenda, visit the subtree first."
   zp/org-narrow-previous-heading
   zp/org-refile
   zp/org-refile-to
-  zp/org-refile-main
   zp/org-kill-indirect-buffer
   zp/org-kill-indirect-buffer-and-window
   zp/org-agenda-tree-to-indirect-buffer
