@@ -5605,6 +5605,18 @@ In org-agenda, visit the subtree first."
                           `(advice-remove ',command  #',function))
                         commands))))))
 
+(defmacro zp/add-hooks (method commands function)
+  (let ((where-keyword (intern-soft (concat ":" (symbol-name where)))))
+    `(progn
+       ,@(cond ((string= method 'add)
+                (mapcar (lambda (command)
+                          `(add-hook ',command #',function))
+                        commands))
+               ((string= method 'remove)
+                (mapcar (lambda (command)
+                          `(remove-hook ',command  #',function))
+                        commands))))))
+
 (defun zp/movement--play-sound-turn-page (orig-fun &rest args)
   (prog1
       (apply orig-fun args)
