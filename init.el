@@ -2042,14 +2042,12 @@ return `nil'."
   (TeX-pin-region (region-beginning) (region-end))
   (deactivate-mark)
   (move-end-of-line 1)
-  (message "Narrowing to enviroment")
-  (zp/play-sound-turn-page))
+  (message "Narrowing to enviroment"))
 
 (defun zp/LaTeX-widen ()
   (interactive)
   (widen)
-  (message "Removing narrowing")
-  (zp/play-sound-turn-page))
+  (message "Removing narrowing"))
 
 (defun zp/LaTeX-narrow-forwards (&optional arg)
   (interactive "P")
@@ -2061,8 +2059,7 @@ return `nil'."
       (TeX-pin-region (region-beginning) (region-end))
       (deactivate-mark)
       (move-end-of-line 1))
-    (message "Narrowing to next frame")
-    (zp/play-sound-turn-page)))
+    (message "Narrowing to next frame")))
 
 (defun zp/LaTeX-narrow-backwards (&optional arg)
   (interactive "P")
@@ -2076,8 +2073,7 @@ return `nil'."
       (TeX-pin-region (region-beginning) (region-end))
       (deactivate-mark)
       (move-end-of-line 1))
-    (message "Narrowing to previous frame")
-    (zp/play-sound-turn-page)))
+    (message "Narrowing to previous frame")))
 
 (defun zp/LaTeX-narrow-up ()
   (interactive)
@@ -2087,8 +2083,7 @@ return `nil'."
   (call-interactively #'narrow-to-region)
   (deactivate-mark)
   (move-end-of-line 1)
-  (message "Narrowing to parent environment")
-  (zp/play-sound-turn-page))
+  (message "Narrowing to parent environment"))
 
 (define-key LaTeX-mode-map (kbd "C-x n e") #'zp/LaTeX-narrow-to-environment)
 (define-key LaTeX-mode-map (kbd "C-x n w") #'zp/LaTeX-widen)
@@ -2740,35 +2735,62 @@ off.")
 (add-to-list 'safe-local-variable-values
              '( . nil))
 
-(defun zp/org-overview (arg)
+(defun zp/org-overview (arg &optional keep-restriction)
+  "Switch to overview mode, showing only top-level headlines.
+
+With a ‘C-u’ prefix, do not move point.
+
+When KEEP-RESTRICTION is non-nil, do not widen the buffer."
   (interactive "P")
-  (let ((pos-before (point)))
-    (setq-local zp/org-narrow-previous-position pos-before))
-  (widen)
-  (let ((org-startup-folded 'overview))
-    (org-set-startup-visibility))
-  (org-overview)
-  (when (not (equal arg '(4)))
-      (beginning-of-buffer))
-  (recenter-top-bottom)
-  ;; Do not redisplay images if in indirect buffer
-  (if (buffer-file-name)
-      (org-display-inline-images))
-  (zp/play-sound-turn-page))
+  (let ((pos-before (point))
+        (indirect (not (buffer-file-name))))
+    (setq-local zp/org-narrow-previous-position pos-before)
+    ;; Do not widen buffer if in indirect buffer
+    (save-excursion
+      (goto-char (point-min))
+      (widen)
+      (if (or indirect
+              keep-restriction)
+          (org-narrow-to-subtree)
+        (org-display-inline-images)))
+    (zp/org-fold arg)
+    (when (called-interactively-p 'any)
+      (message "Showing overview.")
+      (run-hooks 'zp/org-after-view-change-hook))))
+
+(defun zp/org-fold (arg)
+  (interactive "P")
+  (let ((indirectp (not (buffer-file-name)))
+        (org-startup-folded 'overview))
+    ;; Fold drawers
+    (org-set-startup-visibility)
+    ;; Fold trees
+    (org-overview)
+    (when (not arg)
+      (goto-char (point-min)))
+    (recenter-top-bottom)
+    (save-excursion
+      (goto-char (point-min))
+      (org-show-entry)
+      (org-show-children))))
 
 (defun zp/org-show-all (arg)
   (interactive "p")
-  (let ((pos-before (point)))
-    (setq-local zp/org-narrow-previous-position pos-before))
-  (widen)
-  (org-show-all)
-  (if (not (eq arg 4))
-      (beginning-of-buffer))
-  (recenter-top-bottom)
-  ;; Do not redisplay images if in indirect buffer
-  (if (buffer-file-name)
+  (let ((pos-before (point))
+        (indirect (not (buffer-file-name))))
+    (setq-local zp/org-narrow-previous-position pos-before)
+    ;; Do not widen buffer if in indirect buffer
+    (unless indirect
+      (widen)
       (org-display-inline-images))
-  (zp/play-sound-turn-page))
+    ;; Unfold everything
+    (org-show-all)
+    (when (not arg)
+      (goto-char (point-min)))
+    (recenter-top-bottom)
+    (when (called-interactively-p 'any)
+      (message "Showing everything.")
+      (run-hooks 'zp/org-after-view-change-hook))))
 
 ;; org-narrow movements
 
@@ -2776,8 +2798,10 @@ off.")
   "Move to the next subtree at same level, and narrow the buffer to it."
   (interactive)
   (org-narrow-to-subtree)
-  (message "Narrowing to tree at point.")
-  (zp/play-sound-turn-page))
+  (zp/org-fold nil)
+  (when (called-interactively-p 'any)
+    (message "Narrowing to tree at point.")
+    (run-hooks 'zp/org-after-view-change-hook)))
 
 (defun zp/org-widen ()
   "Move to the next subtree at same level, and narrow the buffer to it."
@@ -2785,8 +2809,9 @@ off.")
   (let ((pos-before (point)))
     (setq-local zp/org-narrow-previous-position pos-before))
   (widen)
-  (message "Removing narrowing.")
-  (zp/play-sound-turn-page))
+  (when (called-interactively-p 'any)
+    (message "Removing narrowing.")
+    (run-hooks 'zp/org-after-view-change-hook)))
 
 (defun zp/org-narrow-forwards ()
   "Move to the next subtree at same level, and narrow the buffer to it."
@@ -2794,8 +2819,10 @@ off.")
   (widen)
   (org-forward-heading-same-level 1)
   (org-narrow-to-subtree)
-  (message "Narrowing to next tree.")
-  (zp/play-sound-turn-page))
+  (zp/org-fold nil)
+  (when (called-interactively-p 'any)
+    (message "Narrowing to next tree.")
+    (run-hooks 'zp/org-after-view-change-hook)))
 
 (defun zp/org-narrow-backwards ()
   "Move to the next subtree at same level, and narrow the buffer to it."
@@ -2803,24 +2830,47 @@ off.")
   (widen)
   (org-backward-heading-same-level 1)
   (org-narrow-to-subtree)
-  (message "Narrowing to previous tree.")
-  (zp/play-sound-turn-page))
+  (zp/org-fold nil)
+  (when (called-interactively-p 'any)
+    (message "Narrowing to previous tree.")
+    (run-hooks 'zp/org-after-view-change-hook)))
 
 (defun zp/org-narrow-up-heading (arg)
-  "Move to the next subtree at same level, and narrow the buffer to it."
-  (interactive "p")
+  "Move to the upper subtree, and narrow the buffer to it."
+  (interactive "P")
+  (unless (buffer-narrowed-p)
+    (user-error "No narrowing"))
   (let ((pos-before (point)))
     (setq-local zp/org-narrow-previous-position pos-before)
     (widen)
     (org-reveal)
     (outline-up-heading 1)
     (org-narrow-to-subtree)
-    (if (eq arg 4)
+    (if (equal arg '(4))
         (progn
           (goto-char pos-before)
           (recenter-top-bottom)))
-    (message "Narrowing to tree above.")
-    (zp/play-sound-turn-page)))
+    (zp/org-fold arg)
+    (when (called-interactively-p 'any)
+      (message "Narrowing to tree above.")
+      (run-hooks 'zp/org-after-view-change-hook))))
+
+(defun zp/org-narrow-up-heading-dwim (arg)
+  "Narrow to the upper subtree, and narrow the buffer to it.
+
+If the buffer is already narrowed to level-1 heading, overview
+the entire buffer."
+  (interactive "P")
+  (if (save-excursion
+        ;; Narrowed to a level-1 heading?
+        (goto-char (point-min))
+        (and (buffer-narrowed-p)
+             (equal (org-outline-level) 1)))
+      (zp/org-overview arg)
+    (zp/org-narrow-up-heading arg))
+  (when (called-interactively-p 'any)
+      (message "Narrowing to tree above.")
+      (run-hooks 'zp/org-after-view-change-hook)))
 
 (defun zp/org-narrow-previous-heading (arg)
   "Move to the previously narrowed tree, and narrow the buffer to it."
@@ -2832,8 +2882,7 @@ off.")
         (org-cycle)
         (org-narrow-to-subtree)
         (setq zp/org-narrow-previous-position nil)
-        (message "Narrowing to previously narrowed tree.")
-        (zp/play-sound-turn-page))
+        (message "Narrowing to previously narrowed tree."))
     (message "Couldn’t find a previous position.")))
 
 ;; Toggle fontifications
@@ -2885,7 +2934,7 @@ With a C-u argument, toggle the link display."
   (local-set-key (kbd "S-<backspace>") 'zp/org-kill-indirect-buffer)
   (local-set-key (kbd "C-x n o") 'zp/org-overview)
   (local-set-key (kbd "C-x n a") 'zp/org-show-all)
-  (local-set-key (kbd "C-x n u") 'zp/org-narrow-up-heading)
+  (local-set-key (kbd "C-x n u") 'zp/org-narrow-up-heading-dwim)
   (local-set-key (kbd "C-x n y") 'zp/org-narrow-previous-heading)
   (local-set-key (kbd "C-x n s") 'zp/org-narrow-to-subtree)
   (local-set-key (kbd "C-x n f") 'zp/org-narrow-forwards)
@@ -2902,6 +2951,7 @@ With a C-u argument, toggle the link display."
   (local-set-key (kbd "C-e") 'org-end-of-line)
   (local-set-key (kbd "M-I") 'org-indent-mode)
   (local-set-key (kbd "M-*") 'zp/org-toggle-fontifications)
+  (local-set-key (kbd "C-c C-j") 'zp/org-jump-dwim)
   ;; (local-set-key (kbd "C-c C-w") 'org-refile)
   ;; (local-set-key (kbd "C-c C-S-w") 'zp/org-refile-with-paths)
   )
@@ -3191,8 +3241,8 @@ indirect-buffers."
   "Toggle zp/hydra-org-priority-chain."
   (interactive)
   (if zp/hydra-org-priority-chain
-      (setq-local zp/hydra-org-priority-chain nil)
-    (setq-local zp/hydra-org-priority-chain t)))
+      (setq zp/hydra-org-priority-chain nil)
+    (setq zp/hydra-org-priority-chain t)))
 
 (defun zp/hydra-org-priority-set (&optional action show)
   "Change the priority of an item, and possibly chain the commands."
@@ -4523,9 +4573,10 @@ TITLE and URL are those of the webpage."
 ;; ============== ORG-REFILE ==============
 ;; ========================================
 
-(setq org-refile-targets '((nil :maxlevel . 9)
-                           (org-agenda-files :maxlevel . 1))
-      org-refile-use-cache t)
+(setq org-refile-targets '((nil :maxlevel . 9))
+      org-refile-use-cache nil
+      org-refile-target-verify-function 'zp/org-refile-target-verify-exclude-separators)
+
 
 
 (setq org-outline-path-complete-in-steps nil
@@ -4538,119 +4589,264 @@ TITLE and URL are those of the webpage."
   "Toggle zp/hydra-org-refile-chain."
   (interactive)
   (if zp/hydra-org-refile-chain
-      (setq-local zp/hydra-org-refile-chain nil)
-    (setq-local zp/hydra-org-refile-chain t)))
+      (setq zp/hydra-org-refile-chain nil)
+    (setq zp/hydra-org-refile-chain t)))
 
-(defvar zp/hydra-org-refile-indirect t
+(defvar zp/hydra-org-jump-indirect t
   "When non-nil, jumping to a refile point is done in an indirect buffer.")
 
-(defun zp/hydra-org-refile-indirect-toggle ()
-  "Toggle zp/hydra-org-refile-chain."
+(defun zp/hydra-org-jump-indirect-toggle ()
+  "Toggle zp/hydra-org-jump-indirect."
   (interactive)
-  (if zp/hydra-org-refile-indirect
-      (setq-local zp/hydra-org-refile-indirect nil)
-    (setq-local zp/hydra-org-refile-indirect t)))
+  (if zp/hydra-org-jump-indirect
+      (setq zp/hydra-org-jump-indirect nil)
+    (setq zp/hydra-org-jump-indirect t)))
 
-(defun zp/org-refile-with-paths (&optional arg default-buffer rfloc msg)
-  (interactive "P")
-  (let ((org-refile-use-outline-path 1)
-        (org-refile-targets
-         '((nil :maxlevel . 9)
-           (org-agenda-files :maxlevel . 3))))
-    (org-refile arg default-buffer rfloc msg)))
+(defvar zp/hydra-org-jump-dedicated-buffer nil
+  "When non-nil, jumping to a refile point is done in a dedicated buffer.")
 
-(defun zp/org-agenda-refile (&optional arg default-buffer rfloc msg goto rfloc no-update)
-  (interactive "P")
-  (if current-prefix-arg
-      (org-refile arg default-buffer rfloc msg)
-    (org-agenda-refile goto rfloc no-update)))
-
-(defun zp/org-agenda-refile-with-paths (&optional arg default-buffer rfloc msg goto rfloc no-update)
-  (interactive "P")
-  (let ((org-refile-use-outline-path 1)
-        (org-refile-targets
-         '((nil :maxlevel . 9)
-           (org-agenda-files :maxlevel . 3))))
-    (if current-prefix-arg
-        (org-refile arg default-buffer rfloc msg)
-      (org-agenda-refile goto rfloc no-update))))
+(defun zp/hydra-org-jump-dedicated-buffer-toggle ()
+  "Toggle zp/hydra-org-dedicated-buffer."
+  (interactive)
+  (if zp/hydra-org-jump-dedicated-buffer
+      (setq zp/hydra-org-jump-dedicated-buffer nil)
+    (setq zp/hydra-org-jump-dedicated-buffer t)))
 
 
 
-(defun zp/org-refile-internal (file headline-or-path &optional arg)
+(defun zp/org-refile-internal (file headline-or-olp &optional arg)
   "Refile to a specific location.
 
-With a 'C-u' ARG argument, we jump to that location (see
-`org-refile').
-Use `org-agenda-refile' in `org-agenda' mode.
+With a ‘C-u’ prefix, we jump to that location (see ‘org-refile’).
+Use ‘org-agenda-refile’ in ‘org-agenda’ mode.
 
-If HEADLINE-OR-PATH is a string, interprets it as a heading.  If
-HEADLINE-OR-PATH is a list, interprets it as an olp path (without
+If HEADLINE-OR-OLP is a string, interprets it as a heading.  If
+HEADLINE-OR-OLP is a list, interprets it as an olp path (without
 the filename)."
-  (let* ((pos (with-current-buffer (or (get-buffer file) ;Is the file open in a buffer already?
-                                       (find-file-noselect file)) ;Otherwise, try to find the file by name (Note, default-directory matters here if it isn't absolute)
-                (or (if (not (listp headline-or-path))
-                        (org-find-exact-headline-in-buffer headline-or-path)
-                      (org-find-olp `(,(buffer-file-name) ,@headline-or-path)))
-                    (error "Can't find headline-or-path `%s'" headline-or-path))))
+  (let* ((pos (with-current-buffer
+                  (or (get-buffer file) ;Is the file open in a buffer already?
+                      (find-file-noselect file)) ;Otherwise, try to find the file by name (Note, default-directory matters here if it isn't absolute)
+                (or (if (not (listp headline-or-olp))
+                        (org-find-exact-headline-in-buffer headline-or-olp)
+                      (org-find-olp `(,(buffer-file-name) ,@headline-or-olp)))
+                    (error "Can't find headline-or-olp `%s'" headline-or-olp))))
          (filepath (buffer-file-name (marker-buffer pos))) ;If we're given a relative name, find absolute path
-         (rfloc (list headline-or-path filepath nil pos)))
-    (if (and (eq major-mode 'org-agenda-mode) (not (and arg (listp arg)))) ;Don't use org-agenda-refile if we're just jumping
+         (rfloc (list headline-or-olp filepath nil pos)))
+    (if (and (eq major-mode 'org-agenda-mode)
+             (not arg)) ;Don't use org-agenda-refile if we're just jumping
         (org-agenda-refile nil rfloc)
       (org-refile arg nil rfloc))))
 
-(defun zp/org-refile-to (file headline-or-path &optional arg)
-  "Refile to HEADLINE in FILE. Clean up org-capture if it's activated.
-With a `C-u` ARG, just jump to the headline."
-  (interactive "P")
-  (let ((is-capturing (and (boundp 'org-capture-mode) org-capture-mode))
-        (arg (or arg
-                 current-prefix-arg)))
-    (cond
-     ((and arg (listp arg))             ;Are we jumping?
-      (let ((org-indirect-buffer-display 'current-window)
-            (buffer)
-            (indirect zp/hydra-org-refile-indirect))
-        (if (not indirect)
-            (zp/org-refile-internal file headline-or-path arg)
-          (zp/org-refile-internal file headline-or-path arg)
-          (org-tree-to-indirect-buffer)
-          (setq buffer (current-buffer))
-          (mode-line-other-buffer)
-          (bury-buffer)
-          (switch-to-buffer buffer t)
-          (let ((org-startup-folded nil))
-            (org-set-startup-visibility))
-          (org-overview)
-          (org-cycle))
-        (zp/play-sound-turn-page)))
-     ;; Are we in org-capture-mode?
-     (is-capturing              ;Minor mode variable that's defined when capturing
-      (zp/org-capture-refile-internal file headline-or-path arg))
-     (t
-      (zp/org-refile-internal file headline-or-path arg)))
-    (cond ((or arg is-capturing)
-           (setq hydra-deactivate t))
-          (zp/hydra-org-refile-chain
-           (zp/hydra-org-refile/body)))))
+(defun zp/org-refile (jump)
+  "Move the entry or entries at point to another heading.
 
-(defun zp/org-refile (&optional arg)
+When JUMP is non-nil, jump to that other heading instead."
   (interactive "P")
-  (let ((is-capturing (and (boundp 'org-capture-mode) org-capture-mode))
-        (is-agenda (derived-mode-p 'org-agenda-mode)))
-    (cond
-      (is-capturing
-       (org-capture-refile))
-      (is-agenda
-       (org-agenda-refile))
-     (t
-      (org-refile arg)))
-    (cond ((or arg is-capturing)
-           (setq hydra-deactivate t))
-          (zp/hydra-org-refile-chain
-           (zp/hydra-org-refile/body)))))
+  (let (;; (org-refile-targets '((nil :maxlevel . 9)))
+        (capturing (and (boundp 'org-capture-mode) org-capture-mode))
+        (in-agenda (derived-mode-p 'org-agenda-mode))
+        (org-refile-use-outline-path t)
+        ;; (org-refile-target-verify-function 'zp/org-refile-target-verify-exclude-separators)
+        target)
+    (when (org-before-first-heading-p)
+      (outline-next-heading))
+    (cond ((and (not jump)
+                capturing)
+           (org-capture-refile))
+          ((and (not jump)
+                in-agenda)
+           (org-agenda-refile))
+          (t
+           (org-refile jump)))
+    (run-hooks 'zp/org-after-refile-hook)
+    (setq target (point))))
 
-(defun zp/org-capture-refile-internal (file headline-or-path &optional arg)
+(defun zp/org-jump ()
+  "Jump to another heading."
+  (interactive)
+  (goto-char (save-excursion (zp/org-refile t))))
+
+(defun zp/org-refile-dwim (arg)
+"Conditionally move the entry or entries at point to another heading.
+
+With a ‘C-u’ prefix, refile to another heading within the current
+restriction.
+
+With two ‘C-u’ prefixes, refile to another heading in the other
+window’s buffer."
+  (interactive "P")
+  (pcase arg
+    ('(4) (if (buffer-narrowed-p)
+              (zp/org-refile-restricted)
+            (zp/org-refile)))
+    ('(16) (zp/org-refile-to-other-buffer))
+    (_ (zp/hydra-org-refile))))
+
+(defun zp/org-jump-dwim (arg)
+  "Conditionally jump to another heading.
+
+With a ‘C-u’ prefix, jump to another heading within the current
+restriction."
+  (interactive "P")
+  (pcase arg
+    ('(4) (if (buffer-narrowed-p)
+              (zp/org-jump-restricted)
+            (zp/org-jump)))
+    (_ (zp/hydra-org-jump/body))))
+
+(defvar zp/org-agenda-files-primary nil
+  "Primary org-agenda file.")
+
+(setq zp/org-agenda-files-primary "~/org/life.org.gpg")
+
+(defun zp/org-refile-main (jump)
+  "Refile current heading to another in org-agenda file.
+
+If JUMP is non-nil, jump to it instead."
+  (interactive "P")
+  (let ((org-refile-targets '((zp/org-agenda-files-primary :maxlevel . 1))))
+    (zp/org-refile jump)))
+
+(defun zp/org-jump-main ()
+  "Jump to heading in main org-agenda file."
+  (interactive)
+  (let ((dedicated zp/hydra-org-jump-dedicated-buffer))
+    (with-current-buffer (find-file-noselect zp/org-agenda-files-primary)
+      (save-excursion
+        (zp/org-refile-main t)
+        (zp/org-tree-to-indirect-buffer-folded
+         (when zp/hydra-org-jump-dedicated-buffer dedicated))))))
+
+(defun zp/org-refile-target-verify-exclude-separators ()
+  "Exclude separators line from refile targets."
+  (let ((regex "^\\* -+.*-+$"))
+    ;; (message (buffer-substring-no-properties (point) (line-end-position)))
+    (if (re-search-forward regex (line-end-position) t)
+        nil
+      t)))
+
+(defun zp/org-refile-target-verify-restricted ()
+  "Exclude refile targets which aren’t in the current restriction."
+  (let ((regex "^\\* -+.*-+$"))
+    ;; (message (buffer-substring-no-properties (point) (line-end-position)))
+    (cond ((< (point) min)
+           (goto-char min)
+           nil)
+          ((> (point) max)
+           (goto-char (point-max))
+           nil)
+          (t
+           (zp/org-refile-target-verify-exclude-separators)))
+    ))
+
+(defun zp/org-refile-restricted (jump)
+    "Refile current heading to another within the current restriction.
+
+If JUMP is non-nil, jump instead."
+  (interactive "P")
+  (let ((org-refile-targets '((nil :maxlevel . 9)))
+        ;; (org-refile-use-outline-path t)
+        (org-refile-target-verify-function 'zp/org-refile-target-verify-restricted)
+        target
+        ;; Restriction info for verify function
+        (min (point-min))
+        (max (point-max)))
+    (zp/org-refile jump)))
+
+(defun zp/org-jump-restricted ()
+  "Jump to a heading within the current restriction."
+  (interactive)
+  (let ((indirect (not (buffer-file-name)))
+        target
+        (buffer (current-buffer)))
+    (save-excursion
+      (setq target (zp/org-refile-restricted t)))
+    (when indirect (switch-to-buffer buffer))
+    (goto-char target)
+    (org-reveal)
+    (org-beginning-of-line)))
+
+(define-minor-mode org-indirect-tree-dedicated-buffer-mode
+    "Show when the current indirect buffer is a dedicated buffer mode."
+  :lighter " Dedicated")
+
+(defun zp/org-tree-to-indirect-buffer-folded (dedicated)
+  "Clone tree to indirect buffer in a folded state.
+
+When called with a ‘C-u’ prefix or when DEDICATED is non-nil,
+create a dedicated frame."
+  (interactive "P")
+  (let ((org-indirect-buffer-display 'current-window)
+        (last-ibuf org-last-indirect-buffer)
+        (buffer))
+    (when dedicated
+      (setq org-last-indirect-buffer nil))
+    (org-tree-to-indirect-buffer)
+    (when dedicated
+      (setq org-last-indirect-buffer last-ibuf))
+    (setq buffer (current-buffer))
+    (mode-line-other-buffer)
+    (bury-buffer)
+    (switch-to-buffer buffer t)
+    (when dedicated
+      (org-indirect-tree-dedicated-buffer-mode t))
+    (let ((org-startup-folded nil))
+      (org-set-startup-visibility))
+    (org-overview)
+    (org-show-entry)
+    (org-show-children)))
+
+(defun zp/org-refile-to-other-buffer ()
+  "Refile current heading to another within the other window’s buffer."
+  (interactive)
+  (let* ((current (current-buffer))
+         (other (save-excursion
+                  (other-window 1)
+                  (current-buffer)))
+         olp
+         narrowed
+         (pos (with-current-buffer other
+                (save-excursion
+                  (zp/org-jump-dwim '(4))
+                  (setq olp (org-get-outline-path t))
+                  (setq narrowed (buffer-narrowed-p))
+                  (point-marker))))
+         (filepath (or (buffer-file-name other)
+                       (buffer-file-name (buffer-base-buffer other))))
+         (rfloc (list olp filepath nil pos)))
+    (org-refile nil nil rfloc)
+    (run-hooks 'zp/org-after-refile-hook)
+    (when narrowed
+      (with-current-buffer other
+        (zp/org-overview t t)))
+    (switch-to-buffer other)
+    (goto-char
+     (bookmark-get-position
+      (plist-get org-bookmark-names-plist :last-refile)))
+    (other-window -1)))
+
+(defun zp/org-refile-to (file headline-or-olp &optional jump)
+  "Refile current heading to specified destination.
+
+When JUMP is non-nil, jump to that destination instead."
+  (let ((is-capturing (and (boundp 'org-capture-mode) org-capture-mode)))
+    (if is-capturing
+        (zp/org-capture-refile-internal file headline-or-olp jump)
+      (zp/org-refile-internal file headline-or-olp (if jump jump nil)))
+    (cond (is-capturing
+           ;; If capturing, deactivate hydra
+           (setq hydra-deactivate t)))
+    (run-hooks 'zp/org-after-refile-hook)))
+
+(defun zp/org-jump-to (file headline-or-olp)
+  "Jump to a specified destination."
+  (let ((indirect zp/hydra-org-jump-indirect)
+        (dedicated zp/hydra-org-jump-dedicated-buffer))
+    (zp/org-refile-to file headline-or-olp t)
+    (when indirect
+      (zp/org-tree-to-indirect-buffer-folded dedicated))))
+
+(defun zp/org-capture-refile-internal (file headline-or-olp &optional arg)
   "Copied from ‘org-capture-refile’ since it doesn't allow
 passing arguments. This does."
   (unless (eq (org-capture-get :type 'local) 'entry)
@@ -4666,39 +4862,190 @@ passing arguments. This does."
       (with-current-buffer (or base (current-buffer))
         (org-with-wide-buffer
          (goto-char pos)
-         (zp/org-refile-internal file headline-or-path arg))))
+         (zp/org-refile-internal file headline-or-olp arg))))
     (when kill-buffer (kill-buffer base))))
 
 
 
-(defmacro defhydra-org-refile (name &optional return docstring &rest body)
-  (declare (indent defun) (doc-string 3))
-  `(defhydra ,name (:color teal
-                    :hint nil)
-     ,docstring
-     ,@body
+(defvar zp/hydra-org-refile-active nil
+  "t if currently in a hydra-org-refile session.
 
-     ("C" zp/hydra-org-refile-chain-toggle (concat (if zp/hydra-org-refile-chain
-                                                       "[x]"
-                                                     "[ ]")
-                                                   " chain") :exit nil)
+Used to check whether hydra-org-refile was exited
+abnormally (e.g. with a C-g).")
 
-     ("I" zp/hydra-org-refile-indirect-toggle (concat (if zp/hydra-org-refile-indirect
-                                                          "[x]"
-                                                        "[ ]")
-                                                      " indirect") :exit nil)
+(defun zp/hydra-org-refile-cleanup ()
+  "Reset variables used by zp/hydra-org-refile to their defaults"
+  (setq zp/hydra-org-jump-dedicated-buffer nil
+        zp/hydra-org-jump-active nil))
 
-     ("j" org-refile-goto-last-stored "jump to last")
-     ("w" zp/org-refile "refile")
-     ("W" zp/org-refile-with-paths "refile+paths")
-     ("0" (zp/org-refile-with-paths '(64)) "reset cache" :exit nil)
-     ("q" nil "cancel")
-     ("<backspace>" ,return "back")))
+(defun zp/hydra-org-refile ()
+  "Wrapper for zp/hydra-org-refile.
 
+Ensures that the toggles are set to their default variable."
+  (interactive)
+  (when zp/hydra-org-refile-active
+    (zp/hydra-org-refile-cleanup))
+  (zp/hydra-org-refile/body))
 
+(defun zp/hydra-org-jump ()
+    "Wrapper for zp/hydra-org-jump.
 
-(defhydra-org-refile zp/hydra-org-refile-calendars zp/hydra-org-refile/body
-  "
+Ensures that the toggles are set to their default variable."
+  (interactive)
+  (when zp/hydra-org-refile-active
+    (zp/hydra-org-refile-cleanup))
+  (zp/hydra-org-jump/body))
+
+(defmacro zp/create-hydra-org-refile-protocol (protocol chain name docstring targets heads &optional back)
+  (declare (indent defun) (doc-string 2))
+  (let* ((protocol-name (symbol-name protocol))
+         (hydra (intern (concat "zp/hydra-org-"
+                                protocol-name
+                                (when chain
+                                  "-chain")
+                                (when name
+                                  (concat "-" (symbol-name name))))))
+         (hydra-sister (intern (concat "zp/hydra-org-"
+                                       protocol-name
+                                       (unless chain
+                                         "-chain")
+                                       (when name
+                                         (concat "-" (symbol-name name)))
+                                       "/body")))
+         (hydra-back (intern (concat "zp/hydra-org-"
+                                     protocol-name
+                                     (when chain
+                                       "-chain")
+                                     (when back
+                                       (concat "-" (symbol-name back)))
+                                     "/body")))
+         (docstring-refile (concat "\n["
+                                   (upcase protocol-name)
+                                   "]\n" docstring "\n"))
+         (command (pcase protocol
+                    ('refile 'zp/org-refile-to)
+                    ('jump 'zp/org-jump-to)))
+         (jumping (if (eq protocol 'jump) t)))
+    `(defhydra ,hydra
+         (:foreign-keys warn
+          :exit ,(if chain nil t)
+          :pre (progn
+                 (setq zp/hydra-org-refile-active t)
+                 ,(if chain `(setq zp/hydra-org-refile-chain t) nil))
+          :post (progn
+                  ,(if chain `(setq zp/hydra-org-refile-chain nil) nil))
+          :hint nil)
+       ,docstring-refile
+       ;; Create targets
+       ,@(mapcar (lambda (target)
+                   (let* ((key (car target))
+                          (file+olp (cdr target))
+                          (file (car file+olp))
+                          (olp (cdr file+olp)))
+                     `(,key (progn
+                              (,command ,file ',olp)
+                              ,(unless chain
+                                 `(zp/hydra-org-refile-cleanup))))))
+                 targets)
+       ;; Create other heads
+       ,@(mapcar (lambda (head)
+                   (let* ((key (car head))
+                          (head-name (symbol-name (cadr head)))
+                          (head-hydra (intern (concat "zp/hydra-org-"
+                                                      protocol-name
+                                                      (when chain
+                                                        "-chain")
+                                                      "-" head-name
+                                                      "/body"))))
+                     `(,key ,head-hydra :exit t)))
+                 heads)
+       ;; Conditional actions
+       ("C" ,hydra-sister
+            (concat (if zp/hydra-org-refile-chain
+                        "[x]"
+                      "[ ]")
+                    " chain") :exit t)
+       ,@(cond (jumping
+                `(("T" zp/hydra-org-jump-indirect-toggle
+                       (concat (if zp/hydra-org-jump-indirect
+                                   "[x]"
+                                 "[ ]")
+                               " indirect") :exit nil)
+                  ("J" zp/hydra-org-jump-dedicated-buffer-toggle
+                       (concat (if zp/hydra-org-jump-dedicated-buffer
+                                   "[x]"
+                                 "[ ]")
+                               " dedicated") :exit nil)
+                  ("j" (progn (zp/org-jump-main)
+                              (zp/hydra-org-refile-cleanup)) "jump")))
+               (t
+                `(("w" zp/org-refile-main "refile")
+                  ("W" zp/org-refile-with-paths "refile+paths")
+                  ("0" (zp/org-refile-with-paths '(64)) "reset cache" :exit nil))))
+       ,@(when name `(("<backspace>" ,hydra-back "back" :exit t)))
+       ("q" (progn
+              (zp/hydra-org-refile-cleanup)
+              (message "Cancelled")) "cancel" :exit t))))
+
+(defmacro zp/create-hydra-org-refile (name docstring targets heads &optional back)
+  (declare (indent 2) (doc-string 2))
+  `(progn
+     (zp/create-hydra-org-refile-protocol refile nil
+         ,name ,docstring ,targets ,heads ,back)
+     (zp/create-hydra-org-refile-protocol refile t
+         ,name ,docstring ,targets ,heads ,back)
+     (zp/create-hydra-org-refile-protocol jump nil
+       ,name ,docstring ,targets ,heads ,back)
+     (zp/create-hydra-org-refile-protocol jump t
+         ,name ,docstring ,targets ,heads ,back)))
+
+(zp/create-hydra-org-refile nil
+    "
+^Life^              ^Prog^                  ^Pro & Act^        ^Mental^
+^^^^^^^^----------------------------------------------------------------------
+_i_: Inbox          _h_: Hacking            _u_: University    _A_: Awakening
+_o_: Life           _l_: Linux              _r_: Research      _P_: Psychotherapy
+_I_: Curiosities    _e_: Emacs
+_s_: Social         _E_: Elisp              _p_: Politics
+_n_: Nicolas        _O_: Org
+_S_: Swimming       _T_: LaTeX
+_R_: Running        _g_: Git
+_t_: Typography     _b_: Troubleshooting
+^^                  _B_: Contributing
+_x_: Maintenance
+_m_: Media
+_c_: Calendars
+"
+  (("i" "~/org/life.org.gpg" "Inbox")
+   ("o" "~/org/life.org.gpg" "Life")
+   ("I" "~/org/life.org.gpg" "Curiosities")
+   ("s" "~/org/life.org.gpg" "Social")
+   ("n" "~/org/life.org.gpg" "Social" "Nicolas")
+   ("S" "~/org/life.org.gpg" "Swimming")
+   ("R" "~/org/life.org.gpg" "Running")
+   ("M" "~/org/life.org.gpg" "Media")
+   ("t" "~/org/life.org.gpg" "Typography")
+   ("X" "~/org/life.org.gpg" "Maintenance")
+   ("A" "~/org/life.org.gpg" "Awakening")
+   ("P" "~/org/life.org.gpg" "Psychotherapy")
+   ("p" "~/org/life.org.gpg" "Politics")
+   ("u" "~/org/life.org.gpg" "University")
+   ("r" "~/org/life.org.gpg" "Research")
+   ("h" "~/org/life.org.gpg" "Hacking")
+   ("B" "~/org/life.org.gpg" "Contributing")
+   ("b" "~/org/life.org.gpg" "Troubleshooting")
+   ("T" "~/org/life.org.gpg" "LaTeX")
+   ("e" "~/org/life.org.gpg" "Emacs")
+   ("O" "~/org/life.org.gpg" "Org")
+   ("E" "~/org/life.org.gpg" "Elisp")
+   ("l" "~/org/life.org.gpg" "Linux")
+   ("g" "~/org/life.org.gpg" "Git"))
+  (("c" calendars)
+   ("x" maintenance)
+   ("m" media)))
+
+(zp/create-hydra-org-refile calendars
+    "
 ^Calendars^
 ^^----------------------------------------------------------------------
 _o_: Life
@@ -4706,88 +5053,27 @@ _P_: Psychotherapy
 _p_: Politics
 _m_: Media
 _n_: Nicolas
+_a_: Animals
 _s_: Social
 _f_: Finances
 _h_: Hacking
 _u_: University
-
 "
+  (("o" "/home/zaeph/org/life.org.gpg" "Life" "Calendar")
+   ("p" "/home/zaeph/org/life.org.gpg" "Politics" "Calendar")
+   ("h" "/home/zaeph/org/life.org.gpg" "Hacking" "Calendar")
+   ("u" "/home/zaeph/org/life.org.gpg" "University" "Calendar")
+   ("P" "/home/zaeph/org/life.org.gpg" "Psychotherapy" "Calendar")
+   ("m" "/home/zaeph/org/life.org.gpg" "Media" "Calendar")
+   ("n" "/home/zaeph/org/life.org.gpg" "Social" "Nicolas" "Calendar")
+   ("a" "/home/zaeph/org/life.org.gpg" "Animals" "Calendar")
+   ("s" "/home/zaeph/org/life.org.gpg" "Social" "Calendar")
+   ("f" "/home/zaeph/org/life.org.gpg" "Finances" "Calendar"))
+  nil)
 
-  ("o" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Life" "Calendar")))
-  ("p" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Politics" "Calendar")))
-  ("h" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Hacking" "Calendar")))
-  ("u" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("University" "Calendar")))
-  ("P" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Psychotherapy" "Calendar")))
-  ("m" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Media" "Calendar")))
-  ("n" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Social" "Nicolas" "Calendar")))
-  ("s" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Social" "Calendar")))
-  ("f" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Finances" "Calendar"))))
-
-(defhydra-org-refile zp/hydra-org-refile-music zp/hydra-org-refile-media/body
-  "
-^Music^
-^^----------------------------------------------------------------------
-_._: Root
-_c_: Classical
-_J_: Jazz
-
-"
-  ("." (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Music")))
-  ("c" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Music" "List of classical pieces")))
-  ("J" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Music" "List of jazz pieces"))))
-
-(defhydra-org-refile zp/hydra-org-refile-books zp/hydra-org-refile-media/body
-  "
-^Books^
-^^----------------------------------------------------------------------
-_._: Root
-_l_: List
-_d_: Read
-
-"
-  ("." (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Books")))
-  ("l" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Books" "List")))
-  ("d" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Books" "Read"))))
-
-(defhydra-org-refile zp/hydra-org-refile-film zp/hydra-org-refile-media/body
-  "
-^Film^
-^^----------------------------------------------------------------------
-_._: Root
-_l_: List
-_d_: Watched
-
-"
-  ;; ("o" zp/hydra-org-refile-file-life/body :exit t)
-  ("." (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Film")))
-  ("l" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Film" "List")))
-  ("d" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Film" "Watched"))))
-
-(defhydra-org-refile zp/hydra-org-refile-media zp/hydra-org-refile/body
-  "
-^Media^
-^^----------------------------------------------------------------------
-_._: Root
-_m_: Music
-_n_: News
-_f_: Film
-_b_: Books
-
-"
-
-  ("." (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Media")))
-  ("m" zp/hydra-org-refile-music/body)
-  ("M" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Music")))
-  ("n" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("News")))
-  ("f" zp/hydra-org-refile-film/body)
-  ("F" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Film")))
-  ("b" zp/hydra-org-refile-books/body)
-  ("B" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Books")))
-  ("W" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Film" "Watched"))))
-
-(defhydra-org-refile zp/hydra-org-refile-maintenance zp/hydra-org-refile/body
-  "
-Maintenance
+(zp/create-hydra-org-refile maintenance
+    "
+^Maintenance^
 ^^----------------------------------------------------------------------
 _._: Root
 _c_: Cleaning
@@ -4795,84 +5081,85 @@ _k_: Cooking
 _h_: Health
 _s_: Supplies
 _f_: Finances
-
 "
-  ("." (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Maintenance")))
-  ("c" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Cleaning")))
-  ("k" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Cooking")))
-  ("h" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Health")))
-  ("f" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Finances")))
-  ("s" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Supplies"))))
+  (("." "/home/zaeph/org/life.org.gpg" "Maintenance")
+   ("c" "/home/zaeph/org/life.org.gpg" "Cleaning")
+   ("k" "/home/zaeph/org/life.org.gpg" "Cooking")
+   ("h" "/home/zaeph/org/life.org.gpg" "Health")
+   ("f" "/home/zaeph/org/life.org.gpg" "Finances")
+   ("s" "/home/zaeph/org/life.org.gpg" "Supplies"))
+  nil
+  nil)
 
-
-(defhydra zp/hydra-org-refile (:color teal
-                               :hint nil)
-  "
-^Life^              ^Prog^                  ^Pro^ & Act        ^Mental^
-^^^^^^^^----------------------------------------------------------------------
-_i_: Inbox          _h_: Hacking            _u_: University    _A_: Awakening
-_o_: Life           _l_: Linux              _r_: Research      _P_: Psychotherapy
-_O_: Curiosities    _e_: Emacs
-_s_: Social         _E_: Elisp              _p_: Politics
-_n_: Nicolas        _T_: LaTeX
-_S_: Swimming       _g_: Git
-_R_: Running        _b_: Troubleshooting
-_t_: Typography     _B_: Contributing
-^^
-_x_: Maintenance
-_m_: Media
-_c_: Calendars
-
+(zp/create-hydra-org-refile media
+    "
+^Media^
+^^----------------------------------------------------------------------
+_._: Root
+_m_: Music
+_n_: News
+_f_: Film
+_b_: Books
 "
-  ;; ("o" zp/hydra-org-refile-file-life/body :exit t)
-  ("i" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Inbox")))
-  ("o" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Life")))
-  ("O" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Curiosities")))
-  ("s" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Social")))
-  ("n" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Social" "Nicolas")))
-  ("S" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Swimming")))
-  ("R" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Running")))
-  ("m" zp/hydra-org-refile-media/body)
-  ("M" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Media")))
-  ("t" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Typography")))
-  ("x" zp/hydra-org-refile-maintenance/body)
-  ("c" zp/hydra-org-refile-calendars/body)
-  ("X" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Maintenance")))
-  ("A" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Awakening")))
-  ("P" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Psychotherapy")))
-  ("p" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Politics")))
-  ("u" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("University")))
-  ("r" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Research")))
-  ("h" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Hacking")))
-  ("B" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Contributing")))
-  ("b" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Troubleshooting")))
-  ("T" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("LaTeX")))
-  ("e" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Emacs")))
-  ("E" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Elisp")))
-  ("l" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Linux")))
-  ("g" (zp/org-refile-to "/home/zaeph/org/life.org.gpg" '("Git")))
+  (("." "/home/zaeph/org/life.org.gpg" "Media")
+   ("M" "/home/zaeph/org/life.org.gpg" "Music")
+   ("n" "/home/zaeph/org/life.org.gpg" "News")
+   ("F" "/home/zaeph/org/life.org.gpg" "Film")
+   ("B" "/home/zaeph/org/life.org.gpg" "Books")
+   ("W" "/home/zaeph/org/life.org.gpg" "Film"))
+  (("m" music)
+   ("b" books)
+   ("f" film))
+  nil)
 
-  ("C" zp/hydra-org-refile-chain-toggle (concat (if zp/hydra-org-refile-chain
-                                                    "[x]"
-                                                  "[ ]")
-                                                " chain") :exit nil)
+(zp/create-hydra-org-refile film
+    "
+^Film^
+^^----------------------------------------------------------------------
+_._: Root
+_l_: List
+_d_: Read
+"
+  (("." "/home/zaeph/org/life.org.gpg" "Film")
+   ("l" "/home/zaeph/org/life.org.gpg" "Film" "List")
+   ("d" "/home/zaeph/org/life.org.gpg" "Film" "Watchedn"))
+  nil
+  media)
 
-  ("I" zp/hydra-org-refile-indirect-toggle (concat (if zp/hydra-org-refile-indirect
-                                                       "[x]"
-                                                     "[ ]")
-                                                   " indirect") :exit nil)
+(zp/create-hydra-org-refile books
+    "
+^Books^
+^^----------------------------------------------------------------------
+_._: Root
+_l_: List
+_d_: Read
+"
+  (("." "/home/zaeph/org/life.org.gpg" "Books")
+   ("l" "/home/zaeph/org/life.org.gpg" "Books" "List")
+   ("d" "/home/zaeph/org/life.org.gpg" "Books" "Watched"))
+  nil
+  media)
 
-  ("j" org-refile-goto-last-stored "jump to last")
-  ("w" zp/org-refile "refile")
-  ("W" zp/org-refile-with-paths "refile+paths")
-  ("0" (zp/org-refile-with-paths '(64)) "reset cache" :exit nil)
-  ("q" nil "cancel"))
+(zp/create-hydra-org-refile music
+    "
+^Music^
+^^----------------------------------------------------------------------
+_._: Root
+_c_: Classical
+_J_: Jazz
+"
+  (("." "/home/zaeph/org/life.org.gpg" "Music")
+   ("c" "/home/zaeph/org/life.org.gpg" "Music" "List of classical pieces")
+   ("J" "/home/zaeph/org/life.org.gpg" "Music" "List of jazz pieces"))
+  nil
+  media)
 
 
 
-(global-set-key (kbd "C-c C-w") 'zp/hydra-org-refile/body)
-(define-key org-capture-mode-map (kbd "C-c C-w") 'zp/hydra-org-refile/body)
-(define-key org-mode-map (kbd "C-c C-w") 'zp/hydra-org-refile/body)
+(global-set-key (kbd "C-c C-w") 'zp/hydra-org-refile)
+(global-set-key (kbd "C-c C-j") 'zp/hydra-org-jump)
+(define-key org-capture-mode-map (kbd "C-c C-w") 'zp/hydra-org-refile)
+(define-key org-mode-map (kbd "C-c C-w") 'zp/org-refile-dwim)
 (define-key org-agenda-mode-map (kbd "C-c C-w") 'zp/hydra-org-refile/body)
 
 
@@ -5322,10 +5609,39 @@ In org-agenda, visit the subtree first."
 
 (defun zp/play-sound-after-refile ()
   (start-process-shell-command "play-sound" nil "notification-sound-org move"))
-(add-hook 'org-after-refile-insert-hook 'zp/play-sound-after-refile)
 
 (defun zp/play-sound-turn-page ()
   (start-process-shell-command "play-sound" nil "notification-sound-org page"))
+
+(defmacro zp/advise-commands (method commands where function)
+  (let ((where-keyword (intern-soft (concat ":" (symbol-name where)))))
+    `(progn
+       ,@(cond ((string= method 'add)
+                (mapcar (lambda (command)
+                          `(advice-add ',command ,where-keyword #',function))
+                        commands))
+               ((string= method 'remove)
+                (mapcar (lambda (command)
+                          `(advice-remove ',command  #',function))
+                        commands))))))
+
+(defmacro zp/add-hooks (method commands function)
+  (let ((where-keyword (intern-soft (concat ":" (symbol-name where)))))
+    `(progn
+       ,@(cond ((string= method 'add)
+                (mapcar (lambda (command)
+                          `(add-hook ',command #',function))
+                        commands))
+               ((string= method 'remove)
+                (mapcar (lambda (command)
+                          `(remove-hook ',command  #',function))
+                        commands))))))
+
+(defun zp/movement--play-sound-turn-page ()
+  (zp/play-sound-turn-page))
+
+(add-hook 'zp/org-after-view-change-hook #'zp/play-sound-turn-page)
+(add-hook 'zp/org-after-refile-hook #'zp/play-sound-turn-page)
 
 
 
@@ -7263,7 +7579,7 @@ Every ELEM in LIST is formatted as follows:
       (progn
         (other-window 1)
         (kill-buffer-and-window))
-    (error "There is only one window in the frame.")))
+    (user-error "There is only one window in the frame.")))
 
 (defun zp/org-kill-indirect-buffer ()
   "Kill the current buffer if it is an indirect buffer."
@@ -7272,38 +7588,59 @@ Every ELEM in LIST is formatted as follows:
       (progn
         (condition-case nil
             (kill-buffer-and-window)
-          (error nil))
+          (user-error nil))
         (message "Killed indirect buffer and window.")
-        (zp/play-sound-turn-page))
-    (message "Not in an indirect buffer.")))
+        (run-hooks 'zp/org-after-view-change-hook))
+    (user-error "Not in an indirect buffer")))
 
 (defun zp/org-agenda-kill-other-buffer-and-window ()
   "Kill the other buffer and window if there is more than one window in `org-agenda’."
   (interactive)
-  (if (not (string-match "*Org Agenda*" (buffer-name)))
-      (other-window 1))
-  (zp/kill-other-buffer-and-window)
-  (zp/play-sound-turn-page))
+  (let* ((other (and (not (one-window-p))
+                     (save-excursion
+                       (other-window 1)
+                       (prog1 (current-buffer)
+                         (other-window -1)))))
+         (is-org (with-current-buffer other
+                   (derived-mode-p 'org-mode))))
+    (unless (or (not other)
+                is-org)
+      (user-error "No Org window to kill"))
+    (when is-org
+      (zp/kill-other-buffer-and-window)
+      (run-hooks 'zp/org-after-view-change-hook)
+      ))
+  ;; (unless (string-match "*Org Agenda*" (buffer-name))
+  ;;   (other-window 1))
+  ;; (zp/kill-other-buffer-and-window)
+  )
 
-(defun zp/org-agenda-tree-to-indirect-buffer (arg)
-  "Open current tasks in other window, narrow it, and balance
-windows."
+(defun zp/org-agenda-tree-to-indirect-buffer (dedicated)
+  "Show the subtree corresponding to the current entry in an indirect buffer.
+
+With a ‘C-u’ prefix, make a separate frame for this tree."
   (interactive "P")
-  (call-interactively 'org-agenda-tree-to-indirect-buffer current-prefix-arg)
-  (if current-prefix-arg
+  (let ((last-ibuf org-last-indirect-buffer)
+        (buffer)
+        (current-prefix-arg nil))
+    (when dedicated
       (setq org-last-indirect-buffer nil))
-  (balance-windows)
-  (other-window 1)
-  (let ((org-startup-folded nil))
-    (org-set-startup-visibility))
-  (unless (string-match-p "Record of Dysfunctional Thoughts" (buffer-name))
+    (org-agenda-tree-to-indirect-buffer nil)
+    (when dedicated
+      (setq org-last-indirect-buffer last-ibuf))
+    (balance-windows)
+    (other-window 1)
+    (when dedicated
+      (org-indirect-tree-dedicated-buffer-mode t))
+    (let ((org-startup-folded nil))
+      (org-set-startup-visibility))
     (org-overview)
-    (org-cycle))
-  (org-backward-heading-same-level 1)
-  (widen)
-  (org-reveal)
-  (org-narrow-to-subtree)
-  (zp/play-sound-turn-page))
+    (org-show-entry)
+    (org-show-children)
+    (outline-back-to-heading)
+    (org-beginning-of-line)
+    (message "Visiting tree in indirect buffer.")
+    (run-hooks 'zp/org-after-view-change-hook)))
 
 (defun zp/org-agenda-tree-to-indirect-buffer-without-grabbing-focus (arg)
   (interactive "P")
@@ -7314,11 +7651,6 @@ windows."
   (interactive "P")
   (zp/org-agenda-tree-to-indirect-buffer arg)
   (delete-other-windows))
-
-(defun zp/org-agenda-tree-to-indirect-buffer-permanent (arg)
-  (interactive "P")
-  (let ((current-prefix-arg '(1)))
-    (zp/org-agenda-tree-to-indirect-buffer arg)))
 
 (defun move-beginning-of-line-dwim (arg)
   "Move point back to indentation or beginning of line
@@ -7928,8 +8260,7 @@ If in variable-pitch-mode, change the variable font-preset."
   (zp/org-format-face 'magit-tag :foreground "SpringGreen4")
 
   (zp/mode-line-theme "light")
-  (zp/pdf-view-midnight-mode-theme)
-  )
+  (zp/pdf-view-midnight-mode-theme))
 
 (defun zp/pdf-view-update-midnight ()
   "Update pdf-view’s colour theme."
