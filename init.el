@@ -7607,7 +7607,9 @@ With a ‘C-u’ prefix, make a separate frame for this tree."
     (let ((org-startup-folded nil))
       (org-set-startup-visibility))
     (org-overview)
-    (org-cycle)))
+    (org-cycle)
+    (outline-back-to-heading)
+    (org-beginning-of-line)))
 
 (defun zp/org-agenda-tree-to-indirect-buffer-without-grabbing-focus (arg)
   (interactive "P")
