@@ -4704,13 +4704,12 @@ If JUMP is non-nil, jump instead."
 (defun zp/org-jump-main ()
   "Jump to headline in main org-agenda file (life.org.gpg)."
   (interactive)
-  (with-current-buffer (find-file-noselect "~/org/life.org.gpg")
-    (save-excursion
-      (zp/org-refile-main t)
-      (zp/org-tree-to-indirect-buffer-folded
-       ;; Create a dedicated buffer?
-       (when zp/hydra-org-jump-dedicated-buffer
-         (not (zp/hydra-org-jump-dedicated-buffer-toggle)))))))
+  (let ((dedicated zp/hydra-org-jump-dedicated-buffer))
+    (with-current-buffer (find-file-noselect "~/org/life.org.gpg")
+      (save-excursion
+        (zp/org-refile-main t)
+        (zp/org-tree-to-indirect-buffer-folded
+         (when zp/hydra-org-jump-dedicated-buffer dedicated))))))
 
 (defun zp/org-refile-target-verify-exclude-separators ()
   (let ((regex "^\\* -+.*-+$"))
@@ -4792,13 +4791,11 @@ create a dedicated frame."
            (setq hydra-deactivate t)))))
 
 (defun zp/org-jump-to (file headline-or-olp)
-  (let ((indirect zp/hydra-org-jump-indirect))
+  (let ((indirect zp/hydra-org-jump-indirect)
+        (dedicated zp/hydra-org-jump-dedicated-buffer))
     (zp/org-refile-to file headline-or-olp t)
     (when indirect
-      (zp/org-tree-to-indirect-buffer-folded
-       ;; Create a dedicated buffer?
-       (when zp/hydra-org-jump-dedicated-buffer
-         (not (zp/hydra-org-jump-dedicated-buffer-toggle)))))))
+      (zp/org-tree-to-indirect-buffer-folded dedicated))))
 
 (defun zp/org-capture-refile-internal (file headline-or-olp &optional arg)
   "Copied from ‘org-capture-refile’ since it doesn't allow
