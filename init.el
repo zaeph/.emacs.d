@@ -7588,7 +7588,7 @@ Every ELEM in LIST is formatted as follows:
       (progn
         (other-window 1)
         (kill-buffer-and-window))
-    (error "There is only one window in the frame.")))
+    (user-error "There is only one window in the frame.")))
 
 (defun zp/org-kill-indirect-buffer ()
   "Kill the current buffer if it is an indirect buffer."
@@ -7597,16 +7597,32 @@ Every ELEM in LIST is formatted as follows:
       (progn
         (condition-case nil
             (kill-buffer-and-window)
-          (error nil))
-        (message "Killed indirect buffer and window."))
-    (error "Not in an indirect buffer")))
+          (user-error nil))
+        (message "Killed indirect buffer and window.")
+        (run-hooks 'zp/org-after-view-change-hook))
+    (user-error "Not in an indirect buffer")))
 
 (defun zp/org-agenda-kill-other-buffer-and-window ()
   "Kill the other buffer and window if there is more than one window in `org-agenda’."
   (interactive)
-  (if (not (string-match "*Org Agenda*" (buffer-name)))
-      (other-window 1))
-  (zp/kill-other-buffer-and-window))
+  (let* ((other (and (not (one-window-p))
+                     (save-excursion
+                       (other-window 1)
+                       (prog1 (current-buffer)
+                         (other-window -1)))))
+         (is-org (with-current-buffer other
+                   (derived-mode-p 'org-mode))))
+    (unless (or (not other)
+                is-org)
+      (user-error "No Org window to kill"))
+    (when is-org
+      (zp/kill-other-buffer-and-window)
+      (run-hooks 'zp/org-after-view-change-hook)
+      ))
+  ;; (unless (string-match "*Org Agenda*" (buffer-name))
+  ;;   (other-window 1))
+  ;; (zp/kill-other-buffer-and-window)
+  )
 
 (defun zp/org-agenda-tree-to-indirect-buffer (dedicated)
   "Show the subtree corresponding to the current entry in an indirect buffer.
@@ -7631,7 +7647,9 @@ With a ‘C-u’ prefix, make a separate frame for this tree."
     (org-show-entry)
     (org-show-children)
     (outline-back-to-heading)
-    (org-beginning-of-line)))
+    (org-beginning-of-line)
+    (message "Visiting tree in indirect buffer.")
+    (run-hooks 'zp/org-after-view-change-hook)))
 
 (defun zp/org-agenda-tree-to-indirect-buffer-without-grabbing-focus (arg)
   (interactive "P")
