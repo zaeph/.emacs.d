@@ -4661,23 +4661,6 @@ When JUMP is non-nil, jump to that other heading instead."
     (run-hooks 'zp/org-after-refile-hook)
     (setq target (point))))
 
-;; (defun zp/org-refile (&optional arg)
-;;   (interactive "P")
-;;   (let ((is-capturing (and (boundp 'org-capture-mode) org-capture-mode))
-;;         (is-agenda (derived-mode-p 'org-agenda-mode)))
-;;     (cond
-;;       (is-capturing
-;;        (org-capture-refile))
-;;       (is-agenda
-;;        (org-agenda-refile))
-;;      (t
-;;       (org-refile arg)))
-;;     (cond ((or arg is-capturing)
-;;            (setq hydra-deactivate t))
-;;           (zp/hydra-org-refile-chain
-;;            (zp/hydra-org-refile/body)))))
-
-
 (defun zp/org-jump ()
   "Jump to another heading."
   (interactive)
