@@ -2753,7 +2753,10 @@ When KEEP-RESTRICTION is non-nil, do not widen the buffer."
               keep-restriction)
           (org-narrow-to-subtree)
         (org-display-inline-images)))
-    (zp/org-fold arg)))
+    (zp/org-fold arg)
+    (when (called-interactively-p 'any)
+      (message "Showing overview.")
+      (run-hooks 'zp/org-after-view-change-hook))))
 
 (defun zp/org-fold (arg)
   (interactive "P")
@@ -2784,7 +2787,10 @@ When KEEP-RESTRICTION is non-nil, do not widen the buffer."
     (org-show-all)
     (when (not arg)
       (goto-char (point-min)))
-    (recenter-top-bottom)))
+    (recenter-top-bottom)
+    (when (called-interactively-p 'any)
+      (message "Showing everything.")
+      (run-hooks 'zp/org-after-view-change-hook))))
 
 ;; org-narrow movements
 
@@ -2793,7 +2799,9 @@ When KEEP-RESTRICTION is non-nil, do not widen the buffer."
   (interactive)
   (org-narrow-to-subtree)
   (zp/org-fold nil)
-  (message "Narrowing to tree at point."))
+  (when (called-interactively-p 'any)
+    (message "Narrowing to tree at point.")
+    (run-hooks 'zp/org-after-view-change-hook)))
 
 (defun zp/org-widen ()
   "Move to the next subtree at same level, and narrow the buffer to it."
@@ -2801,7 +2809,9 @@ When KEEP-RESTRICTION is non-nil, do not widen the buffer."
   (let ((pos-before (point)))
     (setq-local zp/org-narrow-previous-position pos-before))
   (widen)
-  (message "Removing narrowing."))
+  (when (called-interactively-p 'any)
+    (message "Removing narrowing.")
+    (run-hooks 'zp/org-after-view-change-hook)))
 
 (defun zp/org-narrow-forwards ()
   "Move to the next subtree at same level, and narrow the buffer to it."
@@ -2810,7 +2820,9 @@ When KEEP-RESTRICTION is non-nil, do not widen the buffer."
   (org-forward-heading-same-level 1)
   (org-narrow-to-subtree)
   (zp/org-fold nil)
-  (message "Narrowing to next tree."))
+  (when (called-interactively-p 'any)
+    (message "Narrowing to next tree.")
+    (run-hooks 'zp/org-after-view-change-hook)))
 
 (defun zp/org-narrow-backwards ()
   "Move to the next subtree at same level, and narrow the buffer to it."
@@ -2819,7 +2831,9 @@ When KEEP-RESTRICTION is non-nil, do not widen the buffer."
   (org-backward-heading-same-level 1)
   (org-narrow-to-subtree)
   (zp/org-fold nil)
-  (message "Narrowing to previous tree."))
+  (when (called-interactively-p 'any)
+    (message "Narrowing to previous tree.")
+    (run-hooks 'zp/org-after-view-change-hook)))
 
 (defun zp/org-narrow-up-heading (arg)
   "Move to the upper subtree, and narrow the buffer to it."
@@ -2837,7 +2851,9 @@ When KEEP-RESTRICTION is non-nil, do not widen the buffer."
           (goto-char pos-before)
           (recenter-top-bottom)))
     (zp/org-fold arg)
-    (message "Narrowing to tree above.")))
+    (when (called-interactively-p 'any)
+      (message "Narrowing to tree above.")
+      (run-hooks 'zp/org-after-view-change-hook))))
 
 (defun zp/org-narrow-up-heading-dwim (arg)
   "Narrow to the upper subtree, and narrow the buffer to it.
@@ -2851,7 +2867,10 @@ the entire buffer."
         (and (buffer-narrowed-p)
              (equal (org-outline-level) 1)))
       (zp/org-overview arg)
-    (zp/org-narrow-up-heading arg)))
+    (zp/org-narrow-up-heading arg))
+  (when (called-interactively-p 'any)
+      (message "Narrowing to tree above.")
+      (run-hooks 'zp/org-after-view-change-hook)))
 
 (defun zp/org-narrow-previous-heading (arg)
   "Move to the previously narrowed tree, and narrow the buffer to it."
@@ -4661,6 +4680,7 @@ the filename)."
            (org-agenda-refile))
           (t
            (org-refile jump)))
+    (run-hooks 'zp/org-after-refile-hook)
     (setq target (point))))
 
 ;; (defun zp/org-refile (&optional arg)
@@ -4814,6 +4834,7 @@ create a dedicated frame."
                        (buffer-file-name (buffer-base-buffer other))))
          (rfloc (list olp filepath nil pos)))
     (org-refile nil nil rfloc)
+    (run-hooks 'zp/org-after-refile-hook)
     (when narrowed
       (with-current-buffer other
         (zp/org-overview t t)))
@@ -4830,7 +4851,8 @@ create a dedicated frame."
       (zp/org-refile-internal file headline-or-olp (if jump jump nil)))
     (cond (is-capturing
            ;; If capturing, deactivate hydra
-           (setq hydra-deactivate t)))))
+           (setq hydra-deactivate t)))
+    (run-hooks 'zp/org-after-refile-hook)))
 
 (defun zp/org-jump-to (file headline-or-olp)
   (let ((indirect zp/hydra-org-jump-indirect)
@@ -5596,7 +5618,6 @@ In org-agenda, visit the subtree first."
 
 (defun zp/play-sound-after-refile ()
   (start-process-shell-command "play-sound" nil "notification-sound-org move"))
-(add-hook 'org-after-refile-insert-hook 'zp/play-sound-after-refile)
 
 (defun zp/play-sound-turn-page ()
   (start-process-shell-command "play-sound" nil "notification-sound-org page"))
@@ -5625,33 +5646,11 @@ In org-agenda, visit the subtree first."
                           `(remove-hook ',command  #',function))
                         commands))))))
 
-(defun zp/movement--play-sound-turn-page (orig-fun &rest args)
-  (prog1
-      (apply orig-fun args)
-    (zp/play-sound-turn-page)))
+(defun zp/movement--play-sound-turn-page ()
+  (zp/play-sound-turn-page))
 
-(zp/advise-commands
- add
- (zp/org-overview
-  zp/org-show-all
-  zp/org-narrow-to-subtree
-  zp/org-widen
-  zp/org-narrow-forwards
-  zp/org-narrow-backwards
-  zp/org-narrow-up-heading
-  zp/org-narrow-previous-heading
-  zp/org-refile
-  zp/org-refile-to
-  zp/org-kill-indirect-buffer
-  zp/org-kill-indirect-buffer-and-window
-  zp/org-agenda-tree-to-indirect-buffer
-  zp/LaTeX-narrow-to-environment
-  zp/LaTeX-widen
-  zp/LaTeX-narrow-forwards
-  zp/LaTeX-narrow-backwards
-  zp/LaTeX-narrow-up)
- around
- zp/movement--play-sound-turn-page)
+(add-hook 'zp/org-after-view-change-hook #'zp/play-sound-turn-page)
+(add-hook 'zp/org-after-refile-hook #'zp/play-sound-turn-page)
 
 
 
