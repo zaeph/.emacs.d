@@ -4966,7 +4966,7 @@ _u_: University
    ("u" "/home/zaeph/org/life.org.gpg" "University" "Calendar")
    ("P" "/home/zaeph/org/life.org.gpg" "Psychotherapy" "Calendar")
    ("m" "/home/zaeph/org/life.org.gpg" "Media" "Calendar")
-   ("n" "/home/zaeph/org/life.org.gpg" "Social" "Nicolas")
+   ("n" "/home/zaeph/org/life.org.gpg" "Social" "Nicolas" "Calendar")
    ("s" "/home/zaeph/org/life.org.gpg" "Social" "Calendar")
    ("f" "/home/zaeph/org/life.org.gpg" "Finances" "Calendar"))
   nil)
