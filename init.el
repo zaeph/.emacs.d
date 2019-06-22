@@ -2832,9 +2832,14 @@ off.")
 (defun zp/org-narrow-up-heading-dwim (arg)
   "Narrow to the upper subtree, and narrow the buffer to it.
 
-If on a level-1 heading, overview the file instead."
+If the buffer is already narrowed to level-1 heading, overview
+the entire buffer."
   (interactive "P")
-  (if (equal (org-outline-level) 1)
+  (if (save-excursion
+        ;; Narrowed to a level-1 heading?
+        (goto-char (point-min))
+        (and (buffer-narrowed-p)
+             (equal (org-outline-level) 1)))
       (zp/org-overview arg)
     (zp/org-narrow-up-heading arg)))
 
