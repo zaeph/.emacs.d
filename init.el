@@ -4766,6 +4766,10 @@ If JUMP is non-nil, jump instead."
     (org-reveal)
     (org-beginning-of-line)))
 
+(define-minor-mode org-indirect-tree-dedicated-buffer-mode
+    "Show when the current indirect buffer is a dedicated buffer mode."
+  :lighter " Dedicated")
+
 (defun zp/org-tree-to-indirect-buffer-folded (dedicated)
   "Clone tree to indirect buffer in a folded state.
 
@@ -4784,6 +4788,8 @@ create a dedicated frame."
     (mode-line-other-buffer)
     (bury-buffer)
     (switch-to-buffer buffer t)
+    (when dedicated
+      (org-indirect-tree-dedicated-buffer-mode t))
     (let ((org-startup-folded nil))
       (org-set-startup-visibility))
     (org-overview)
@@ -7618,6 +7624,8 @@ With a ‘C-u’ prefix, make a separate frame for this tree."
       (setq org-last-indirect-buffer last-ibuf))
     (balance-windows)
     (other-window 1)
+    (when dedicated
+      (org-indirect-tree-dedicated-buffer-mode t))
     (let ((org-startup-folded nil))
       (org-set-startup-visibility))
     (org-overview)
