@@ -4765,8 +4765,13 @@ When called with a C-u argument or when DEDICATED is non-nil,
 create a dedicated frame."
   (interactive "P")
   (let ((org-indirect-buffer-display 'current-window)
+        (last-ibuf org-last-indirect-buffer)
         (buffer))
-    (org-tree-to-indirect-buffer dedicated)
+    (when dedicated
+      (setq org-last-indirect-buffer nil))
+    (org-tree-to-indirect-buffer)
+    (when dedicated
+      (setq org-last-indirect-buffer last-ibuf))
     (setq buffer (current-buffer))
     (mode-line-other-buffer)
     (bury-buffer)
