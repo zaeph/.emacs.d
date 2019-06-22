@@ -2832,8 +2832,8 @@ off.")
 
 If on a level-1 heading, overview the file instead."
   (interactive "P")
-  (if (equal (org-outline-level) 1)
-           (error "Already at the top heading"))
+  (unless (buffer-narrowed-p)
+    (user-error "No narrowing"))
   (if (equal (org-outline-level) 1)
       (zp/org-overview arg)
     (zp/org-narrow-up-heading arg)))
