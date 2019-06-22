@@ -4821,6 +4821,29 @@ passing arguments. This does."
 
 
 
+(defvar zp/hydra-org-refile-active nil
+  "t if currently in a hydra-org-refile session.
+
+Used to check whether hydra-org-refile was exited
+abnormally (e.g. with a C-g).")
+
+(defun zp/hydra-org-refile-cleanup ()
+  (setq zp/hydra-org-jump-dedicated-buffer nil
+        ;; zp/hydra-org-jump-indirect nil
+        zp/hydra-org-jump-active nil))
+
+(defun zp/hydra-org-refile ()
+  (interactive)
+  (when zp/hydra-org-refile-active
+    (zp/hydra-org-refile-cleanup))
+  (zp/hydra-org-refile/body))
+
+(defun zp/hydra-org-jump ()
+  (interactive)
+  (when zp/hydra-org-refile-active
+    (zp/hydra-org-refile-cleanup))
+  (zp/hydra-org-jump/body))
+
 (defmacro zp/create-hydra-org-refile-protocol (protocol chain name docstring targets heads &optional back)
   (declare (indent defun) (doc-string 2))
   (let* ((protocol-name (symbol-name protocol))
@@ -4855,6 +4878,7 @@ passing arguments. This does."
          (:foreign-keys warn
           :exit ,(if chain nil t)
           :pre (progn
+                 (setq zp/hydra-org-refile-active t)
                  ,(if chain `(setq zp/hydra-org-refile-chain t) nil))
           :post (progn
                   ,(if chain `(setq zp/hydra-org-refile-chain nil) nil))
@@ -4866,7 +4890,10 @@ passing arguments. This does."
                           (file+olp (cdr target))
                           (file (car file+olp))
                           (olp (cdr file+olp)))
-                     `(,key (,command ,file ',olp))))
+                     `(,key (progn
+                              (,command ,file ',olp)
+                              ,(unless chain
+                                 `(zp/hydra-org-refile-cleanup))))))
                  targets)
        ;; Create other heads
        ,@(mapcar (lambda (head)
@@ -4897,14 +4924,15 @@ passing arguments. This does."
                                    "[x]"
                                  "[ ]")
                                " dedicated") :exit nil)
-                  ("j" zp/org-jump-main "jump")))
+                  ("j" (progn (zp/org-jump-main)
+                              (zp/hydra-org-refile-cleanup)) "jump")))
                (t
                 `(("w" zp/org-refile-main "refile")
                   ("W" zp/org-refile-with-paths "refile+paths")
                   ("0" (zp/org-refile-with-paths '(64)) "reset cache" :exit nil))))
        ,@(when name `(("<backspace>" ,hydra-back "back" :exit t)))
        ("q" (progn
-              (setq zp/hydra-org-jump-dedicated-buffer nil)
+              (zp/hydra-org-refile-cleanup)
               (message "Cancelled")) "cancel" :exit t))))
 
 (defmacro zp/create-hydra-org-refile (name docstring targets heads &optional back)
