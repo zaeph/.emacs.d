@@ -4759,7 +4759,7 @@ If JUMP is non-nil, jump instead."
     (org-reveal)
     (org-beginning-of-line)))
 
-(defun zp/org-tree-to-indirect-buffer-folded (&optional dedicated)
+(defun zp/org-tree-to-indirect-buffer-folded (dedicated)
   "Clone tree to indirect buffer in a folded state.
 
 When called with a C-u argument or when DEDICATED is non-nil,
