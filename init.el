@@ -4539,9 +4539,10 @@ TITLE and URL are those of the webpage."
 ;; ============== ORG-REFILE ==============
 ;; ========================================
 
-(setq org-refile-targets '((nil :maxlevel . 9)
-                           (org-agenda-files :maxlevel . 1))
-      org-refile-use-cache nil)
+(setq org-refile-targets '((nil :maxlevel . 9))
+      org-refile-use-cache nil
+      org-refile-target-verify-function 'zp/org-refile-target-verify-exclude-separators)
+
 
 
 (setq org-outline-path-complete-in-steps nil
@@ -4626,9 +4627,6 @@ the filename)."
              (not arg)) ;Don't use org-agenda-refile if we're just jumping
         (org-agenda-refile nil rfloc)
       (org-refile arg nil rfloc))))
-
-(setq org-refile-target-verify-function 'zp/org-refile-target-verify-exclude-separators)
-(setq org-refile-targets '((nil :maxlevel .9)))
 
 (defun zp/org-refile (&optional jump)
   (interactive "P")
