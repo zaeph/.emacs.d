@@ -2768,7 +2768,8 @@ When KEEP-RESTRICTION is non-nil, do not widen the buffer."
     (recenter-top-bottom)
     (save-excursion
       (goto-char (point-min))
-      (org-cycle))))
+      (org-show-entry)
+      (org-show-children))))
 
 (defun zp/org-show-all (arg)
   (interactive "p")
@@ -4786,7 +4787,8 @@ create a dedicated frame."
     (let ((org-startup-folded nil))
       (org-set-startup-visibility))
     (org-overview)
-    (org-cycle)))
+    (org-show-entry)
+    (org-show-children)))
 
 (defun zp/org-refile-to-other-buffer ()
   (interactive)
@@ -7619,7 +7621,8 @@ With a ‘C-u’ prefix, make a separate frame for this tree."
     (let ((org-startup-folded nil))
       (org-set-startup-visibility))
     (org-overview)
-    (org-cycle)
+    (org-show-entry)
+    (org-show-children)
     (outline-back-to-heading)
     (org-beginning-of-line)))
 
