@@ -8155,8 +8155,7 @@ If in variable-pitch-mode, change the variable font-preset."
   (zp/org-format-face 'magit-tag :foreground "SpringGreen4")
 
   (zp/mode-line-theme "light")
-  (zp/pdf-view-midnight-mode-theme)
-  )
+  (zp/pdf-view-midnight-mode-theme))
 
 (defun zp/pdf-view-update-midnight ()
   "Update pdf-view’s colour theme."
