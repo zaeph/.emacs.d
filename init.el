@@ -4707,9 +4707,10 @@ If JUMP is non-nil, jump instead."
   (with-current-buffer (find-file-noselect "~/org/life.org.gpg")
     (save-excursion
       (zp/org-refile-main t)
-      ;; Create a dedicated buffer?
       (zp/org-tree-to-indirect-buffer-folded
-       (if zp/hydra-org-jump-dedicated-buffer t nil)))))
+       ;; Create a dedicated buffer?
+       (when zp/hydra-org-jump-dedicated-buffer
+         (not (zp/hydra-org-jump-dedicated-buffer-toggle)))))))
 
 (defun zp/org-refile-target-verify-exclude-separators ()
   (let ((regex "^\\* -+.*-+$"))
