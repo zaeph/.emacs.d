@@ -4642,7 +4642,7 @@ the filename)."
         (org-agenda-refile nil rfloc)
       (org-refile arg nil rfloc))))
 
-(defun zp/org-refile (&optional jump)
+(defun zp/org-refile (jump)
   (interactive "P")
   (let (;; (org-refile-targets '((nil :maxlevel . 9)))
         (capturing (and (boundp 'org-capture-mode) org-capture-mode))
@@ -4699,7 +4699,7 @@ the filename)."
             (zp/org-jump)))
     (_ (zp/hydra-org-jump/body))))
 
-(defun zp/org-refile-main (&optional jump)
+(defun zp/org-refile-main (jump)
   "Refile to headline in main org-agenda file (life.org.gpg).
 
 If JUMP is non-nil, jump instead."
@@ -4737,7 +4737,7 @@ If JUMP is non-nil, jump instead."
            (zp/org-refile-target-verify-exclude-separators)))
     ))
 
-(defun zp/org-refile-restricted (&optional jump)
+(defun zp/org-refile-restricted (jump)
   "Refile to headline in current file (life.org.gpg).
 
 If JUMP is non-nil, jump instead."
