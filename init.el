@@ -7605,7 +7605,7 @@ Every ELEM in LIST is formatted as follows:
                    (derived-mode-p 'org-mode))))
     (unless (or (not other)
                 is-org)
-      (user-error "No Org window to kill"))
+      (user-error "No org window to kill"))
     (when is-org
       (zp/kill-other-buffer-and-window)
       (run-hooks 'zp/org-after-view-change-hook)
