@@ -4955,6 +4955,7 @@ _P_: Psychotherapy
 _p_: Politics
 _m_: Media
 _n_: Nicolas
+_a_: Animals
 _s_: Social
 _f_: Finances
 _h_: Hacking
@@ -4967,6 +4968,7 @@ _u_: University
    ("P" "/home/zaeph/org/life.org.gpg" "Psychotherapy" "Calendar")
    ("m" "/home/zaeph/org/life.org.gpg" "Media" "Calendar")
    ("n" "/home/zaeph/org/life.org.gpg" "Social" "Nicolas" "Calendar")
+   ("a" "/home/zaeph/org/life.org.gpg" "Animals" "Calendar")
    ("s" "/home/zaeph/org/life.org.gpg" "Social" "Calendar")
    ("f" "/home/zaeph/org/life.org.gpg" "Finances" "Calendar"))
   nil)
