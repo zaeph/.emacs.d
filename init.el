@@ -4853,8 +4853,10 @@ passing arguments. This does."
     `(defhydra ,hydra
          (:foreign-keys warn
           :exit ,(if chain nil t)
-          :pre ,(if chain `(setq zp/hydra-org-refile-chain t) nil)
-          :post ,(if chain `(setq zp/hydra-org-refile-chain nil) nil)
+          :pre (progn
+                 ,(if chain `(setq zp/hydra-org-refile-chain t) nil))
+          :post (progn
+                  ,(if chain `(setq zp/hydra-org-refile-chain nil) nil))
           :hint nil)
        ,docstring-refile
        ;; Create targets
@@ -4879,10 +4881,10 @@ passing arguments. This does."
                  heads)
        ;; Conditional actions
        ("C" ,hydra-sister
-                       (concat (if zp/hydra-org-refile-chain
-                                   "[x]"
-                                 "[ ]")
-                               " chain") :exit t)
+            (concat (if zp/hydra-org-refile-chain
+                        "[x]"
+                      "[ ]")
+                    " chain") :exit t)
        ,@(cond (jumping
                 `(("T" zp/hydra-org-jump-indirect-toggle
                        (concat (if zp/hydra-org-jump-indirect
@@ -4900,7 +4902,9 @@ passing arguments. This does."
                   ("W" zp/org-refile-with-paths "refile+paths")
                   ("0" (zp/org-refile-with-paths '(64)) "reset cache" :exit nil))))
        ,@(when name `(("<backspace>" ,hydra-back "back" :exit t)))
-       ("q" nil "cancel"))))
+       ("q" (progn
+              (setq zp/hydra-org-jump-dedicated-buffer nil)
+              (message "Cancelled")) "cancel" :exit t))))
 
 (defmacro zp/create-hydra-org-refile (name docstring targets heads &optional back)
   (declare (indent 2) (doc-string 2))
