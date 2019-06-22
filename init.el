@@ -4677,8 +4677,8 @@ window’s buffer."
   (interactive "P")
   (pcase arg
     ('(4) (if (buffer-narrowed-p)
-              (zp/org-refile-restricted)
-            (zp/org-refile)))
+              (zp/org-refile-restricted nil)
+            (zp/org-refile nil)))
     ('(16) (zp/org-refile-to-other-buffer))
     (_ (zp/hydra-org-refile))))
 
