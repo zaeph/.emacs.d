@@ -7814,7 +7814,7 @@ If in variable-pitch-mode, change the variable font-preset."
   (set-face-attribute 'region nil :background "RoyalBlue4")
   (set-face-attribute 'helm-selection nil :background "RoyalBlue4") ;Darker Royal Blue
   (set-face-attribute 'org-agenda-clocking nil :background "RoyalBlue4")
-  (set-face-attribute 'fringe nil :background "gray10" :foreground "#ac9739")
+  (set-face-attribute 'fringe nil :background "gray10" :foreground "orangered")
   (set-face-attribute 'vertical-border nil :foreground "RoyalBlue1")
   (set-face-attribute 'org-agenda-structure nil :foreground "DodgerBlue1" :weight 'bold)
   (set-face-attribute 'hl-line nil :background "#1F1F3F")
@@ -7870,7 +7870,7 @@ If in variable-pitch-mode, change the variable font-preset."
   ;; (set-face-attribute 'org-todo-box nil :inverse-video t :foreground "white" :height 0.8 :weight 'bold :box nil)
   ;; (set-face-attribute 'default nil :background "cornsilk1") ;fff8dc
   (set-face-attribute 'default nil :foreground "#3c3836" :background "#fbf1c7")
-  (set-face-attribute 'fringe nil :background "#e6deb8" :foreground "#198844")
+  (set-face-attribute 'fringe nil :background "#e6deb8" :foreground "orangered")
   (set-face-attribute 'org-hide nil :foreground "#fbf1c7")
   (set-face-attribute 'org-agenda-dimmed-todo-face nil :foreground "LightSlateBlue")
   (set-face-attribute 'org-scheduled-today nil :foreground "DodgerBlue4")
@@ -7894,9 +7894,9 @@ If in variable-pitch-mode, change the variable font-preset."
   (set-face-attribute 'org-block nil :foreground nil :inherit 'default :background "#F0E6BE")
 
 
-  (set-face-attribute 'diff-hl-change nil :foreground "#3a81c3" :background "#3a81c3")
-  (set-face-attribute 'diff-hl-insert nil :foreground "#7ccd7c" :background "#7ccd7c")
-  (set-face-attribute 'diff-hl-delete nil :foreground "#ee6363" :background "#ee6363")
+  (set-face-attribute 'diff-hl-change nil :foreground "#3a81c3" :background "#afcce7")
+  (set-face-attribute 'diff-hl-insert nil :foreground "#7ccd7c" :background "#b3e2b3")
+  (set-face-attribute 'diff-hl-delete nil :foreground "#ee6363" :background "#f6a8a8")
 
   (set-face-attribute 'zp/org-agenda-block-info-face nil
                       :foreground "violetred1"
