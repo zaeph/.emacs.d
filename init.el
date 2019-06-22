@@ -4683,7 +4683,7 @@ the filename)."
     ('(4) (if (buffer-narrowed-p)
               (zp/org-refile-restricted)
             (zp/org-refile)))
-    (_ (zp/hydra-org-refile/body))))
+    (_ (zp/hydra-org-refile))))
 
 (defun zp/org-jump-dwim (arg)
   (interactive "P")
@@ -5101,9 +5101,9 @@ _J_: Jazz
 
 
 
-(global-set-key (kbd "C-c C-w") 'zp/hydra-org-refile/body)
-(global-set-key (kbd "C-c C-j") 'zp/hydra-org-jump/body)
-(define-key org-capture-mode-map (kbd "C-c C-w") 'zp/hydra-org-refile/body)
+(global-set-key (kbd "C-c C-w") 'zp/hydra-org-refile)
+(global-set-key (kbd "C-c C-j") 'zp/hydra-org-jump)
+(define-key org-capture-mode-map (kbd "C-c C-w") 'zp/hydra-org-refile)
 (define-key org-mode-map (kbd "C-c C-w") 'zp/org-refile-dwim)
 (define-key org-agenda-mode-map (kbd "C-c C-w") 'zp/hydra-org-refile/body)
 
