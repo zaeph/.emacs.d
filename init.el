@@ -4603,7 +4603,7 @@ TITLE and URL are those of the webpage."
     (setq zp/hydra-org-jump-indirect t)))
 
 (defvar zp/hydra-org-jump-dedicated-buffer nil
-  "When non-nil, jumping to a refile point is done in dedicated buffer.")
+  "When non-nil, jumping to a refile point is done in a dedicated buffer.")
 
 (defun zp/hydra-org-jump-dedicated-buffer-toggle ()
   "Toggle zp/hydra-org-dedicated-buffer."
