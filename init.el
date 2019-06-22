@@ -7692,7 +7692,7 @@ the beginning of the line."
         `(,(face-attribute 'default :foreground) .
           ,(face-attribute 'default :background))))
 
-(minions-mode 1)
+;; (minions-mode 1)
 (require 'moody)
 (setq x-underline-at-descent-line t)
 (setq moody-mode-line-height 40)
