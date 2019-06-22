@@ -7526,24 +7526,25 @@ Every ELEM in LIST is formatted as follows:
       (other-window 1))
   (zp/kill-other-buffer-and-window))
 
-(defun zp/org-agenda-tree-to-indirect-buffer (arg)
-  "Open current tasks in other window, narrow it, and balance
-windows."
+(defun zp/org-agenda-tree-to-indirect-buffer (dedicated)
+  "Show the subtree corresponding to the current entry in an indirect buffer.
+
+With a ‘C-u’ prefix, make a separate frame for this tree."
   (interactive "P")
-  (call-interactively 'org-agenda-tree-to-indirect-buffer current-prefix-arg)
-  (if current-prefix-arg
+  (let ((last-ibuf org-last-indirect-buffer)
+        (buffer)
+        (current-prefix-arg nil))
+    (when dedicated
       (setq org-last-indirect-buffer nil))
-  (balance-windows)
-  (other-window 1)
-  (let ((org-startup-folded nil))
-    (org-set-startup-visibility))
-  (unless (string-match-p "Record of Dysfunctional Thoughts" (buffer-name))
+    (org-agenda-tree-to-indirect-buffer nil)
+    (when dedicated
+      (setq org-last-indirect-buffer last-ibuf))
+    (balance-windows)
+    (other-window 1)
+    (let ((org-startup-folded nil))
+      (org-set-startup-visibility))
     (org-overview)
-    (org-cycle))
-  (org-backward-heading-same-level 1)
-  (widen)
-  (org-reveal)
-  (org-narrow-to-subtree))
+    (org-cycle)))
 
 (defun zp/org-agenda-tree-to-indirect-buffer-without-grabbing-focus (arg)
   (interactive "P")
