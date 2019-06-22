@@ -4612,30 +4612,6 @@ TITLE and URL are those of the webpage."
       (setq zp/hydra-org-jump-dedicated-buffer nil)
     (setq zp/hydra-org-jump-dedicated-buffer t)))
 
-(defun zp/org-refile-with-paths (&optional arg default-buffer rfloc msg)
-  (interactive "P")
-  (let ((org-refile-use-outline-path 1)
-        (org-refile-targets
-         '((nil :maxlevel . 9)
-           (org-agenda-files :maxlevel . 3))))
-    (org-refile arg default-buffer rfloc msg)))
-
-(defun zp/org-agenda-refile (&optional arg default-buffer rfloc msg goto rfloc no-update)
-  (interactive "P")
-  (if current-prefix-arg
-      (org-refile arg default-buffer rfloc msg)
-    (org-agenda-refile goto rfloc no-update)))
-
-(defun zp/org-agenda-refile-with-paths (&optional arg default-buffer rfloc msg goto rfloc no-update)
-  (interactive "P")
-  (let ((org-refile-use-outline-path 1)
-        (org-refile-targets
-         '((nil :maxlevel . 9)
-           (org-agenda-files :maxlevel . 3))))
-    (if current-prefix-arg
-        (org-refile arg default-buffer rfloc msg)
-      (org-agenda-refile goto rfloc no-update))))
-
 
 
 (defun zp/org-refile-internal (file headline-or-olp &optional arg)
