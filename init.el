@@ -5542,9 +5542,9 @@ In org-agenda, visit the subtree first."
                         commands))))))
 
 (defun zp/movement--play-sound-turn-page (orig-fun &rest args)
-  (let ((return (apply orig-fun args)))
-    (zp/play-sound-turn-page)
-    return))
+  (prog1
+      (apply orig-fun args)
+    (zp/play-sound-turn-page)))
 
 (zp/advise-commands
  add
