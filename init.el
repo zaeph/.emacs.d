@@ -7584,14 +7584,26 @@ Every ELEM in LIST is formatted as follows:
 (defun zp/org-kill-indirect-buffer ()
   "Kill the current buffer if it is an indirect buffer."
   (interactive)
-  (if (not (eq (buffer-base-buffer) nil))
-      (progn
-        (condition-case nil
-            (kill-buffer-and-window)
-          (user-error nil))
-        (message "Killed indirect buffer and window.")
-        (run-hooks 'zp/org-after-view-change-hook))
-    (user-error "Not in an indirect buffer")))
+  (let* ((other (and (not (one-window-p))
+                     (save-excursion
+                       (other-window -1)
+                       (prog1 (current-buffer)
+                         (other-window 1)))))
+         (is-agenda (when other
+                      (with-current-buffer other
+                        (derived-mode-p 'org-agenda-mode))))
+         (indirect (not (buffer-base-buffer))))
+    (unless (or (not other)
+                (not indirect)
+                is-agenda)
+      (user-error "No org window to kill"))
+    (cond (is-agenda
+           (kill-buffer-and-window)
+           (message "Killed indirect buffer."))
+          (t
+           (kill-buffer)
+           (message "Killed indirect buffer and window.")))
+    (run-hooks 'zp/org-after-view-change-hook)))
 
 (defun zp/org-agenda-kill-other-buffer-and-window ()
   "Kill the other buffer and window if there is more than one window in `org-agenda’."
@@ -7601,19 +7613,15 @@ Every ELEM in LIST is formatted as follows:
                        (other-window 1)
                        (prog1 (current-buffer)
                          (other-window -1)))))
-         (is-org (with-current-buffer other
-                   (derived-mode-p 'org-mode))))
+         (is-org (when other
+                   (with-current-buffer other
+                     (derived-mode-p 'org-mode)))))
     (unless (or (not other)
                 is-org)
       (user-error "No org window to kill"))
     (when is-org
       (zp/kill-other-buffer-and-window)
-      (run-hooks 'zp/org-after-view-change-hook)
-      ))
-  ;; (unless (string-match "*Org Agenda*" (buffer-name))
-  ;;   (other-window 1))
-  ;; (zp/kill-other-buffer-and-window)
-  )
+      (run-hooks 'zp/org-after-view-change-hook))))
 
 (defun zp/org-agenda-tree-to-indirect-buffer (dedicated)
   "Show the subtree corresponding to the current entry in an indirect buffer.
