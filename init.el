@@ -2814,6 +2814,8 @@ off.")
 (defun zp/org-narrow-up-heading (arg)
   "Move to the upper subtree, and narrow the buffer to it."
   (interactive "P")
+  (unless (buffer-narrowed-p)
+    (user-error "No narrowing"))
   (let ((pos-before (point)))
     (setq-local zp/org-narrow-previous-position pos-before)
     (widen)
@@ -2832,8 +2834,6 @@ off.")
 
 If on a level-1 heading, overview the file instead."
   (interactive "P")
-  (unless (buffer-narrowed-p)
-    (user-error "No narrowing"))
   (if (equal (org-outline-level) 1)
       (zp/org-overview arg)
     (zp/org-narrow-up-heading arg)))
