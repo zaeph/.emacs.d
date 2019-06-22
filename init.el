@@ -4908,7 +4908,7 @@ passing arguments. This does."
 
 (zp/create-hydra-org-refile nil
     "
-^Life^              ^Prog^                  ^Pro & Act^        ^Mental^
+   ^Life^              ^Prog^                  ^Pro & Act^        ^Mental^
 ^^^^^^^^----------------------------------------------------------------------
 _i_: Inbox          _h_: Hacking            _u_: University    _A_: Awakening
 _o_: Life           _l_: Linux              _r_: Research      _P_: Psychotherapy
