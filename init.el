@@ -2738,12 +2738,15 @@ off.")
 (defun zp/org-overview (arg)
   (interactive "P")
   (let ((pos-before (point))
-        (indirectp (not (buffer-file-name))))
+        (indirect (not (buffer-file-name))))
     (setq-local zp/org-narrow-previous-position pos-before)
     ;; Do not widen buffer if in indirect buffer
-    (unless indirectp
+    (save-excursion
+      (goto-char (point-min))
       (widen)
-      (org-display-inline-images))
+      (if indirect
+          (org-narrow-to-subtree)
+        (org-display-inline-images)))
     (zp/org-fold arg)))
 
 (defun zp/org-fold (arg)
