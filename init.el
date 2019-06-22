@@ -7547,11 +7547,6 @@ windows."
   (zp/org-agenda-tree-to-indirect-buffer arg)
   (delete-other-windows))
 
-(defun zp/org-agenda-tree-to-indirect-buffer-permanent (arg)
-  (interactive "P")
-  (let ((current-prefix-arg '(1)))
-    (zp/org-agenda-tree-to-indirect-buffer arg)))
-
 (defun move-beginning-of-line-dwim (arg)
   "Move point back to indentation or beginning of line
 
