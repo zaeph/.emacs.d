@@ -4617,9 +4617,8 @@ TITLE and URL are those of the webpage."
 (defun zp/org-refile-internal (file headline-or-olp &optional arg)
   "Refile to a specific location.
 
-With a 'C-u' ARG argument, we jump to that location (see
-`org-refile').
-Use `org-agenda-refile' in `org-agenda' mode.
+With a ‘C-u’ prefix, we jump to that location (see ‘org-refile’).
+Use ‘org-agenda-refile’ in ‘org-agenda’ mode.
 
 If HEADLINE-OR-OLP is a string, interprets it as a heading.  If
 HEADLINE-OR-OLP is a list, interprets it as an olp path (without
@@ -4639,6 +4638,9 @@ the filename)."
       (org-refile arg nil rfloc))))
 
 (defun zp/org-refile (jump)
+  "Move the entry or entries at point to another heading.
+
+When JUMP is non-nil, jump to that other heading instead."
   (interactive "P")
   (let (;; (org-refile-targets '((nil :maxlevel . 9)))
         (capturing (and (boundp 'org-capture-mode) org-capture-mode))
@@ -4677,10 +4679,18 @@ the filename)."
 
 
 (defun zp/org-jump ()
+  "Jump to another heading."
   (interactive)
   (goto-char (save-excursion (zp/org-refile t))))
 
 (defun zp/org-refile-dwim (arg)
+"Conditionally move the entry or entries at point to another heading.
+
+With a ‘C-u’ prefix, refile to another heading within the current
+restriction.
+
+With two ‘C-u’ prefixes, refile to another heading in the other
+window’s buffer."
   (interactive "P")
   (pcase arg
     ('(4) (if (buffer-narrowed-p)
@@ -4690,6 +4700,10 @@ the filename)."
     (_ (zp/hydra-org-refile))))
 
 (defun zp/org-jump-dwim (arg)
+  "Conditionally jump to another heading.
+
+With a ‘C-u’ prefix, jump to another heading within the current
+restriction."
   (interactive "P")
   (pcase arg
     ('(4) (if (buffer-narrowed-p)
@@ -4697,25 +4711,31 @@ the filename)."
             (zp/org-jump)))
     (_ (zp/hydra-org-jump/body))))
 
-(defun zp/org-refile-main (jump)
-  "Refile to headline in main org-agenda file (life.org.gpg).
+(defvar zp/org-agenda-files-primary nil
+  "Primary org-agenda file.")
 
-If JUMP is non-nil, jump instead."
+(setq zp/org-agenda-files-primary "~/org/life.org.gpg")
+
+(defun zp/org-refile-main (jump)
+  "Refile current heading to another in org-agenda file.
+
+If JUMP is non-nil, jump to it instead."
   (interactive "P")
-  (let ((org-refile-targets '(("~/org/life.org.gpg" :maxlevel . 1))))
+  (let ((org-refile-targets '((zp/org-agenda-files-primary :maxlevel . 1))))
     (zp/org-refile jump)))
 
 (defun zp/org-jump-main ()
-  "Jump to headline in main org-agenda file (life.org.gpg)."
+  "Jump to heading in main org-agenda file."
   (interactive)
   (let ((dedicated zp/hydra-org-jump-dedicated-buffer))
-    (with-current-buffer (find-file-noselect "~/org/life.org.gpg")
+    (with-current-buffer (find-file-noselect zp/org-agenda-files-primary)
       (save-excursion
         (zp/org-refile-main t)
         (zp/org-tree-to-indirect-buffer-folded
          (when zp/hydra-org-jump-dedicated-buffer dedicated))))))
 
 (defun zp/org-refile-target-verify-exclude-separators ()
+  "Exclude separators line from refile targets."
   (let ((regex "^\\* -+.*-+$"))
     ;; (message (buffer-substring-no-properties (point) (line-end-position)))
     (if (re-search-forward regex (line-end-position) t)
@@ -4723,6 +4743,7 @@ If JUMP is non-nil, jump instead."
       t)))
 
 (defun zp/org-refile-target-verify-restricted ()
+  "Exclude refile targets which aren’t in the current restriction."
   (let ((regex "^\\* -+.*-+$"))
     ;; (message (buffer-substring-no-properties (point) (line-end-position)))
     (cond ((< (point) min)
@@ -4736,7 +4757,7 @@ If JUMP is non-nil, jump instead."
     ))
 
 (defun zp/org-refile-restricted (jump)
-  "Refile to headline in current file (life.org.gpg).
+    "Refile current heading to another within the current restriction.
 
 If JUMP is non-nil, jump instead."
   (interactive "P")
@@ -4750,7 +4771,7 @@ If JUMP is non-nil, jump instead."
     (zp/org-refile jump)))
 
 (defun zp/org-jump-restricted ()
-  "Jump to headline in current org-agenda file (life.org.gpg)."
+  "Jump to a heading within the current restriction."
   (interactive)
   (let ((indirect (not (buffer-file-name)))
         target
@@ -4769,7 +4790,7 @@ If JUMP is non-nil, jump instead."
 (defun zp/org-tree-to-indirect-buffer-folded (dedicated)
   "Clone tree to indirect buffer in a folded state.
 
-When called with a C-u argument or when DEDICATED is non-nil,
+When called with a ‘C-u’ prefix or when DEDICATED is non-nil,
 create a dedicated frame."
   (interactive "P")
   (let ((org-indirect-buffer-display 'current-window)
@@ -4793,6 +4814,7 @@ create a dedicated frame."
     (org-show-children)))
 
 (defun zp/org-refile-to-other-buffer ()
+  "Refile current heading to another within the other window’s buffer."
   (interactive)
   (let* ((current (current-buffer))
          (other (save-excursion
@@ -4821,6 +4843,9 @@ create a dedicated frame."
     (other-window -1)))
 
 (defun zp/org-refile-to (file headline-or-olp &optional jump)
+  "Refile current heading to specified destination.
+
+When JUMP is non-nil, jump to that destination instead."
   (let ((is-capturing (and (boundp 'org-capture-mode) org-capture-mode)))
     (if is-capturing
         (zp/org-capture-refile-internal file headline-or-olp jump)
@@ -4831,6 +4856,7 @@ create a dedicated frame."
     (run-hooks 'zp/org-after-refile-hook)))
 
 (defun zp/org-jump-to (file headline-or-olp)
+  "Jump to a specified destination."
   (let ((indirect zp/hydra-org-jump-indirect)
         (dedicated zp/hydra-org-jump-dedicated-buffer))
     (zp/org-refile-to file headline-or-olp t)
@@ -4865,17 +4891,23 @@ Used to check whether hydra-org-refile was exited
 abnormally (e.g. with a C-g).")
 
 (defun zp/hydra-org-refile-cleanup ()
+  "Reset variables used by zp/hydra-org-refile to their defaults"
   (setq zp/hydra-org-jump-dedicated-buffer nil
-        ;; zp/hydra-org-jump-indirect nil
         zp/hydra-org-jump-active nil))
 
 (defun zp/hydra-org-refile ()
+  "Wrapper for zp/hydra-org-refile.
+
+Ensures that the toggles are set to their default variable."
   (interactive)
   (when zp/hydra-org-refile-active
     (zp/hydra-org-refile-cleanup))
   (zp/hydra-org-refile/body))
 
 (defun zp/hydra-org-jump ()
+    "Wrapper for zp/hydra-org-jump.
+
+Ensures that the toggles are set to their default variable."
   (interactive)
   (when zp/hydra-org-refile-active
     (zp/hydra-org-refile-cleanup))
