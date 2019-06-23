@@ -3099,6 +3099,9 @@ With a C-u argument, toggle the link display."
 (define-prefix-command 'zp/helm-map)
 (global-set-key (kbd "C-c h") 'zp/helm-map)
 
+;; Increase truncation of buffer names
+(setq helm-buffer-max-length 30)                  ;Default: 20
+
 (global-set-key (kbd "M-x") 'helm-M-x)
 (global-set-key (kbd "<menu>") 'helm-M-x)
 (global-set-key (kbd "M-y") 'helm-show-kill-ring)
