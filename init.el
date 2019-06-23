@@ -199,7 +199,7 @@
   (if (string-match-p (regexp-quote "*Ledger Schedule*") (buffer-name))
       (progn
         (kill-buffer)
-        (other-window -1)
+        (select-window (previous-window))
         (delete-other-windows))))
 (define-key ledger-mode-map (kbd "S-<backspace>") 'zp/ledger-close-scheduled)
 
@@ -4811,7 +4811,7 @@ create a dedicated frame."
   (interactive)
   (let* ((current (current-buffer))
          (other (save-excursion
-                  (other-window 1)
+                  (select-window (next-window))
                   (current-buffer)))
          olp
          narrowed
@@ -4833,7 +4833,7 @@ create a dedicated frame."
     (goto-char
      (bookmark-get-position
       (plist-get org-bookmark-names-plist :last-refile)))
-    (other-window -1)))
+    (select-window (previous-window))))
 
 (defun zp/org-refile-to (file headline-or-olp &optional jump)
   "Refile current heading to specified destination.
@@ -6292,7 +6292,7 @@ i.e. change right window to bottom, or change bottom window to right."
   (if (get-buffer "*Org Agenda(n)*")
       (switch-to-buffer "*Org Agenda(n)*")
     (org-agenda arg "n"))
-  (other-window 1)
+  (select-window (next-window))
   (balance-windows))
 
 (defun zp/switch-to-agenda (arg)
@@ -7456,7 +7456,7 @@ Every ELEM in LIST is formatted as follows:
 ;; other-window with neg argument for global-set-key
 (defun other-window-reverse ()
     (interactive)
-    (other-window -1))
+    (select-window (previous-window)))
 
 ;; Toggle modes
 (define-prefix-command 'zp/toggle-map)
@@ -7597,7 +7597,7 @@ Every ELEM in LIST is formatted as follows:
   (interactive)
   (if (not (one-window-p))
       (progn
-        (other-window 1)
+        (select-window (next-window))
         (kill-buffer-and-window))
     (user-error "There is only one window in the frame.")))
 
@@ -7624,9 +7624,9 @@ Every ELEM in LIST is formatted as follows:
   (interactive)
   (let ((other (and (not (one-window-p))
                     (save-excursion
-                      (other-window 1)
+                      (select-window (next-window))
                       (prog1 (current-buffer)
-                        (other-window -1))))))
+                        (select-window (previous-window)))))))
     (with-current-buffer other
       (zp/org-kill-indirect-buffer))))
 
@@ -7642,7 +7642,7 @@ With a ‘C-u’ prefix, make a separate frame for this tree."
                    (if dedicated
                        (save-window-excursion
                          (org-agenda-tree-to-indirect-buffer nil)
-                         (other-window -1)
+                         (select-window (previous-window))
                          (current-buffer))
                      (org-agenda-tree-to-indirect-buffer nil))))
          (current-prefix-arg nil))
