@@ -4769,8 +4769,8 @@ If JUMP is non-nil, jump instead."
     (org-reveal)
     (org-beginning-of-line)))
 
-(defvar-local zp/org-ibuf-spawned-by nil
-  "Holds the method by which the current indirect buffer was spawned.
+(defvar-local zp/org-ibuf-spawned-kill-window nil
+  "When t, also kill the window when killing a spawned buffer.
 
 A spawned buffer is an indirect buffer created by
 ‘org-tree-to-indirect-buffer’ which will be replaced by
@@ -4780,10 +4780,6 @@ subsequent calls.")
     "Show when the current indirect buffer is a spawned buffer."
   :lighter " Spawn"
   nil)
-
-(defun zp/org-ibuf-toggle-spawn ()
-  (or zp/org-ibuf-spawned-by
-      (setq zp/org-ibuf-spawned-by nil)))
 
 (defun zp/org-tree-to-indirect-buffer-folded (dedicated)
   "Clone tree to indirect buffer in a folded state.
@@ -4799,8 +4795,7 @@ create a dedicated frame."
     (org-tree-to-indirect-buffer)
     (if dedicated
         (setq org-last-indirect-buffer last-ibuf)
-      (zp/org-ibuf-spawned-mode t)
-      (setq zp/org-ibuf-spawned-by 'jump))
+      (zp/org-ibuf-spawned-mode t))
     (setq buffer (current-buffer))
     (mode-line-other-buffer)
     (bury-buffer)
@@ -7611,12 +7606,13 @@ Every ELEM in LIST is formatted as follows:
   (interactive)
   (let* ((other (not (one-window-p)))
          (indirect (buffer-base-buffer))
-         (spawn zp/org-ibuf-spawned-by))
+         (spawn zp/org-ibuf-spawned-mode)
+         (kill-window zp/org-ibuf-spawned-kill-window))
     (unless (and indirect
                  spawn)
       (user-error "Not a spawned buffer"))
     (if (and other
-             (equal spawn 'agenda))
+             kill-window)
         (kill-buffer-and-window)
       (kill-buffer))
     (when (called-interactively-p 'any)
@@ -7655,7 +7651,7 @@ With a ‘C-u’ prefix, make a separate frame for this tree."
              (setq org-last-indirect-buffer last-ibuf))
             (t
              (zp/org-ibuf-spawned-mode t)
-             (setq zp/org-ibuf-spawned-by 'agenda)))
+             (setq zp/org-ibuf-spawned-kill-window t)))
       (let ((org-startup-folded nil))
         (org-set-startup-visibility))
       (org-overview)
@@ -7676,12 +7672,15 @@ With a ‘C-u’ prefix, make a separate frame for this tree."
 (defun zp/org-agenda-tree-to-indirect-buffer-without-grabbing-focus (arg)
   (interactive "P")
   (zp/org-agenda-tree-to-indirect-buffer arg)
-  (other-window -1))
+  (select-window (previous-window)))
 
 (defun zp/org-agenda-tree-to-indirect-buffer-maximise (arg)
   (interactive "P")
-  (zp/org-agenda-tree-to-indirect-buffer arg)
-  (delete-other-windows))
+  (switch-to-buffer
+   (save-window-excursion
+     (zp/org-agenda-tree-to-indirect-buffer arg)
+     (prog1 (current-buffer)
+       (setq zp/org-ibuf-spawned-kill-window nil)))))
 
 (defun move-beginning-of-line-dwim (arg)
   "Move point back to indentation or beginning of line
