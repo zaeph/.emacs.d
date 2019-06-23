@@ -8692,6 +8692,8 @@ time is displayed."
 (diminish 'volatile-highlights-mode)
 (diminish 'undo-tree-mode)
 (diminish 'whitespace-mode)
+(diminish 'magit-wip-mode)
+(diminish 'ws-butler-mode)
 
 
 
