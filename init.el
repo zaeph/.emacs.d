@@ -4766,9 +4766,22 @@ If JUMP is non-nil, jump instead."
     (org-reveal)
     (org-beginning-of-line)))
 
-(define-minor-mode org-indirect-tree-dedicated-buffer-mode
-    "Show when the current indirect buffer is a dedicated buffer mode."
-  :lighter " Dedicated")
+(defvar-local zp/org-ibuf-spawn nil
+  "t if the current indirect buffer was spawned.
+
+A spawned buffer is an indirect buffer created by
+‘org-tree-to-indirect-buffer’ which will be replaced by
+subsequent calls.")
+
+(define-minor-mode zp/org-ibuf-spawn-mode
+    "Show when the current indirect buffer is a spawned buffer."
+  :lighter " Spawn"
+  nil
+  (zp/org-ibuf-toggle-spawn))
+
+(defun zp/org-ibuf-toggle-spawn ()
+  (or zp/org-ibuf-spawn
+      (setq zp/org-ibuf-spawn nil)))
 
 (defun zp/org-tree-to-indirect-buffer-folded (dedicated)
   "Clone tree to indirect buffer in a folded state.
@@ -4782,14 +4795,13 @@ create a dedicated frame."
     (when dedicated
       (setq org-last-indirect-buffer nil))
     (org-tree-to-indirect-buffer)
-    (when dedicated
-      (setq org-last-indirect-buffer last-ibuf))
+    (if dedicated
+        (setq org-last-indirect-buffer last-ibuf)
+      (zp/org-ibuf-spawn-mode t))
     (setq buffer (current-buffer))
     (mode-line-other-buffer)
     (bury-buffer)
     (switch-to-buffer buffer t)
-    (when dedicated
-      (org-indirect-tree-dedicated-buffer-mode t))
     (let ((org-startup-folded nil))
       (org-set-startup-visibility))
     (org-overview)
@@ -5641,6 +5653,14 @@ In org-agenda, visit the subtree first."
 
 (defun zp/movement--play-sound-turn-page ()
   (zp/play-sound-turn-page))
+
+(defvar zp/org-after-view-change-hook nil
+  "Hook run after a significant view change in org-mode.")
+
+(defvar zp/org-after-refile-hook nil
+  "Hook run after a successful zp/org-refile.
+
+Also run after a jump.")
 
 (add-hook 'zp/org-after-view-change-hook #'zp/play-sound-turn-page)
 (add-hook 'zp/org-after-refile-hook #'zp/play-sound-turn-page)
@@ -7588,10 +7608,10 @@ Every ELEM in LIST is formatted as follows:
   (interactive)
   (let* ((other (not (one-window-p)))
          (indirect (buffer-base-buffer))
-         (agenda-spawn zp/org-ibuf-spawned-by-agenda))
+         (agenda-spawn zp/org-ibuf-spawn-mode))
     (unless (and indirect
                  agenda-spawn)
-      (user-error "Not an agenda spawn"))
+      (user-error "Not a spawned buffer"))
     (if (and other
              agenda-spawn)
         (kill-buffer-and-window)
@@ -7611,29 +7631,27 @@ Every ELEM in LIST is formatted as follows:
     (with-current-buffer other
       (zp/org-kill-indirect-buffer))))
 
-(defvar-local zp/org-ibuf-spawned-by-agenda nil
-  "t if the current indirect buffer was spawned by the agenda.
-
-nil otherwise.")
-
 (defun zp/org-agenda-tree-to-indirect-buffer (dedicated)
   "Show the subtree corresponding to the current entry in an indirect buffer.
 
 With a ‘C-u’ prefix, make a separate frame for this tree."
   (interactive "P")
-  (let ((last-ibuf org-last-indirect-buffer)
-        (buffer (progn
-                  (when dedicated
-                    (setq org-last-indirect-buffer nil))
-                  (org-agenda-tree-to-indirect-buffer nil)))
-        (current-prefix-arg nil))
+  (let* ((last-ibuf org-last-indirect-buffer)
+         (buffer (progn
+                   (when dedicated
+                     (setq org-last-indirect-buffer nil))
+                   (if dedicated
+                       (save-window-excursion
+                         (org-agenda-tree-to-indirect-buffer nil)
+                         (other-window -1)
+                         (current-buffer))
+                     (org-agenda-tree-to-indirect-buffer nil))))
+         (current-prefix-arg nil))
     (with-current-buffer buffer
-      (when dedicated
-        (setq org-last-indirect-buffer last-ibuf))
-      (balance-windows)
-      (setq zp/org-ibuf-spawned-by-agenda t)
-      (when dedicated
-        (org-indirect-tree-dedicated-buffer-mode t))
+      (cond (dedicated
+             (setq org-last-indirect-buffer last-ibuf))
+            (t
+             (zp/org-ibuf-spawn-mode t)))
       (let ((org-startup-folded nil))
         (org-set-startup-visibility))
       (org-overview)
@@ -7641,7 +7659,13 @@ With a ‘C-u’ prefix, make a separate frame for this tree."
       (org-show-children)
       (outline-back-to-heading)
       (org-beginning-of-line))
-    (other-window 1)
+    (when dedicated
+      (with-selected-window (and (split-window-below)
+                                 (next-window))
+        (current-buffer)
+        (switch-to-buffer buffer)))
+    (balance-windows)
+    (select-window (next-window))
     (message "Visiting tree in indirect buffer.")
     (run-hooks 'zp/org-after-view-change-hook)))
 
