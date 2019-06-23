@@ -7851,6 +7851,7 @@ mouse-1: Previous buffer\nmouse-3: Next buffer")
                     ;; mode-line-buffer-identification
                     ;; (:propertize minions-mode-line-modes face (:foreground "#777"))
                     minions-mode-line-modes
+                    minor-mode-alist
                     ;; minions-mode-line-modes
                     ;; " %l : %c"
                     evil-mode-line-tag)
