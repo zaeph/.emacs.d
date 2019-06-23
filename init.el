@@ -4769,22 +4769,21 @@ If JUMP is non-nil, jump instead."
     (org-reveal)
     (org-beginning-of-line)))
 
-(defvar-local zp/org-ibuf-spawn nil
-  "t if the current indirect buffer was spawned.
+(defvar-local zp/org-ibuf-spawned-by nil
+  "Holds the method by which the current indirect buffer was spawned.
 
 A spawned buffer is an indirect buffer created by
 ‘org-tree-to-indirect-buffer’ which will be replaced by
 subsequent calls.")
 
-(define-minor-mode zp/org-ibuf-spawn-mode
+(define-minor-mode zp/org-ibuf-spawned-mode
     "Show when the current indirect buffer is a spawned buffer."
   :lighter " Spawn"
-  nil
-  (zp/org-ibuf-toggle-spawn))
+  nil)
 
 (defun zp/org-ibuf-toggle-spawn ()
-  (or zp/org-ibuf-spawn
-      (setq zp/org-ibuf-spawn nil)))
+  (or zp/org-ibuf-spawned-by
+      (setq zp/org-ibuf-spawned-by nil)))
 
 (defun zp/org-tree-to-indirect-buffer-folded (dedicated)
   "Clone tree to indirect buffer in a folded state.
@@ -4800,7 +4799,8 @@ create a dedicated frame."
     (org-tree-to-indirect-buffer)
     (if dedicated
         (setq org-last-indirect-buffer last-ibuf)
-      (zp/org-ibuf-spawn-mode t))
+      (zp/org-ibuf-spawned-mode t)
+      (setq zp/org-ibuf-spawned-by 'jump))
     (setq buffer (current-buffer))
     (mode-line-other-buffer)
     (bury-buffer)
@@ -7611,12 +7611,12 @@ Every ELEM in LIST is formatted as follows:
   (interactive)
   (let* ((other (not (one-window-p)))
          (indirect (buffer-base-buffer))
-         (agenda-spawn zp/org-ibuf-spawn-mode))
+         (spawn zp/org-ibuf-spawned-by))
     (unless (and indirect
-                 agenda-spawn)
+                 spawn)
       (user-error "Not a spawned buffer"))
     (if (and other
-             agenda-spawn)
+             (equal spawn 'agenda))
         (kill-buffer-and-window)
       (kill-buffer))
     (when (called-interactively-p 'any)
@@ -7654,7 +7654,8 @@ With a ‘C-u’ prefix, make a separate frame for this tree."
       (cond (dedicated
              (setq org-last-indirect-buffer last-ibuf))
             (t
-             (zp/org-ibuf-spawn-mode t)))
+             (zp/org-ibuf-spawned-mode t)
+             (setq zp/org-ibuf-spawned-by 'agenda)))
       (let ((org-startup-folded nil))
         (org-set-startup-visibility))
       (org-overview)
