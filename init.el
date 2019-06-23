@@ -4857,6 +4857,8 @@ passing arguments. This does."
         (org-capture-is-refiling t)
         (kill-buffer (org-capture-get :kill-buffer 'local)))
     (org-capture-put :kill-buffer nil)
+    (when (buffer-narrowed-p)
+      (goto-char (point-min)))
     (org-capture-finalize)
     (save-window-excursion
       (with-current-buffer (or base (current-buffer))
