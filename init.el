@@ -2711,6 +2711,15 @@ off.")
         :html-scale 1.0
         :matchers ("begin" "$1" "$" "$$" "\\(" "\\[")))
 
+(defun zp/org-latex-preview-dwim (arg)
+  "Run org-latex-preview after updating the scale."
+  (interactive "P")
+  (let* ((default-scale (plist-get org-format-latex-options :scale))
+         (new-scale (+ scale text-scale-mode-amount)))
+    (setq-local org-format-latex-options
+                (plist-put org-format-latex-options :scale new-scale))
+    (org-latex-preview arg)))
+
 ;; Deactivated since migrated to Linux
 (org-babel-do-load-languages 'org-babel-load-languages
                              '((R . t)
@@ -2952,6 +2961,7 @@ With a C-u argument, toggle the link display."
   (local-set-key (kbd "M-I") 'org-indent-mode)
   (local-set-key (kbd "M-*") 'zp/org-toggle-fontifications)
   (local-set-key (kbd "C-c C-j") 'zp/org-jump-dwim)
+  (local-set-key (kbd "C-c C-x C-l") #'zp/org-latex-preview-dwim)
   ;; (local-set-key (kbd "C-c C-w") 'org-refile)
   ;; (local-set-key (kbd "C-c C-S-w") 'zp/org-refile-with-paths)
   )
