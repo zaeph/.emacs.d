@@ -4712,9 +4712,9 @@ If JUMP is non-nil, jump to it instead."
     (zp/org-refile print-message jump)
     (when (and jump
                zp/hydra-org-jump-indirect)
-      (let ((buffer (current-buffer)))
-        (zp/org-tree-to-indirect-buffer-folded zp/hydra-org-jump-dedicated-buffer)
-        (bury-buffer buffer)))))
+      (zp/org-tree-to-indirect-buffer-folded
+       zp/hydra-org-jump-dedicated-buffer
+       jump))))
 
 (defun zp/org-jump-main (&optional print-message)
   "Jump to heading in main org-agenda file."
@@ -4785,7 +4785,7 @@ subsequent calls.")
   :lighter " Spawn"
   nil)
 
-(defun zp/org-tree-to-indirect-buffer-folded (dedicated)
+(defun zp/org-tree-to-indirect-buffer-folded (dedicated &optional bury)
   "Clone tree to indirect buffer in a folded state.
 
 When called with a ‘C-u’ prefix or when DEDICATED is non-nil,
@@ -4793,16 +4793,16 @@ create a dedicated frame."
   (interactive "P")
   (let ((org-indirect-buffer-display 'current-window)
         (last-ibuf org-last-indirect-buffer)
-        (buffer))
+        (parent (current-buffer)))
     (when dedicated
       (setq org-last-indirect-buffer nil))
     (org-tree-to-indirect-buffer)
     (if dedicated
         (setq org-last-indirect-buffer last-ibuf)
       (zp/org-ibuf-spawned-mode t))
-    (setq buffer (current-buffer))
-    (mode-line-other-buffer)
-    (switch-to-buffer buffer t)
+    (with-current-buffer parent
+      (when bury
+        (bury-buffer)))
     (let ((org-startup-folded nil))
       (org-set-startup-visibility))
     (org-overview)
@@ -4897,11 +4897,9 @@ When JUMP is non-nil, jump to that destination instead."
                (not jump)
                ;; If capturing, deactivate hydra
                (setq hydra-deactivate t)))
-    (when (and jump
-               zp/hydra-org-jump-indirect)
-      (let ((buffer (current-buffer)))
-        (zp/org-tree-to-indirect-buffer-folded zp/hydra-org-jump-dedicated-buffer)
-        (bury-buffer buffer)))
+    (zp/org-tree-to-indirect-buffer-folded
+     zp/hydra-org-jump-dedicated-buffer
+     jump)
     (when print-message
       (run-hooks 'zp/org-after-refile-hook)
       (if jump
