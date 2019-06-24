@@ -4931,10 +4931,11 @@ When JUMP is non-nil, jump to that destination instead."
                           (zp/org-jump-to file headline-or-olp))
                         (current-buffer)))
          (filepath (buffer-file-name (buffer-base-buffer from-buffer)))
-         (pos (with-current-buffer from-buffer
-                (zp/org-jump-restricted)
-                (prog1 (point)
-                  (kill-buffer))))
+         (pos (save-window-excursion
+                (with-current-buffer from-buffer
+                  (zp/org-jump-restricted)
+                  (prog1 (point)
+                    (kill-buffer)))))
          (marker (save-window-excursion
                    (with-current-buffer (get-file-buffer filepath)
                      (goto-char pos)
