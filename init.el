@@ -5058,10 +5058,13 @@ Ensures that the toggles are set to their default variable."
                                    "[x]"
                                  "[ ]")
                                " dedicated") :exit nil)
-                  ("j" (progn (zp/org-jump-main)
-                              (zp/hydra-org-refile-cleanup)) "jump")))
+                  ("j" (progn (zp/org-jump-main t)
+                              ,(unless chain
+                                 `(zp/hydra-org-refile-cleanup))) "jump")))
                (t
-                `(("w" zp/org-refile-main "refile")
+                `(("w" (progn (zp/org-refile-main t)
+                              ,(unless chain
+                                 `(zp/hydra-org-refile-cleanup))) "refile")
                   ("W" zp/org-refile-with-paths "refile+paths")
                   ("0" (zp/org-refile-with-paths '(64)) "reset cache" :exit nil))))
        ,@(when name `(("<backspace>" ,hydra-back "back" :exit t)))
