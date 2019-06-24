@@ -4601,9 +4601,8 @@ TITLE and URL are those of the webpage."
 (defun zp/hydra-org-refile-chain-toggle ()
   "Toggle zp/hydra-org-refile-chain."
   (interactive)
-  (if zp/hydra-org-refile-chain
-      (setq zp/hydra-org-refile-chain nil)
-    (setq zp/hydra-org-refile-chain t)))
+  (setq zp/hydra-org-refile-chain
+        (not zp/hydra-org-refile-chain)))
 
 (defvar zp/hydra-org-jump-indirect t
   "When non-nil, jumping to a refile point is done in an indirect buffer.")
@@ -4611,9 +4610,8 @@ TITLE and URL are those of the webpage."
 (defun zp/hydra-org-jump-indirect-toggle ()
   "Toggle zp/hydra-org-jump-indirect."
   (interactive)
-  (if zp/hydra-org-jump-indirect
-      (setq zp/hydra-org-jump-indirect nil)
-    (setq zp/hydra-org-jump-indirect t)))
+  (setq zp/hydra-org-jump-indirect
+        (not zp/hydra-org-jump-indirect)))
 
 (defvar zp/hydra-org-jump-dedicated-buffer nil
   "When non-nil, jumping to a refile point is done in a dedicated buffer.")
@@ -4621,9 +4619,8 @@ TITLE and URL are those of the webpage."
 (defun zp/hydra-org-jump-dedicated-buffer-toggle ()
   "Toggle zp/hydra-org-dedicated-buffer."
   (interactive)
-  (if zp/hydra-org-jump-dedicated-buffer
-      (setq zp/hydra-org-jump-dedicated-buffer nil)
-    (setq zp/hydra-org-jump-dedicated-buffer t)))
+  (setq zp/hydra-org-jump-dedicated-buffer
+        (not zp/hydra-org-jump-dedicated-buffer)))
 
 
 
