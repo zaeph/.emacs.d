@@ -4801,7 +4801,6 @@ create a dedicated frame."
       (zp/org-ibuf-spawned-mode t))
     (setq buffer (current-buffer))
     (mode-line-other-buffer)
-    (bury-buffer)
     (switch-to-buffer buffer t)
     (let ((org-startup-folded nil))
       (org-set-startup-visibility))
@@ -4898,7 +4897,9 @@ When JUMP is non-nil, jump to that destination instead."
                (setq hydra-deactivate t)))
     (when (and jump
                zp/hydra-org-jump-indirect)
-      (zp/org-tree-to-indirect-buffer-folded zp/hydra-org-jump-dedicated-buffer))
+      (let ((buffer (current-buffer)))
+        (zp/org-tree-to-indirect-buffer-folded zp/hydra-org-jump-dedicated-buffer)
+        (bury-buffer buffer)))
     (when print-message
       (run-hooks 'zp/org-after-refile-hook)
       (if jump
