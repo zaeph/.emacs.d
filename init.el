@@ -4806,7 +4806,8 @@ create a dedicated frame."
       (org-set-startup-visibility))
     (org-overview)
     (org-show-entry)
-    (org-show-children)))
+    (org-show-children)
+    (selected-window)))
 
 (defun zp/org-refile-to-other-buffer (&optional print-message)
   "Refile current heading to another within the other window’s buffer."
