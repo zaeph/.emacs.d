@@ -4708,13 +4708,13 @@ restriction."
 
 If JUMP is non-nil, jump to it instead."
   (interactive "p")
-  (let ((org-refile-targets '((zp/org-agenda-files-primary :maxlevel . 1)))
-        (indirect zp/hydra-org-jump-indirect)
-        (dedicated zp/hydra-org-jump-dedicated-buffer))
+  (let ((org-refile-targets '((zp/org-agenda-files-primary :maxlevel . 1))))
     (zp/org-refile print-message jump)
     (when (and jump
-               indirect)
-      (zp/org-tree-to-indirect-buffer-folded dedicated))))
+               zp/hydra-org-jump-indirect)
+      (let ((buffer (current-buffer)))
+        (zp/org-tree-to-indirect-buffer-folded zp/hydra-org-jump-dedicated-buffer)
+        (bury-buffer buffer)))))
 
 (defun zp/org-jump-main (&optional print-message)
   "Jump to heading in main org-agenda file."
