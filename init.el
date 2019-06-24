@@ -4711,7 +4711,7 @@ If JUMP is non-nil, jump to it instead."
   (let ((org-refile-targets '((zp/org-agenda-files-primary :maxlevel . 1)))
         (indirect zp/hydra-org-jump-indirect)
         (dedicated zp/hydra-org-jump-dedicated-buffer))
-    (zp/org-refile t jump)
+    (zp/org-refile print-message jump)
     (when (and jump
                indirect)
       (zp/org-tree-to-indirect-buffer-folded dedicated))))
