@@ -5623,17 +5623,30 @@ running."
 ;;            (scroll-right current-scroll)
 ;;            (scroll-left goal t)))))))
 
-(defun zp/org-noter (arg)
-  "Start org-noter session.
+(defun zp/org-noter-indirect (arg)
+  "Ensure that org-noter starts in an indirect buffer.
 
-In org-agenda, visit the subtree first."
+Without this wrapper, org-noter creates a direct buffer
+restricted to the notes, but this causes problems with the refile
+system.  Namely, the notes buffer gets identified as an
+agenda-files buffer.
+
+This wrapper addresses it by having org-noter act on an indirect
+buffer, thereby propagating the indirectness."
+  (interactive "P")
+  (with-selected-window (zp/org-tree-to-indirect-buffer-folded t)
+    (org-noter arg)
+    (kill-buffer)))
+
+(defun zp/org-noter-dwim (arg)
+  "Run org-noter on the current tree, even if we’re in the agenda."
   (interactive "P")
   (if (derived-mode-p 'org-agenda-mode)
       (let ((marker (get-text-property (point) 'org-marker)))
         (with-current-buffer (marker-buffer marker)
           (goto-char marker)
-          (org-noter arg)))
-    (org-noter arg)))
+          (zp/org-noter-indirect arg)))
+    (zp/org-noter-indirect arg)))
 
 
 
@@ -7568,7 +7581,7 @@ Every ELEM in LIST is formatted as follows:
 (global-set-key (kbd "C-x C-c") 'delete-frame)               ;magnars
 (global-set-key (kbd "C-c c") 'calendar)
 (global-set-key (kbd "C-c n") 'org-capture)
-(global-set-key (kbd "C-c N") 'zp/org-noter)
+(global-set-key (kbd "C-c N") 'zp/org-noter-dwim)
 (global-set-key (kbd "C-c C-=") 'increment-integer-at-point)
 (global-set-key (kbd "C-c C--") 'decrement-integer-at-point)
 (global-set-key (kbd "C-c d") 'zp/helm-ispell-preselect)
