@@ -2744,13 +2744,13 @@ off.")
 (add-to-list 'safe-local-variable-values
              '( . nil))
 
-(defun zp/org-overview (arg &optional keep-restriction)
+(defun zp/org-overview (&optional arg keep-restriction)
   "Switch to overview mode, showing only top-level headlines.
 
 With a ‘C-u’ prefix, do not move point.
 
 When KEEP-RESTRICTION is non-nil, do not widen the buffer."
-  (interactive "P")
+  (interactive "p")
   (let ((pos-before (point))
         (indirect (not (buffer-file-name))))
     (setq-local zp/org-narrow-previous-position pos-before)
@@ -2762,12 +2762,13 @@ When KEEP-RESTRICTION is non-nil, do not widen the buffer."
               keep-restriction)
           (org-narrow-to-subtree)
         (org-display-inline-images)))
-    (zp/org-fold arg)
-    (when (called-interactively-p 'any)
+    (zp/org-fold (or keep-restriction
+                     (> arg 1)))
+    (when arg
       (message "Showing overview.")
       (run-hooks 'zp/org-after-view-change-hook))))
 
-(defun zp/org-fold (arg)
+(defun zp/org-fold (&optional keep-restriction)
   (interactive "P")
   (let ((indirectp (not (buffer-file-name)))
         (org-startup-folded 'overview))
@@ -2775,13 +2776,14 @@ When KEEP-RESTRICTION is non-nil, do not widen the buffer."
     (org-set-startup-visibility)
     ;; Fold trees
     (org-overview)
-    (when (not arg)
+    (unless keep-restriction
       (goto-char (point-min)))
-    (recenter-top-bottom)
+    (recenter)
     (save-excursion
       (goto-char (point-min))
       (org-show-entry)
-      (org-show-children))))
+      (when (org-at-heading-p)
+        (org-show-children)))))
 
 (defun zp/org-show-all (arg)
   (interactive "p")
@@ -2794,10 +2796,10 @@ When KEEP-RESTRICTION is non-nil, do not widen the buffer."
       (org-display-inline-images))
     ;; Unfold everything
     (org-show-all)
-    (when (not arg)
+    (unless (eq arg 4)
       (goto-char (point-min)))
     (recenter-top-bottom)
-    (when (called-interactively-p 'any)
+    (when arg
       (message "Showing everything.")
       (run-hooks 'zp/org-after-view-change-hook))))
 
@@ -4622,32 +4624,18 @@ TITLE and URL are those of the webpage."
   (setq zp/hydra-org-jump-dedicated-buffer
         (not zp/hydra-org-jump-dedicated-buffer)))
 
+(defvar zp/hydra-org-refile-from nil
+  "When non-nil, refiling is done from a refile point to another one.")
+
+(defun zp/hydra-org-refile-from-toggle ()
+  "Toggle zp/hydra-org-from."
+  (interactive)
+  (setq zp/hydra-org-refile-from
+        (not zp/hydra-org-refile-from)))
 
 
-(defun zp/org-refile-internal (file headline-or-olp &optional arg)
-  "Refile to a specific location.
 
-With a ‘C-u’ prefix, we jump to that location (see ‘org-refile’).
-Use ‘org-agenda-refile’ in ‘org-agenda’ mode.
-
-If HEADLINE-OR-OLP is a string, interprets it as a heading.  If
-HEADLINE-OR-OLP is a list, interprets it as an olp path (without
-the filename)."
-  (let* ((pos (with-current-buffer
-                  (or (get-buffer file) ;Is the file open in a buffer already?
-                      (find-file-noselect file)) ;Otherwise, try to find the file by name (Note, default-directory matters here if it isn't absolute)
-                (or (if (not (listp headline-or-olp))
-                        (org-find-exact-headline-in-buffer headline-or-olp)
-                      (org-find-olp `(,(buffer-file-name) ,@headline-or-olp)))
-                    (error "Can't find headline-or-olp `%s'" headline-or-olp))))
-         (filepath (buffer-file-name (marker-buffer pos))) ;If we're given a relative name, find absolute path
-         (rfloc (list headline-or-olp filepath nil pos)))
-    (if (and (eq major-mode 'org-agenda-mode)
-             (not arg)) ;Don't use org-agenda-refile if we're just jumping
-        (org-agenda-refile nil rfloc)
-      (org-refile arg nil rfloc))))
-
-(defun zp/org-refile (jump)
+(defun zp/org-refile (&optional print-message jump)
   "Move the entry or entries at point to another heading.
 
 When JUMP is non-nil, jump to that other heading instead."
@@ -4668,16 +4656,21 @@ When JUMP is non-nil, jump to that other heading instead."
            (org-agenda-refile))
           (t
            (org-refile jump)))
-    (run-hooks 'zp/org-after-refile-hook)
+    (when print-message
+      (run-hooks 'zp/org-after-refile-hook)
+      (message "Refiled tree."))
     (setq target (point))))
 
-(defun zp/org-jump ()
+(defun zp/org-jump (&optional print-message)
   "Jump to another heading."
-  (interactive)
-  (goto-char (save-excursion (zp/org-refile t))))
+  (interactive "p")
+  (goto-char (save-excursion (zp/org-refile nil t)))
+  (when print-message
+      (run-hooks 'zp/org-after-refile-hook)
+      (message "Jumped.")))
 
 (defun zp/org-refile-dwim (arg)
-"Conditionally move the entry or entries at point to another heading.
+  "Conditionally move the entry or entries at point to another heading.
 
 With a ‘C-u’ prefix, refile to another heading within the current
 restriction.
@@ -4687,9 +4680,9 @@ window’s buffer."
   (interactive "P")
   (pcase arg
     ('(4) (if (buffer-narrowed-p)
-              (zp/org-refile-restricted nil)
-            (zp/org-refile nil)))
-    ('(16) (zp/org-refile-to-other-buffer))
+              (zp/org-refile-restricted t)
+            (zp/org-refile t)))
+    ('(16) (zp/org-refile-to-other-buffer t))
     (_ (zp/hydra-org-refile))))
 
 (defun zp/org-jump-dwim (arg)
@@ -4700,8 +4693,8 @@ restriction."
   (interactive "P")
   (pcase arg
     ('(4) (if (buffer-narrowed-p)
-              (zp/org-jump-restricted)
-            (zp/org-jump)))
+              (zp/org-jump-restricted t)
+            (zp/org-jump t)))
     (_ (zp/hydra-org-jump/body))))
 
 (defvar zp/org-agenda-files-primary nil
@@ -4709,23 +4702,26 @@ restriction."
 
 (setq zp/org-agenda-files-primary "~/org/life.org.gpg")
 
-(defun zp/org-refile-main (jump)
+(defun zp/org-refile-main (&optional print-message jump)
   "Refile current heading to another in org-agenda file.
 
 If JUMP is non-nil, jump to it instead."
-  (interactive "P")
-  (let ((org-refile-targets '((zp/org-agenda-files-primary :maxlevel . 1))))
-    (zp/org-refile jump)))
+  (interactive "p")
+  (let ((org-refile-targets '((zp/org-agenda-files-primary :maxlevel . 1)))
+        (indirect zp/hydra-org-jump-indirect)
+        (dedicated zp/hydra-org-jump-dedicated-buffer))
+    (zp/org-refile t jump)
+    (when (and jump
+               indirect)
+      (zp/org-tree-to-indirect-buffer-folded dedicated))))
 
-(defun zp/org-jump-main ()
+(defun zp/org-jump-main (&optional print-message)
   "Jump to heading in main org-agenda file."
-  (interactive)
+  (interactive "p")
   (let ((dedicated zp/hydra-org-jump-dedicated-buffer))
+    ;; Go to primary file to suppress its name from the target points
     (with-current-buffer (find-file-noselect zp/org-agenda-files-primary)
-      (save-excursion
-        (zp/org-refile-main t)
-        (zp/org-tree-to-indirect-buffer-folded
-         (when zp/hydra-org-jump-dedicated-buffer dedicated))))))
+      (zp/org-refile-main print-message t))))
 
 (defun zp/org-refile-target-verify-exclude-separators ()
   "Exclude separators line from refile targets."
@@ -4749,11 +4745,11 @@ If JUMP is non-nil, jump to it instead."
            (zp/org-refile-target-verify-exclude-separators)))
     ))
 
-(defun zp/org-refile-restricted (jump)
+(defun zp/org-refile-restricted (&optional print-message jump)
     "Refile current heading to another within the current restriction.
 
 If JUMP is non-nil, jump instead."
-  (interactive "P")
+  (interactive "p")
   (let ((org-refile-targets '((nil :maxlevel . 9)))
         ;; (org-refile-use-outline-path t)
         (org-refile-target-verify-function 'zp/org-refile-target-verify-restricted)
@@ -4761,22 +4757,22 @@ If JUMP is non-nil, jump instead."
         ;; Restriction info for verify function
         (min (point-min))
         (max (point-max)))
-    (zp/org-refile jump)))
+    (zp/org-refile print-message jump)))
 
-(defun zp/org-jump-restricted ()
+(defun zp/org-jump-restricted (&optional print-message)
   "Jump to a heading within the current restriction."
-  (interactive)
+  (interactive "p")
   (let ((indirect (not (buffer-file-name)))
         target
         (buffer (current-buffer)))
     (save-excursion
-      (setq target (zp/org-refile-restricted t)))
+      (setq target (zp/org-refile-restricted print-message t)))
     (when indirect (switch-to-buffer buffer))
     (goto-char target)
     (org-reveal)
     (org-beginning-of-line)))
 
-(defvar-local zp/org-ibuf-spawned-kill-window nil
+(defvar-local zp/org-ibuf-spawned-also-kill-window nil
   "When t, also kill the window when killing a spawned buffer.
 
 A spawned buffer is an indirect buffer created by
@@ -4813,55 +4809,57 @@ create a dedicated frame."
     (org-show-entry)
     (org-show-children)))
 
-(defun zp/org-refile-to-other-buffer ()
+(defun zp/org-refile-to-other-buffer (&optional print-message)
   "Refile current heading to another within the other window’s buffer."
   (interactive)
-  (let* ((current (current-buffer))
-         (other (save-excursion
-                  (select-window (next-window))
-                  (current-buffer)))
-         olp
-         narrowed
-         (pos (with-current-buffer other
-                (save-excursion
-                  (zp/org-jump-dwim '(4))
-                  (setq olp (org-get-outline-path t))
-                  (setq narrowed (buffer-narrowed-p))
-                  (point-marker))))
-         (filepath (or (buffer-file-name other)
-                       (buffer-file-name (buffer-base-buffer other))))
-         (rfloc (list olp filepath nil pos)))
-    (org-refile nil nil rfloc)
-    (run-hooks 'zp/org-after-refile-hook)
-    (when narrowed
-      (with-current-buffer other
-        (zp/org-overview t t)))
-    (switch-to-buffer other)
-    (goto-char
-     (bookmark-get-position
-      (plist-get org-bookmark-names-plist :last-refile)))
-    (select-window (previous-window))))
+  (let* ((other (next-window))
+         (filepath (with-selected-window other
+                     (or (buffer-file-name)
+                         (buffer-file-name (buffer-base-buffer)))))
+         (pos (with-selected-window other
+                (save-restriction
+                  (zp/org-jump-restricted)
+                  (point))))
+         (marker (save-window-excursion
+                   (with-current-buffer (get-file-buffer filepath)
+                     (goto-char pos)
+                     (point-marker)))))
+    (zp/org-refile-to filepath marker print-message)
+    ;; (run-hooks 'zp/org-after-refile-hook)
+    (with-selected-window other
+      (zp/org-overview t t)
+      (goto-char
+       (bookmark-get-position
+        (plist-get org-bookmark-names-plist :last-refile)))
+      (org-reveal)
+      (org-beginning-of-line))
+    (set-marker marker nil)))
 
-(defun zp/org-refile-to (file headline-or-olp &optional jump)
-  "Refile current heading to specified destination.
+(defun zp/org-refile-internal (file headline-or-olp &optional arg)
+  "Refile to a specific location.
 
-When JUMP is non-nil, jump to that destination instead."
-  (let ((is-capturing (and (boundp 'org-capture-mode) org-capture-mode)))
-    (if is-capturing
-        (zp/org-capture-refile-internal file headline-or-olp jump)
-      (zp/org-refile-internal file headline-or-olp (if jump jump nil)))
-    (cond (is-capturing
-           ;; If capturing, deactivate hydra
-           (setq hydra-deactivate t)))
-    (run-hooks 'zp/org-after-refile-hook)))
+With a ‘C-u’ prefix, we jump to that location (see ‘org-refile’).
+Use ‘org-agenda-refile’ in ‘org-agenda’ mode.
 
-(defun zp/org-jump-to (file headline-or-olp)
-  "Jump to a specified destination."
-  (let ((indirect zp/hydra-org-jump-indirect)
-        (dedicated zp/hydra-org-jump-dedicated-buffer))
-    (zp/org-refile-to file headline-or-olp t)
-    (when indirect
-      (zp/org-tree-to-indirect-buffer-folded dedicated))))
+If HEADLINE-OR-OLP is a string, interprets it as a heading.  If
+HEADLINE-OR-OLP is a list, interprets it as an olp path (without
+the filename)."
+  (let* ((pos (with-current-buffer
+                  (or (get-buffer file) ;Is the file open in a buffer already?
+                      (find-file-noselect file)) ;Otherwise, try to find the file by name (Note, default-directory matters here if it isn't absolute)
+                (or (cond ((markerp headline-or-olp)
+                           headline-or-olp)
+                          ((listp headline-or-olp)
+                           (org-find-olp `(,(buffer-file-name) ,@headline-or-olp)))
+                          (t
+                           (org-find-exact-headline-in-buffer headline-or-olp)))
+                    (error "Can't find headline-or-olp `%s'" headline-or-olp))))
+         (filepath (buffer-file-name (marker-buffer pos))) ;If we're given a relative name, find absolute path
+         (rfloc (list nil filepath nil pos)))
+    (if (and (eq major-mode 'org-agenda-mode)
+             (not arg)) ;Don't use org-agenda-refile if we're just jumping
+        (org-agenda-refile nil rfloc)
+      (org-refile arg nil rfloc))))
 
 (defun zp/org-capture-refile-internal (file headline-or-olp &optional arg)
   "Copied from ‘org-capture-refile’ since it doesn't allow
@@ -4884,7 +4882,62 @@ passing arguments. This does."
          (zp/org-refile-internal file headline-or-olp arg))))
     (when kill-buffer (kill-buffer base))))
 
+(defun zp/org-refile-to (file headline-or-olp &optional print-message jump)
+  "Refile current heading to specified destination.
 
+When JUMP is non-nil, jump to that destination instead."
+  (interactive "p")
+  (let ((is-capturing (and (boundp 'org-capture-mode) org-capture-mode)))
+    (if (and is-capturing
+             (not jump))
+        (zp/org-capture-refile-internal file headline-or-olp jump)
+      (zp/org-refile-internal file headline-or-olp jump))
+    (when (and is-capturing
+               (not jump)
+               ;; If capturing, deactivate hydra
+               (setq hydra-deactivate t)))
+    (when (and jump
+               zp/hydra-org-jump-indirect)
+      (zp/org-tree-to-indirect-buffer-folded zp/hydra-org-jump-dedicated-buffer))
+    (when print-message
+      (run-hooks 'zp/org-after-refile-hook)
+      (if jump
+          (message "Jumped.")
+        (message "Refiled tree.")))))
+
+(defun zp/org-jump-to (file headline-or-olp &optional print-message)
+  "Jump to a specified destination."
+  (interactive "p")
+  (zp/org-refile-to file headline-or-olp print-message t))
+
+(defun zp/org-refile-to-or-from (file headline-or-olp &optional print-message jump)
+  "Refile current heading to or from specified destination."
+  (interactive "p")
+  (let ((from zp/hydra-org-refile-from))
+    (if zp/hydra-org-refile-from
+        (zp/org-refile-from file headline-or-olp print-message jump)
+      (zp/org-refile-to file headline-or-olp print-message jump))))
+
+(defun zp/org-jump-to-or-from (file headline-or-olp &optional print-message)
+  (interactive "p")
+  (zp/org-refile-to-or-from file headline-or-olp print-message t))
+
+(defun zp/org-refile-from (file headline-or-olp &optional print-message jump)
+  (let* ((from-buffer (save-window-excursion
+                        (let ((zp/hydra-org-jump-dedicated-buffer t))
+                          (zp/org-jump-to file headline-or-olp))
+                        (current-buffer)))
+         (filepath (buffer-file-name (buffer-base-buffer from-buffer)))
+         (pos (with-current-buffer from-buffer
+                (zp/org-jump-restricted)
+                (prog1 (point)
+                  (kill-buffer))))
+         (marker (save-window-excursion
+                   (with-current-buffer (get-file-buffer filepath)
+                     (goto-char pos)
+                     (point-marker)))))
+    (zp/org-refile-to filepath marker print-message jump)
+    (set-marker marker nil)))
 
 (defvar zp/hydra-org-refile-active nil
   "t if currently in a hydra-org-refile session.
@@ -4895,7 +4948,8 @@ abnormally (e.g. with a C-g).")
 (defun zp/hydra-org-refile-cleanup ()
   "Reset variables used by zp/hydra-org-refile to their defaults"
   (setq zp/hydra-org-jump-dedicated-buffer nil
-        zp/hydra-org-jump-active nil))
+        zp/hydra-org-jump-active nil
+        zp/hydra-org-refile-from nil))
 
 (defun zp/hydra-org-refile ()
   "Wrapper for zp/hydra-org-refile.
@@ -4942,8 +4996,8 @@ Ensures that the toggles are set to their default variable."
                                    (upcase protocol-name)
                                    "]\n" docstring "\n"))
          (command (pcase protocol
-                    ('refile 'zp/org-refile-to)
-                    ('jump 'zp/org-jump-to)))
+                    ('refile 'zp/org-refile-to-or-from)
+                    ('jump 'zp/org-jump-to-or-from)))
          (jumping (if (eq protocol 'jump) t)))
     `(defhydra ,hydra
          (:foreign-keys warn
@@ -4962,7 +5016,7 @@ Ensures that the toggles are set to their default variable."
                           (file (car file+olp))
                           (olp (cdr file+olp)))
                      `(,key (progn
-                              (,command ,file ',olp)
+                              (,command ,file ',olp t)
                               ,(unless chain
                                  `(zp/hydra-org-refile-cleanup))))))
                  targets)
@@ -4984,6 +5038,11 @@ Ensures that the toggles are set to their default variable."
                         "[x]"
                       "[ ]")
                     " chain") :exit t)
+       ("F" zp/hydra-org-refile-from-toggle
+            (concat (if zp/hydra-org-refile-from
+                        "[x]"
+                      "[ ]")
+                    " from") :exit nil)
        ,@(cond (jumping
                 `(("T" zp/hydra-org-jump-indirect-toggle
                        (concat (if zp/hydra-org-jump-indirect
@@ -5141,7 +5200,7 @@ _d_: Read
 "
   (("." "/home/zaeph/org/life.org.gpg" "Film")
    ("l" "/home/zaeph/org/life.org.gpg" "Film" "List")
-   ("d" "/home/zaeph/org/life.org.gpg" "Film" "Watchedn"))
+   ("d" "/home/zaeph/org/life.org.gpg" "Film" "Watched"))
   nil
   media)
 
@@ -7614,7 +7673,7 @@ Every ELEM in LIST is formatted as follows:
   (let* ((other (not (one-window-p)))
          (indirect (buffer-base-buffer))
          (spawn zp/org-ibuf-spawned-mode)
-         (kill-window zp/org-ibuf-spawned-kill-window))
+         (kill-window zp/org-ibuf-spawned-also-kill-window))
     (unless (and indirect
                  spawn)
       (user-error "Not a spawned buffer"))
@@ -7643,34 +7702,31 @@ Every ELEM in LIST is formatted as follows:
 With a ‘C-u’ prefix, make a separate frame for this tree."
   (interactive "P")
   (let* ((last-ibuf org-last-indirect-buffer)
-         (buffer (progn
-                   (when dedicated
-                     (setq org-last-indirect-buffer nil))
-                   (if dedicated
-                       (save-window-excursion
-                         (org-agenda-tree-to-indirect-buffer nil)
-                         (select-window (previous-window))
-                         (current-buffer))
-                     (org-agenda-tree-to-indirect-buffer nil))))
-         (current-prefix-arg nil))
+         (buffer (if dedicated
+                     (save-window-excursion
+                       (setq org-last-indirect-buffer nil)
+                       (org-agenda-tree-to-indirect-buffer nil)
+                       (select-window (previous-window))
+                       (current-buffer))
+                   (org-agenda-tree-to-indirect-buffer nil))))
     (with-current-buffer buffer
       (cond (dedicated
-             (setq org-last-indirect-buffer last-ibuf))
+             )
+            (t
+             )))
+    (with-selected-window (if dedicated
+                              (and (split-window-below)
+                                   (next-window))
+                            (next-window))
+      (cond (dedicated
+             (setq org-last-indirect-buffer last-ibuf)
+             (switch-to-buffer buffer))
             (t
              (zp/org-ibuf-spawned-mode t)
-             (setq zp/org-ibuf-spawned-kill-window t)))
-      (let ((org-startup-folded nil))
-        (org-set-startup-visibility))
-      (org-overview)
-      (org-show-entry)
-      (org-show-children)
-      (outline-back-to-heading)
-      (org-beginning-of-line))
-    (when dedicated
-      (with-selected-window (and (split-window-below)
-                                 (next-window))
-        (current-buffer)
-        (switch-to-buffer buffer)))
+             (setq zp/org-ibuf-spawned-also-kill-window t)))
+      (zp/org-overview nil t)
+          (org-back-to-heading)
+          (org-beginning-of-line))
     (balance-windows)
     (select-window (next-window))
     (message "Visiting tree in indirect buffer.")
@@ -7687,7 +7743,7 @@ With a ‘C-u’ prefix, make a separate frame for this tree."
    (save-window-excursion
      (zp/org-agenda-tree-to-indirect-buffer arg)
      (prog1 (current-buffer)
-       (setq zp/org-ibuf-spawned-kill-window nil)))))
+       (setq zp/org-ibuf-spawned-also-kill-window nil)))))
 
 (defun move-beginning-of-line-dwim (arg)
   "Move point back to indentation or beginning of line
