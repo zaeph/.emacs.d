@@ -5036,28 +5036,28 @@ Ensures that the toggles are set to their default variable."
                      `(,key ,head-hydra :exit t)))
                  heads)
        ;; Conditional actions
-       ("C" ,hydra-sister
+       ("C-c" ,hydra-sister
             (concat (if zp/hydra-org-refile-chain
                         "[x]"
                       "[ ]")
                     " chain") :exit t)
-       ("F" zp/hydra-org-refile-from-toggle
+       ("C-f" zp/hydra-org-refile-from-toggle
             (concat (if zp/hydra-org-refile-from
                         "[x]"
                       "[ ]")
                     " from") :exit nil)
        ,@(cond (jumping
-                `(("T" zp/hydra-org-jump-indirect-toggle
+                `(("C-i" zp/hydra-org-jump-indirect-toggle
                        (concat (if zp/hydra-org-jump-indirect
                                    "[x]"
                                  "[ ]")
                                " indirect") :exit nil)
-                  ("J" zp/hydra-org-jump-dedicated-buffer-toggle
+                  ("C-d" zp/hydra-org-jump-dedicated-buffer-toggle
                        (concat (if zp/hydra-org-jump-dedicated-buffer
                                    "[x]"
                                  "[ ]")
                                " dedicated") :exit nil)
-                  ("j" (progn (zp/org-jump-main t)
+                  ("C-j" (progn (zp/org-jump-main t)
                               ,(unless chain
                                  `(zp/hydra-org-refile-cleanup))) "jump")))
                (t
