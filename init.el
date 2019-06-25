@@ -2942,7 +2942,7 @@ With a C-u argument, toggle the link display."
   (local-set-key (kbd "C-c C-x l") 'zp/org-set-location)
   (local-set-key (kbd "C-c C-x d") 'org-delete-property)
   (local-set-key (kbd "C-c C-x D") 'org-insert-drawer)
-  (local-set-key (kbd "S-<backspace>") 'zp/org-kill-indirect-buffer)
+  (local-set-key (kbd "S-<backspace>") 'zp/org-kill-spawned-ibuf)
   (local-set-key (kbd "C-x n o") 'zp/org-overview)
   (local-set-key (kbd "C-x n a") 'zp/org-show-all)
   (local-set-key (kbd "C-x n u") 'zp/org-narrow-up-heading-dwim)
@@ -4780,10 +4780,18 @@ A spawned buffer is an indirect buffer created by
 ‘org-tree-to-indirect-buffer’ which will be replaced by
 subsequent calls.")
 
-(define-minor-mode zp/org-ibuf-spawned-mode
+(defvar zp/org-spawned-ibuf-mode-map
+  (let ((map (make-sparse-keymap)))
+        (define-key map (kbd "C-c C-k") #'zp/org-kill-spawned-ibuf-dwim)
+        map)
+  "Keymap for ‘zp/org-spawned-ibuf-mode’.")
+
+(define-minor-mode zp/org-spawned-ibuf-mode
     "Show when the current indirect buffer is a spawned buffer."
   :lighter " Spawn"
-  nil)
+  :keymap zp/org-spawned-ibuf-mode-map
+  (setq header-line-format
+        "Spawned indirect buffer.  Kill with ‘C-c C-k’, dedicate with ‘C-u C-c C-k."))
 
 (defun zp/org-tree-to-indirect-buffer-folded (dedicated &optional bury)
   "Clone tree to indirect buffer in a folded state.
@@ -4799,7 +4807,7 @@ create a dedicated frame."
     (org-tree-to-indirect-buffer)
     (if dedicated
         (setq org-last-indirect-buffer last-ibuf)
-      (zp/org-ibuf-spawned-mode t))
+      (zp/org-spawned-ibuf-mode t))
     (when bury
       (switch-to-buffer parent nil t)
       (bury-buffer))
@@ -7691,12 +7699,12 @@ Every ELEM in LIST is formatted as follows:
         (kill-buffer-and-window))
     (user-error "There is only one window in the frame.")))
 
-(defun zp/org-kill-indirect-buffer ()
+(defun zp/org-kill-spawned-ibuf (&optional print-message)
   "Kill the current buffer if it is an indirect buffer."
-  (interactive)
+  (interactive "p")
   (let* ((other (not (one-window-p)))
          (indirect (buffer-base-buffer))
-         (spawn zp/org-ibuf-spawned-mode)
+         (spawn zp/org-spawned-ibuf-mode)
          (kill-window zp/org-ibuf-spawned-also-kill-window))
     (unless (and indirect
                  spawn)
@@ -7705,12 +7713,28 @@ Every ELEM in LIST is formatted as follows:
              kill-window)
         (kill-buffer-and-window)
       (kill-buffer))
-    (when (called-interactively-p 'any)
-      (message "Killed indirect buffer"))
+    (when print-message
+      (message "Killed indirect buffer."))
     (run-hooks 'zp/org-after-view-change-hook)))
 
+(defun zp/org-ibuf-spawned-dedicate (&optional print-message)
+  (unless (and (boundp zp/org-spawned-ibuf-mode) zp/org-spawned-ibuf-mode)
+    (user-error "Not in a spawned buffer"))
+  (zp/org-spawned-ibuf-mode -1)
+  (setq org-last-indirect-buffer nil)
+  (setq header-line-format nil)
+  (when print-message
+    (message "Buffer is now dedicated.")))
+
+(defun zp/org-kill-spawned-ibuf-dwim (&optional dedicate)
+  "Conditionally kill the current buffer if it is an indirct buffer."
+  (interactive "P")
+  (if dedicate
+      (zp/org-ibuf-spawned-dedicate t)
+    (zp/org-kill-spawned-ibuf t)))
+
 (defun zp/org-agenda-kill-other-buffer-and-window ()
-  "Kill the other buffer and window if there is more than one window in `org-agenda’."
+  "Kill the other buffer and window if there is more than one window."
   (interactive)
   (let ((other (and (not (one-window-p))
                     (save-excursion
@@ -7718,7 +7742,7 @@ Every ELEM in LIST is formatted as follows:
                       (prog1 (current-buffer)
                         (select-window (previous-window)))))))
     (with-current-buffer other
-      (zp/org-kill-indirect-buffer))))
+      (zp/org-kill-spawned-ibuf))))
 
 (defun zp/org-agenda-tree-to-indirect-buffer (dedicated)
   "Show the subtree corresponding to the current entry in an indirect buffer.
@@ -7741,7 +7765,7 @@ With a ‘C-u’ prefix, make a separate frame for this tree."
              (setq org-last-indirect-buffer last-ibuf)
              (switch-to-buffer buffer))
             (t
-             (zp/org-ibuf-spawned-mode t)
+             (zp/org-spawned-ibuf-mode t)
              (setq zp/org-ibuf-spawned-also-kill-window t)))
       (zp/org-overview nil t)
           (org-back-to-heading)
