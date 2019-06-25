@@ -3035,7 +3035,7 @@ With a C-u argument, toggle the link display."
         ;; ("p d" . "/tmp/asus/home/zaeph/Downloads/Sharing/dl.org")
 
         ;; Journal
-        ("j" . "/home/zaeph/org/journal.org.gpg")
+        ("j" . "/home/zaeph/org/journal.org")
 
         ;; Projects
         ("p w" . "/home/zaeph/org/projects/writing/writing.org.gpg")
@@ -3905,7 +3905,7 @@ It creates 4 blocks:
 
         ("j" "Journal entries"
              (,(zp/org-agenda-block-journal))
-             ((org-agenda-files '("/home/zaeph/org/journal.org.gpg"))))
+             ((org-agenda-files '("/home/zaeph/org/journal.org"))))
 
         ("r" "Reading (-standby)"
              (,(zp/org-agenda-block-agenda "Reading")
@@ -4461,27 +4461,27 @@ TITLE and URL are those of the webpage."
               "* DONE Training%^{SWIM_DISTANCE}p%^{SWIM_DURATION}p\n%t%(print zp/swimming-workout-default)")
 
         ("j" "Journal")
-        ("jj" "Journal" entry (file+olp "/home/zaeph/org/journal.org.gpg" "Life")
+        ("jj" "Journal" entry (file+olp "/home/zaeph/org/journal.org" "Life")
               "* %^{Title|Entry}\n%T\n\n%?" :full-frame t)
-        ("ja" "Awakening" entry (file+olp "/home/zaeph/org/journal.org.gpg" "Awakening")
+        ("ja" "Awakening" entry (file+olp "/home/zaeph/org/journal.org" "Awakening")
               "* %^{Title|Entry}\n%T\n\n%?" :full-frame t)
-        ("jp" "Psychotherapy" entry (file+olp "/home/zaeph/org/journal.org.gpg" "Psychotherapy")
+        ("jp" "Psychotherapy" entry (file+olp "/home/zaeph/org/journal.org" "Psychotherapy")
               "* %^{Title|Entry}\n%T\n\n%?" :full-frame t)
-        ("jw" "Writing" entry (file+olp "/home/zaeph/org/journal.org.gpg" "Writing")
+        ("jw" "Writing" entry (file+olp "/home/zaeph/org/journal.org" "Writing")
               "* %^{Title|Entry} %^g\n%T\n\n%?" :full-frame t)
-        ("jr" "Research" entry (file+olp "/home/zaeph/org/journal.org.gpg" "Research")
+        ("jr" "Research" entry (file+olp "/home/zaeph/org/journal.org" "Research")
               "* %^{Title|Entry}\n%T\n\n%?" :full-frame t)
-        ("ju" "University" entry (file+olp "/home/zaeph/org/journal.org.gpg" "University")
+        ("ju" "University" entry (file+olp "/home/zaeph/org/journal.org" "University")
               "* %^{Title|Entry}\n%T\n\n%?" :full-frame t)
-        ("jh" "Hacking" entry (file+olp "/home/zaeph/org/journal.org.gpg" "Hacking")
+        ("jh" "Hacking" entry (file+olp "/home/zaeph/org/journal.org" "Hacking")
               "* %^{Title|Entry}\n%T\n\n%?" :full-frame t)
-        ("jm" "Music" entry (file+olp "/home/zaeph/org/journal.org.gpg" "Music")
+        ("jm" "Music" entry (file+olp "/home/zaeph/org/journal.org" "Music")
               "* %^{Title|Entry}\n%T\n\n%?" :full-frame t)
-        ("js" "Swimming" entry (file+olp "/home/zaeph/org/journal.org.gpg" "Swimming")
+        ("js" "Swimming" entry (file+olp "/home/zaeph/org/journal.org" "Swimming")
               "* %^{Title|Entry}\n%T\n\n%?" :full-frame t)
 
         ;; Daily Record of Dysfunctional Thoughts
-        ("D" "Record Dysfunctional Thoughts" entry (file+headline "/home/zaeph/org/journal.org.gpg" "Psychotherapy")
+        ("D" "Record Dysfunctional Thoughts" entry (file+headline "/home/zaeph/org/journal.org" "Psychotherapy")
              "* Record of Dysfunctional Thoughts\n%T\n** Situation\n%?\n** Emotions\n** Thoughts")
 
         ;; Pain Diary
