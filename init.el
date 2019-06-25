@@ -2702,10 +2702,13 @@ off.")
             (setq org-ditaa-jar-path "/usr/share/java/ditaa/ditaa-0.11.jar")))
 
 ;; LaTeX export
+(defvar zp/org-format-latex-default-scale 3.0
+  "Initial value for the scale of LaTeX previews.")
+
 (setq org-format-latex-options
       '(:foreground auto
         :background default
-        :scale 3.0
+        :scale zp/org-format-latex-default-scale
         :html-foreground "Black"
         :html-background "Transparent"
         :html-scale 1.0
@@ -2714,8 +2717,11 @@ off.")
 (defun zp/org-latex-preview-dwim (arg)
   "Run org-latex-preview after updating the scale."
   (interactive "P")
-  (let* ((default-scale (plist-get org-format-latex-options :scale))
-         (new-scale (+ scale text-scale-mode-amount)))
+  (let* ((default-scale 3)
+         (scale-amount (or (and (boundp 'text-scale-mode-amount)
+                                text-scale-mode-amount)
+                           0))
+         (new-scale (+ default-scale scale-amount)))
     (setq-local org-format-latex-options
                 (plist-put org-format-latex-options :scale new-scale))
     (org-latex-preview arg)))
