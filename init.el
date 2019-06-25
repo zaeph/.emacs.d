@@ -5318,8 +5318,6 @@ on init and them removes itself."
   (remove-hook 'org-agenda-finalize-hook #'zp/org-agenda-to-appt-on-load))
 
 (defun zp/org-agenda-to-appt-on-save ()
-  ;; (if (string= (buffer-file-name) (concat (getenv "HOME") "/org/life.org"))
-  ;; (if (string< (buffer-file-name) "org.gpg")
   (if (member buffer-file-name org-agenda-files)
       (zp/org-agenda-to-appt)))
 
