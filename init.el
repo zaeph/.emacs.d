@@ -4800,9 +4800,9 @@ create a dedicated frame."
     (if dedicated
         (setq org-last-indirect-buffer last-ibuf)
       (zp/org-ibuf-spawned-mode t))
-    (with-current-buffer parent
-      (when bury
-        (bury-buffer)))
+    (when bury
+      (switch-to-buffer parent nil t)
+      (bury-buffer))
     (let ((org-startup-folded nil))
       (org-set-startup-visibility))
     (org-overview)
