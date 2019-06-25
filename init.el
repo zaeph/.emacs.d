@@ -2565,7 +2565,7 @@ return `nil'."
 ;; Global values for properties
 (setq org-global-properties (quote (("Effort_ALL" . "0:05 0:10 0:15 0:30 0:45 1:00 1:30 2:00 2:30 3:00 3:30 4:00 4:30 5:00 5:30 6:00 0:00")
                                     ("STYLE_ALL" . "habit")
-                                    ("APPT_WARNTIME_ALL" . "5 10 15 20 25 30 35 40 45 50 55 60 0")
+                                    ("APPT_WARNTIME_ALL" . "0 5 10 15 20 25 30 35 40 45 50 55 60 none")
                                     ("SESSION_DURATION_ALL" . "0:45 0:15 0:20 0:30 1:00")
                                     )))
 
@@ -5276,6 +5276,30 @@ _J_: Jazz
 ;; (setq appt-display-interval 1)
 
 
+(defmacro zp/org-agenda-run-on-current-entry (&rest body)
+  "Run BODY on current org-agenda entry.
+
+Functions in BODY can make use of the following local
+variables:
+- ‘hdmarker’: Marker on the entry.
+- ‘buffer’: Buffer of the entry."
+  (interactive)
+  `(progn
+     (org-agenda-check-no-diary)
+     (let* ((hdmarker (or (org-get-at-bol 'org-hd-marker)
+                          (org-agenda-error)))
+            (buffer (marker-buffer hdmarker))
+            (inhibit-read-only t))
+       (with-current-buffer buffer
+         ,@body))))
+
+(defun zp/org-agenda-to-appt-check-warntime (arg)
+  "Check APPT_WARNTIME for current entry.
+
+Return nil if APPT_WARNTIME is ‘none’."
+  (let ((marker (get-text-property (1- (length arg)) 'org-hd-marker arg)))
+    (not (string= "none" (org-entry-get marker "APPT_WARNTIME")))))
+
 ; Use appointment data from org-mode
 (defun zp/org-agenda-to-appt (&optional arg)
   "Update appt-list based on org-agenda items."
@@ -5285,7 +5309,7 @@ _J_: Jazz
     (appt-check)
     (message "Appt has been reset"))
   (let ((inhibit-message t))
-    (org-agenda-to-appt)))
+    (org-agenda-to-appt nil 'zp/org-agenda-to-appt-check-warntime)))
 
 (defun zp/org-agenda-to-appt-on-load ()
   "Hook to `org-agenda-finalize-hook' which creates the appt-list
@@ -5294,16 +5318,9 @@ on init and them removes itself."
   (remove-hook 'org-agenda-finalize-hook #'zp/org-agenda-to-appt-on-load))
 
 (defun zp/org-agenda-to-appt-on-save ()
-  ;; (if (string= (buffer-file-name) (concat (getenv "HOME") "/org/life.org"))
-  ;; (if (string< (buffer-file-name) "org.gpg")
   (if (member buffer-file-name org-agenda-files)
       (zp/org-agenda-to-appt)))
 
-(defun zp/org-agenda-to-appt-on-state-change ()
-  "Hook to ‘org-after-todo-state-change-hook’ and update
-appt-list when an item is marked as DONE."
-  (when (string-equal org-state "DONE")
-    (zp/org-agenda-to-appt)))
 
 
 ;; ----------------------------------------
@@ -5320,9 +5337,6 @@ appt-list when an item is marked as DONE."
 
 ;; When loading org-agenda for the first time
 (add-hook 'org-agenda-finalize-hook #'zp/org-agenda-to-appt-on-load)
-
-;; When marking an item as done
-(add-hook 'org-after-todo-state-change-hook #'zp/org-agenda-to-appt-on-state-change)
 
 ;; ----------------------------------------
 ;; Remove hooks
