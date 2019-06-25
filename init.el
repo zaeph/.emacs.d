@@ -5299,11 +5299,6 @@ on init and them removes itself."
   (if (member buffer-file-name org-agenda-files)
       (zp/org-agenda-to-appt)))
 
-(defun zp/org-agenda-to-appt-on-state-change ()
-  "Hook to ‘org-after-todo-state-change-hook’ and update
-appt-list when an item is marked as DONE."
-  (when (string-equal org-state "DONE")
-    (zp/org-agenda-to-appt)))
 
 
 ;; ----------------------------------------
