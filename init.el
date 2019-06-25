@@ -3091,7 +3091,7 @@ With a C-u argument, toggle the link display."
         ("b" . "/home/zaeph/org/media.org.gpg")
 
         ;; Life
-        ("o" . "/home/zaeph/org/life.org.gpg")))
+        ("o" . "/home/zaeph/org/life.org")))
 
 (defun zp/set-shortcuts-all ()
   (zp/set-shortcuts zp/shortcuts-alist))
@@ -3411,7 +3411,7 @@ With a prefix argument, do so in all agenda buffers."
 
 (defun zp/update-org-agenda-files ()
   (interactive)
-  (setq org-agenda-files '("/home/zaeph/org/life.org.gpg"))
+  (setq org-agenda-files '("/home/zaeph/org/life.org"))
   (zp/set-shortcuts-all))
 
 (zp/update-org-agenda-files)
@@ -4327,7 +4327,7 @@ Check their respective dosctrings for more info."
 ;; ============= ORG-CAPTURE ==============
 ;; ========================================
 
-(setq org-default-notes-file "/home/zaeph/org/life.org.gpg")
+(setq org-default-notes-file "/home/zaeph/org/life.org")
 
 ;;; Helper functions
 
@@ -4410,39 +4410,39 @@ TITLE and URL are those of the webpage."
   (message (concat "Link added to kill-ring: \n" url)))
 
 (setq org-capture-templates
-      `(("n" "Note" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
+      `(("n" "Note" entry (file+headline "/home/zaeph/org/life.org" "Inbox")
              "* %?" :add-created t)
-        ("f" "Todo" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
+        ("f" "Todo" entry (file+headline "/home/zaeph/org/life.org" "Inbox")
              "* TODO %?" :add-created t)
-        ("F" "Todo + Clock" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
+        ("F" "Todo + Clock" entry (file+headline "/home/zaeph/org/life.org" "Inbox")
              "* TODO %?\n" :add-created t :clock-in t)
-        ("r" "Todo with Context" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
+        ("r" "Todo with Context" entry (file+headline "/home/zaeph/org/life.org" "Inbox")
              "* TODO %?\n%a" :add-created t)
-        ("R" "Todo with Context + Clock" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
+        ("R" "Todo with Context + Clock" entry (file+headline "/home/zaeph/org/life.org" "Inbox")
              "* TODO %?\n%a" :add-created t :clock-in t)
-        ;; ("r" "Todo + Reminder" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
+        ;; ("r" "Todo + Reminder" entry (file+headline "/home/zaeph/org/life.org" "Inbox")
         ;;  "* TODO %?\nSCHEDULED: %^T\n:PROPERTIES:\n:APPT_WARNTIME:  %^{APPT_WARNTIME|5|15|30|60}\n:END:")
-        ;; ("T" "Todo (with keyword selection)" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
+        ;; ("T" "Todo (with keyword selection)" entry (file+headline "/home/zaeph/org/life.org" "Inbox")
         ;;  "* %^{State|TODO|NEXT|STBY|WAIT} %?")
-        ;; ("e" "Todo + Creation time" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
+        ;; ("e" "Todo + Creation time" entry (file+headline "/home/zaeph/org/life.org" "Inbox")
         ;;  "* TODO %?\n:PROPERTIES:\n:CREATED:  %U\n:END:")
-        ;; ("C" "Todo + Clock" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
+        ;; ("C" "Todo + Clock" entry (file+headline "/home/zaeph/org/life.org" "Inbox")
         ;;  "* TODO %^{Task}%?" :clock-in t)
-        ;; ("C" "Todo + Clock (with keyword selection)" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
+        ;; ("C" "Todo + Clock (with keyword selection)" entry (file+headline "/home/zaeph/org/life.org" "Inbox")
         ;;  "* %^{State|TODO|NEXT} %?" :clock-in t)
-        ("d" "Date" entry (file+headline "/home/zaeph/org/life.org.gpg" "Calendar")
+        ("d" "Date" entry (file+headline "/home/zaeph/org/life.org" "Calendar")
              "* %?\n" :add-created t)
-        ("e" "Date + Context" entry (file+headline "/home/zaeph/org/life.org.gpg" "Calendar")
+        ("e" "Date + Context" entry (file+headline "/home/zaeph/org/life.org" "Calendar")
              "* %?\n%a" :add-created t)
 
-        ;; ("D" "Date + Reminder" entry (file+headline "/home/zaeph/org/life.org.gpg" "Calendar")
+        ;; ("D" "Date + Reminder" entry (file+headline "/home/zaeph/org/life.org" "Calendar")
         ;;  "* %?\n%^T\n\n%^{APPT_WARNTIME}p")
-        ;; ("R" "Reminder" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
+        ;; ("R" "Reminder" entry (file+headline "/home/zaeph/org/life.org" "Inbox")
         ;;  "* %?\n%^T%^{APPT_WARNTIME}p")
 
-        ("p" "Phone-call" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
+        ("p" "Phone-call" entry (file+headline "/home/zaeph/org/life.org" "Inbox")
              "* TODO Phone-call with %^{Interlocutor|Nicolas|Mum}%?\n:STATES:\n- State \"TODO\"       from              %U\n:END:" :clock-in t)
-        ("m" "Meeting" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
+        ("m" "Meeting" entry (file+headline "/home/zaeph/org/life.org" "Inbox")
              "* TODO Meeting with %^{Meeting with}%?" :clock-in t)
 
         ("s" "Special")
@@ -4485,7 +4485,7 @@ TITLE and URL are those of the webpage."
              "* Record of Dysfunctional Thoughts\n%T\n** Situation\n%?\n** Emotions\n** Thoughts")
 
         ;; Pain Diary
-        ("P" "Pain Diary" entry (file+olp "/home/zaeph/org/life.org.gpg" "Psychotherapy" "Pain Diary")
+        ("P" "Pain Diary" entry (file+olp "/home/zaeph/org/life.org" "Psychotherapy" "Pain Diary")
              "* Entry: %U
 ** What were you doing or what happened?
 %?
@@ -4496,10 +4496,10 @@ TITLE and URL are those of the webpage."
              "* DONE Session%^{SESSION_DURATION}p\n%t" :immediate-finish t)
 
         ("W" "Web")
-        ("Wa" "Automatic template" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
+        ("Wa" "Automatic template" entry (file+headline "/home/zaeph/org/life.org" "Inbox")
               "* TODO %(print zp/org-capture-web-action) [[%?%(print zp/org-capture-web-url)][%(print zp/org-capture-web-title)]] :web:"
               :add-created t)
-        ("Wf" "S: Film" entry (file+olp "/home/zaeph/org/life.org.gpg" "Film" "List")
+        ("Wf" "S: Film" entry (file+olp "/home/zaeph/org/life.org" "Film" "List")
               ,zp/org-capture-web-letterboxd-template
               :prepend t)))
 
@@ -4521,24 +4521,24 @@ TITLE and URL are those of the webpage."
 |-----+-----------------------------------|")
 
 (setq zp/org-agenda-capture-templates
-      '(("f" "Todo" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
+      '(("f" "Todo" entry (file+headline "/home/zaeph/org/life.org" "Inbox")
          "* TODO %?\nSCHEDULED: %t")
-        ("r" "Todo (+time)" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
+        ("r" "Todo (+time)" entry (file+headline "/home/zaeph/org/life.org" "Inbox")
          "* TODO %?\nSCHEDULED: %^T")
 
-        ("d" "Date" entry (file+olp "/home/zaeph/org/life.org.gpg" "Life" "Calendar")
+        ("d" "Date" entry (file+olp "/home/zaeph/org/life.org" "Life" "Calendar")
          "* %?\n%t")
-        ("e" "Date (+time)" entry (file+olp "/home/zaeph/org/life.org.gpg" "Life" "Calendar")
+        ("e" "Date (+time)" entry (file+olp "/home/zaeph/org/life.org" "Life" "Calendar")
          "* %?\n%^T")
 
-        ("s" "Todo & Scheduled" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
+        ("s" "Todo & Scheduled" entry (file+headline "/home/zaeph/org/life.org" "Inbox")
          "* TODO %?\nSCHEDULED: %t")
-        ("w" "Todo & Scheduled (+time)" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
+        ("w" "Todo & Scheduled (+time)" entry (file+headline "/home/zaeph/org/life.org" "Inbox")
          "* TODO %?\nSCHEDULED: %^T")
 
-        ("g" "Todo + Deadline" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
+        ("g" "Todo + Deadline" entry (file+headline "/home/zaeph/org/life.org" "Inbox")
          "* TODO %?\nDEADLINE: %t")
-        ("t" "Todo & Deadline (+time)" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
+        ("t" "Todo & Deadline (+time)" entry (file+headline "/home/zaeph/org/life.org" "Inbox")
          "* TODO %?\nDEADLINE: %^T")))
 
 (defun zp/org-agenda-capture (&optional arg)
@@ -4549,20 +4549,20 @@ TITLE and URL are those of the webpage."
 
 
         ;; ("v" "Vocabulary")
-        ;; ("ve" "EN" entry (file+olp "/home/zaeph/org/life.org.gpg" "Vocabulary")
+        ;; ("ve" "EN" entry (file+olp "/home/zaeph/org/life.org" "Vocabulary")
         ;;  "* EN: %?\n%U\n")
-        ;; ("vf" "FR" entry (file+olp "/home/zaeph/org/life.org.gpg" "Vocabulary")
+        ;; ("vf" "FR" entry (file+olp "/home/zaeph/org/life.org" "Vocabulary")
         ;;  "* FR: %?\n%U\n")
-        ;; ("vj" "JA" entry (file+olp "/home/zaeph/org/life.org.gpg" "Vocabulary")
+        ;; ("vj" "JA" entry (file+olp "/home/zaeph/org/life.org" "Vocabulary")
         ;;  "* JA: %?\n%U\n")
-        ;; ("vk" "KO" entry (file+olp "/home/zaeph/org/life.org.gpg" "Vocabulary")
+        ;; ("vk" "KO" entry (file+olp "/home/zaeph/org/life.org" "Vocabulary")
         ;;  "* KO: %?\n%U\n")))
 
 ;; ;; Empty lines before and after
 ;; (setq org-capture-templates
-;;       '(("t" "Todo" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
+;;       '(("t" "Todo" entry (file+headline "/home/zaeph/org/life.org" "Inbox")
 ;;       "* TODO %?" :empty-lines-before 1 :empty-lines-after 1)
-;;      ("T" "Todo+" entry (file+headline "/home/zaeph/org/life.org.gpg" "Inbox")
+;;      ("T" "Todo+" entry (file+headline "/home/zaeph/org/life.org" "Inbox")
 ;;       "* TODO %?\n%U\n%a\n" :empty-lines-before 1 :empty-lines-after 1)
 ;;      ("j" "Journal" entry (file+datetree "/home/zaeph/org/journal.org")
 ;;       "* %?\n%U\n")))
@@ -4701,7 +4701,7 @@ restriction."
 (defvar zp/org-agenda-files-primary nil
   "Primary org-agenda file.")
 
-(setq zp/org-agenda-files-primary "~/org/life.org.gpg")
+(setq zp/org-agenda-files-primary "~/org/life.org")
 
 (defun zp/org-refile-main (&optional print-message jump)
   "Refile current heading to another in org-agenda file.
@@ -5100,30 +5100,30 @@ _x_: Maintenance
 _m_: Media
 _c_: Calendars
 "
-  (("i" "~/org/life.org.gpg" "Inbox")
-   ("o" "~/org/life.org.gpg" "Life")
-   ("I" "~/org/life.org.gpg" "Curiosities")
-   ("s" "~/org/life.org.gpg" "Social")
-   ("n" "~/org/life.org.gpg" "Social" "Nicolas")
-   ("S" "~/org/life.org.gpg" "Swimming")
-   ("R" "~/org/life.org.gpg" "Running")
-   ("M" "~/org/life.org.gpg" "Media")
-   ("t" "~/org/life.org.gpg" "Typography")
-   ("X" "~/org/life.org.gpg" "Maintenance")
-   ("A" "~/org/life.org.gpg" "Awakening")
-   ("P" "~/org/life.org.gpg" "Psychotherapy")
-   ("p" "~/org/life.org.gpg" "Politics")
-   ("u" "~/org/life.org.gpg" "University")
-   ("r" "~/org/life.org.gpg" "Research")
-   ("h" "~/org/life.org.gpg" "Hacking")
-   ("B" "~/org/life.org.gpg" "Contributing")
-   ("b" "~/org/life.org.gpg" "Troubleshooting")
-   ("T" "~/org/life.org.gpg" "LaTeX")
-   ("e" "~/org/life.org.gpg" "Emacs")
-   ("O" "~/org/life.org.gpg" "Org")
-   ("E" "~/org/life.org.gpg" "Elisp")
-   ("l" "~/org/life.org.gpg" "Linux")
-   ("g" "~/org/life.org.gpg" "Git"))
+  (("i" "~/org/life.org" "Inbox")
+   ("o" "~/org/life.org" "Life")
+   ("I" "~/org/life.org" "Curiosities")
+   ("s" "~/org/life.org" "Social")
+   ("n" "~/org/life.org" "Social" "Nicolas")
+   ("S" "~/org/life.org" "Swimming")
+   ("R" "~/org/life.org" "Running")
+   ("M" "~/org/life.org" "Media")
+   ("t" "~/org/life.org" "Typography")
+   ("X" "~/org/life.org" "Maintenance")
+   ("A" "~/org/life.org" "Awakening")
+   ("P" "~/org/life.org" "Psychotherapy")
+   ("p" "~/org/life.org" "Politics")
+   ("u" "~/org/life.org" "University")
+   ("r" "~/org/life.org" "Research")
+   ("h" "~/org/life.org" "Hacking")
+   ("B" "~/org/life.org" "Contributing")
+   ("b" "~/org/life.org" "Troubleshooting")
+   ("T" "~/org/life.org" "LaTeX")
+   ("e" "~/org/life.org" "Emacs")
+   ("O" "~/org/life.org" "Org")
+   ("E" "~/org/life.org" "Elisp")
+   ("l" "~/org/life.org" "Linux")
+   ("g" "~/org/life.org" "Git"))
   (("c" calendars)
    ("x" maintenance)
    ("m" media)))
@@ -5143,16 +5143,16 @@ _f_: Finances
 _h_: Hacking
 _u_: University
 "
-  (("o" "/home/zaeph/org/life.org.gpg" "Life" "Calendar")
-   ("p" "/home/zaeph/org/life.org.gpg" "Politics" "Calendar")
-   ("h" "/home/zaeph/org/life.org.gpg" "Hacking" "Calendar")
-   ("u" "/home/zaeph/org/life.org.gpg" "University" "Calendar")
-   ("P" "/home/zaeph/org/life.org.gpg" "Psychotherapy" "Calendar")
-   ("m" "/home/zaeph/org/life.org.gpg" "Media" "Calendar")
-   ("n" "/home/zaeph/org/life.org.gpg" "Social" "Nicolas" "Calendar")
-   ("a" "/home/zaeph/org/life.org.gpg" "Animals" "Calendar")
-   ("s" "/home/zaeph/org/life.org.gpg" "Social" "Calendar")
-   ("f" "/home/zaeph/org/life.org.gpg" "Finances" "Calendar"))
+  (("o" "/home/zaeph/org/life.org" "Life" "Calendar")
+   ("p" "/home/zaeph/org/life.org" "Politics" "Calendar")
+   ("h" "/home/zaeph/org/life.org" "Hacking" "Calendar")
+   ("u" "/home/zaeph/org/life.org" "University" "Calendar")
+   ("P" "/home/zaeph/org/life.org" "Psychotherapy" "Calendar")
+   ("m" "/home/zaeph/org/life.org" "Media" "Calendar")
+   ("n" "/home/zaeph/org/life.org" "Social" "Nicolas" "Calendar")
+   ("a" "/home/zaeph/org/life.org" "Animals" "Calendar")
+   ("s" "/home/zaeph/org/life.org" "Social" "Calendar")
+   ("f" "/home/zaeph/org/life.org" "Finances" "Calendar"))
   nil)
 
 (zp/create-hydra-org-refile maintenance
@@ -5166,12 +5166,12 @@ _h_: Health
 _s_: Supplies
 _f_: Finances
 "
-  (("." "/home/zaeph/org/life.org.gpg" "Maintenance")
-   ("c" "/home/zaeph/org/life.org.gpg" "Cleaning")
-   ("k" "/home/zaeph/org/life.org.gpg" "Cooking")
-   ("h" "/home/zaeph/org/life.org.gpg" "Health")
-   ("f" "/home/zaeph/org/life.org.gpg" "Finances")
-   ("s" "/home/zaeph/org/life.org.gpg" "Supplies"))
+  (("." "/home/zaeph/org/life.org" "Maintenance")
+   ("c" "/home/zaeph/org/life.org" "Cleaning")
+   ("k" "/home/zaeph/org/life.org" "Cooking")
+   ("h" "/home/zaeph/org/life.org" "Health")
+   ("f" "/home/zaeph/org/life.org" "Finances")
+   ("s" "/home/zaeph/org/life.org" "Supplies"))
   nil
   nil)
 
@@ -5185,12 +5185,12 @@ _n_: News
 _f_: Film
 _b_: Books
 "
-  (("." "/home/zaeph/org/life.org.gpg" "Media")
-   ("M" "/home/zaeph/org/life.org.gpg" "Music")
-   ("n" "/home/zaeph/org/life.org.gpg" "News")
-   ("F" "/home/zaeph/org/life.org.gpg" "Film")
-   ("B" "/home/zaeph/org/life.org.gpg" "Books")
-   ("W" "/home/zaeph/org/life.org.gpg" "Film"))
+  (("." "/home/zaeph/org/life.org" "Media")
+   ("M" "/home/zaeph/org/life.org" "Music")
+   ("n" "/home/zaeph/org/life.org" "News")
+   ("F" "/home/zaeph/org/life.org" "Film")
+   ("B" "/home/zaeph/org/life.org" "Books")
+   ("W" "/home/zaeph/org/life.org" "Film"))
   (("m" music)
    ("b" books)
    ("f" film))
@@ -5204,9 +5204,9 @@ _._: Root
 _l_: List
 _d_: Read
 "
-  (("." "/home/zaeph/org/life.org.gpg" "Film")
-   ("l" "/home/zaeph/org/life.org.gpg" "Film" "List")
-   ("d" "/home/zaeph/org/life.org.gpg" "Film" "Watched"))
+  (("." "/home/zaeph/org/life.org" "Film")
+   ("l" "/home/zaeph/org/life.org" "Film" "List")
+   ("d" "/home/zaeph/org/life.org" "Film" "Watched"))
   nil
   media)
 
@@ -5218,9 +5218,9 @@ _._: Root
 _l_: List
 _d_: Read
 "
-  (("." "/home/zaeph/org/life.org.gpg" "Books")
-   ("l" "/home/zaeph/org/life.org.gpg" "Books" "List")
-   ("d" "/home/zaeph/org/life.org.gpg" "Books" "Watched"))
+  (("." "/home/zaeph/org/life.org" "Books")
+   ("l" "/home/zaeph/org/life.org" "Books" "List")
+   ("d" "/home/zaeph/org/life.org" "Books" "Watched"))
   nil
   media)
 
@@ -5232,9 +5232,9 @@ _._: Root
 _c_: Classical
 _J_: Jazz
 "
-  (("." "/home/zaeph/org/life.org.gpg" "Music")
-   ("c" "/home/zaeph/org/life.org.gpg" "Music" "List of classical pieces")
-   ("J" "/home/zaeph/org/life.org.gpg" "Music" "List of jazz pieces"))
+  (("." "/home/zaeph/org/life.org" "Music")
+   ("c" "/home/zaeph/org/life.org" "Music" "List of classical pieces")
+   ("J" "/home/zaeph/org/life.org" "Music" "List of jazz pieces"))
   nil
   media)
 
@@ -5279,7 +5279,7 @@ on init and them removes itself."
   (remove-hook 'org-agenda-finalize-hook #'zp/org-agenda-to-appt-on-load))
 
 (defun zp/org-agenda-to-appt-on-save ()
-  ;; (if (string= (buffer-file-name) (concat (getenv "HOME") "/org/life.org.gpg"))
+  ;; (if (string= (buffer-file-name) (concat (getenv "HOME") "/org/life.org"))
   ;; (if (string< (buffer-file-name) "org.gpg")
   (if (member buffer-file-name org-agenda-files)
       (zp/org-agenda-to-appt)))
