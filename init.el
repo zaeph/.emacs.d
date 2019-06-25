@@ -4791,7 +4791,7 @@ subsequent calls.")
   :lighter " Spawn"
   :keymap zp/org-spawned-ibuf-mode-map
   (setq header-line-format
-        "Spawned indirect buffer.  Kill with ‘C-c C-k’, dedicate with ‘C-u C-c C-k."))
+        "Spawned indirect buffer.  Kill with ‘C-c C-k’, dedicate with ‘C-u C-c C-k’."))
 
 (defun zp/org-tree-to-indirect-buffer-folded (dedicated &optional bury)
   "Clone tree to indirect buffer in a folded state.
