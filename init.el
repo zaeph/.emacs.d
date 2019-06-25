@@ -7733,11 +7733,6 @@ With a ‘C-u’ prefix, make a separate frame for this tree."
                        (select-window (previous-window))
                        (current-buffer))
                    (org-agenda-tree-to-indirect-buffer nil))))
-    (with-current-buffer buffer
-      (cond (dedicated
-             )
-            (t
-             )))
     (with-selected-window (if dedicated
                               (and (split-window-below)
                                    (next-window))
