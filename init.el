@@ -4897,7 +4897,8 @@ When JUMP is non-nil, jump to that destination instead."
                (not jump)
                ;; If capturing, deactivate hydra
                (setq hydra-deactivate t)))
-    (when jump
+    (when (and jump
+               zp/hydra-org-jump-indirect)
       (zp/org-tree-to-indirect-buffer-folded
        zp/hydra-org-jump-dedicated-buffer
        t))
