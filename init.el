@@ -5321,9 +5321,6 @@ appt-list when an item is marked as DONE."
 ;; When loading org-agenda for the first time
 (add-hook 'org-agenda-finalize-hook #'zp/org-agenda-to-appt-on-load)
 
-;; When marking an item as done
-(add-hook 'org-after-todo-state-change-hook #'zp/org-agenda-to-appt-on-state-change)
-
 ;; ----------------------------------------
 ;; Remove hooks
 ;; (remove-hook 'after-save-hook 'zp/org-agenda-to-appt-on-save)
