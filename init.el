@@ -5638,9 +5638,11 @@ agenda-files buffer.
 This wrapper addresses it by having org-noter act on an indirect
 buffer, thereby propagating the indirectness."
   (interactive "P")
-  (with-selected-window (zp/org-tree-to-indirect-buffer-folded t)
-    (org-noter arg)
-    (kill-buffer)))
+  (if (org-entry-get nil org-noter-property-doc-file)
+      (with-selected-window (zp/org-tree-to-indirect-buffer-folded t)
+        (org-noter arg)
+        (kill-buffer))
+    (org-noter arg)))
 
 (defun zp/org-noter-dwim (arg)
   "Run org-noter on the current tree, even if we’re in the agenda."
@@ -5649,6 +5651,8 @@ buffer, thereby propagating the indirectness."
       (let ((marker (get-text-property (point) 'org-marker)))
         (with-current-buffer (marker-buffer marker)
           (goto-char marker)
+          (unless (org-entry-get nil org-noter-property-doc-file)
+            (user-error "No org-noter info on this tree"))
           (zp/org-noter-indirect arg)))
     (zp/org-noter-indirect arg)))
 
