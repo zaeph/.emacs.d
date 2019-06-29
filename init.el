@@ -2765,10 +2765,11 @@ When KEEP-RESTRICTION is non-nil, do not widen the buffer."
     (save-excursion
       (goto-char (point-min))
       (widen)
-      (if (or (and indirect
-                   narrowed)
-              keep-restriction)
-          (org-narrow-to-subtree)
+      (when (or (and indirect
+                     narrowed)
+                keep-restriction)
+        (org-narrow-to-subtree))
+      (unless indirect
         (org-display-inline-images)))
     (zp/org-fold (or keep-restriction
                      (and arg
