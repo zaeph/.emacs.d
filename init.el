@@ -2778,7 +2778,6 @@ When KEEP-RESTRICTION is non-nil, do not widen the buffer."
       (run-hooks 'zp/org-after-view-change-hook))))
 
 (defun zp/org-fold (&optional keep-restriction)
-  (interactive "P")
   (let ((indirectp (not (buffer-file-name)))
         (org-startup-folded 'overview))
     ;; Fold drawers
