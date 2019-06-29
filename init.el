@@ -2758,18 +2758,21 @@ With a ‘C-u’ prefix, do not move point.
 When KEEP-RESTRICTION is non-nil, do not widen the buffer."
   (interactive "p")
   (let ((pos-before (point))
-        (indirect (not (buffer-file-name))))
+        (indirect (not (buffer-file-name)))
+        (narrowed (buffer-narrowed-p)))
     (setq-local zp/org-narrow-previous-position pos-before)
     ;; Do not widen buffer if in indirect buffer
     (save-excursion
       (goto-char (point-min))
       (widen)
-      (if (or indirect
+      (if (or (and indirect
+                   narrowed)
               keep-restriction)
           (org-narrow-to-subtree)
         (org-display-inline-images)))
     (zp/org-fold (or keep-restriction
-                     (> arg 1)))
+                     (and arg
+                          (> arg 1))))
     (when arg
       (message "Showing overview.")
       (run-hooks 'zp/org-after-view-change-hook))))
