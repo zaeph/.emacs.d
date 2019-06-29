@@ -7262,19 +7262,24 @@ will not be modified."
 (add-hook 'org-capture-before-finalize-hook #'org-align-all-tags)
 
 ;; Conditional APPT_WARNTIME
-(defun zp/org-set-appt-warntime-if-timestamp ()
+(defun zp/org-set-appt-warntime-if-timestamp (&rest args)
   "Prompt for APPT_WARNTIME if the heading as a timestamp."
   (let ((warntime (org-entry-get (point) "APPT_WARNTIME")))
     (unless warntime
       (save-excursion
         (org-back-to-heading t)
-        (let ((end (save-excursion (outline-next-heading) (point))) ts)
+        (let ((end (save-excursion (outline-next-heading) (point))))
           (when (re-search-forward org-stamp-time-of-day-regexp
                                    end t)
             (zp/org-set-appt-warntime)))))))
 
-(defadvice org-insert-time-stamp (after add-appt activate)
-  (zp/org-set-appt-warntime-if-timestamp))
+(zp/advise-commands
+ add
+ (org-schedule
+  org-deadline
+  org-time-stamp)
+ after
+ zp/org-set-appt-warntime-if-timestamp)
 
 
 
