@@ -4665,16 +4665,19 @@ When JUMP is non-nil, jump to that other heading instead."
            (org-refile jump)))
     (when print-message
       (run-hooks 'zp/org-after-refile-hook)
-      (message "Refiled tree."))
+      (if jump
+          (message "Jumped to tree: %s"
+                   ;; Create a string for the path
+                   (mapconcat 'identity
+                              (org-get-outline-path t)
+                              " → "))
+        (message "Refiled tree.")))
     (setq target (point))))
 
 (defun zp/org-jump (&optional print-message)
   "Jump to another heading."
   (interactive "p")
-  (goto-char (save-excursion (zp/org-refile nil t)))
-  (when print-message
-      (run-hooks 'zp/org-after-refile-hook)
-      (message "Jumped.")))
+  (goto-char (save-excursion (zp/org-refile print-message t))))
 
 (defun zp/org-refile-dwim (arg)
   "Conditionally move the entry or entries at point to another heading.
@@ -4919,7 +4922,14 @@ When JUMP is non-nil, jump to that destination instead."
     (when print-message
       (run-hooks 'zp/org-after-refile-hook)
       (if jump
-          (message "Jumped.")
+          (message "Jumped to tree: %s"
+                   ;; Create string for path
+                   (mapconcat 'identity
+                              ;; Reuse path information
+                              (if (listp headline-or-olp)
+                                  headline-or-olp
+                                (list headline-or-olp))
+                              " → "))
         (message "Refiled tree.")))))
 
 (defun zp/org-jump-to (file headline-or-olp &optional print-message)
