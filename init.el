@@ -2854,9 +2854,9 @@ When KEEP-RESTRICTION is non-nil, do not widen the buffer."
     (message "Narrowing to previous tree.")
     (run-hooks 'zp/org-after-view-change-hook)))
 
-(defun zp/org-narrow-up-heading (arg)
+(defun zp/org-narrow-up-heading (&optional arg)
   "Move to the upper subtree, and narrow the buffer to it."
-  (interactive "P")
+  (interactive "p")
   (unless (buffer-narrowed-p)
     (user-error "No narrowing"))
   (let ((pos-before (point)))
@@ -2865,12 +2865,12 @@ When KEEP-RESTRICTION is non-nil, do not widen the buffer."
     (org-reveal)
     (outline-up-heading 1)
     (org-narrow-to-subtree)
-    (if (equal arg '(4))
+    (if (eq arg 4)
         (progn
           (goto-char pos-before)
           (recenter-top-bottom)))
     (zp/org-fold arg)
-    (when (called-interactively-p 'any)
+    (when arg
       (message "Narrowing to tree above.")
       (run-hooks 'zp/org-after-view-change-hook))))
 
@@ -2879,17 +2879,14 @@ When KEEP-RESTRICTION is non-nil, do not widen the buffer."
 
 If the buffer is already narrowed to level-1 heading, overview
 the entire buffer."
-  (interactive "P")
+  (interactive "p")
   (if (save-excursion
         ;; Narrowed to a level-1 heading?
         (goto-char (point-min))
         (and (buffer-narrowed-p)
              (equal (org-outline-level) 1)))
       (zp/org-overview arg)
-    (zp/org-narrow-up-heading arg))
-  (when (called-interactively-p 'any)
-      (message "Narrowing to tree above.")
-      (run-hooks 'zp/org-after-view-change-hook)))
+    (zp/org-narrow-up-heading arg)))
 
 (defun zp/org-narrow-previous-heading (arg)
   "Move to the previously narrowed tree, and narrow the buffer to it."
