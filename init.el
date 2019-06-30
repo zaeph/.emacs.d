@@ -5086,7 +5086,7 @@ Ensures that the toggles are set to their default variable."
                               ,(unless chain
                                  `(zp/hydra-org-refile-cleanup))) "jump")))
                (t
-                `(("w" (progn (zp/org-refile-main t)
+                `(("C-w" (progn (zp/org-refile-main t)
                               ,(unless chain
                                  `(zp/hydra-org-refile-cleanup))) "refile")
                   ("W" zp/org-refile-with-paths "refile+paths")
