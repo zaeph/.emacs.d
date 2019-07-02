@@ -2750,7 +2750,7 @@ off.")
 (add-to-list 'safe-local-variable-values
              '( . nil))
 
-(defun zp/org-overview (&optional arg keep-restriction)
+(defun zp/org-overview (&optional arg keep-position keep-restriction)
   "Switch to overview mode, showing only top-level headlines.
 
 With a ‘C-u’ prefix, do not move point.
@@ -2771,21 +2771,21 @@ When KEEP-RESTRICTION is non-nil, do not widen the buffer."
         (org-narrow-to-subtree))
       (unless indirect
         (org-display-inline-images)))
-    (zp/org-fold (or keep-restriction
+    (zp/org-fold (or keep-position
                      (and arg
                           (> arg 1))))
     (when arg
       (message "Showing overview.")
       (run-hooks 'zp/org-after-view-change-hook))))
 
-(defun zp/org-fold (&optional keep-restriction)
+(defun zp/org-fold (&optional keep-position)
   (let ((indirectp (not (buffer-file-name)))
         (org-startup-folded 'overview))
     ;; Fold drawers
     (org-set-startup-visibility)
     ;; Fold trees
     (org-overview)
-    (unless keep-restriction
+    (unless keep-position
       (goto-char (point-min)))
     (recenter)
     (save-excursion
@@ -4845,7 +4845,7 @@ create a dedicated frame."
     (zp/org-refile-to filepath marker print-message)
     ;; (run-hooks 'zp/org-after-refile-hook)
     (with-selected-window other
-      (zp/org-overview t t)
+      (zp/org-overview nil t t)
       (goto-char
        (bookmark-get-position
         (plist-get org-bookmark-names-plist :last-refile)))
@@ -7799,7 +7799,7 @@ With a ‘C-u’ prefix, make a separate frame for this tree."
             (t
              (zp/org-spawned-ibuf-mode t)
              (setq zp/org-ibuf-spawned-also-kill-window t)))
-      (zp/org-overview nil t)
+      (zp/org-overview nil nil t)
           (org-back-to-heading)
           (org-beginning-of-line))
     (balance-windows)
