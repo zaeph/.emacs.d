@@ -4662,7 +4662,7 @@ When JUMP is non-nil, jump to that other heading instead."
                 in-agenda)
            (org-agenda-refile))
           (t
-           (org-refile jump)))
+           (org-refile (when jump '(4)))))
     (when print-message
       (run-hooks 'zp/org-after-refile-hook)
       (if jump
@@ -4877,7 +4877,7 @@ the filename)."
     (if (and (eq major-mode 'org-agenda-mode)
              (not arg)) ;Don't use org-agenda-refile if we're just jumping
         (org-agenda-refile nil rfloc)
-      (org-refile arg nil rfloc))))
+      (org-refile (when arg '(4)) nil rfloc))))
 
 (defun zp/org-capture-refile-internal (file headline-or-olp &optional arg)
   "Copied from ‘org-capture-refile’ since it doesn't allow
