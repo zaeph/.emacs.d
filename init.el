@@ -4925,10 +4925,7 @@ When JUMP is non-nil, jump to that destination instead."
           (message "Jumped to tree: %s"
                    ;; Create string for path
                    (mapconcat 'identity
-                              ;; Reuse path information
-                              (if (listp headline-or-olp)
-                                  headline-or-olp
-                                (list headline-or-olp))
+                              (org-get-outline-path t)
                               " → "))
         (message "Refiled tree.")))))
 
