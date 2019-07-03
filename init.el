@@ -4882,12 +4882,12 @@ passing arguments. This does."
     (when (buffer-narrowed-p)
       (goto-char (point-min)))
     (org-capture-finalize)
-    (save-window-excursion
-      (with-current-buffer (or base (current-buffer))
-        (org-with-wide-buffer
-         (goto-char pos)
-         (zp/org-refile-internal file headline-or-olp arg))))
-    (when kill-buffer (kill-buffer base))))
+    (prog1 (save-window-excursion
+             (with-current-buffer (or base (current-buffer))
+               (org-with-wide-buffer
+                (goto-char pos)
+                (zp/org-refile-internal file headline-or-olp arg))))
+      (when kill-buffer (kill-buffer base)))))
 
 (defun zp/org-refile-to (file headline-or-olp &optional print-message jump)
   "Refile current heading to specified destination.
