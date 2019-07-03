@@ -4642,36 +4642,24 @@ TITLE and URL are those of the webpage."
 
 
 (defun zp/org-refile (&optional print-message jump)
-  "Move the entry or entries at point to another heading.
+  "Refile the current heading to another with completion.
 
 When JUMP is non-nil, jump to that other heading instead."
-  (interactive "P")
-  (let (;; (org-refile-targets '((nil :maxlevel . 9)))
-        (capturing (and (boundp 'org-capture-mode) org-capture-mode))
-        (in-agenda (derived-mode-p 'org-agenda-mode))
-        (org-refile-use-outline-path t)
-        ;; (org-refile-target-verify-function 'zp/org-refile-target-verify-exclude-separators)
+  (interactive "p")
+  (let ((zp/hydra-org-jump-indirect nil)
+        (org-refile-history nil)
+        file
+        pos
         target)
     (when (and (not in-agenda)
                (org-before-first-heading-p))
       (outline-next-heading))
-    (cond ((and (not jump)
-                capturing)
-           (org-capture-refile))
-          ((and (not jump)
-                in-agenda)
-           (org-agenda-refile))
-          (t
-           (org-refile (when jump '(4)))))
-    (when print-message
-      (run-hooks 'zp/org-after-refile-hook)
-      (if jump
-          (message "Jumped to tree: %s"
-                   ;; Create a string for the path
-                   (mapconcat 'identity
-                              (org-get-outline-path t)
-                              " → "))
-        (message "Refiled tree.")))
+    (save-window-excursion
+      (org-refile (if jump '(4) t))
+      (setq file (buffer-file-name))
+      (setq pos (point-marker)))
+    (zp/org-refile-to file pos print-message jump)
+    (set-marker pos nil)
     (setq target (point))))
 
 (defun zp/org-jump (&optional print-message)
