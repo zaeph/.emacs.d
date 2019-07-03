@@ -5238,7 +5238,7 @@ _b_: Books
 ^^----------------------------------------------------------------------
 _._: Root
 _l_: List
-_d_: Read
+_d_: Watched
 "
   (("." "/home/zaeph/org/life.org" "Film")
    ("l" "/home/zaeph/org/life.org" "Film" "List")
@@ -5256,7 +5256,7 @@ _d_: Read
 "
   (("." "/home/zaeph/org/life.org" "Books")
    ("l" "/home/zaeph/org/life.org" "Books" "List")
-   ("d" "/home/zaeph/org/life.org" "Books" "Watched"))
+   ("d" "/home/zaeph/org/life.org" "Books" "Read"))
   nil
   media)
 
