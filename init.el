@@ -4884,8 +4884,8 @@ the filename)."
     (if (and (eq major-mode 'org-agenda-mode)
              (not arg)) ;Don't use org-agenda-refile if we're just jumping
         (org-agenda-refile nil rfloc)
-      (org-refile (when arg '(4)) nil rfloc)
-      pos)))
+      (org-refile (when arg '(4)) nil rfloc))
+    pos))
 
 (defun zp/org-capture-refile-internal (file headline-or-olp &optional arg)
   "Copied from ‘org-capture-refile’ since it doesn't allow
