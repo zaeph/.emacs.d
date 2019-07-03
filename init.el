@@ -2948,6 +2948,7 @@ With a C-u argument, toggle the link display."
   (local-set-key (kbd "C-c C-x l") 'zp/org-set-location)
   (local-set-key (kbd "C-c C-x d") 'org-delete-property)
   (local-set-key (kbd "C-c C-x D") 'org-insert-drawer)
+  (local-set-key (kbd "C-c C-x b") 'zp/org-tree-to-indirect-buffer-folded)
   (local-set-key (kbd "S-<backspace>") 'zp/org-kill-spawned-ibuf)
   (local-set-key (kbd "C-x n o") 'zp/org-overview)
   (local-set-key (kbd "C-x n a") 'zp/org-show-all)
@@ -4710,6 +4711,7 @@ If JUMP is non-nil, jump to it instead."
     (when (and jump
                zp/hydra-org-jump-indirect)
       (zp/org-tree-to-indirect-buffer-folded
+       nil
        zp/hydra-org-jump-dedicated-buffer
        jump))))
 
@@ -4790,18 +4792,30 @@ subsequent calls.")
   (setq header-line-format
         "Spawned indirect buffer.  Kill with ‘C-c C-k’, dedicate with ‘C-u C-c C-k’."))
 
-(defun zp/org-tree-to-indirect-buffer-folded (dedicated &optional bury)
+(defun zp/org-tree-to-indirect-buffer-folded (arg &optional dedicated bury)
   "Clone tree to indirect buffer in a folded state.
 
 When called with a ‘C-u’ prefix or when DEDICATED is non-nil,
 create a dedicated frame."
-  (interactive "P")
-  (let ((org-indirect-buffer-display 'current-window)
-        (last-ibuf org-last-indirect-buffer)
-        (parent (current-buffer)))
+  (interactive "p")
+  (let* ((in-new-window (and arg
+                             (one-window-p)))
+         (org-indirect-buffer-display (if in-new-window
+                                          'other-window
+                                        'current-window))
+         (last-ibuf org-last-indirect-buffer)
+         (parent (current-buffer))
+         (dedicated (or dedicated
+                        (eq arg 4))))
     (when dedicated
       (setq org-last-indirect-buffer nil))
+    (when (and arg
+               zp/org-spawned-ibuf-mode)
+      (zp/org-ibuf-spawned-dedicate))
     (org-tree-to-indirect-buffer)
+    (when in-new-window
+      (select-window (next-window))
+      (setq zp/org-ibuf-spawned-also-kill-window t))
     (if dedicated
         (setq org-last-indirect-buffer last-ibuf)
       (zp/org-spawned-ibuf-mode t))
@@ -4813,7 +4827,10 @@ create a dedicated frame."
     (org-overview)
     (org-show-entry)
     (org-show-children)
-    (selected-window)))
+    (prog1 (selected-window)
+      (when arg
+        (message "Cloned tree to indirect buffer.")
+        (run-hooks 'zp/org-after-view-change-hook)))))
 
 (defun zp/org-refile-to-other-buffer (&optional print-message)
   "Refile current heading to another within the other window’s buffer."
@@ -4908,6 +4925,7 @@ When JUMP is non-nil, jump to that destination instead."
     (when (and jump
                zp/hydra-org-jump-indirect)
       (zp/org-tree-to-indirect-buffer-folded
+       nil
        zp/hydra-org-jump-dedicated-buffer
        t))
     (when print-message
@@ -5669,7 +5687,7 @@ This wrapper addresses it by having org-noter act on an indirect
 buffer, thereby propagating the indirectness."
   (interactive "P")
   (if (org-entry-get nil org-noter-property-doc-file)
-      (with-selected-window (zp/org-tree-to-indirect-buffer-folded t)
+      (with-selected-window (zp/org-tree-to-indirect-buffer-folded nil t)
         (org-noter arg)
         (kill-buffer))
     (org-noter arg)))
