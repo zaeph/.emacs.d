@@ -4648,6 +4648,8 @@ TITLE and URL are those of the webpage."
 When JUMP is non-nil, jump to that other heading instead."
   (interactive "p")
   (let ((zp/hydra-org-jump-indirect nil)
+        (in-agenda (and (boundp 'org-agenda-mode) org-agenda-mode))
+        (org-refile-use-outline-path t)
         (org-refile-history nil)
         file
         pos
