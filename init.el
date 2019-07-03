@@ -4865,7 +4865,8 @@ the filename)."
     (if (and (eq major-mode 'org-agenda-mode)
              (not arg)) ;Don't use org-agenda-refile if we're just jumping
         (org-agenda-refile nil rfloc)
-      (org-refile (when arg '(4)) nil rfloc))))
+      (org-refile (when arg '(4)) nil rfloc)
+      pos)))
 
 (defun zp/org-capture-refile-internal (file headline-or-olp &optional arg)
   "Copied from ‘org-capture-refile’ since it doesn't allow
@@ -4893,11 +4894,13 @@ passing arguments. This does."
 
 When JUMP is non-nil, jump to that destination instead."
   (interactive "p")
-  (let ((is-capturing (and (boundp 'org-capture-mode) org-capture-mode)))
-    (if (and is-capturing
-             (not jump))
-        (zp/org-capture-refile-internal file headline-or-olp jump)
-      (zp/org-refile-internal file headline-or-olp jump))
+  (let ((is-capturing (and (boundp 'org-capture-mode) org-capture-mode))
+        (org-refile-history nil)
+        pos)
+    (setq pos (if (and is-capturing
+                       (not jump))
+                  (zp/org-capture-refile-internal file headline-or-olp jump)
+                (zp/org-refile-internal file headline-or-olp jump)))
     (when (and is-capturing
                (not jump)
                ;; If capturing, deactivate hydra
@@ -4910,12 +4913,15 @@ When JUMP is non-nil, jump to that destination instead."
     (when print-message
       (run-hooks 'zp/org-after-refile-hook)
       (if jump
-          (message "Jumped to tree: %s"
+          (message "Jumped to tree: %s."
                    ;; Create string for path
                    (mapconcat 'identity
                               (org-get-outline-path t)
                               " → "))
-        (message "Refiled tree.")))))
+        (message (concat "Refiled tree to "
+                         (org-with-point-at pos
+                           (mapconcat 'identity (org-get-outline-path t) " → "))
+                         "."))))))
 
 (defun zp/org-jump-to (file headline-or-olp &optional print-message)
   "Jump to a specified destination."
