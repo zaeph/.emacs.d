@@ -5504,7 +5504,10 @@ running."
                              (interactive)
                              (zp/chronos-edit-quick "+0:10:00" "10 min")))
   (local-set-key (kbd "a") 'helm-chronos-add-timer)
-  )
+  (local-set-key (kbd "A") (lambda ()
+                             (interactive)
+                             (let ((zp/helm-chronos-add-relatively t))
+                               (helm-chronos-add-timer)))))
 (setq chronos-mode-hook 'chronos-mode-config)
 
 
