@@ -3510,7 +3510,25 @@ With a prefix argument, do so in all agenda buffers."
 
 (defun zp/org-agenda-sort-wait (a b)
   (cond
-   ((org-cmp-test-todo "WAIT|STBY" a b))))
+    ((org-cmp-test-todo "WAIT|STBY" a b))))
+
+(defun zp/org-cmp-created (a b)
+  (let* ((a-pos (get-text-property 0 'org-marker a))
+         (b-pos (get-text-property 0 'org-marker b))
+         (prop "CREATED")
+         (a-time (or (org-entry-get a-pos prop)
+                     "now"))
+         (b-time (or (org-entry-get b-pos prop)
+                     "now"))
+         (a-posix (org-read-date nil t a-time))
+         (b-posix (org-read-date nil t b-time))
+         (same (string= a-time b-time))
+         (cmp (time-less-p a-posix b-posix) ))
+    (if same
+        nil
+      (if cmp
+          -1
+        +1))))
 
 
 
