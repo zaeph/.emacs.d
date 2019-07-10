@@ -2653,8 +2653,15 @@ off.")
         ("^pol$" "~/org/svg/icons/fist.svg" nil nil :ascent center)
 
         ;; Professional
-        ("^research$" "~/org/svg/icons/research.svg" nil nil :ascent center)
         ("^university$" "~/org/svg/icons/aperture-yellow.svg" nil nil :ascent center)
+        ("^school$" "~/org/svg/icons/university.svg" nil nil :ascent center)
+
+        ;; Research
+        ("^research$" "~/org/svg/icons/research.svg" nil nil :ascent center)
+        ("^cs$" "~/org/svg/icons/computer-science.svg" nil nil :ascent center)
+        ("^maths$" "~/org/svg/icons/pi.svg" nil nil :ascent center)
+        ("^phil$" "~/org/svg/icons/philosophy.svg" nil nil :ascent center)
+        ("^history$" "~/org/svg/icons/history.svg" nil nil :ascent center)
 
         ;; Hacking
         ("^hack$" "~/org/svg/icons/engineering-2.svg" nil nil :ascent center)
@@ -2667,6 +2674,7 @@ off.")
         ("^elisp$" "~/org/svg/icons/spacemacs-elisp.svg" nil nil :ascent center)
         ("^tex$" "~/org/svg/icons/file-2-p.svg" nil nil :ascent center)
         ("^linux$" "~/org/svg/icons/nixos.svg" nil nil :ascent center)
+        ("^nixos$" "~/org/svg/icons/nixos.svg" nil nil :ascent center)
         ("^opsec$" "~/org/svg/icons/cyber-security-b.svg" nil nil :ascent center)
         ("^git$" "~/org/svg/icons/git.svg" nil nil :ascent center)
 
@@ -3090,6 +3098,7 @@ With a C-u argument, toggle the link display."
         ;; Hacking
         ("p h e" . "/home/zaeph/org/projects/hacking/emacs/emacs.org.gpg")
         ("p h l" . "/home/zaeph/org/projects/hacking/linux/linux.org.gpg")
+        ("p h n" . "/home/zaeph/org/projects/hacking/linux/nixos.org")
         ("p h o" . "/home/zaeph/org/projects/hacking/opsec/opsec.org.gpg")
         ("p h h" . "/home/zaeph/org/projects/hacking/hacking.org.gpg")
         ("p h p" . "/home/zaeph/org/projects/hacking/python/python.org.gpg")
@@ -3595,9 +3604,10 @@ agenda settings after them."
             (org-agenda-span 'day)
             (org-super-agenda-groups
              '(,(zp/org-super-agenda-groups "Life" '("life"))
-               ,(zp/org-super-agenda-groups "Professional" '("pro"))
-               ,(zp/org-super-agenda-groups "Activism" '("act"))
                ,(zp/org-super-agenda-groups "Maintenance" '("mx"))
+               ,(zp/org-super-agenda-groups "Professional" '("pro"))
+               ,(zp/org-super-agenda-groups "Research" '("research"))
+               ,(zp/org-super-agenda-groups "Activism" '("act"))
                ,(zp/org-super-agenda-groups "Hacking" '("hack"))
                ,(zp/org-super-agenda-groups "Curiosities" '("curios"))
                ,(zp/org-super-agenda-groups "Media" '("media")))))))
@@ -3890,7 +3900,7 @@ It creates 4 blocks:
              (,@(zp/org-agenda-blocks-main "Inbox" '("inbox"))))
 
         ("l" "Life"
-             (,@(zp/org-agenda-blocks-main "Life" '("life" "pro" "act" "mx"))))
+             (,@(zp/org-agenda-blocks-main "Life" '("life" "mx" "research" "pro" "act"))))
 
         ("L" "Life (strict)"
              (,@(zp/org-agenda-blocks-main "Life (strict)" '("life" "mx"))))
@@ -3942,8 +3952,11 @@ It creates 4 blocks:
         ("h" "Hacking"
              (,@(zp/org-agenda-blocks-main "Hacking" '("hack"))))
 
-        ("o" "OPSEC"
+        ("O" "OPSEC"
              (,@(zp/org-agenda-blocks-main "OPSEC" '("opsec"))))
+
+        ("o" "Org"
+             (,@(zp/org-agenda-blocks-main "Org" '("org"))))
 
         ("C" "Contributing & Troubleshooting"
              (,@(zp/org-agenda-blocks-main "Contributing & Troubleshooting" '("contrib"))))
@@ -5121,48 +5134,81 @@ Ensures that the toggles are set to their default variable."
 
 (zp/create-hydra-org-refile nil
     "
-^Life^              ^Prog^                  ^Pro & Act^        ^Mental^
-^^^^^^^^----------------------------------------------------------------------
-_i_: Inbox          _h_: Hacking            _u_: University    _A_: Awakening
-_o_: Life           _l_: Linux              _r_: Research      _P_: Psychotherapy
-_I_: Curiosities    _e_: Emacs
-_s_: Social         _E_: Elisp              _p_: Politics
-_n_: Nicolas        _O_: Org
-_S_: Swimming       _T_: LaTeX
-_R_: Running        _g_: Git
-_t_: Typography     _b_: Troubleshooting
-^^                  _B_: Contributing
+^Life^               ^Other^        ^Mental^
+^^^^^^-----------------------------------------------
+_i_: Inbox           _u_: University    _A_: Awakening
+_o_: Life            _r_: Research      _P_: Psychotherapy
+_O_: Curiosities     _t_: Teaching
+_s_: Social          _P_: Politics
+_n_: Nicolas
+_S_: Swimming
+_R_: Running
+_T_: Typography
+^^
 _x_: Maintenance
+_p_: Pro
 _m_: Media
 _c_: Calendars
+_h_: Hacking
 "
   (("i" "~/org/life.org" "Inbox")
    ("o" "~/org/life.org" "Life")
-   ("I" "~/org/life.org" "Curiosities")
+   ("O" "~/org/life.org" "Curiosities")
    ("s" "~/org/life.org" "Social")
    ("n" "~/org/life.org" "Social" "Nicolas")
    ("S" "~/org/life.org" "Swimming")
    ("R" "~/org/life.org" "Running")
    ("M" "~/org/life.org" "Media")
-   ("t" "~/org/life.org" "Typography")
+   ("T" "~/org/life.org" "Typography")
    ("X" "~/org/life.org" "Maintenance")
    ("A" "~/org/life.org" "Awakening")
    ("P" "~/org/life.org" "Psychotherapy")
-   ("p" "~/org/life.org" "Politics")
-   ("u" "~/org/life.org" "University")
-   ("r" "~/org/life.org" "Research")
-   ("h" "~/org/life.org" "Hacking")
-   ("B" "~/org/life.org" "Contributing")
-   ("b" "~/org/life.org" "Troubleshooting")
-   ("T" "~/org/life.org" "LaTeX")
-   ("e" "~/org/life.org" "Emacs")
-   ("O" "~/org/life.org" "Org")
-   ("E" "~/org/life.org" "Elisp")
-   ("l" "~/org/life.org" "Linux")
-   ("g" "~/org/life.org" "Git"))
+   ("P" "~/org/life.org" "Politics")
+   ("r" "~/org/life.org" "Research"))
   (("c" calendars)
+   ("p" pro)
    ("x" maintenance)
-   ("m" media)))
+   ("m" media)
+   ("h" hack)))
+
+(zp/create-hydra-org-refile pro
+    "
+^Pro^
+^^----------------------------------------------------------------------
+_s_: School
+_u_: University
+"
+  (("s" "~/org/life.org" "School")
+   ("u" "~/org/life.org" "University"))
+  nil)
+
+(zp/create-hydra-org-refile hack
+    "
+^Hacking^
+^^----------------------------------------------------------------------
+_._: Root
+_e_: Emacs
+_i_: Elisp
+_o_: Org
+_t_: LaTeX
+_l_: Linux
+_n_: NixOS
+_g_: Git
+_p_: Perl
+"
+  (("." "~/org/life.org" "Hacking")
+   ("e" "~/org/life.org" "Emacs")
+   ("i" "~/org/life.org" "Elisp")
+   ("o" "~/org/life.org" "Org")
+   ("t" "~/org/life.org" "LaTeX")
+   ("l" "~/org/life.org" "Linux")
+   ("n" "~/org/life.org" "NixOS")
+   ("g" "~/org/life.org" "Git")
+   ("p" "~/org/life.org" "Perl")
+
+   ("c" "~/org/life.org" "Contributing")
+   ("b" "~/org/life.org" "Troubleshooting"))
+  nil)
 
 (zp/create-hydra-org-refile calendars
     "
