@@ -3699,7 +3699,7 @@ agenda settings after them."
 
 (defun zp/org-agenda-block-projects-stuck (&optional file)
   (let ((org-agenda-cmp-user-defined 'org-cmp-todo-state-wait))
-    `(tags-todo "-standby"
+    `(tags-todo "-standby-recurring"
                 ((org-agenda-overriding-header
                   (zp/org-agenda-format-header-projects-stuck))
                  ,@(if (bound-and-true-p file)
@@ -3709,7 +3709,7 @@ agenda settings after them."
                  (org-agenda-dim-blocked-tasks 'dimmed)))))
 
 (defun zp/org-agenda-block-projects-stuck-with-group-filter (groups &optional file)
-  `(tags-todo "-standby"
+  `(tags-todo "-standby-recurring"
               ((org-agenda-overriding-header
                 (zp/org-agenda-format-header-projects-stuck))
                ,@(if (bound-and-true-p file)
