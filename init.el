@@ -6756,6 +6756,8 @@ agenda.")
   ;; (bh/list-sublevels-for-projects-indented)
   (save-restriction
     (widen)
+    (when zp/org-agenda-skip-functions-debug
+        (message "SNSP: %s" (org-entry-get (point) "ITEM")))
     (let ((next-headline (save-excursion (or (outline-next-heading) (point-max)))))
       (if (bh/is-project-p)
           (let* ((subtree-end (save-excursion (org-end-of-subtree t)))
@@ -6988,6 +6990,8 @@ GROUPS is a list of AGENDA_GROUPS values to match.
 
 If EXHAUSTIVE is non-nil, the function will not skip groupless
 trees."
+  (when zp/org-agenda-skip-functions-debug
+    (message "STNG: %s" (org-entry-get (point) "ITEM")))
   (save-restriction
     (widen)
     (let* ((next-headline (save-excursion
