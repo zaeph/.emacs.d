@@ -3749,6 +3749,46 @@ agenda settings after them."
                   (:name "Scheduled later"
                    :scheduled future))))))
 
+(defun zp/org-agenda-block-curiosities (groups &optional file)
+  `(tags-todo "+curiosity-standby"
+              ((org-agenda-overriding-header
+                (zp/org-agenda-format-header-block-with-settings "Tasks"))
+               ,@(if (bound-and-true-p file)
+                     `((org-agenda-files ',file)))
+               (org-agenda-sorting-strategy
+                '(scheduled-up user-defined-down priority-down))
+               ;; (org-agenda-skip-function 'zp/skip-non-tasks-and-scheduled))))
+               ;; (org-agenda-skip-function 'bh/skip-non-tasks)
+               (org-agenda-skip-function
+                '(or (zp/skip-tasks-not-belonging-to-agenda-groups ',groups)
+                  (bh/skip-non-tasks)))
+               ;; (org-agenda-todo-ignore-scheduled 'all)
+               ;; (org-super-agenda-groups
+               ;;  '(,(zp/org-super-agenda-groups "Life" '("life"))
+               ;;    ,(zp/org-super-agenda-groups "Maintenance" '("mx"))
+               ;;    ,(zp/org-super-agenda-groups "Professional" '("pro"))
+               ;;    ,(zp/org-super-agenda-groups "Research" '("research"))
+               ;;    ,(zp/org-super-agenda-groups "Activism" '("act"))
+               ;;    ,(zp/org-super-agenda-groups "Hacking" '("hack"))
+               ;;    ,(zp/org-super-agenda-groups "Curiosities" '("curios"))
+               ;;    ,(zp/org-super-agenda-groups "Media" '("media"))))
+               ;; (org-super-agenda-groups
+               ;;  '((:name "Overdue"
+               ;;     :and (:scheduled past
+               ;;           :not (:habit t)))
+               ;;    (:name "Waiting"
+               ;;     :and (:scheduled nil
+               ;;           :tag "waiting"))
+               ;;    (:name "Scheduled today"
+               ;;     :and (:scheduled today
+               ;;           :not (:habit t)))
+               ;;    (:name "Active"
+               ;;     :and (:scheduled nil
+               ;;           :not (:tag "waiting")))
+               ;;    (:name "Scheduled later"
+               ;;     :scheduled future)))
+               )))
+
 (defun zp/org-agenda-block-projects-stuck (&optional file)
   (let ((org-agenda-cmp-user-defined 'org-cmp-todo-state-wait))
     `(tags-todo "-standby-recurring"
@@ -3940,6 +3980,9 @@ It creates 4 blocks:
 
         ("i" "Inbox"
              (,@(zp/org-agenda-blocks-main "Inbox" '("inbox"))))
+
+        ("v" "Curiosities"
+             (,(zp/org-agenda-block-curiosities nil)))
 
         ("l" "Life"
              (,@(zp/org-agenda-blocks-main "Life" '("life" "mx" "research" "pro" "act"))))
