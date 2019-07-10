@@ -1840,6 +1840,36 @@ Modifies ‘diff-command’ and ‘diff-switches’ to use ‘git diff’."
 
 (setq inferior-python-mode-hook 'zp/inferior-python-mode-config)
 
+(defun zp/python-eval-buffer (arg)
+  "Run current buffer as Perl code"
+  (interactive "P")
+  (let (max-mini-window-height)
+    (unless arg
+      (setq max-mini-window-height 999))
+    (shell-command-on-region (point-min) (point-max) "python")))
+
+(define-key python-mode-map (kbd "M-RET") 'zp/python-eval-buffer)
+
+
+
+;; ========================================
+;; =============== RACKET =================
+;; ========================================
+
+(require 'racket-mode)
+
+(defun zp/racket-eval-buffer (arg)
+  "Run current buffer as Perl code"
+  (interactive "P")
+  (let (max-mini-window-height)
+    (unless arg
+      (setq max-mini-window-height 999))
+    (let ((inhibit-message t))
+      (basic-save-buffer))
+    (shell-command (concat "racket " (buffer-file-name)))))
+
+(define-key racket-mode-map (kbd "M-RET") 'zp/racket-eval-buffer)
+
 
 
 ;; ========================================
@@ -2364,12 +2394,24 @@ return `nil'."
 (defun zp/perl-eval-region ()
   "Run selected region as Perl code"
   (interactive)
-  (shell-command-on-region (mark) (point) "perl"))
+  (let ((max-mini-window-height nil))
+    (call-process (mark) (point) "perl")))
 
-(defun zp/perl-eval-buffer ()
-  "Run current buffer as Perl code"
+(defun zp/perl-eval-buffer-in-terminator ()
+  "Run selected region as Perl code"
   (interactive)
-  (shell-command-on-region (point-min) (point-max) "perl"))
+  (call-process "terminator" (buffer-file-name) nil nil (concat "-x perl" ))
+  ;; (call-process (concat "terminator -x perl "
+  ;;                       (buffer-file-name)))
+  )
+
+(defun zp/perl-eval-buffer (arg)
+  "Run current buffer as Perl code"
+  (interactive "P")
+  (let (max-mini-window-height)
+    (unless arg
+      (setq max-mini-window-height 999))
+    (shell-command-on-region (point-min) (point-max) "perl")))
 
 (define-key cperl-mode-map (kbd "M-RET") 'zp/perl-eval-buffer)
 (define-key cperl-mode-map (kbd "<C-return>") 'zp/perl-eval-region)
