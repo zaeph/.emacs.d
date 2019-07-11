@@ -3683,14 +3683,13 @@ agenda settings after them."
 
 (defun zp/org-super-agenda-scheduled ()
   '((:name "Overdue"
+     :face (:foreground "red")
      :and (:scheduled past
            :not (:habit t)))
     (:name "Waiting"
-     :and (:scheduled nil
-           :tag "waiting"))
+     :scheduled nil)
     (:name "Scheduled today"
-     :and (:scheduled today
-           :not (:habit t)))
+     :scheduled today)
     (:name "Subtasks"
      :and (:scheduled nil
            :pred (lambda (item)
