@@ -3920,10 +3920,10 @@ It creates 4 blocks:
 - A ‘tags-todo’ block displaying the tasks"
   `(,(zp/org-agenda-block-header
       header)
-     ,(zp/org-agenda-block-tasks-with-group-filter
-       groups tags fifo by-groups file)
      ,(zp/org-agenda-block-projects-with-group-filter
-       groups tags fifo file)))
+       groups tags fifo file)
+     ,(zp/org-agenda-block-tasks-with-group-filter
+       groups tags fifo by-groups file)))
 
 (defun zp/org-agenda-variant-create (prefix-key key prefix-header header groups tags fifo by-groups file)
   (let ((variant-key (concat prefix-key key))
