@@ -3680,11 +3680,14 @@ agenda settings after them."
     (:name "Scheduled today"
      :and (:scheduled today
            :not (:habit t)))
-    (:name "Active"
+    (:name "Current"
      :and (:scheduled nil
            :not (:tag "waiting")))
     (:name "Scheduled later"
-     :scheduled future)))
+     :scheduled future)
+    (:name "Blocked by waiting"
+     :and (:scheduled nil
+           :tag "waiting"))))
 
 (defun zp/org-super-agenda-stuck-project-p (item)
   (let ((marker (or (get-text-property 0 'org-marker item)
