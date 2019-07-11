@@ -3757,7 +3757,7 @@ agenda settings after them."
                          :not (:habit t)))
                   (:name "Waiting"
                    :and (:scheduled nil
-                         :tag "waiting"))
+                         :todo "WAIT"))
                   (:name "Scheduled today"
                    :and (:scheduled today
                          :not (:habit t)))
