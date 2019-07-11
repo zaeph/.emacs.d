@@ -7184,12 +7184,13 @@ trees."
           ((zp/org-task-in-agenda-groups-p groups-regex include-groupless-p)
            nil)
           ((and include-groupless-p
-                (catch 'found-next
-                  (while (re-search-backward (concat property-regex
-                                                     ".*$")
-                                             nil t)
-                    (if (org-entry-get (point) property)
-                        (throw 'found-next 't)))))
+                (or (org-entry-get (point) property)
+                    (catch 'found-next
+                      (while (re-search-backward (concat property-regex
+                                                         ".*$")
+                                                 nil t)
+                        (if (org-entry-get (point) property)
+                            (throw 'found-next 't))))))
            (outline-get-next-sibling))
           ((catch 'found-next
              (goto-char next-headline)
