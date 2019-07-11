@@ -3589,6 +3589,8 @@ agenda settings after them."
   (let ((word-list ()))
     (if (eq zp/org-agenda-sorting-strategy-user-defined 'started)
         (add-to-list 'word-list "+S↓" t))
+    (if zp/org-agenda-split-subtasks
+        (add-to-list 'word-list "+split" t))
     ;; (if (eq org-agenda-dim-blocked-tasks nil)
     ;;     (add-to-list 'word-list "-dimmed" t))
     (if (eq org-agenda-todo-ignore-scheduled 'future)
@@ -3671,6 +3673,12 @@ agenda settings after them."
      ,(zp/org-super-agenda-groups "Curiosities" '("curios"))
      ,(zp/org-super-agenda-groups "Media" '("media"))))
 
+(defun zp/org-super-agenda-subtask-p (item)
+  (let ((marker (or (get-text-property 0 'org-marker item)
+                    (get-text-property 0 'org-hd-marker item))))
+    (org-with-point-at marker
+      (zp/is-subtask-p))))
+
 (defun zp/org-super-agenda-scheduled ()
   '((:name "Overdue"
      :and (:scheduled past
@@ -3681,6 +3689,11 @@ agenda settings after them."
     (:name "Scheduled today"
      :and (:scheduled today
            :not (:habit t)))
+    (:name "Subtasks"
+     :and (:scheduled nil
+           :pred (lambda (item)
+                   (when zp/org-agenda-split-subtasks
+                     (zp/org-super-agenda-subtask-p item)))))
     (:name "Current"
      :and (:scheduled nil
            :not (:tag "waiting")))
@@ -3797,7 +3810,7 @@ agenda settings after them."
                ;; (org-agenda-skip-function 'bh/skip-non-tasks)
                (org-agenda-skip-function
                 '(or (zp/skip-tasks-not-belonging-to-agenda-groups ',groups)
-                  (bh/skip-non-tasks)))
+                  (zp/skip-non-tasks)))
                ;; (org-agenda-todo-ignore-scheduled 'all)
                (org-super-agenda-groups
                 ',(cond (by-groups
@@ -3867,7 +3880,7 @@ agenda settings after them."
                 '(,(zp/org-super-agenda-stuck-project)
                   (:name "Waiting"
                    :tag "waiting")
-                  (:name "Active"
+                  (:name "Current"
                    :anything))))))
 
 (defun zp/org-agenda-groups-format-regex (list)
@@ -3926,18 +3939,16 @@ It creates 4 blocks:
     ;; Inactive
     ,(zp/org-agenda-variant-create
       "i" key "Inactive"
-      header groups (concat tags "/STBY") t by-groups file)
+      header groups (concat tags "-cancelled/STBY") t by-groups file)
     ;; Curiosities
     ,(zp/org-agenda-variant-create
       "c" key "Curiosities"
-      header groups (concat "+curios" tags) t by-groups file)))
+      header groups (concat "+curios-cancelled" tags) t by-groups file)))
 
 (defun zp/org-agenda-create-all (list)
   (mapcan (lambda (params)
             (apply #'zp/org-agenda-variants-create params))
           list))
-
-(zp/org-agenda-variants-create "l" "Life" '("life"))
 
 (defun zp/org-agenda-block-tasks-special (&optional file)
   `(tags-todo "-standby/!WAIT|STRT"
@@ -4228,6 +4239,17 @@ due today, and showing all of them."
          (org-agenda-redo)
          (message "Sorting: Priority first"))))
 
+(defvar zp/org-agenda-split-subtasks nil
+  "When non-nil, split subtasks and loners.")
+
+(defun zp/toggle-org-agenda-split-subtasks ()
+  (interactive)
+  (if (prog1 (setq zp/org-agenda-split-subtasks
+                   (not zp/org-agenda-split-subtasks))
+        (org-agenda-redo))
+      (message "Splitting subtasks.")
+    (message "Merging subtasks.")))
+
 (defun zp/toggle-org-deadline-warning-days-range ()
   "Toggle the range of days for deadline to show up on the agenda."
   (interactive)
@@ -4396,6 +4418,7 @@ Check their respective dosctrings for more info."
   (local-set-key (kbd "M-d") 'zp/toggle-org-deadline-warning-days-range)
   (local-set-key (kbd "r") 'zp/org-agenda-benchmark)
   (local-set-key (kbd "h") 'zp/toggle-org-agenda-cmp-user-defined)
+  (local-set-key (kbd "H") 'zp/toggle-org-agenda-split-subtasks)
   ;; (local-set-key (kbd "H") 'zp/toggle-org-agenda-dim-blocked-tasks)
   (local-set-key (kbd "F") 'zp/toggle-org-agenda-todo-ignore-future-scheduled)
   (local-set-key (kbd "W") 'zp/toggle-org-agenda-projects-include-waiting)
@@ -6999,6 +7022,32 @@ Skip project and sub-project tasks, habits, and project related tasks."
        (t
         next-headline)))))
 
+(defun zp/is-subtask-p ()
+  (save-restriction
+    (widen)
+    (and (bh/is-task-p)
+         (save-excursion
+           (and (org-up-heading-safe)
+                (bh/is-project-p))))))
+
+(defun zp/skip-non-tasks (&optional subtasks)
+  "Show non-project tasks.
+Skip projects and habits.
+
+When SUBTASKS is non-nil, also skip project subtasks."
+  (save-restriction
+    (widen)
+    (let ((next-headline (save-excursion (or (if subtasks
+                                                 (and (org-goto-sibling)
+                                                      (point))
+                                               (outline-next-heading))
+                                             (point-max)))))
+      (cond
+        ((bh/is-task-p)
+         nil)
+        (t
+         next-headline)))))
+
 (defun zp/skip-non-tasks-and-scheduled ()
   (or
    (bh/skip-non-tasks)
@@ -7974,7 +8023,8 @@ With a ‘C-u’ prefix, make a separate frame for this tree."
                        (org-agenda-tree-to-indirect-buffer nil)
                        (select-window (previous-window))
                        (current-buffer))
-                   (org-agenda-tree-to-indirect-buffer nil))))
+                   (org-agenda-tree-to-indirect-buffer nil)))
+         subtask)
     (with-selected-window (if dedicated
                               (and (split-window-below)
                                    (next-window))
@@ -7985,9 +8035,13 @@ With a ‘C-u’ prefix, make a separate frame for this tree."
             (t
              (zp/org-spawned-ibuf-mode t)
              (setq zp/org-ibuf-spawned-also-kill-window t)))
-      (zp/org-overview nil nil t)
-          (org-back-to-heading)
-          (org-beginning-of-line))
+      (when (setq subtask (zp/is-subtask-p))
+        (zp/org-narrow-up-heading nil t))
+      (zp/org-overview nil subtask t)
+      (when subtask
+        (org-show-entry))
+      (org-back-to-heading)
+      (org-beginning-of-line))
     (balance-windows)
     (select-window (next-window))
     (message "Visiting tree in indirect buffer.")
