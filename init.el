@@ -4782,7 +4782,7 @@ TITLE and URL are those of the webpage."
 When JUMP is non-nil, jump to that other heading instead."
   (interactive "p")
   (let ((zp/hydra-org-jump-indirect nil)
-        (in-agenda (and (boundp 'org-agenda-mode) org-agenda-mode))
+        (in-agenda (derived-mode-p 'org-agenda-mode))
         (org-refile-use-outline-path t)
         (org-refile-history nil)
         file
@@ -4792,6 +4792,9 @@ When JUMP is non-nil, jump to that other heading instead."
                (org-before-first-heading-p))
       (outline-next-heading))
     (save-window-excursion
+      (when in-agenda
+        (org-goto-marker-or-bmk (or (get-text-property (point) 'org-marker)
+                                    (get-text-property (point) 'org-hd-marker))))
       (org-refile (if jump '(4) t))
       (setq file (buffer-file-name))
       (setq pos (point-marker)))
