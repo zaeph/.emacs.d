@@ -3417,7 +3417,7 @@ _e_: #E    _SPC_: remove
       ;; org-agenda-todo-ignore-scheduled 'past
       org-agenda-todo-ignore-deadlines nil
       org-agenda-include-deadlines 'all
-      zp/projects-include-waiting t
+      zp/org-agenda-include-waiting t
       zp/org-agenda-include-scheduled 'all
       org-agenda-cmp-user-defined 'zp/org-agenda-sort-wait
       zp/org-agenda-sorting-strategy-user-defined 'priority
@@ -3595,6 +3595,8 @@ agenda settings after them."
     ;;     (add-to-list 'word-list "-dimmed" t))
     (if (eq org-agenda-todo-ignore-scheduled 'future)
         (add-to-list 'word-list "-future" t))
+    (if (eq zp/org-agenda-include-waiting nil)
+        (add-to-list 'word-list "-waiting" t))
     (let ((header-formatted (zp/org-agenda-format-header-align header))
           (word-list-formatted (zp/org-agenda-format-word-list word-list)))
       (concat header-formatted word-list-formatted))))
@@ -3638,7 +3640,7 @@ agenda settings after them."
          (word-list ()))
     (if (eq zp/org-agenda-sorting-strategy-user-defined 'started)
         (add-to-list 'word-list "+S↓" t))
-    (if (eq zp/projects-include-waiting nil)
+    (if (eq zp/org-agenda-include-waiting nil)
         (add-to-list 'word-list "-waiting" t))
     (let ((header-formatted (zp/org-agenda-format-header-align header))
           (word-list-formatted (zp/org-agenda-format-word-list word-list)))
@@ -3810,7 +3812,8 @@ agenda settings after them."
                ;; (org-agenda-skip-function 'bh/skip-non-tasks)
                (org-agenda-skip-function
                 '(or (zp/skip-tasks-not-belonging-to-agenda-groups ',groups)
-                  (zp/skip-non-tasks)))
+                  (zp/skip-non-tasks)
+                  (zp/skip-waiting)))
                ;; (org-agenda-todo-ignore-scheduled 'all)
                (org-super-agenda-groups
                 ',(cond (by-groups
@@ -3865,8 +3868,7 @@ agenda settings after them."
                (org-agenda-skip-function
                 '(or (zp/skip-tasks-not-belonging-to-agenda-groups ',groups t)
                   (zp/skip-non-projects)
-                  ;; (zp/skip-non-unstuck-projects-and-waiting)
-                  ))
+                  (zp/skip-waiting)))
                ,@(when fifo
                    '((org-agenda-cmp-user-defined 'zp/org-cmp-created)))
                (org-agenda-sorting-strategy
@@ -4277,14 +4279,11 @@ due today, and showing all of them."
 (defun zp/toggle-org-agenda-projects-include-waiting ()
   "Toggle whether to include projects with a waiting task."
   (interactive)
-  (cond ((eq zp/projects-include-waiting nil)
-         (setq zp/projects-include-waiting t)
-         (org-agenda-redo)
-         (message "Projects: Showing All"))
-        ((eq zp/projects-include-waiting t)
-         (setq zp/projects-include-waiting nil)
-         (org-agenda-redo)
-         (message "Projects: Hiding Waiting"))))
+  (if (prog1 (setq zp/org-agenda-include-waiting
+                   (not zp/org-agenda-include-waiting))
+        (org-agenda-redo))
+      (message "Waiting: Visible")
+    (message "Waiting: Hidden")))
 
 (defun zp/toggle-org-agenda-dim-blocked-tasks ()
   "Toggle the dimming of blocked tags in the agenda."
@@ -6905,7 +6904,7 @@ Callers of this function already widen the buffer view."
               (forward-line 1)
               (while (and (not has-next)
                           (< (point) subtree-end)
-                          (if zp/projects-include-waiting
+                          (if zp/org-agenda-include-waiting
                               (re-search-forward "^\\*+ \\(NEXT\\|STRT\\) " subtree-end t)
                             (re-search-forward "^\\*+ \\(NEXT\\|STRT\\|WAIT\\) " subtree-end t)))
                 (unless (member "standby" (org-get-tags-at))
@@ -6915,7 +6914,7 @@ Callers of this function already widen the buffer view."
               next-headline)) ; a stuck project, has subtasks but no next task
         nil))))
 
-(defvar zp/projects-include-waiting nil
+(defvar zp/org-agenda-include-waiting nil
   "When t, includes stuck projects with a waiting task in the
 agenda.")
 
@@ -6942,13 +6941,26 @@ agenda.")
             nil
           next-headline)))))
 
+(defun zp/is-waiting-p ()
+  (string-match-p "WAIT" (org-get-todo-state)))
+
+(defun zp/skip-waiting ()
+  (save-restriction
+    (widen)
+    (let ((next-headline (save-excursion (or (outline-next-heading)
+                                             (point-max)))))
+      (if (and (not zp/org-agenda-include-waiting)
+               (zp/is-waiting-p))
+          next-headline
+        nil))))
+
 (defun zp/skip-non-stuck-projects ()
   "Skip trees that are not stuck projects"
   ;; (bh/list-sublevels-for-projects-indented)
   (save-restriction
     (widen)
     (when zp/org-agenda-skip-functions-debug
-        (message "SNSP: %s" (org-entry-get (point) "ITEM")))
+      (message "SNSP: %s" (org-entry-get (point) "ITEM")))
     (let ((next-headline (save-excursion (or (outline-next-heading) (point-max)))))
       (if (bh/is-project-p)
           (let* ((subtree-end (save-excursion (org-end-of-subtree t)))
@@ -6964,7 +6976,7 @@ agenda.")
                 (setq has-next t)))
             (if has-next
                 next-headline
-              nil)) ; a stuck project, has subtasks but no next task
+              nil))     ; a stuck project, has subtasks but no next task
         next-headline))))
 
 (defun bh/skip-non-projects ()
@@ -7008,7 +7020,7 @@ agenda.")
   (or
    (zp/skip-non-projects)
    ;; (zp/skip-non-unstuck-projects)
-   (if (not zp/projects-include-waiting)
+   (if (not zp/org-agenda-include-waiting)
       (org-agenda-skip-entry-if 'todo '("WAIT")))))
 
 (defun bh/skip-non-tasks ()
