@@ -3778,7 +3778,7 @@ agenda settings after them."
 
 (defun zp/org-agenda-block-tasks-with-group-filter (&optional groups tags fifo by-groups file)
   `(tags-todo ,(or tags
-                   "-standby-recurring-curiosity")
+                   "-standby-recurring-curios")
               ((org-agenda-overriding-header
                 (zp/org-agenda-format-header-block-with-settings "Tasks"))
                ,@(if (bound-and-true-p file)
@@ -3842,7 +3842,7 @@ agenda settings after them."
 
 (defun zp/org-agenda-block-projects-with-group-filter (&optional groups tags fifo file)
   `(tags-todo ,(or tags
-                   "-standby-curiosity")
+                   "-standby-curios")
               ((org-agenda-overriding-header
                 (zp/org-agenda-format-header-projects))
                ,@(if (bound-and-true-p file)
@@ -3929,7 +3929,7 @@ It creates 4 blocks:
     ;; Curiosities
     ,(zp/org-agenda-variant-create
       "c" key "Curiosities"
-      header groups (concat "+curiosity" tags) t by-groups file)))
+      header groups (concat "+curios" tags) t by-groups file)))
 
 (defun zp/org-agenda-create-all (list)
   (mapcan (lambda (params)
@@ -4034,10 +4034,10 @@ It creates 4 blocks:
               (,@(zp/org-agenda-blocks-create "Inactive (+groups)" nil "/STBY" t t)))
 
         ("C" "Curiosities"
-             (,@(zp/org-agenda-blocks-create "Curiosities" nil "+curiosity" t nil)))
+             (,@(zp/org-agenda-blocks-create "Curiosities" nil "+curios" t nil)))
 
         ("cc" "Curiosities (+groups)"
-              (,@(zp/org-agenda-blocks-create "Curiosities (+groups)" nil "+curiosity" t t)))
+              (,@(zp/org-agenda-blocks-create "Curiosities (+groups)" nil "+curios" t t)))
 
         ,@(zp/org-agenda-create-all
            '(("l" "Life" ("life" "mx" "pro" "research" "act"))
