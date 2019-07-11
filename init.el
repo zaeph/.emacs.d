@@ -6774,8 +6774,6 @@ along with effort estimates and total time."
 ;; Norang
 ;; To study in depth to master org-agenda
 
-(setq org-stuck-projects (quote ("" nil nil "")))
-
 (defun bh/is-project-p ()
   "Any task with a todo keyword subtask"
   (save-restriction
