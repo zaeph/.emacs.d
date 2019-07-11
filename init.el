@@ -2478,7 +2478,7 @@ return `nil'."
       org-track-ordered-property-with-tag "ORDERED"
       ;; org-tags-exclude-from-inheritance '("project")
       org-tags-exclude-from-inheritance nil
-      org-agenda-hide-tags-regexp "recurring\\|waiting\\|standby"
+      org-agenda-hide-tags-regexp "recurring\\|waiting\\|standby\\|curios"
       org-catch-invisible-edits 'error
       org-footnote-define-inline 1)
 
