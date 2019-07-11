@@ -3812,7 +3812,8 @@ agenda settings after them."
                ;; (org-agenda-skip-function 'bh/skip-non-tasks)
                (org-agenda-skip-function
                 '(or (zp/skip-tasks-not-belonging-to-agenda-groups ',groups)
-                  (zp/skip-non-tasks)
+                  (zp/skip-non-tasks ,(and tags
+                                           (string-match-p "/STBY" tags)))
                   (zp/skip-waiting)))
                ;; (org-agenda-todo-ignore-scheduled 'all)
                (org-super-agenda-groups
@@ -7050,12 +7051,16 @@ Skip projects and habits.
 When SUBTASKS is non-nil, also skip project subtasks."
   (save-restriction
     (widen)
-    (let ((next-headline (save-excursion (or (if subtasks
-                                                 (and (org-goto-sibling)
-                                                      (point))
-                                               (outline-next-heading))
-                                             (point-max)))))
+    (let ((next-headline
+           (save-excursion (or (and subtasks
+                                    (org-goto-sibling)
+                                    (point))
+                               (outline-next-heading)
+                               (point-max)))))
       (cond
+        ((and subtasks
+              (zp/is-subtask-p))
+         next-headline)
         ((bh/is-task-p)
          nil)
         (t
