@@ -3792,7 +3792,7 @@ agenda settings after them."
 
 (defun zp/org-agenda-block-tasks-with-group-filter (&optional groups tags fifo by-groups file)
   `(tags-todo ,(or tags
-                   "-standby-recurring-curios")
+                   "-standby-cancelled-recurring-curios")
               ((org-agenda-overriding-header
                 (zp/org-agenda-format-header-block-with-settings "Tasks"))
                ,@(if (bound-and-true-p file)
@@ -3856,7 +3856,7 @@ agenda settings after them."
 
 (defun zp/org-agenda-block-projects-with-group-filter (&optional groups tags fifo file)
   `(tags-todo ,(or tags
-                   "-standby-curios")
+                   "-standby-cancelled-curios")
               ((org-agenda-overriding-header
                 (zp/org-agenda-format-header-projects))
                ,@(if (bound-and-true-p file)
