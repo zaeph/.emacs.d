@@ -4159,7 +4159,7 @@ It creates 4 blocks:
 
 (defun zp/org-agenda-hi-lock ()
   (highlight-regexp "([-+].*?)" 'zp/org-agenda-block-info-face)
-  (highlight-regexp "^[[:space:]]*? \\[ Stuck Projects \\]" 'zp/org-agenda-block-warning-face)
+  ;; (highlight-regexp "^[[:space:]]*? \\[ Stuck Projects \\]" 'zp/org-agenda-block-warning-face)
   (highlight-regexp "^~~.*~~$" 'font-lock-comment-face))
 
 (defun zp/org-agenda-remove-mouse-face ()
