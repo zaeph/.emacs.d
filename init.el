@@ -2705,6 +2705,7 @@ off.")
         ("^maths$" "~/org/svg/icons/pi.svg" nil nil :ascent center)
         ("^phil$" "~/org/svg/icons/philosophy.svg" nil nil :ascent center)
         ("^history$" "~/org/svg/icons/history.svg" nil nil :ascent center)
+        ("^ling$" "~/org/svg/icons/language.svg" nil nil :ascent center)
 
         ;; Hacking
         ("^hack$" "~/org/svg/icons/engineering-2.svg" nil nil :ascent center)
