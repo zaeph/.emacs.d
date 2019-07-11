@@ -3659,12 +3659,13 @@ agenda settings after them."
   (let ((marker (or (get-text-property 0 'org-marker item)
                     (get-text-property 0 'org-hd-marker item))))
     (org-with-point-at marker
-      (zp/skip-stuck-projects))))
+      (not (zp/skip-non-stuck-projects)))))
 
 (defun zp/org-super-agenda-stuck-project ()
-  `(:name "Stuck"
-          :pred (lambda (item)
-                  (zp/org-super-agenda-stuck-project-p item))))
+  '(:name "Stuck"
+    :face (:foreground "red")
+    :pred (lambda (item)
+            (zp/org-super-agenda-stuck-project-p item))))
 
 (defun zp/org-agenda-block-agenda-main (header &optional file)
   `(agenda ""
@@ -3914,8 +3915,8 @@ It creates 4 blocks:
 - A ‘tags-todo’ block displaying the tasks"
   `(,(zp/org-agenda-block-header
       header)
-     ,(zp/org-agenda-block-projects-stuck-with-group-filter
-       groups file)
+     ;; ,(zp/org-agenda-block-projects-stuck-with-group-filter
+     ;;   groups file)
      ,(zp/org-agenda-block-tasks-with-group-filter
        groups file)
      ,(zp/org-agenda-block-projects-with-group-filter
@@ -6959,19 +6960,15 @@ agenda.")
 (defun zp/skip-non-projects ()
   "Skip trees that are not projects"
   ;; (bh/list-sublevels-for-projects-indented)
-  (message "%s" (org-get-heading))
   (save-restriction
     (widen)
     (let ((subtree-end (save-excursion (org-end-of-subtree t))))
       (cond
         ((bh/is-project-p)
-         (message "Yes.")
          nil)
         ((and (bh/is-project-subtree-p) (not (bh/is-task-p)))
-         (message "Yes.")
          nil)
         (t
-         (message "No.")
          subtree-end)))))
 
 (defun zp/skip-non-unstuck-projects ()
