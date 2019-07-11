@@ -5704,7 +5704,7 @@ running."
 (require 'org-noter)
 (setq org-noter-hide-other t
       org-noter-auto-save-last-location t
-      org-noter-doc-split-fraction '(0.6 0.4))
+      org-noter-doc-split-fraction '(0.59 0.41))
 
 (add-hook #'org-noter-notes-mode-hook #'visual-line-mode)
 
