@@ -4413,6 +4413,7 @@ Check their respective dosctrings for more info."
   (local-set-key (kbd "M-d") 'zp/toggle-org-deadline-warning-days-range)
   (local-set-key (kbd "r") 'zp/org-agenda-benchmark)
   (local-set-key (kbd "h") 'zp/toggle-org-agenda-cmp-user-defined)
+  (local-set-key (kbd "H") 'zp/toggle-org-agenda-dim-blocked-tasks)
   (local-set-key (kbd "F") 'zp/toggle-org-agenda-todo-ignore-future-scheduled)
   (local-set-key (kbd "W") 'zp/toggle-org-agenda-projects-include-waiting)
   (local-set-key (kbd "C-c C-x r") 'zp/org-agenda-set-appt-warntime)
