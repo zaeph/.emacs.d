@@ -3505,9 +3505,9 @@ With a prefix argument, do so in all agenda buffers."
     (cond ((and (string-match-p ta todo) (not (string-match-p tb todo))) +1)
           ((and (string-match-p tb todo) (not (string-match-p ta todo))) -1))))
 
-(defun zp/org-agenda-sort-special (a b)
+(defun zp/org-agenda-sort-started (a b)
   (cond
-   ((org-cmp-test-todo "WAIT|STBY" a b))
+   ;; ((org-cmp-test-todo "WAIT|STBY" a b))
    ((org-cmp-test-todo "STRT" a b))))
 
 (defun zp/org-agenda-sort-wait (a b)
@@ -3586,8 +3586,10 @@ With a prefix argument, do so in all agenda buffers."
   "Format header blocks in org-agenda, and display important
 agenda settings after them."
   (let ((word-list ()))
-    (if (eq zp/org-agenda-sorting-strategy-user-defined 'special)
+    (if (eq zp/org-agenda-sorting-strategy-user-defined 'started)
         (add-to-list 'word-list "+S↓" t))
+    (if (eq org-agenda-dim-blocked-tasks nil)
+        (add-to-list 'word-list "-dimmed" t))
     (if (eq org-agenda-todo-ignore-scheduled 'future)
         (add-to-list 'word-list "-future" t))
     (let ((header-formatted (zp/org-agenda-format-header-align header))
@@ -3615,7 +3617,7 @@ important agenda settings after them."
   (let* ((tags-column org-agenda-tags-column)
          (header "Scheduled")
          (word-list ()))
-    (if (eq zp/org-agenda-sorting-strategy-user-defined 'special)
+    (if (eq zp/org-agenda-sorting-strategy-user-defined 'started)
         (add-to-list 'word-list "+S↓" t))
     (if (eq org-agenda-todo-ignore-scheduled 'future)
         (add-to-list 'word-list "-future" t))
@@ -3631,7 +3633,7 @@ agenda settings after them."
   (let* ((tags-column org-agenda-tags-column)
          (header "Projects")
          (word-list ()))
-    (if (eq zp/org-agenda-sorting-strategy-user-defined 'special)
+    (if (eq zp/org-agenda-sorting-strategy-user-defined 'started)
         (add-to-list 'word-list "+S↓" t))
     (if (eq zp/projects-include-waiting nil)
         (add-to-list 'word-list "-waiting" t))
@@ -4233,10 +4235,10 @@ due today, and showing all of them."
   "Toggle the skip function used by the agenda."
   (interactive)
   (cond ((eq zp/org-agenda-sorting-strategy-user-defined 'priority)
-         (setq org-agenda-cmp-user-defined 'zp/org-agenda-sort-special
-               zp/org-agenda-sorting-strategy-user-defined 'special)
+         (setq org-agenda-cmp-user-defined 'zp/org-agenda-sort-started
+               zp/org-agenda-sorting-strategy-user-defined 'started)
          (org-agenda-redo)
-         (message "Sorting: Special first"))
+         (message "Sorting: Started first"))
         (t
          (setq org-agenda-cmp-user-defined 'zp/org-agenda-sort-wait
                zp/org-agenda-sorting-strategy-user-defined 'priority)
