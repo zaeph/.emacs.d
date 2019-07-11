@@ -3655,6 +3655,17 @@ agenda settings after them."
           :pred (lambda (item)
                   (zp/org-super-agenda-item-in-agenda-groups-p item ',groups))))
 
+(defun zp/org-super-agenda-stuck-project-p (item)
+  (let ((marker (or (get-text-property 0 'org-marker item)
+                    (get-text-property 0 'org-hd-marker item))))
+    (org-with-point-at marker
+      (zp/skip-stuck-projects))))
+
+(defun zp/org-super-agenda-stuck-project ()
+  `(:name "Stuck"
+          :pred (lambda (item)
+                  (zp/org-super-agenda-stuck-project-p item))))
+
 (defun zp/org-agenda-block-agenda-main (header &optional file)
   `(agenda ""
            ((org-agenda-overriding-header
@@ -3852,13 +3863,16 @@ agenda settings after them."
                ;; (org-agenda-skip-function 'zp/skip-non-unstuck-projects-and-waiting)
                (org-agenda-skip-function
                 '(or (zp/skip-tasks-not-belonging-to-agenda-groups ',groups t)
-                  (zp/skip-non-unstuck-projects-and-waiting)))
+                  (zp/skip-non-projects)
+                  ;; (zp/skip-non-unstuck-projects-and-waiting)
+                  ))
                (org-agenda-sorting-strategy
                 '(user-defined-down priority-down category-keep))
                (org-agenda-todo-ignore-scheduled nil)
                (org-agenda-dim-blocked-tasks nil)
                (org-super-agenda-groups
-                '((:name "Waiting"
+                '(,(zp/org-super-agenda-stuck-project)
+                  (:name "Waiting"
                    :tag "waiting")
                   (:name "Active"
                    :anything))))))
@@ -6945,18 +6959,20 @@ agenda.")
 (defun zp/skip-non-projects ()
   "Skip trees that are not projects"
   ;; (bh/list-sublevels-for-projects-indented)
-  (if (save-excursion (zp/skip-non-stuck-projects))
-      (save-restriction
-        (widen)
-        (let ((subtree-end (save-excursion (org-end-of-subtree t))))
-          (cond
-           ((bh/is-project-p)
-            nil)
-           ((and (bh/is-project-subtree-p) (not (bh/is-task-p)))
-            nil)
-           (t
-            subtree-end))))
-    (save-excursion (org-end-of-subtree t))))
+  (message "%s" (org-get-heading))
+  (save-restriction
+    (widen)
+    (let ((subtree-end (save-excursion (org-end-of-subtree t))))
+      (cond
+        ((bh/is-project-p)
+         (message "Yes.")
+         nil)
+        ((and (bh/is-project-subtree-p) (not (bh/is-task-p)))
+         (message "Yes.")
+         nil)
+        (t
+         (message "No.")
+         subtree-end)))))
 
 (defun zp/skip-non-unstuck-projects ()
   "Skip trees that are not unstuck projects"
