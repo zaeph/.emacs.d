@@ -5865,14 +5865,25 @@ buffer, thereby propagating the indirectness."
 (defun zp/org-noter-dwim (arg)
   "Run org-noter on the current tree, even if we’re in the agenda."
   (interactive "P")
-  (if (derived-mode-p 'org-agenda-mode)
-      (let ((marker (get-text-property (point) 'org-marker)))
-        (with-current-buffer (marker-buffer marker)
-          (goto-char marker)
-          (unless (org-entry-get nil org-noter-property-doc-file)
-            (user-error "No org-noter info on this tree"))
-          (zp/org-noter-indirect arg)))
-    (zp/org-noter-indirect arg)))
+  (let ((in-agenda (derived-mode-p 'org-agenda-mode))
+        (marker))
+    (cond (in-agenda
+           (setq marker (get-text-property (point) 'org-marker))
+           (with-current-buffer (marker-buffer marker)
+             (goto-char marker)
+             (unless (org-entry-get nil org-noter-property-doc-file)
+               (user-error "No org-noter info on this tree"))
+             (zp/org-noter-indirect arg)))
+          (t
+           (zp/org-noter-indirect arg)
+           (setq marker (point-marker))))
+    (org-with-point-at marker
+      (let ((tags (org-get-tags-at)))
+        (when (and (org-entry-get nil org-noter-property-doc-file)
+                   (not (member "noter" tags)))
+          (org-set-tags (push "noter" tags)))))
+    (unless in-agenda
+      (set-marker marker nil))))
 
 
 
