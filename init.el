@@ -3776,37 +3776,33 @@ agenda settings after them."
                (org-agenda-todo-ignore-scheduled 'all)
                )))
 
-(defun zp/org-agenda-block-tasks-with-group-filter (&optional groups tags super-sort file)
-  (let ((curiosity (and tags
-                        (string-match-p "\\+curiosity" tags)))
-        (super-sort-groups (and super-sort
-                                (string= super-sort "groups"))))
-    `(tags-todo ,(or tags
-                     "-standby-recurring-curiosity")
-                ((org-agenda-overriding-header
-                  (zp/org-agenda-format-header-block-with-settings "Tasks"))
-                 ,@(if (bound-and-true-p file)
-                       `((org-agenda-files ',file)))
-                 ,@(when curiosity
-                     '((org-agenda-cmp-user-defined 'zp/org-cmp-created)))
-                 (org-agenda-sorting-strategy
-                  '(,@(unless super-sort-groups
-                        '(scheduled-up))
-                    ,@(if curiosity
-                          '(priority-down user-defined-up)
-                        '(user-defined-down priority-down))
-                    category-keep))
-                 ;; (org-agenda-skip-function 'zp/skip-non-tasks-and-scheduled))))
-                 ;; (org-agenda-skip-function 'bh/skip-non-tasks)
-                 (org-agenda-skip-function
-                  '(or (zp/skip-tasks-not-belonging-to-agenda-groups ',groups)
-                    (bh/skip-non-tasks)))
-                 ;; (org-agenda-todo-ignore-scheduled 'all)
-                 (org-super-agenda-groups
-                  ',(cond (super-sort-groups
-                           (zp/org-super-agenda-groups-all))
-                          (t
-                           (zp/org-super-agenda-scheduled))))))))
+(defun zp/org-agenda-block-tasks-with-group-filter (&optional groups tags fifo by-groups file)
+  `(tags-todo ,(or tags
+                   "-standby-recurring-curiosity")
+              ((org-agenda-overriding-header
+                (zp/org-agenda-format-header-block-with-settings "Tasks"))
+               ,@(if (bound-and-true-p file)
+                     `((org-agenda-files ',file)))
+               ,@(when fifo
+                   '((org-agenda-cmp-user-defined 'zp/org-cmp-created)))
+               (org-agenda-sorting-strategy
+                '(,@(unless by-groups
+                      '(scheduled-up))
+                  ,@(if fifo
+                        '(priority-down user-defined-up)
+                      '(user-defined-down priority-down))
+                  category-keep))
+               ;; (org-agenda-skip-function 'zp/skip-non-tasks-and-scheduled))))
+               ;; (org-agenda-skip-function 'bh/skip-non-tasks)
+               (org-agenda-skip-function
+                '(or (zp/skip-tasks-not-belonging-to-agenda-groups ',groups)
+                  (bh/skip-non-tasks)))
+               ;; (org-agenda-todo-ignore-scheduled 'all)
+               (org-super-agenda-groups
+                ',(cond (by-groups
+                         (zp/org-super-agenda-groups-all))
+                        (t
+                         (zp/org-super-agenda-scheduled)))))))
 
 (defun zp/org-agenda-block-projects-stuck (&optional file)
   (let ((org-agenda-cmp-user-defined 'org-cmp-todo-state-wait))
@@ -3844,7 +3840,7 @@ agenda settings after them."
                (org-agenda-todo-ignore-scheduled nil)
                (org-agenda-dim-blocked-tasks nil))))
 
-(defun zp/org-agenda-block-projects-with-group-filter (&optional groups tags file)
+(defun zp/org-agenda-block-projects-with-group-filter (&optional groups tags fifo file)
   `(tags-todo ,(or tags
                    "-standby-curiosity")
               ((org-agenda-overriding-header
@@ -3857,8 +3853,13 @@ agenda settings after them."
                   (zp/skip-non-projects)
                   ;; (zp/skip-non-unstuck-projects-and-waiting)
                   ))
+               ,@(when fifo
+                   '((org-agenda-cmp-user-defined 'zp/org-cmp-created)))
                (org-agenda-sorting-strategy
-                '(user-defined-down priority-down category-keep))
+                '(,@(if fifo
+                        '(priority-down user-defined-up)
+                      '(user-defined-down priority-down))
+                  category-keep))
                (org-agenda-todo-ignore-scheduled nil)
                (org-agenda-dim-blocked-tasks nil)
                (org-super-agenda-groups
@@ -3889,7 +3890,7 @@ agenda settings after them."
 
 
 
-(defun zp/org-agenda-blocks-main (header &optional groups tags super-sort file)
+(defun zp/org-agenda-blocks-create (header &optional groups tags fifo by-groups file)
   "Format the main agenda blocks.
 
 HEADER is the string to be used as the header of the the agenda
@@ -3905,12 +3906,37 @@ It creates 4 blocks:
 - A ‘tags-todo’ block displaying the tasks"
   `(,(zp/org-agenda-block-header
       header)
-     ;; ,(zp/org-agenda-block-projects-stuck-with-group-filter
-     ;;   groups file)
      ,(zp/org-agenda-block-tasks-with-group-filter
-       groups tags super-sort file)
+       groups tags fifo by-groups file)
      ,(zp/org-agenda-block-projects-with-group-filter
-       groups tags file)))
+       groups tags fifo file)))
+
+(defun zp/org-agenda-variant-create (prefix-key key prefix-header header groups tags fifo by-groups file)
+  (let ((variant-key (concat prefix-key key))
+        (variant-header (concat prefix-header ": " header)))
+    `(,variant-key
+      ,variant-header
+      ,(zp/org-agenda-blocks-create variant-header groups tags fifo by-groups file))))
+
+(defun zp/org-agenda-variants-create (key header &optional groups tags by-groups file)
+  `(;; Active
+    (,key ,header
+          ,(zp/org-agenda-blocks-create header groups tags nil by-groups file))
+    ;; Inactive
+    ,(zp/org-agenda-variant-create
+      "i" key "Inactive"
+      header groups (concat tags "/STBY") t by-groups file)
+    ;; Curiosities
+    ,(zp/org-agenda-variant-create
+      "c" key "Curiosities"
+      header groups (concat "+curiosity" tags) t by-groups file)))
+
+(defun zp/org-agenda-create-all (list)
+  (mapcan (lambda (params)
+            (apply #'zp/org-agenda-variants-create params))
+          list))
+
+(zp/org-agenda-variants-create "l" "Life" '("life"))
 
 (defun zp/org-agenda-block-tasks-special (&optional file)
   `(tags-todo "-standby/!WAIT|STRT"
@@ -4001,82 +4027,35 @@ It creates 4 blocks:
         ("K" "Weekly appointments (-recurring)"
              (,(zp/org-agenda-block-agenda-week-appointments-only "Weekly Appointments")))
 
-        ("i" "Inbox"
-             (,@(zp/org-agenda-blocks-main "Inbox" '("inbox"))))
+        ("I" "Inactive"
+             (,@(zp/org-agenda-blocks-create "Inactive" nil "/STBY" t nil)))
 
-        ("u" "Inactive (+standby+groups)"
-             (,@(zp/org-agenda-blocks-main "Inactive (+standby+groups)" nil "/STBY" "groups")))
+        ("ii" "Inactive (+groups)"
+              (,@(zp/org-agenda-blocks-create "Inactive (+groups)" nil "/STBY" t t)))
 
-        ("U" "Inactive (+standby)"
-             (,@(zp/org-agenda-blocks-main "Inactive (+standby)" nil "/STBY")))
+        ("C" "Curiosities"
+             (,@(zp/org-agenda-blocks-create "Curiosities" nil "+curiosity" t nil)))
 
-        ("v" "Curiosities (+groups)"
-             (,@(zp/org-agenda-blocks-main "Curiosities (+standby)" nil "+curiosity" "groups")))
+        ("cc" "Curiosities (+groups)"
+              (,@(zp/org-agenda-blocks-create "Curiosities (+groups)" nil "+curiosity" t t)))
 
-        ("V" "Curiosities"
-             (,@(zp/org-agenda-blocks-main "Curiosities (+standby)" nil "+curiosity")))
-
-        ("l" "Life"
-             (,@(zp/org-agenda-blocks-main "Life" '("life" "mx" "research" "pro" "act"))))
-
-        ("L" "Life (strict)"
-             (,@(zp/org-agenda-blocks-main "Life (strict)" '("life" "mx"))))
-
-        ("c" "Curiosities"
-             (,@(zp/org-agenda-blocks-main "Curiosities" '("curios"))))
-
-        ("a" "Activism"
-             (,@(zp/org-agenda-blocks-main "Activism" '("act"))))
-
-        ("p" "Professional"
-             (,@(zp/org-agenda-blocks-main "Professional" '("pro"))))
-
-        ("g" "Groupless Tasks"
-             (,@(zp/org-agenda-blocks-main "Groupless Tasks" '(nil))))
-
-        ("x" "Maintenance"
-             (,@(zp/org-agenda-blocks-main "Maintenance" '("mx"))))
+        ,@(zp/org-agenda-create-all
+           '(("l" "Life" ("life" "mx" "pro" "research" "act"))
+             ("L" "Life (strict)" ("life" "mx"))
+             ("x" "Maintenance" ("mx"))
+             ("p" "Professional" ("pro"))
+             ("r" "Research" ("research"))
+             ("h" "Hacking" ("hack"))
+             ("o" "Org" ("org"))
+             ("O" "OPSEC" ("opsec"))
+             ("P" "Activism" ("act"))
+             ("m" "Media" ("media"))
+             ("f" "Film" ("film"))
+             ("g" "Groupless" (nil))))
 
         ("j" "Journal entries"
              (,(zp/org-agenda-block-journal))
              ((org-agenda-files '("/home/zaeph/org/journal.org"))))
-
-        ("r" "Reading (-standby)"
-             (,(zp/org-agenda-block-agenda "Reading")
-               ;; ,(zp/org-agenda-block-projects-stuck)
-               ,(zp/org-agenda-block-reading-next-and-started)
-               ,(zp/org-agenda-block-reading-list))
-             ((org-agenda-tag-filter-preset (list "+reading"))
-              (org-agenda-hide-tags-regexp "reading")))
-
-        ;; ("b" "Media"
-        ;;      (,(zp/org-agenda-block-agenda "Media")
-        ;;        ,(zp/org-agenda-block-projects)
-        ;;        ,(zp/org-agenda-block-projects-stuck)
-        ;;        ,(zp/org-agenda-block-scheduled)
-        ;;        ,(zp/org-agenda-block-tasks))
-        ;;      ((org-agenda-files zp/org-agenda-files-media)))
-
-        ("b" "Media"
-             (,@(zp/org-agenda-blocks-main "Media" '("media"))))
-
-        ("B" "Music"
-             (,@(zp/org-agenda-blocks-main "Music" '("music"))))
-
-        ("f" "Film"
-             (,@(zp/org-agenda-blocks-main "Film" '("film"))))
-
-        ("h" "Hacking"
-             (,@(zp/org-agenda-blocks-main "Hacking" '("hack"))))
-
-        ("O" "OPSEC"
-             (,@(zp/org-agenda-blocks-main "OPSEC" '("opsec"))))
-
-        ("o" "Org"
-             (,@(zp/org-agenda-blocks-main "Org" '("org"))))
-
-        ("C" "Contributing & Troubleshooting"
-             (,@(zp/org-agenda-blocks-main "Contributing & Troubleshooting" '("contrib"))))
 
         ("d" "Deadlines"
              (,(zp/org-agenda-block-deadines)))
