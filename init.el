@@ -15,6 +15,7 @@
 (setq initial-scratch-message ";; Emacs Scratch
 
 ")
+(setq zp/org-agenda-skip-functions-debug nil)
 
 ;; (toggle-debug-on)
 ;; (toggle-debug-on-quit)
@@ -3655,11 +3656,38 @@ agenda settings after them."
           :pred (lambda (item)
                   (zp/org-super-agenda-item-in-agenda-groups-p item ',groups))))
 
+(defun zp/org-super-agenda-groups-all ()
+  `(,(zp/org-super-agenda-groups "Inbox" '("inbox"))
+     ,(zp/org-super-agenda-groups "Life" '("life"))
+     ,(zp/org-super-agenda-groups "Maintenance" '("mx"))
+     ,(zp/org-super-agenda-groups "Professional" '("pro"))
+     ,(zp/org-super-agenda-groups "Research" '("research"))
+     ,(zp/org-super-agenda-groups "Activism" '("act"))
+     ,(zp/org-super-agenda-groups "Hacking" '("hack"))
+     ,(zp/org-super-agenda-groups "Curiosities" '("curios"))
+     ,(zp/org-super-agenda-groups "Media" '("media"))))
+
+(defun zp/org-super-agenda-scheduled ()
+  '((:name "Overdue"
+     :and (:scheduled past
+           :not (:habit t)))
+    (:name "Waiting"
+     :and (:scheduled nil
+           :todo "WAIT"))
+    (:name "Scheduled today"
+     :and (:scheduled today
+           :not (:habit t)))
+    (:name "Active"
+     :and (:scheduled nil
+           :not (:tag "waiting")))
+    (:name "Scheduled later"
+     :scheduled future)))
+
 (defun zp/org-super-agenda-stuck-project-p (item)
   (let ((marker (or (get-text-property 0 'org-marker item)
                     (get-text-property 0 'org-hd-marker item))))
     (org-with-point-at marker
-      (not (zp/skip-non-stuck-projects)))))
+      (zp/org-project-stuck-p))))
 
 (defun zp/org-super-agenda-stuck-project ()
   '(:name "Stuck"
@@ -3675,14 +3703,7 @@ agenda settings after them."
                   `((org-agenda-files ',file)))
             (org-agenda-span 'day)
             (org-super-agenda-groups
-             '(,(zp/org-super-agenda-groups "Life" '("life"))
-               ,(zp/org-super-agenda-groups "Maintenance" '("mx"))
-               ,(zp/org-super-agenda-groups "Professional" '("pro"))
-               ,(zp/org-super-agenda-groups "Research" '("research"))
-               ,(zp/org-super-agenda-groups "Activism" '("act"))
-               ,(zp/org-super-agenda-groups "Hacking" '("hack"))
-               ,(zp/org-super-agenda-groups "Curiosities" '("curios"))
-               ,(zp/org-super-agenda-groups "Media" '("media")))))))
+             '(,@(zp/org-super-agenda-groups-all))))))
 
 (defun zp/org-agenda-block-agenda (header &optional file)
   `(agenda ""
@@ -3749,75 +3770,37 @@ agenda settings after them."
                (org-agenda-todo-ignore-scheduled 'all)
                )))
 
-(defun zp/org-agenda-block-tasks-with-group-filter (groups &optional file)
-  `(tags-todo "-standby-recurring"
-              ((org-agenda-overriding-header
-                (zp/org-agenda-format-header-block-with-settings "Tasks"))
-               ,@(if (bound-and-true-p file)
-                     `((org-agenda-files ',file)))
-               (org-agenda-sorting-strategy
-                '(scheduled-up user-defined-down priority-down category-keep))
-               ;; (org-agenda-skip-function 'zp/skip-non-tasks-and-scheduled))))
-               ;; (org-agenda-skip-function 'bh/skip-non-tasks)
-               (org-agenda-skip-function
-                '(or (zp/skip-tasks-not-belonging-to-agenda-groups ',groups)
-                  (bh/skip-non-tasks)))
-               ;; (org-agenda-todo-ignore-scheduled 'all)
-               (org-super-agenda-groups
-                '((:name "Overdue"
-                   :and (:scheduled past
-                         :not (:habit t)))
-                  (:name "Waiting"
-                   :and (:scheduled nil
-                         :todo "WAIT"))
-                  (:name "Scheduled today"
-                   :and (:scheduled today
-                         :not (:habit t)))
-                  (:name "Active"
-                   :and (:scheduled nil
-                         :not (:tag "waiting")))
-                  (:name "Scheduled later"
-                   :scheduled future))))))
-
-(defun zp/org-agenda-block-curiosities (groups &optional file)
-  `(tags-todo "+curiosity-standby"
-              ((org-agenda-overriding-header
-                (zp/org-agenda-format-header-block-with-settings "Tasks"))
-               ,@(if (bound-and-true-p file)
-                     `((org-agenda-files ',file)))
-               (org-agenda-sorting-strategy
-                '(scheduled-up user-defined-down priority-down))
-               ;; (org-agenda-skip-function 'zp/skip-non-tasks-and-scheduled))))
-               ;; (org-agenda-skip-function 'bh/skip-non-tasks)
-               (org-agenda-skip-function
-                '(or (zp/skip-tasks-not-belonging-to-agenda-groups ',groups)
-                  (bh/skip-non-tasks)))
-               ;; (org-agenda-todo-ignore-scheduled 'all)
-               ;; (org-super-agenda-groups
-               ;;  '(,(zp/org-super-agenda-groups "Life" '("life"))
-               ;;    ,(zp/org-super-agenda-groups "Maintenance" '("mx"))
-               ;;    ,(zp/org-super-agenda-groups "Professional" '("pro"))
-               ;;    ,(zp/org-super-agenda-groups "Research" '("research"))
-               ;;    ,(zp/org-super-agenda-groups "Activism" '("act"))
-               ;;    ,(zp/org-super-agenda-groups "Hacking" '("hack"))
-               ;;    ,(zp/org-super-agenda-groups "Curiosities" '("curios"))
-               ;;    ,(zp/org-super-agenda-groups "Media" '("media"))))
-               ;; (org-super-agenda-groups
-               ;;  '((:name "Overdue"
-               ;;     :and (:scheduled past
-               ;;           :not (:habit t)))
-               ;;    (:name "Waiting"
-               ;;     :and (:scheduled nil
-               ;;           :tag "waiting"))
-               ;;    (:name "Scheduled today"
-               ;;     :and (:scheduled today
-               ;;           :not (:habit t)))
-               ;;    (:name "Active"
-               ;;     :and (:scheduled nil
-               ;;           :not (:tag "waiting")))
-               ;;    (:name "Scheduled later"
-               ;;     :scheduled future)))
-               )))
+(defun zp/org-agenda-block-tasks-with-group-filter (&optional groups tags super-sort file)
+  (let ((curiosity (and tags
+                        (string-match-p "\\+curiosity" tags)))
+        (super-sort-groups (and super-sort
+                                (string= super-sort "groups"))))
+    `(tags-todo ,(or tags
+                     "-standby-recurring-curiosity")
+                ((org-agenda-overriding-header
+                  (zp/org-agenda-format-header-block-with-settings "Tasks"))
+                 ,@(if (bound-and-true-p file)
+                       `((org-agenda-files ',file)))
+                 ,@(when curiosity
+                     '((org-agenda-cmp-user-defined 'zp/org-cmp-created)))
+                 (org-agenda-sorting-strategy
+                  '(,@(unless super-sort-groups
+                        '(scheduled-up))
+                    ,@(if curiosity
+                          '(priority-down user-defined-up)
+                        '(user-defined-down priority-down))
+                    category-keep))
+                 ;; (org-agenda-skip-function 'zp/skip-non-tasks-and-scheduled))))
+                 ;; (org-agenda-skip-function 'bh/skip-non-tasks)
+                 (org-agenda-skip-function
+                  '(or (zp/skip-tasks-not-belonging-to-agenda-groups ',groups)
+                    (bh/skip-non-tasks)))
+                 ;; (org-agenda-todo-ignore-scheduled 'all)
+                 (org-super-agenda-groups
+                  ',(cond (super-sort-groups
+                           (zp/org-super-agenda-groups-all))
+                          (t
+                           (zp/org-super-agenda-scheduled))))))))
 
 (defun zp/org-agenda-block-projects-stuck (&optional file)
   (let ((org-agenda-cmp-user-defined 'org-cmp-todo-state-wait))
@@ -3855,8 +3838,9 @@ agenda settings after them."
                (org-agenda-todo-ignore-scheduled nil)
                (org-agenda-dim-blocked-tasks nil))))
 
-(defun zp/org-agenda-block-projects-with-group-filter (groups &optional file)
-  `(tags-todo "-standby"
+(defun zp/org-agenda-block-projects-with-group-filter (&optional groups tags file)
+  `(tags-todo ,(or tags
+                   "-standby-curiosity")
               ((org-agenda-overriding-header
                 (zp/org-agenda-format-header-projects))
                ,@(if (bound-and-true-p file)
@@ -3899,7 +3883,7 @@ agenda settings after them."
 
 
 
-(defun zp/org-agenda-blocks-main (header groups &optional file)
+(defun zp/org-agenda-blocks-main (header &optional groups tags super-sort file)
   "Format the main agenda blocks.
 
 HEADER is the string to be used as the header of the the agenda
@@ -3918,9 +3902,9 @@ It creates 4 blocks:
      ;; ,(zp/org-agenda-block-projects-stuck-with-group-filter
      ;;   groups file)
      ,(zp/org-agenda-block-tasks-with-group-filter
-       groups file)
+       groups tags super-sort file)
      ,(zp/org-agenda-block-projects-with-group-filter
-       groups file)))
+       groups tags file)))
 
 (defun zp/org-agenda-block-tasks-special (&optional file)
   `(tags-todo "-standby/!WAIT|STRT"
@@ -4014,8 +3998,17 @@ It creates 4 blocks:
         ("i" "Inbox"
              (,@(zp/org-agenda-blocks-main "Inbox" '("inbox"))))
 
-        ("v" "Curiosities"
-             (,(zp/org-agenda-block-curiosities nil)))
+        ("u" "Inactive (+standby+groups)"
+             (,@(zp/org-agenda-blocks-main "Inactive (+standby+groups)" nil "/STBY" "groups")))
+
+        ("U" "Inactive (+standby)"
+             (,@(zp/org-agenda-blocks-main "Inactive (+standby)" nil "/STBY")))
+
+        ("v" "Curiosities (+groups)"
+             (,@(zp/org-agenda-blocks-main "Curiosities (+standby)" nil "+curiosity" "groups")))
+
+        ("V" "Curiosities"
+             (,@(zp/org-agenda-blocks-main "Curiosities (+standby)" nil "+curiosity")))
 
         ("l" "Life"
              (,@(zp/org-agenda-blocks-main "Life" '("life" "mx" "research" "pro" "act"))))
@@ -6915,6 +6908,29 @@ Callers of this function already widen the buffer view."
   "When t, includes stuck projects with a waiting task in the
 agenda.")
 
+(defun zp/org-project-stuck-p ()
+  "Skip trees that are not stuck projects"
+  ;; (bh/list-sublevels-for-projects-indented)
+  (save-restriction
+    (widen)
+    (when zp/org-agenda-skip-functions-debug
+        (message "SNSP: %s" (org-entry-get (point) "ITEM")))
+    (let ((next-headline (save-excursion (or (outline-next-heading) (point-max)))))
+      (let* ((subtree-end (save-excursion (org-end-of-subtree t)))
+             (is-waiting (string-match-p "WAIT" (org-get-todo-state)))
+             (has-next))
+        (save-excursion
+          (forward-line 1)
+          (while (and (not has-next)
+                      (< (point) subtree-end)
+                      (if is-waiting
+                          (re-search-forward "^\\*+ \\(WAIT\\) " subtree-end t)
+                        (re-search-forward "^\\*+ \\(NEXT\\|STRT\\) " subtree-end t)))
+            (setq has-next t)))
+        (if has-next
+            nil
+          next-headline)))))
+
 (defun zp/skip-non-stuck-projects ()
   "Skip trees that are not stuck projects"
   ;; (bh/list-sublevels-for-projects-indented)
@@ -6934,8 +6950,7 @@ agenda.")
                           (if is-waiting
                               (re-search-forward "^\\*+ \\(WAIT\\) " subtree-end t)
                             (re-search-forward "^\\*+ \\(NEXT\\|STRT\\) " subtree-end t)))
-                (unless (member "standby" (org-get-tags-at))
-                  (setq has-next t))))
+                (setq has-next t)))
             (if has-next
                 next-headline
               nil)) ; a stuck project, has subtasks but no next task
