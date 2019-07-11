@@ -3687,7 +3687,7 @@ agenda settings after them."
            :not (:habit t)))
     (:name "Waiting"
      :and (:scheduled nil
-           :todo "WAIT"))
+           :tag "waiting"))
     (:name "Scheduled today"
      :and (:scheduled today
            :not (:habit t)))
@@ -3700,10 +3700,7 @@ agenda settings after them."
      :and (:scheduled nil
            :not (:tag "waiting")))
     (:name "Scheduled later"
-     :scheduled future)
-    (:name "Blocked by waiting"
-     :and (:scheduled nil
-           :tag "waiting"))))
+     :scheduled future)))
 
 (defun zp/org-super-agenda-stuck-project-p (item)
   (let ((marker (or (get-text-property 0 'org-marker item)
@@ -3812,8 +3809,7 @@ agenda settings after them."
                ;; (org-agenda-skip-function 'bh/skip-non-tasks)
                (org-agenda-skip-function
                 '(or (zp/skip-tasks-not-belonging-to-agenda-groups ',groups)
-                  (zp/skip-non-tasks ,(and tags
-                                           (string-match-p "/STBY" tags)))
+                  (zp/skip-non-tasks)
                   (zp/skip-waiting)))
                ;; (org-agenda-todo-ignore-scheduled 'all)
                (org-super-agenda-groups
@@ -6943,7 +6939,7 @@ agenda.")
           next-headline)))))
 
 (defun zp/is-waiting-p ()
-  (string-match-p "WAIT" (org-get-todo-state)))
+  (member "waiting" (org-get-tags-at)))
 
 (defun zp/skip-waiting ()
   (save-restriction
