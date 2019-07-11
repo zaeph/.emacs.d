@@ -2597,7 +2597,7 @@ return `nil'."
         ("assignment"   . org-tag-important)
         ("exam"         . org-tag-important)
         ("important"    . org-tag-important)
-        ("reading"      . org-tag-reading)
+        ("curios"       . org-tag-curios)
         ("french"       . org-tag-french)))
 
 
@@ -8281,7 +8281,7 @@ mouse-1: Previous buffer\nmouse-3: Next buffer")
 (defface org-tag-location    '((t :inherit 'org-tag)) nil)
 (defface org-tag-todo        '((t :inherit 'org-tag)) nil)
 (defface org-tag-important   '((t :inherit 'org-tag)) nil)
-(defface org-tag-reading     '((t :inherit 'org-tag)) nil)
+(defface org-tag-curios      '((t :inherit 'org-tag)) nil)
 (defface org-tag-french      '((t :inherit 'org-tag)) nil)
 
 (defun zp/org-format-face (face &rest args)
@@ -8540,7 +8540,7 @@ If in variable-pitch-mode, change the variable font-preset."
   (zp/org-format-face 'org-tag-location  :weight 'bold :foreground "BlueViolet")
   (zp/org-format-face 'org-tag-todo   :weight 'bold :foreground "Skyblue4")
   (zp/org-format-face 'org-tag-important :weight 'bold :foreground "darkred")
-  (zp/org-format-face 'org-tag-reading   :weight 'bold :foreground "DeepPink")
+  (zp/org-format-face 'org-tag-curios   :weight 'bold :foreground "DeepPink")
   (zp/org-format-face 'org-tag-french    :weight 'bold :foreground "DodgerBlue1")
 
   (zp/org-format-face 'magit-tag :foreground "SpringGreen4")
@@ -8608,7 +8608,7 @@ If in variable-pitch-mode, change the variable font-preset."
   (zp/org-format-face 'org-tag-location  :weight 'bold :foreground "BlueViolet")
   (zp/org-format-face 'org-tag-todo      :weight 'bold :foreground "Skyblue1")
   (zp/org-format-face 'org-tag-important :weight 'bold :foreground "red")
-  (zp/org-format-face 'org-tag-reading   :weight 'bold :foreground "DeepPink")
+  (zp/org-format-face 'org-tag-curios   :weight 'bold :foreground "DeepPink")
   (zp/org-format-face 'org-tag-french    :weight 'bold :foreground "DodgerBlue1")
 
   (zp/org-format-face 'magit-tag :foreground "SpringGreen4")
