@@ -3658,6 +3658,13 @@ agenda settings after them."
 ;; ================ BLOCKS ================
 ;; ========================================
 
+;; org-super-agenda config
+(require 'org-super-agenda)
+(setq org-super-agenda-header-separator "")
+(set-face-attribute 'org-super-agenda-header nil
+                    :slant 'italic
+                    :underline t)
+
 (defun zp/org-super-agenda-item-in-agenda-groups-p (item groups)
   "Check if ITEM is in agenda GROUPS."
   (let ((marker (or (get-text-property 0 'org-marker item)
