@@ -3701,17 +3701,29 @@ agenda settings after them."
     (:name "Scheduled later"
      :scheduled future)))
 
+(defun zp/org-super-agenda-group-heads (item)
+  (let ((marker (or (get-text-property 0 'org-marker item)
+                    (get-text-property 0 'org-hd-marker item))))
+    (org-entry-get marker "AGENDA_GROUP" nil)))
+
 (defun zp/org-super-agenda-stuck-project-p (item)
   (let ((marker (or (get-text-property 0 'org-marker item)
                     (get-text-property 0 'org-hd-marker item))))
     (org-with-point-at marker
       (zp/org-project-stuck-p))))
 
-(defun zp/org-super-agenda-stuck-project ()
-  '(:name "Stuck"
-    :face (:foreground "red")
-    :pred (lambda (item)
-            (zp/org-super-agenda-stuck-project-p item))))
+(defun zp/org-super-agenda-projects ()
+    '((:name "Group heads"
+       :pred (lambda (item)
+               (zp/org-super-agenda-group-heads item)))
+      (:name "Stuck"
+       :face (:foreground "red")
+       :pred (lambda (item)
+               (zp/org-super-agenda-stuck-project-p item)))
+      (:name "Waiting"
+       :tag "waiting")
+      (:name "Current"
+       :anything)))
 
 (defun zp/org-agenda-block-agenda-main (header &optional file)
   `(agenda ""
@@ -3875,11 +3887,7 @@ agenda settings after them."
                (org-agenda-todo-ignore-scheduled nil)
                (org-agenda-dim-blocked-tasks nil)
                (org-super-agenda-groups
-                '(,(zp/org-super-agenda-stuck-project)
-                  (:name "Waiting"
-                   :tag "waiting")
-                  (:name "Current"
-                   :anything))))))
+                (zp/org-super-agenda-projects)))))
 
 (defun zp/org-agenda-groups-format-regex (list)
   "Format LIST of agenda groups as a regex"
