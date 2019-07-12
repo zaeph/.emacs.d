@@ -3410,8 +3410,8 @@ _e_: #E    _SPC_: remove
 ;; ========================================
 
 (setq org-agenda-todo-ignore-with-date nil
-      ;; org-agenda-todo-ignore-scheduled 'future
-      org-agenda-todo-ignore-scheduled nil
+      org-agenda-todo-ignore-scheduled 'future
+      ;; org-agenda-todo-ignore-scheduled nil
       ;; org-agenda-show-future-repeats 'next
       org-agenda-show-future-repeats t
       ;; org-agenda-todo-ignore-scheduled 'past
