@@ -7083,7 +7083,8 @@ When SUBTASKS is non-nil, also skip project subtasks."
         ((and subtasks
               (zp/is-subtask-p))
          next-headline)
-        ((bh/is-task-p)
+        ((and (bh/is-task-p)
+              (not (org-is-habit-p)))
          nil)
         (t
          next-headline)))))
