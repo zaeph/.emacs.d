@@ -3655,15 +3655,17 @@ agenda settings after them."
 
 
 ;; ========================================
-;; ================ BLOCKS ================
+;; =========== ORG-SUPER-AGENDA ===========
 ;; ========================================
 
-;; org-super-agenda config
 (require 'org-super-agenda)
 (setq org-super-agenda-header-separator "")
-(set-face-attribute 'org-super-agenda-header nil
-                    :slant 'italic
-                    :underline t)
+(defun zp/org-super-agenda-update-face ()
+  (let ((ul-color (internal-get-lisp-face-attribute
+                   'font-lock-comment-face :foreground)))
+    (set-face-attribute 'org-super-agenda-header nil
+                        :slant 'italic
+                        :underline `(:color ,ul-color))))
 
 (defun zp/org-super-agenda-item-in-agenda-groups-p (item groups)
   "Check if ITEM is in agenda GROUPS."
@@ -3738,6 +3740,12 @@ agenda settings after them."
        :tag "waiting")
       (:name "Current"
        :anything)))
+
+
+
+;; ========================================
+;; ================ BLOCKS ================
+;; ========================================
 
 (defun zp/org-agenda-block-agenda-main (header &optional file)
   `(agenda ""
@@ -8648,6 +8656,8 @@ If in variable-pitch-mode, change the variable font-preset."
 
   (zp/org-format-face 'magit-tag :foreground "SpringGreen4")
 
+  (zp/org-super-agenda-update-face)
+
   (zp/mode-line-theme "dark")
   (zp/pdf-view-midnight-mode-theme))
 
@@ -8715,6 +8725,8 @@ If in variable-pitch-mode, change the variable font-preset."
   (zp/org-format-face 'org-tag-french    :weight 'bold :foreground "DodgerBlue1")
 
   (zp/org-format-face 'magit-tag :foreground "SpringGreen4")
+
+  (zp/org-super-agenda-update-face)
 
   (zp/mode-line-theme "light")
   (zp/pdf-view-midnight-mode-theme))
