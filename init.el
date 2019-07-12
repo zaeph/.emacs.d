@@ -3506,10 +3506,9 @@ With a prefix argument, do so in all agenda buffers."
     (cond ((and (string-match-p ta todo) (not (string-match-p tb todo))) +1)
           ((and (string-match-p tb todo) (not (string-match-p ta todo))) -1))))
 
-(defun zp/org-agenda-sort-started (a b)
-  (cond
-   ;; ((org-cmp-test-todo "WAIT|STBY" a b))
-   ((org-cmp-test-todo "STRT" a b))))
+(defun zp/org-cmp-todo-special (a b)
+  (or (org-cmp-test-todo "STRT" a b)
+      (org-cmp-test-todo "NEXT" a b)))
 
 (defun zp/org-agenda-sort-wait (a b)
   (cond
@@ -3530,8 +3529,15 @@ With a prefix argument, do so in all agenda buffers."
     (if same
         nil
       (if cmp
-          -1
-        +1))))
+          +1
+        -1))))
+
+(defun zp/org-cmp-created-dwim (a b)
+  (let ((cmp-created))
+    (or (when (eq zp/org-agenda-sorting-strategy-user-defined 'started)
+          (zp/org-cmp-todo-special a b))
+        (org-cmp-values a b 'priority)
+        (zp/org-cmp-created a b))))
 
 
 
@@ -3809,13 +3815,14 @@ agenda settings after them."
                ,@(if (bound-and-true-p file)
                      `((org-agenda-files ',file)))
                ,@(when fifo
-                   '((org-agenda-cmp-user-defined 'zp/org-cmp-created)))
+                   '((org-agenda-cmp-user-defined 'zp/org-cmp-created-dwim)))
                (org-agenda-sorting-strategy
-                '(,@(unless by-groups
+                '(,@(unless fifo
                       '(scheduled-up))
-                  ,@(if fifo
-                        '(priority-down user-defined-up)
-                      '(user-defined-down priority-down))
+                  user-defined-down
+                  ;; priority-down is included in fifo sorting
+                  ,@(unless fifo
+                      '(priority-down))
                   category-keep))
                ;; (org-agenda-skip-function 'zp/skip-non-tasks-and-scheduled))))
                ;; (org-agenda-skip-function 'bh/skip-non-tasks)
@@ -4235,16 +4242,16 @@ due today, and showing all of them."
 (defun zp/toggle-org-agenda-cmp-user-defined ()
   "Toggle the skip function used by the agenda."
   (interactive)
-  (cond ((eq zp/org-agenda-sorting-strategy-user-defined 'priority)
-         (setq org-agenda-cmp-user-defined 'zp/org-agenda-sort-started
+  (cond ((eq zp/org-agenda-sorting-strategy-user-defined nil)
+         (setq org-agenda-cmp-user-defined 'zp/org-cmp-todo-special
                zp/org-agenda-sorting-strategy-user-defined 'started)
          (org-agenda-redo)
-         (message "Sorting: Started first"))
+         (message "Sorting: Special first"))
         (t
-         (setq org-agenda-cmp-user-defined 'zp/org-agenda-sort-wait
-               zp/org-agenda-sorting-strategy-user-defined 'priority)
+         (setq org-agenda-cmp-user-defined nil
+               zp/org-agenda-sorting-strategy-user-defined nil)
          (org-agenda-redo)
-         (message "Sorting: Priority first"))))
+         (message "Sorting: Default"))))
 
 (defvar zp/org-agenda-split-subtasks nil
   "When non-nil, split subtasks and loners.")
