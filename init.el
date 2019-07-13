@@ -4181,7 +4181,7 @@ due today, and showing all of them."
          (org-agenda-redo)
          (message "Habits: Showing today"))
         (t
-         (setq-agenda-local 'org-habit-show-all-today t)
+         (zp/set-agenda-local 'org-habit-show-all-today t)
          (org-agenda-redo)
          (message "Habits: Showing all"))))
 
