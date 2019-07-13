@@ -15,7 +15,6 @@
 (setq initial-scratch-message ";; Emacs Scratch
 
 ")
-(setq zp/org-agenda-skip-functions-debug nil)
 
 ;; (toggle-debug-on)
 ;; (toggle-debug-on-quit)
@@ -2470,10 +2469,12 @@ return `nil'."
       ;; org-enforce-todo-dependencies nil
       org-adapt-indentation nil
       org-clock-sound t
+      org-clock-report-include-clocking-task t
+      org-clock-out-remove-zero-time-clocks t
       org-export-in-background t
       org-export-with-sub-superscripts nil
       org-image-actual-width nil ;Ensures that images displayed within emacs can be resized with #+ATTR_ORG:
-      org-hide-emphasis-markers t               ;Fontification
+      org-hide-emphasis-markers t                 ;Fontification
       org-ellipsis "…"
       org-track-ordered-property-with-tag "ORDERED"
       ;; org-tags-exclude-from-inheritance '("project")
@@ -2663,89 +2664,6 @@ return `nil'."
               (widen)
               (org-end-of-subtree t t)
               (org-paste-subtree level tree-text))))))))
-
-;; Category icons
-(defvar zp/org-agenda-include-category-icons nil
-  "When non-nil, show category icons in the agenda")
-
-(defvar zp/org-agenda-category-icon-alist nil
-  "Alist of category icon to be displayed in agenda views.
-
-Custom variable to hold the content when the icons are toggled
-off.")
-
-(setq zp/org-agenda-include-category-icons t)
-
-(setq zp/org-agenda-category-icon-alist
-      '(
-        ;; Life
-        ("^inbox$" "~/org/svg/icons/gmail.svg" nil nil :ascent center)
-        ("^curios$" "~/org/svg/icons/question.svg" nil nil :ascent center)
-        ("^style$" "~/org/svg/icons/suit.svg" nil nil :ascent center)
-        ("^nicolas$" "~/org/svg/icons/leaf.svg" nil nil :ascent center)
-        ("^swim$" "~/org/svg/icons/wave.svg" nil nil :ascent center)
-        ("^run$" "~/org/svg/icons/running.svg" nil nil :ascent center)
-        ("^awakening$" "~/org/svg/icons/aperture-green.svg" nil nil :ascent center)
-        ("^journal$" "~/org/svg/icons/spellbook-p.svg" nil nil :ascent center)
-        ("^psy$" "~/org/svg/icons/solution.svg" nil nil :ascent center)
-        ("^anki$" "~/org/svg/icons/anki-2-p.svg" nil nil :ascent center)
-        ("^plan$" "~/org/svg/icons/planning-p.svg" nil nil :ascent center)
-        ("^typography$" "~/org/svg/icons/typography.svg" nil nil :ascent center)
-
-        ;; Activism
-        ("^pol$" "~/org/svg/icons/fist.svg" nil nil :ascent center)
-
-        ;; Professional
-        ("^university$" "~/org/svg/icons/aperture-yellow.svg" nil nil :ascent center)
-        ("^school$" "~/org/svg/icons/university.svg" nil nil :ascent center)
-
-        ;; Research
-        ("^research$" "~/org/svg/icons/research.svg" nil nil :ascent center)
-        ("^cs$" "~/org/svg/icons/computer-science.svg" nil nil :ascent center)
-        ("^maths$" "~/org/svg/icons/pi.svg" nil nil :ascent center)
-        ("^phil$" "~/org/svg/icons/philosophy.svg" nil nil :ascent center)
-        ("^history$" "~/org/svg/icons/history.svg" nil nil :ascent center)
-        ("^ling$" "~/org/svg/icons/language.svg" nil nil :ascent center)
-
-        ;; Hacking
-        ("^hack$" "~/org/svg/icons/engineering-2.svg" nil nil :ascent center)
-        ("^emacs$" "~/org/svg/icons/spacemacs.svg" nil nil :ascent center)
-        ("^org$" "~/org/svg/icons/org-mode-unicorn.svg" nil nil :ascent center)
-        ("^python$" "~/org/svg/icons/python.svg" nil nil :ascent center)
-        ("^perl$" "~/org/svg/icons/perl.svg" nil nil :ascent center)
-        ("^contrib$" "~/org/svg/icons/chill.svg" nil nil :ascent center)
-        ("^bug$" "~/org/svg/icons/cross.svg" nil nil :ascent center)
-        ("^elisp$" "~/org/svg/icons/spacemacs-elisp.svg" nil nil :ascent center)
-        ("^tex$" "~/org/svg/icons/file-2-p.svg" nil nil :ascent center)
-        ("^linux$" "~/org/svg/icons/nixos.svg" nil nil :ascent center)
-        ("^nixos$" "~/org/svg/icons/nixos.svg" nil nil :ascent center)
-        ("^opsec$" "~/org/svg/icons/cyber-security-b.svg" nil nil :ascent center)
-        ("^git$" "~/org/svg/icons/git.svg" nil nil :ascent center)
-
-        ;; Media
-        ("^media$" "~/org/svg/icons/library.svg" nil nil :ascent center)
-        ("^news$" "~/org/svg/icons/world.svg" nil nil :ascent center)
-        ("^books$" "~/org/svg/icons/book-2.svg" nil nil :ascent center)
-        ("^trackers$" "~/org/svg/icons/share.svg" nil nil :ascent center)
-        ("^music$" "~/org/svg/icons/compact-disc.svg" nil nil :ascent center)
-        ("^film$" "~/org/svg/icons/film.svg" nil nil :ascent center)
-
-        ;; Maintenance
-        ("^mx$" "~/org/svg/icons/recycle.svg" nil nil :ascent center)
-        ("^fin$" "~/org/svg/icons/money-p.svg" nil nil :ascent center)
-        ("^cooking$" "~/org/svg/icons/salad.svg" nil nil :ascent center)
-        ("^plants$" "~/org/svg/icons/sansevieria.svg" nil nil :ascent center)
-        ("^animals$" "~/org/svg/icons/animals.svg" nil nil :ascent center)
-        ("^health$" "~/org/svg/icons/health.svg" nil nil :ascent center)
-        ("^supplies$" "~/org/svg/icons/box.svg" nil nil :ascent center)
-        ("^social$" "~/org/svg/icons/happy.svg" nil nil :ascent center)
-        ("^grooming$" "~/org/svg/icons/razor.svg" nil nil :ascent center)
-        ("^cleaning$" "~/org/svg/icons/bucket.svg" nil nil :ascent center)
-
-        (".*" '(space . (:width (24))) nil nil :ascent center)))
-
-;; Shows icons by default
-(setq org-agenda-category-icon-alist zp/org-agenda-category-icon-alist)
 
 ;; Babel
 (require 'ob-async)
@@ -3409,40 +3327,158 @@ _e_: #E    _SPC_: remove
 ;; ============== ORG-AGENDA ==============
 ;; ========================================
 
-(setq org-agenda-todo-ignore-with-date nil
-      org-agenda-todo-ignore-scheduled 'future
-      ;; org-agenda-todo-ignore-scheduled nil
-      ;; org-agenda-show-future-repeats 'next
-      org-agenda-show-future-repeats t
-      ;; org-agenda-todo-ignore-scheduled 'past
-      org-agenda-todo-ignore-deadlines nil
-      org-agenda-include-deadlines 'all
-      zp/org-agenda-include-waiting t
-      zp/org-agenda-include-scheduled 'all
-      org-agenda-cmp-user-defined 'zp/org-agenda-sort-wait
-      zp/org-agenda-sorting-strategy-user-defined 'priority
-      org-agenda-window-setup 'current-window
-      org-deadline-warning-days 30
-      org-agenda-tags-todo-honor-ignore-options 1
-      org-agenda-compact-blocks nil
-      org-agenda-todo-list-sublevels t
-      org-agenda-dim-blocked-tasks nil
+;; Category icons
+(defvar zp/org-agenda-include-category-icons nil
+  "When non-nil, show category icons in the agenda")
+
+(defvar zp/org-agenda-category-icon-alist nil
+  "Alist of category icon to be displayed in agenda views.
+
+Custom variable to hold the content when the icons are toggled
+off.")
+
+(setq zp/org-agenda-category-icon-alist
+      '(
+        ;; Life
+        ("^inbox$" "~/org/svg/icons/gmail.svg" nil nil :ascent center)
+        ("^curios$" "~/org/svg/icons/question.svg" nil nil :ascent center)
+        ("^style$" "~/org/svg/icons/suit.svg" nil nil :ascent center)
+        ("^nicolas$" "~/org/svg/icons/leaf.svg" nil nil :ascent center)
+        ("^swim$" "~/org/svg/icons/wave.svg" nil nil :ascent center)
+        ("^run$" "~/org/svg/icons/running.svg" nil nil :ascent center)
+        ("^awakening$" "~/org/svg/icons/aperture-green.svg" nil nil :ascent center)
+        ("^journal$" "~/org/svg/icons/spellbook-p.svg" nil nil :ascent center)
+        ("^psy$" "~/org/svg/icons/solution.svg" nil nil :ascent center)
+        ("^anki$" "~/org/svg/icons/anki-2-p.svg" nil nil :ascent center)
+        ("^plan$" "~/org/svg/icons/planning-p.svg" nil nil :ascent center)
+        ("^typography$" "~/org/svg/icons/typography.svg" nil nil :ascent center)
+
+        ;; Activism
+        ("^pol$" "~/org/svg/icons/fist.svg" nil nil :ascent center)
+
+        ;; Professional
+        ("^university$" "~/org/svg/icons/aperture-yellow.svg" nil nil :ascent center)
+        ("^school$" "~/org/svg/icons/university.svg" nil nil :ascent center)
+
+        ;; Research
+        ("^research$" "~/org/svg/icons/research.svg" nil nil :ascent center)
+        ("^cs$" "~/org/svg/icons/computer-science.svg" nil nil :ascent center)
+        ("^maths$" "~/org/svg/icons/pi.svg" nil nil :ascent center)
+        ("^phil$" "~/org/svg/icons/philosophy.svg" nil nil :ascent center)
+        ("^history$" "~/org/svg/icons/history.svg" nil nil :ascent center)
+        ("^ling$" "~/org/svg/icons/language.svg" nil nil :ascent center)
+
+        ;; Hacking
+        ("^hack$" "~/org/svg/icons/engineering-2.svg" nil nil :ascent center)
+        ("^emacs$" "~/org/svg/icons/spacemacs.svg" nil nil :ascent center)
+        ("^org$" "~/org/svg/icons/org-mode-unicorn.svg" nil nil :ascent center)
+        ("^python$" "~/org/svg/icons/python.svg" nil nil :ascent center)
+        ("^perl$" "~/org/svg/icons/perl.svg" nil nil :ascent center)
+        ("^contrib$" "~/org/svg/icons/chill.svg" nil nil :ascent center)
+        ("^bug$" "~/org/svg/icons/cross.svg" nil nil :ascent center)
+        ("^elisp$" "~/org/svg/icons/spacemacs-elisp.svg" nil nil :ascent center)
+        ("^tex$" "~/org/svg/icons/file-2-p.svg" nil nil :ascent center)
+        ("^linux$" "~/org/svg/icons/nixos.svg" nil nil :ascent center)
+        ("^nixos$" "~/org/svg/icons/nixos.svg" nil nil :ascent center)
+        ("^opsec$" "~/org/svg/icons/cyber-security-b.svg" nil nil :ascent center)
+        ("^git$" "~/org/svg/icons/git.svg" nil nil :ascent center)
+
+        ;; Media
+        ("^media$" "~/org/svg/icons/library.svg" nil nil :ascent center)
+        ("^news$" "~/org/svg/icons/world.svg" nil nil :ascent center)
+        ("^books$" "~/org/svg/icons/book-2.svg" nil nil :ascent center)
+        ("^trackers$" "~/org/svg/icons/share.svg" nil nil :ascent center)
+        ("^music$" "~/org/svg/icons/compact-disc.svg" nil nil :ascent center)
+        ("^film$" "~/org/svg/icons/film.svg" nil nil :ascent center)
+
+        ;; Maintenance
+        ("^mx$" "~/org/svg/icons/recycle.svg" nil nil :ascent center)
+        ("^fin$" "~/org/svg/icons/money-p.svg" nil nil :ascent center)
+        ("^cooking$" "~/org/svg/icons/salad.svg" nil nil :ascent center)
+        ("^plants$" "~/org/svg/icons/sansevieria.svg" nil nil :ascent center)
+        ("^animals$" "~/org/svg/icons/animals.svg" nil nil :ascent center)
+        ("^health$" "~/org/svg/icons/health.svg" nil nil :ascent center)
+        ("^supplies$" "~/org/svg/icons/box.svg" nil nil :ascent center)
+        ("^social$" "~/org/svg/icons/happy.svg" nil nil :ascent center)
+        ("^grooming$" "~/org/svg/icons/razor.svg" nil nil :ascent center)
+        ("^cleaning$" "~/org/svg/icons/bucket.svg" nil nil :ascent center)
+
+        (".*" '(space . (:width (24))) nil nil :ascent center)))
+
+(defvar zp/org-agenda-local-settings nil
+  "List structure for org-agenda views local settings.")
+
+(defun zp/org-agenda-local-config-init (alist)
+  "Create the data structure for org-agenda local config.
+
+This function takes every variables in
+‘zp/org-agenda-local-settings’ and store them with their value in
+a data structure, thus defining the global state of those
+variables."
+  (let ((settings))
+    (while (cdr alist)
+      (let ((var (pop alist)))
+        (push var settings)
+        (set var (eval (pop alist)))))
+    (list (cons nil (list (mapcar (lambda (setting)
+                                    (cons setting (eval setting)))
+                                  settings))))))
+
+;; org-agenda config
+(setq org-agenda-show-future-repeats t
       org-agenda-skip-scheduled-if-done 1
       org-agenda-skip-timestamp-if-done 1
       org-agenda-skip-deadline-if-done 1
+      org-agenda-tags-todo-honor-ignore-options 1
+      org-agenda-todo-ignore-with-date nil
+      org-agenda-todo-ignore-deadlines nil
+      org-agenda-todo-list-sublevels t
+      org-agenda-dim-blocked-tasks nil
+      org-agenda-include-deadlines 'all
+      org-deadline-warning-days 30
+      org-agenda-cmp-user-defined 'zp/org-cmp-created-dwim
+
+      ;; Initialise the list structure for local variables
+      zp/org-agenda-local-config
+      (zp/org-agenda-local-config-init
+       '(
+         org-habit-show-habits t
+         org-habit-show-all-today nil
+         org-agenda-include-deadlines t
+         zp/org-agenda-include-scheduled t
+         org-agenda-entry-types '(:deadline :scheduled :timestamp :sexp)
+         zp/org-agenda-include-category-icons t
+         ;; org-agenda-category-icon-alist zp/org-agenda-category-icon-alist
+         zp/org-agenda-sorting-strategy-special-first nil
+         zp/org-agenda-split-subtasks nil
+         zp/org-agenda-include-waiting t
+         org-agenda-todo-ignore-scheduled 'future
+         ))
+
+      ;; View setup
+      org-agenda-window-setup 'current-window
+      org-agenda-compact-blocks nil
       org-agenda-entry-text-maxlines 10
-      org-agenda-use-time-grid nil
       org-agenda-sticky 1
       org-agenda-block-separator 126
-      org-clock-report-include-clocking-task t
-      org-clock-out-remove-zero-time-clocks t
+      org-agenda-use-time-grid nil
       org-agenda-exporter-settings
       '((ps-print-color-p t)
         (ps-landscape-mode t)
         (ps-print-header nil)
         (ps-default-bg t))
-      org-agenda-clockreport-parameter-plist '(:link t :narrow 50 :maxlevel 2 :fileskip0 t)
-      )
+      org-agenda-clockreport-parameter-plist
+      '(:link t :narrow 50 :maxlevel 2 :fileskip0 t)
+      org-agenda-clock-consistency-checks
+      '(:max-duration "10:00"
+        :min-duration 0
+        :max-gap "0:05"
+        :gap-ok-around ("4:00" "12:30" "19:30")
+        :default-face zp/org-agenda-block-info-face
+        :gap-face nil
+        :no-end-time-face nil
+        :long-face nil
+        :short-face nil))
 
 (defun zp/org-agenda-benchmark (&optional arg)
   "Rebuild the agenda and display the time it took to do so.
@@ -3458,18 +3494,6 @@ With a prefix argument, do so in all agenda buffers."
 
 
 
-(setq org-agenda-clock-consistency-checks '(:max-duration "10:00"
-                                            :min-duration 0
-                                            :max-gap "0:05"
-                                            :gap-ok-around ("4:00" "12:30" "19:30")
-                                            :default-face zp/org-agenda-block-info-face
-                                            :gap-face nil
-                                            :no-end-time-face nil
-                                            :long-face nil
-                                            :short-face nil))
-
-
-
 (defun zp/update-org-agenda-files ()
   (interactive)
   (setq org-agenda-files '("/home/zaeph/org/life.org"))
@@ -3481,6 +3505,14 @@ With a prefix argument, do so in all agenda buffers."
 
 ;; Force habits to be shown if they’ve been disabled the previous day
 (run-at-time "06:00" 86400 '(lambda () (setq org-habit-show-habits t)))
+
+;; Variables used for debugging
+(defvar zp/org-agenda-skip-functions-debug nil
+  "When t, print helpful debugging messages for skips.")
+
+(setq zp/org-agenda-skip-functions-debug nil)
+
+
 
 ;; ========================================
 ;; =============== SORTING ================
@@ -3507,14 +3539,16 @@ With a prefix argument, do so in all agenda buffers."
           ((and (string-match-p tb todo) (not (string-match-p ta todo))) -1))))
 
 (defun zp/org-cmp-todo-special (a b)
-  (or (org-cmp-test-todo "STRT" a b)
-      (org-cmp-test-todo "NEXT" a b)))
+  (when zp/org-agenda-sorting-strategy-special-first
+      (or (org-cmp-test-todo "STRT" a b)
+          (org-cmp-test-todo "NEXT" a b))))
 
 (defun zp/org-agenda-sort-wait (a b)
   (cond
     ((org-cmp-test-todo "WAIT|STBY" a b))))
 
 (defun zp/org-cmp-created (a b)
+  "Sort items by creation time."
   (let* ((a-pos (get-text-property 0 'org-marker a))
          (b-pos (get-text-property 0 'org-marker b))
          (prop "CREATED")
@@ -3533,8 +3567,17 @@ With a prefix argument, do so in all agenda buffers."
         -1))))
 
 (defun zp/org-cmp-created-dwim (a b)
+  "Sort items by creation time, priority and specialness conditionally.
+
+If ‘zp/org-agenda-sorting-strategy-special-first’ is non-nil,
+first sort by specialness.
+
+This function also checks for priority because only one
+‘org-agenda-cmp-user-defined’ can be specified at a time.  When
+sorting with this function, make sure not to use use ‘priority’
+afterwards."
   (let ((cmp-created))
-    (or (when (eq zp/org-agenda-sorting-strategy-user-defined 'started)
+    (or (when zp/org-agenda-sorting-strategy-special-first
           (zp/org-cmp-todo-special a b))
         (org-cmp-values a b 'priority)
         (zp/org-cmp-created a b))))
@@ -3568,13 +3611,13 @@ With a prefix argument, do so in all agenda buffers."
           (zp/org-agenda-format-header-align
            (concat flanking-symbol " " header " " flanking-symbol)))
          (word-list ()))
-    (if (eq org-agenda-include-deadlines nil)
+    (unless org-agenda-include-deadlines
         (add-to-list 'word-list "-deadlines" t))
-    (if (eq org-habit-show-habits nil)
+    (unless org-habit-show-habits
         (add-to-list 'word-list "-habits" t))
-    (if (eq zp/org-agenda-include-category-icons nil)
+    (unless zp/org-agenda-include-category-icons
         (add-to-list 'word-list "-icons" t))
-    (if (eq zp/org-agenda-include-scheduled nil)
+    (unless zp/org-agenda-include-scheduled
         (add-to-list 'word-list "-scheduled" t))
     (let ((word-list-formatted (s-join ";" word-list)))
       (if (not (eq word-list nil))
@@ -3593,63 +3636,33 @@ With a prefix argument, do so in all agenda buffers."
   "Format header blocks in org-agenda, and display important
 agenda settings after them."
   (let ((word-list ()))
-    (if (eq zp/org-agenda-sorting-strategy-user-defined 'started)
-        (add-to-list 'word-list "+S↓" t))
-    (if zp/org-agenda-split-subtasks
-        (add-to-list 'word-list "+split" t))
+    (when zp/org-agenda-sorting-strategy-special-first
+      (add-to-list 'word-list "+S↓" t))
+    (when zp/org-agenda-split-subtasks
+      (add-to-list 'word-list "+split" t))
     ;; (if (eq org-agenda-dim-blocked-tasks nil)
     ;;     (add-to-list 'word-list "-dimmed" t))
-    (if (eq org-agenda-todo-ignore-scheduled 'future)
-        (add-to-list 'word-list "-future" t))
-    (if (eq zp/org-agenda-include-waiting nil)
-        (add-to-list 'word-list "-waiting" t))
+    (when (eq org-agenda-todo-ignore-scheduled 'future)
+      (add-to-list 'word-list "-future" t))
+    (unless zp/org-agenda-include-waiting
+      (add-to-list 'word-list "-waiting" t))
     (let ((header-formatted (zp/org-agenda-format-header-align header))
           (word-list-formatted (zp/org-agenda-format-word-list word-list)))
       (concat header-formatted word-list-formatted))))
 
 ;; Special blocks
-(defun zp/org-agenda-format-header-projects-stuck ()
-  "Format headers of ‘Stuck Projects’ in org-agenda, and display important
-agenda settings after them."
-  (let* ((tags-column org-agenda-tags-column)
-         (flanking-symbol-left "[")
-         (flanking-symbol-right "]")
-         (header "Stuck Projects")
-         (header-formatted
-          (zp/org-agenda-format-header-align
-           (concat flanking-symbol-left " " header " " flanking-symbol-right)))
-         (word-list ()))
-    (let ((word-list-formatted (zp/org-agenda-format-word-list word-list)))
-      (concat header-formatted word-list-formatted "\n"))))
-
-(defun zp/org-agenda-format-header-scheduled ()
-  "Format headers of ‘Scheduled’ in org-agenda, and display
-important agenda settings after them."
-  (let* ((tags-column org-agenda-tags-column)
-         (header "Scheduled")
-         (word-list ()))
-    (if (eq zp/org-agenda-sorting-strategy-user-defined 'started)
-        (add-to-list 'word-list "+S↓" t))
-    (if (eq org-agenda-todo-ignore-scheduled 'future)
-        (add-to-list 'word-list "-future" t))
-    (if (eq org-agenda-todo-ignore-scheduled nil)
-        (add-to-list 'word-list "+future" t))
-    (let ((header-formatted (zp/org-agenda-format-header-align header))
-          (word-list-formatted (zp/org-agenda-format-word-list word-list)))
-      (concat header-formatted word-list-formatted "\n"))))
-
 (defun zp/org-agenda-format-header-projects ()
   "Format header blocks in org-agenda, and display important
 agenda settings after them."
   (let* ((tags-column org-agenda-tags-column)
          (header "Projects")
          (word-list ()))
-    (if (eq zp/org-agenda-sorting-strategy-user-defined 'started)
-        (add-to-list 'word-list "+S↓" t))
-    (if (eq zp/org-agenda-include-waiting nil)
-        (add-to-list 'word-list "-waiting" t))
-    (let ((header-formatted (zp/org-agenda-format-header-align header))
-          (word-list-formatted (zp/org-agenda-format-word-list word-list)))
+    (when zp/org-agenda-sorting-strategy-special-first
+      (add-to-list 'word-list "+S↓" t))
+    (when (eq zp/org-agenda-include-waiting nil)
+      (add-to-list 'word-list "-waiting" t))
+    (when ((header-formatted (zp/org-agenda-format-header-align header))
+           (word-list-formatted (zp/org-agenda-format-word-list word-list)))
       (concat header-formatted word-list-formatted))))
 
 
@@ -3829,52 +3842,20 @@ agenda settings after them."
                 (zp/org-agenda-format-header-block-with-settings "Tasks"))
                ,@(if (bound-and-true-p file)
                      `((org-agenda-files ',file)))
-               ,@(when fifo
-                   '((org-agenda-cmp-user-defined 'zp/org-cmp-created-dwim)))
                (org-agenda-sorting-strategy
-                '(,@(unless fifo
+                '(,@(unless by-groups
                       '(scheduled-up))
                   user-defined-down
-                  ;; priority-down is included in fifo sorting
-                  ,@(unless fifo
-                      '(priority-down))
                   category-keep))
-               ;; (org-agenda-skip-function 'zp/skip-non-tasks-and-scheduled))))
-               ;; (org-agenda-skip-function 'bh/skip-non-tasks)
                (org-agenda-skip-function
                 '(or (zp/skip-tasks-not-belonging-to-agenda-groups ',groups)
                   (zp/skip-non-tasks)
                   (zp/skip-waiting)))
-               ;; (org-agenda-todo-ignore-scheduled 'all)
                (org-super-agenda-groups
                 ',(cond (by-groups
                          (zp/org-super-agenda-groups-all))
                         (t
                          (zp/org-super-agenda-scheduled)))))))
-
-(defun zp/org-agenda-block-projects-stuck (&optional file)
-  (let ((org-agenda-cmp-user-defined 'org-cmp-todo-state-wait))
-    `(tags-todo "-standby-recurring"
-                ((org-agenda-overriding-header
-                  (zp/org-agenda-format-header-projects-stuck))
-                 ,@(if (bound-and-true-p file)
-                       `((org-agenda-files ',file)))
-                 (org-agenda-skip-function 'zp/skip-non-stuck-projects)
-                 (org-agenda-todo-ignore-scheduled nil)
-                 (org-agenda-dim-blocked-tasks 'dimmed)))))
-
-(defun zp/org-agenda-block-projects-stuck-with-group-filter (groups &optional file)
-  `(tags-todo "-standby-recurring"
-              ((org-agenda-overriding-header
-                (zp/org-agenda-format-header-projects-stuck))
-               ,@(if (bound-and-true-p file)
-                     `((org-agenda-files ',file)))
-               ;; (org-agenda-skip-function 'zp/skip-non-stuck-projects)
-               (org-agenda-skip-function
-                '(or (zp/skip-tasks-not-belonging-to-agenda-groups ',groups t)
-                  (zp/skip-non-stuck-projects)))
-               (org-agenda-todo-ignore-scheduled nil)
-               (org-agenda-dim-blocked-tasks 'dimmed))))
 
 (defun zp/org-agenda-block-projects (&optional file)
   `(tags-todo "-standby-reading"
@@ -3987,28 +3968,6 @@ It creates 4 blocks:
                      `((org-agenda-files ',file)))
                (org-agenda-skip-function 'bh/skip-non-tasks))))
 
-(defun zp/org-agenda-block-scheduled (&optional file)
-  `(tags-todo "-recurring-reading"
-              ((org-agenda-overriding-header
-                (zp/org-agenda-format-header-scheduled))
-               ,@(if (bound-and-true-p file)
-                     `((org-agenda-files ',file)))
-               (org-agenda-skip-function
-                '(org-agenda-skip-entry-if 'notscheduled))
-               (org-agenda-dim-blocked-tasks 'dimmed)
-               (org-agenda-sorting-strategy '(timestamp-up user-defined-down priority-down)))))
-
-(defun zp/org-agenda-block-scheduled-with-filter (filter &optional file)
-  `(tags-todo ,(concat filter "-recurring")
-              ((org-agenda-overriding-header
-                (zp/org-agenda-format-header-scheduled))
-               ,@(if (bound-and-true-p file)
-                     `((org-agenda-files ',file)))
-               (org-agenda-skip-function
-                '(org-agenda-skip-entry-if 'notscheduled))
-               (org-agenda-dim-blocked-tasks 'dimmed)
-               (org-agenda-sorting-strategy '(timestamp-up user-defined-down priority-down)))))
-
 (defun zp/org-agenda-block-tasks-waiting (&optional file)
   `(tags-todo "-recurring-reading/!WAIT"
               ((org-agenda-overriding-header
@@ -4020,7 +3979,7 @@ It creates 4 blocks:
                (org-agenda-dim-blocked-tasks 'dimmed)
                (org-agenda-sorting-strategy '(timestamp-up user-defined-down priority-down)))))
 
-(defun zp/org-agenda-block-deadines ()
+(defun zp/org-agenda-block-deadlines ()
   '(agenda ""
            ((org-agenda-span 'day)
             (org-agenda-overriding-header
@@ -4099,7 +4058,7 @@ It creates 4 blocks:
              ((org-agenda-files '("/home/zaeph/org/journal.org"))))
 
         ("d" "Deadlines"
-             (,(zp/org-agenda-block-deadines)))
+             (,(zp/org-agenda-block-deadlines)))
 
         ("w" "Waiting list"
              (,(zp/org-agenda-block-tasks-waiting)))
@@ -4200,82 +4159,107 @@ It creates 4 blocks:
 (add-hook 'org-agenda-finalize-hook #'zp/org-agenda-delete-empty-blocks)
 (add-hook 'org-agenda-finalize-hook #'zp/org-agenda-remove-mouse-face)
 
-;; Good example for a toggle based on variables
+
+
+;; Toggles
+(defun zp/toggle-org-agenda-include-habits ()
+  "Toggle habits."
+  (interactive)
+  (if (prog1 (zp/set-agenda-local 'org-habit-show-habits
+                               (not (zp/get-agenda-local 'org-habit-show-habits)))
+        (let ((inhibit-message t))
+          (org-agenda-redo)))
+      (message "Habits turned on.")
+    (message "Habits turned off.")))
+
 (defun zp/toggle-org-habit-show-all-today ()
   "Toggle the display of habits between showing only the habits
 due today, and showing all of them."
   (interactive)
-  (cond ((bound-and-true-p org-habit-show-all-today)
-         (setq org-habit-show-all-today nil)
+  (cond ((zp/get-agenda-local 'org-habit-show-all-today)
+         (zp/set-agenda-local 'org-habit-show-all-today nil)
          (org-agenda-redo)
          (message "Habits: Showing today"))
         (t
-         (setq org-habit-show-all-today 1)
+         (setq-agenda-local 'org-habit-show-all-today t)
          (org-agenda-redo)
          (message "Habits: Showing all"))))
 
 (defun zp/toggle-org-agenda-include-deadlines ()
   "Toggle the inclusion of deadlines in the agenda."
   (interactive)
-  (cond ((bound-and-true-p org-agenda-include-deadlines)
-         (setq org-agenda-include-deadlines nil)
+  (cond ((zp/get-agenda-local 'org-agenda-include-deadlines)
+         (zp/set-agenda-local 'org-agenda-include-deadlines nil)
          (org-agenda-redo)
          (message "Deadlines: Hidden"))
         (t
-         (setq org-agenda-include-deadlines t)
+         (zp/set-agenda-local 'org-agenda-include-deadlines t)
          (org-agenda-redo)
          (message "Deadlines: Visible"))))
+
+(defvar zp/org-agenda-include-scheduled nil
+  "Toggle the inclusion of scheduled items in the agenda.")
 
 (defun zp/toggle-org-agenda-include-scheduled ()
   "Toggle the inclusion of scheduled items in the agenda."
   (interactive)
-  (cond ((eq zp/org-agenda-include-scheduled 'all)
-         (setq org-agenda-entry-types '(:deadline :timestamp :sexp)
-               zp/org-agenda-include-scheduled nil)
-         (org-agenda-redo)
-         (message "Scheduled: Hidden"))
+  (cond ((zp/set-agenda-local 'zp/org-agenda-include-scheduled
+                           (not (zp/get-agenda-local
+                                 'zp/org-agenda-include-scheduled)))
+         (zp/set-agenda-local 'org-agenda-entry-types
+                           '(:deadline :scheduled :timestamp :sexp))
+         (let ((inhibit-message t))
+             (org-agenda-redo))
+         (message "Scheduled: Visible"))
         (t
-         (setq org-agenda-entry-types '(:deadline :scheduled :timestamp :sexp)
-               zp/org-agenda-include-scheduled 'all)
-         (org-agenda-redo)
-         (message "Scheduled: Visible"))))
+         (zp/set-agenda-local 'org-agenda-entry-types
+                           '(:deadline :timestamp :sexp))
+         (let ((inhibit-message t))
+             (org-agenda-redo))
+         (message "Scheduled: Hidden"))))
 
 (defun zp/toggle-org-agenda-category-icons ()
   "Toggle the inclusion of category icons in the agenda."
   (interactive)
-  (cond (zp/org-agenda-include-category-icons
-         (setq org-agenda-category-icon-alist nil
-               zp/org-agenda-include-category-icons nil)
-         (org-agenda-redo)
-         (message "Icons: Hidden"))
+  (cond ((zp/set-agenda-local 'zp/org-agenda-include-category-icons
+                           (not (zp/get-agenda-local
+                                 'zp/org-agenda-include-category-icons)))
+         (zp/set-agenda-local 'org-agenda-category-icon-alist
+                           zp/org-agenda-category-icon-alist)
+         (let ((inhibit-message t))
+             (org-agenda-redo))
+         (message "Showing category icons."))
         (t
-         (setq org-agenda-category-icon-alist zp/org-agenda-category-icon-alist
-               zp/org-agenda-include-category-icons t)
-         (org-agenda-redo)
-         (message "Icons: Visible"))))
+         (zp/set-agenda-local 'org-agenda-category-icon-alist nil)
+         (let ((inhibit-message t))
+             (org-agenda-redo))
+         (message "Hiding category icons."))))
 
-(defun zp/toggle-org-agenda-cmp-user-defined ()
+(defvar zp/org-agenda-sorting-strategy-special-first nil
+  "When non-nil, sort special TODOs first (STRT & NEXT).")
+
+(defun zp/toggle-org-agenda-sorting-strategy-special-first ()
   "Toggle the skip function used by the agenda."
   (interactive)
-  (cond ((eq zp/org-agenda-sorting-strategy-user-defined nil)
-         (setq org-agenda-cmp-user-defined 'zp/org-cmp-todo-special
-               zp/org-agenda-sorting-strategy-user-defined 'started)
-         (org-agenda-redo)
-         (message "Sorting: Special first"))
-        (t
-         (setq org-agenda-cmp-user-defined nil
-               zp/org-agenda-sorting-strategy-user-defined nil)
-         (org-agenda-redo)
-         (message "Sorting: Default"))))
+  (if (prog1 (zp/set-agenda-local
+              'zp/org-agenda-sorting-strategy-special-first
+              (not (zp/get-agenda-local
+                    'zp/org-agenda-sorting-strategy-special-first)))
+        (let ((inhibit-message t))
+          (org-agenda-redo)))
+      (message "Sorting: Special first.")
+    (message "Sorting: Normal.")))
 
 (defvar zp/org-agenda-split-subtasks nil
-  "When non-nil, split subtasks and loners.")
+  "When non-nil, split subtasks and lone tasks.")
 
 (defun zp/toggle-org-agenda-split-subtasks ()
   (interactive)
-  (if (prog1 (setq zp/org-agenda-split-subtasks
-                   (not zp/org-agenda-split-subtasks))
-        (org-agenda-redo))
+  (if (prog1 (zp/set-agenda-local
+              'zp/org-agenda-split-subtasks
+              (not (zp/get-agenda-local 'zp/org-agenda-split-subtasks)))
+        (let ((inhibit-message t))
+          (org-agenda-redo)))
       (message "Splitting subtasks.")
     (message "Merging subtasks.")))
 
@@ -4291,23 +4275,24 @@ due today, and showing all of them."
          (org-agenda-redo)
          (message "Deadline range: 1 week"))))
 
-(defun zp/toggle-org-agenda-todo-ignore-future-scheduled ()
+(defun zp/toggle-org-agenda-todo-ignore-scheduled ()
   "Toggle the range of days for deadline to show up on the agenda."
   (interactive)
-  (cond ((eq org-agenda-todo-ignore-scheduled 'future)
-         (setq org-agenda-todo-ignore-scheduled nil)
+  (cond ((eq (zp/get-agenda-local 'org-agenda-todo-ignore-scheduled) 'future)
+         (zp/set-agenda-local 'org-agenda-todo-ignore-scheduled nil)
          (org-agenda-redo)
          (message "Scheduled: All (Today + Future)"))
-        ((eq org-agenda-todo-ignore-scheduled nil)
-         (setq org-agenda-todo-ignore-scheduled 'future)
+        (t
+         (zp/set-agenda-local 'org-agenda-todo-ignore-scheduled 'future)
          (org-agenda-redo)
          (message "Scheduled: Only Today"))))
 
 (defun zp/toggle-org-agenda-projects-include-waiting ()
   "Toggle whether to include projects with a waiting task."
   (interactive)
-  (if (prog1 (setq zp/org-agenda-include-waiting
-                   (not zp/org-agenda-include-waiting))
+  (if (prog1 (zp/set-agenda-local 'zp/org-agenda-include-waiting
+                               (not (zp/get-agenda-local
+                                     'zp/org-agenda-include-waiting)))
         (org-agenda-redo))
       (message "Waiting: Visible")
     (message "Waiting: Hidden")))
@@ -4429,6 +4414,93 @@ Check their respective dosctrings for more info."
   (org-agenda-schedule arg time)
   (zp/org-agenda-to-appt))
 
+
+
+(defun zp/org-agenda-get-key ()
+  "Return the key of the current org-agenda view."
+  (unless (derived-mode-p 'org-agenda-mode)
+    (error "Not in an agenda"))
+  (let ((name (buffer-name))
+        (regex "\\*Org Agenda(\\(.*\\))\\*"))
+    (save-match-data
+      (string-match regex name)
+      (match-string 1 name))))
+
+(defvar zp/org-agenda-load-local-config-post-hook nil
+  "Hooks to run after the local org-agenda config has been
+  loaded.")
+
+(defun zp/org-agenda-set-category-icons ()
+  "Set category icons.
+
+If ‘zp/org-agenda-include-category-icons’ is non-nil, the
+function populate ‘org-agenda-category-icon-alist’.
+
+Meant to be run with ‘org-agenda-mode-hook’."
+  (when zp/org-agenda-include-category-icons
+    (setq org-agenda-category-icon-alist
+          zp/org-agenda-category-icon-alist)))
+
+(add-hook #'zp/org-agenda-load-local-config-post-hook
+          #'zp/org-agenda-set-category-icons)
+
+(defun zp/org-agenda-load-local-config ()
+  "Load the org-agenda local config for the current view."
+  (let ((agenda (zp/org-agenda-get-key)))
+    ;; Create local config if it doesn’t exist for current agenda
+    (unless (assoc agenda zp/org-agenda-local-config)
+      (setf (alist-get agenda
+                       zp/org-agenda-local-config
+                       nil nil 'equal)
+            ;; Copying the list is necessary to have different
+            ;; references to the same values.  Otherwise, we’d also
+            ;; modify the global config.
+            (list (copy-alist (car (alist-get nil
+                                              zp/org-agenda-local-config))))))
+    ;; Load all settings
+    (mapcar (lambda (cons)
+              (let ((variable (car cons))
+                    (value (cdr cons)))
+                (set variable value
+                     ;; (message "Setting ‘%s’ to ‘%s’." variable value)
+                     )))
+            ;; alist-get returns its match within a list, but we only
+            ;; need its car
+            (car (alist-get agenda
+                            zp/org-agenda-local-config
+                            nil nil 'equal)))
+    (run-hooks 'zp/org-agenda-load-local-config-post-hook)))
+
+(add-hook #'org-agenda-mode-hook #'zp/org-agenda-load-local-config)
+
+(defun zp/org-agenda-local-has-config-p (&optional agenda)
+  "Return t when the agenda has a local config."
+  (let ((agenda (or agenda
+                    (zp/org-agenda-get-key))))
+    (alist-get agenda zp/org-agenda-local-config nil nil 'equal)))
+
+(defun zp/get-agenda-local (symbol)
+  "Get value of SYMBOL for the current org-agenda view."
+  (let ((agenda (zp/org-agenda-get-key)))
+    (unless (zp/org-agenda-local-has-config-p agenda)
+      (zp/org-agenda-load-local-config))
+    (alist-get symbol (car (alist-get agenda
+                                      zp/org-agenda-local-config
+                                      nil nil 'equal)))))
+
+(defun zp/set-agenda-local (symbol value)
+  "Set SYMBOL to VALUE locally for the current org-agenda view."
+  (let ((agenda (zp/org-agenda-get-key)))
+    (unless (zp/org-agenda-local-has-config-p agenda)
+      (zp/org-agenda-load-local-config))
+    (setf (alist-get symbol
+                      (car (alist-get agenda
+                                      zp/org-agenda-local-config
+                                      nil nil 'equal)))
+           value)
+    value))
+
+
 (defun zp/org-agenda-mode-config ()
   "For use with `org-agenda-mode'."
   (local-set-key (kbd "M-n") 'org-agenda-next-date-line)
@@ -4441,12 +4513,13 @@ Check their respective dosctrings for more info."
   (local-set-key (kbd "M-t") 'org-agenda-todo-yesterday)
   (local-set-key (kbd "D") 'zp/toggle-org-agenda-include-deadlines)
   (local-set-key (kbd "S") 'zp/toggle-org-agenda-include-scheduled)
+  (local-set-key (kbd "K") 'zp/toggle-org-agenda-include-habits)
   (local-set-key (kbd "M-d") 'zp/toggle-org-deadline-warning-days-range)
   (local-set-key (kbd "r") 'zp/org-agenda-benchmark)
-  (local-set-key (kbd "h") 'zp/toggle-org-agenda-cmp-user-defined)
+  (local-set-key (kbd "h") 'zp/toggle-org-agenda-sorting-strategy-special-first)
   (local-set-key (kbd "H") 'zp/toggle-org-agenda-split-subtasks)
   ;; (local-set-key (kbd "H") 'zp/toggle-org-agenda-dim-blocked-tasks)
-  (local-set-key (kbd "F") 'zp/toggle-org-agenda-todo-ignore-future-scheduled)
+  (local-set-key (kbd "F") 'zp/toggle-org-agenda-todo-ignore-scheduled)
   (local-set-key (kbd "W") 'zp/toggle-org-agenda-projects-include-waiting)
   (local-set-key (kbd "C-c C-x r") 'zp/org-agenda-set-appt-warntime)
   (local-set-key (kbd "C-c C-x l") 'zp/org-agenda-set-location)
@@ -4460,7 +4533,9 @@ Check their respective dosctrings for more info."
   (local-set-key (kbd "<return>") 'zp/org-agenda-tree-to-indirect-buffer-without-grabbing-focus)
   (local-set-key (kbd "S-<return>") 'zp/org-agenda-tree-to-indirect-buffer)
   (local-set-key (kbd "M-<return>") 'zp/org-agenda-tree-to-indirect-buffer-maximise)
-  (local-set-key (kbd "<backspace>") 'zp/org-agenda-kill-other-buffer-and-window))
+  (local-set-key (kbd "<backspace>") 'zp/org-agenda-kill-other-buffer-and-window)
+
+  (setq org-super-agenda-header-map org-agenda-mode-map))
 
 (add-hook 'org-agenda-mode-hook 'zp/org-agenda-mode-config)
 
