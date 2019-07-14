@@ -2465,7 +2465,7 @@ return `nil'."
       ;; org-log-into-drawer nil
       ;; org-log-state-notes-insert-after-drawers t
       org-log-done 'time
-      org-enforce-todo-dependencies t ;Careful with this one, easy to fuck up
+      org-enforce-todo-dependencies nil ;Careful with this one, easy to fuck up
       ;; org-enforce-todo-dependencies nil
       org-adapt-indentation nil
       org-clock-sound t
