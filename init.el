@@ -4464,6 +4464,8 @@ Meant to be run with ‘org-agenda-mode-hook’."
             (car (alist-get agenda
                             zp/org-agenda-local-config
                             nil nil 'equal)))
+    ;; Refresh mode-name based on modifications
+    (org-agenda-set-mode-name)
     (run-hooks 'zp/org-agenda-load-local-config-post-hook)))
 
 (add-hook #'org-agenda-mode-hook #'zp/org-agenda-load-local-config)
