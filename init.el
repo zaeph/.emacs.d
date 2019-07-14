@@ -3665,8 +3665,8 @@ agenda settings after them."
       (add-to-list 'word-list "+S↓" t))
     (when (eq zp/org-agenda-include-waiting nil)
       (add-to-list 'word-list "-waiting" t))
-    (when ((header-formatted (zp/org-agenda-format-header-align header))
-           (word-list-formatted (zp/org-agenda-format-word-list word-list)))
+    (let ((header-formatted (zp/org-agenda-format-header-align header))
+          (word-list-formatted (zp/org-agenda-format-word-list word-list)))
       (concat header-formatted word-list-formatted))))
 
 
