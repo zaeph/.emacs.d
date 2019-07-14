@@ -3839,7 +3839,7 @@ agenda settings after them."
                (org-agenda-todo-ignore-scheduled 'all)
                )))
 
-(defun zp/org-agenda-block-tasks-with-group-filter (&optional groups tags fifo by-groups file)
+(defun zp/org-agenda-block-tasks-with-group-filter (&optional groups tags by-groups file)
   `(tags-todo ,(or tags
                    "-standby-cancelled-recurring-curios")
               ((org-agenda-overriding-header
@@ -3873,7 +3873,7 @@ agenda settings after them."
                (org-agenda-todo-ignore-scheduled nil)
                (org-agenda-dim-blocked-tasks nil))))
 
-(defun zp/org-agenda-block-projects-with-group-filter (&optional groups tags fifo file)
+(defun zp/org-agenda-block-projects-with-group-filter (&optional groups tags file)
   `(tags-todo ,(or tags
                    "-standby-cancelled-curios")
               ((org-agenda-overriding-header
@@ -3885,12 +3885,8 @@ agenda settings after them."
                 '(or (zp/skip-tasks-not-belonging-to-agenda-groups ',groups t)
                   (zp/skip-non-projects)
                   (zp/skip-waiting)))
-               ,@(when fifo
-                   '((org-agenda-cmp-user-defined 'zp/org-cmp-created)))
                (org-agenda-sorting-strategy
-                '(,@(if fifo
-                        '(priority-down user-defined-up)
-                      '(user-defined-down priority-down))
+                '(user-defined-down
                   category-keep))
                (org-agenda-todo-ignore-scheduled nil)
                (org-agenda-dim-blocked-tasks nil)
@@ -3918,7 +3914,7 @@ agenda settings after them."
 
 
 
-(defun zp/org-agenda-blocks-create (header &optional groups tags fifo by-groups file)
+(defun zp/org-agenda-blocks-create (header &optional groups tags by-groups file)
   "Format the main agenda blocks.
 
 HEADER is the string to be used as the header of the the agenda
@@ -3935,29 +3931,29 @@ It creates 4 blocks:
   `(,(zp/org-agenda-block-header
       header)
      ,(zp/org-agenda-block-projects-with-group-filter
-       groups tags fifo file)
+       groups tags file)
      ,(zp/org-agenda-block-tasks-with-group-filter
-       groups tags fifo by-groups file)))
+       groups tags by-groups file)))
 
-(defun zp/org-agenda-variant-create (prefix-key key prefix-header header groups tags fifo by-groups file)
+(defun zp/org-agenda-variant-create (prefix-key key prefix-header header groups tags by-groups file)
   (let ((variant-key (concat prefix-key key))
         (variant-header (concat header ": " prefix-header)))
     `(,variant-key
       ,variant-header
-      ,(zp/org-agenda-blocks-create variant-header groups tags fifo by-groups file))))
+      ,(zp/org-agenda-blocks-create variant-header groups tags by-groups file))))
 
 (defun zp/org-agenda-variants-create (key header &optional groups tags by-groups file)
   `(;; Active
     (,key ,header
-          ,(zp/org-agenda-blocks-create header groups tags nil by-groups file))
+          ,(zp/org-agenda-blocks-create header groups tags by-groups file))
     ;; Inactive
     ,(zp/org-agenda-variant-create
       "i" key "Inactive"
-      header groups (concat tags "-cancelled/STBY") t by-groups file)
+      header groups (concat tags "-cancelled/STBY") by-groups file)
     ;; Curiosities
     ,(zp/org-agenda-variant-create
       "c" key "Curiosities"
-      header groups (concat "+curios-cancelled" tags) t by-groups file)))
+      header groups (concat "+curios-cancelled" tags) by-groups file)))
 
 (defun zp/org-agenda-create-all (list)
   (mapcan (lambda (params)
@@ -4032,16 +4028,16 @@ It creates 4 blocks:
              (,(zp/org-agenda-block-agenda-week-appointments-only "Weekly Appointments")))
 
         ("I" "Inactive"
-             (,@(zp/org-agenda-blocks-create "Inactive" nil "/STBY" t nil)))
+             (,@(zp/org-agenda-blocks-create "Inactive" nil "/STBY")))
 
         ("ii" "Inactive (+groups)"
-              (,@(zp/org-agenda-blocks-create "Inactive (+groups)" nil "/STBY" t t)))
+              (,@(zp/org-agenda-blocks-create "Inactive (+groups)" nil "/STBY" t)))
 
         ("C" "Curiosities"
-             (,@(zp/org-agenda-blocks-create "Curiosities" nil "+curios" t nil)))
+             (,@(zp/org-agenda-blocks-create "Curiosities" nil "+curios")))
 
         ("cc" "Curiosities (+groups)"
-              (,@(zp/org-agenda-blocks-create "Curiosities (+groups)" nil "+curios" t t)))
+              (,@(zp/org-agenda-blocks-create "Curiosities (+groups)" nil "+curios" t)))
 
         ,@(zp/org-agenda-create-all
            '(("l" "Life" ("life" "mx" "pro" "research" "act"))
