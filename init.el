@@ -4468,6 +4468,20 @@ Meant to be run with ‘org-agenda-mode-hook’."
 
 (add-hook #'org-agenda-mode-hook #'zp/org-agenda-load-local-config)
 
+(defun zp/org-agenda-prepare-main-file ()
+  "Prepare the main file for creating an org-agenda view.
+
+Save the file it has been modified, and reveal everything in the
+file (trees, drawers, etc.)."
+  (let ((buffer (get-file-buffer "~/org/life.org")))
+    (when buffer
+      (with-current-buffer buffer
+        (when (buffer-modified-p (get-file-buffer "~/org/life.org"))
+          (save-buffer))
+        (org-show-all)))))
+
+(add-hook #'org-agenda-mode-hook #'zp/org-agenda-prepare-main-file)
+
 (defun zp/org-agenda-local-has-config-p (&optional agenda)
   "Return t when the agenda has a local config."
   (let ((agenda (or agenda
