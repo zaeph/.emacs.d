@@ -5056,6 +5056,7 @@ create a dedicated frame."
                                         'current-window))
          (last-ibuf org-last-indirect-buffer)
          (parent (current-buffer))
+         (parent-window (selected-window))
          (dedicated (or dedicated
                         (eq arg 4))))
     (when dedicated
@@ -5066,7 +5067,7 @@ create a dedicated frame."
     (org-tree-to-indirect-buffer)
     (when in-new-window
       (select-window (next-window))
-      (setq zp/org-ibuf-spawned-also-kill-window t))
+      (setq zp/org-ibuf-spawned-also-kill-window parent-window))
     (if dedicated
         (setq org-last-indirect-buffer last-ibuf)
       (zp/org-spawned-ibuf-mode t))
@@ -8117,13 +8118,14 @@ Every ELEM in LIST is formatted as follows:
   (let* ((other (not (one-window-p)))
          (indirect (buffer-base-buffer))
          (spawn zp/org-spawned-ibuf-mode)
-         (kill-window zp/org-ibuf-spawned-also-kill-window))
+         (parent-window zp/org-ibuf-spawned-also-kill-window))
     (unless (and indirect
                  spawn)
       (user-error "Not a spawned buffer"))
     (if (and other
-             kill-window)
-        (kill-buffer-and-window)
+             parent-window)
+        (progn (kill-buffer-and-window)
+               (select-window parent-window))
       (kill-buffer))
     (when print-message
       (message "Killed indirect buffer."))
@@ -8169,6 +8171,7 @@ With a ‘C-u’ prefix, make a separate frame for this tree."
                        (select-window (previous-window))
                        (current-buffer))
                    (org-agenda-tree-to-indirect-buffer nil)))
+         (parent-window (selected-window))
          subtask)
     (with-selected-window (if dedicated
                               (and (split-window-below)
@@ -8179,7 +8182,7 @@ With a ‘C-u’ prefix, make a separate frame for this tree."
              (switch-to-buffer buffer))
             (t
              (zp/org-spawned-ibuf-mode t)
-             (setq zp/org-ibuf-spawned-also-kill-window t)))
+             (setq zp/org-ibuf-spawned-also-kill-window parent-window)))
       (when (setq subtask (zp/is-subtask-p))
         (zp/org-narrow-up-heading nil t))
       (zp/org-overview nil subtask t)
