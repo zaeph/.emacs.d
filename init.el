@@ -4532,7 +4532,7 @@ Meant to be run with ‘org-agenda-mode-hook’."
 
   (setq org-super-agenda-header-map org-agenda-mode-map))
 
-(add-hook 'org-agenda-mode-hook 'zp/org-agenda-mode-config)
+(add-hook #'org-agenda-mode-hook #'zp/org-agenda-mode-config)
 
 
 
