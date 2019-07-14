@@ -18,6 +18,7 @@
 
 ;; (toggle-debug-on)
 ;; (toggle-debug-on-quit)
+;; (setq garbage-collection-messages t)
 
 (defalias 'yes-or-no-p 'y-or-n-p)
 
@@ -1713,11 +1714,6 @@ If text is selected, adds furigana to the selected kanji instead."
 ;; Recentf
 (setq recentf-max-menu-items 100)
 
-;; Anzu
-;; Display search information in mode-line
-(global-anzu-mode +1)
-(setq anzu-cons-mode-line-p nil)
-
 ;; Tramp
 (setq tramp-default-method "ssh")
 
@@ -1839,6 +1835,36 @@ Modifies ‘diff-command’ and ‘diff-switches’ to use ‘git diff’."
   (local-set-key (kbd "C-l") #'comint-clear-buffer))
 
 (setq inferior-python-mode-hook 'zp/inferior-python-mode-config)
+
+(defun zp/python-eval-buffer (arg)
+  "Run current buffer as Perl code"
+  (interactive "P")
+  (let (max-mini-window-height)
+    (unless arg
+      (setq max-mini-window-height 999))
+    (shell-command-on-region (point-min) (point-max) "python")))
+
+(define-key python-mode-map (kbd "M-RET") 'zp/python-eval-buffer)
+
+
+
+;; ========================================
+;; =============== RACKET =================
+;; ========================================
+
+(require 'racket-mode)
+
+(defun zp/racket-eval-buffer (arg)
+  "Run current buffer as Perl code"
+  (interactive "P")
+  (let (max-mini-window-height)
+    (unless arg
+      (setq max-mini-window-height 999))
+    (let ((inhibit-message t))
+      (basic-save-buffer))
+    (shell-command (concat "racket " (buffer-file-name)))))
+
+(define-key racket-mode-map (kbd "M-RET") 'zp/racket-eval-buffer)
 
 
 
@@ -2364,12 +2390,24 @@ return `nil'."
 (defun zp/perl-eval-region ()
   "Run selected region as Perl code"
   (interactive)
-  (shell-command-on-region (mark) (point) "perl"))
+  (let ((max-mini-window-height nil))
+    (call-process (mark) (point) "perl")))
 
-(defun zp/perl-eval-buffer ()
-  "Run current buffer as Perl code"
+(defun zp/perl-eval-buffer-in-terminator ()
+  "Run selected region as Perl code"
   (interactive)
-  (shell-command-on-region (point-min) (point-max) "perl"))
+  (call-process "terminator" (buffer-file-name) nil nil (concat "-x perl" ))
+  ;; (call-process (concat "terminator -x perl "
+  ;;                       (buffer-file-name)))
+  )
+
+(defun zp/perl-eval-buffer (arg)
+  "Run current buffer as Perl code"
+  (interactive "P")
+  (let (max-mini-window-height)
+    (unless arg
+      (setq max-mini-window-height 999))
+    (shell-command-on-region (point-min) (point-max) "perl")))
 
 (define-key cperl-mode-map (kbd "M-RET") 'zp/perl-eval-buffer)
 (define-key cperl-mode-map (kbd "<C-return>") 'zp/perl-eval-region)
@@ -2423,19 +2461,21 @@ return `nil'."
       ;; org-log-into-drawer nil
       ;; org-log-state-notes-insert-after-drawers t
       org-log-done 'time
-      org-enforce-todo-dependencies t ;Careful with this one, easy to fuck up
+      org-enforce-todo-dependencies nil ;Careful with this one, easy to fuck up
       ;; org-enforce-todo-dependencies nil
       org-adapt-indentation nil
       org-clock-sound t
+      org-clock-report-include-clocking-task t
+      org-clock-out-remove-zero-time-clocks t
       org-export-in-background t
       org-export-with-sub-superscripts nil
       org-image-actual-width nil ;Ensures that images displayed within emacs can be resized with #+ATTR_ORG:
-      org-hide-emphasis-markers t               ;Fontification
+      org-hide-emphasis-markers t                 ;Fontification
       org-ellipsis "…"
       org-track-ordered-property-with-tag "ORDERED"
       ;; org-tags-exclude-from-inheritance '("project")
       org-tags-exclude-from-inheritance nil
-      org-agenda-hide-tags-regexp "recurring\\|waiting\\|standby"
+      org-agenda-hide-tags-regexp "recurring\\|waiting\\|standby\\|curios"
       org-catch-invisible-edits 'error
       org-footnote-define-inline 1)
 
@@ -2554,7 +2594,7 @@ return `nil'."
         ("assignment"   . org-tag-important)
         ("exam"         . org-tag-important)
         ("important"    . org-tag-important)
-        ("reading"      . org-tag-reading)
+        ("curios"       . org-tag-curios)
         ("french"       . org-tag-french)))
 
 
@@ -2621,80 +2661,6 @@ return `nil'."
               (org-end-of-subtree t t)
               (org-paste-subtree level tree-text))))))))
 
-;; Category icons
-(defvar zp/org-agenda-include-category-icons nil
-  "When non-nil, show category icons in the agenda")
-
-(defvar zp/org-agenda-category-icon-alist nil
-  "Alist of category icon to be displayed in agenda views.
-
-Custom variable to hold the content when the icons are toggled
-off.")
-
-(setq zp/org-agenda-include-category-icons t)
-
-(setq zp/org-agenda-category-icon-alist
-      '(
-        ;; Life
-        ("^inbox$" "~/org/svg/icons/gmail.svg" nil nil :ascent center)
-        ("^curios$" "~/org/svg/icons/question.svg" nil nil :ascent center)
-        ("^style$" "~/org/svg/icons/suit.svg" nil nil :ascent center)
-        ("^nicolas$" "~/org/svg/icons/leaf.svg" nil nil :ascent center)
-        ("^swim$" "~/org/svg/icons/wave.svg" nil nil :ascent center)
-        ("^run$" "~/org/svg/icons/running.svg" nil nil :ascent center)
-        ("^awakening$" "~/org/svg/icons/aperture-green.svg" nil nil :ascent center)
-        ("^journal$" "~/org/svg/icons/spellbook-p.svg" nil nil :ascent center)
-        ("^psy$" "~/org/svg/icons/solution.svg" nil nil :ascent center)
-        ("^anki$" "~/org/svg/icons/anki-2-p.svg" nil nil :ascent center)
-        ("^plan$" "~/org/svg/icons/planning-p.svg" nil nil :ascent center)
-        ("^typography$" "~/org/svg/icons/typography.svg" nil nil :ascent center)
-
-        ;; Activism
-        ("^pol$" "~/org/svg/icons/fist.svg" nil nil :ascent center)
-
-        ;; Professional
-        ("^research$" "~/org/svg/icons/research.svg" nil nil :ascent center)
-        ("^university$" "~/org/svg/icons/aperture-yellow.svg" nil nil :ascent center)
-
-        ;; Hacking
-        ("^hack$" "~/org/svg/icons/engineering-2.svg" nil nil :ascent center)
-        ("^emacs$" "~/org/svg/icons/spacemacs.svg" nil nil :ascent center)
-        ("^org$" "~/org/svg/icons/org-mode-unicorn.svg" nil nil :ascent center)
-        ("^python$" "~/org/svg/icons/python.svg" nil nil :ascent center)
-        ("^perl$" "~/org/svg/icons/perl.svg" nil nil :ascent center)
-        ("^contrib$" "~/org/svg/icons/chill.svg" nil nil :ascent center)
-        ("^bug$" "~/org/svg/icons/cross.svg" nil nil :ascent center)
-        ("^elisp$" "~/org/svg/icons/spacemacs-elisp.svg" nil nil :ascent center)
-        ("^tex$" "~/org/svg/icons/file-2-p.svg" nil nil :ascent center)
-        ("^linux$" "~/org/svg/icons/nixos.svg" nil nil :ascent center)
-        ("^opsec$" "~/org/svg/icons/cyber-security-b.svg" nil nil :ascent center)
-        ("^git$" "~/org/svg/icons/git.svg" nil nil :ascent center)
-
-        ;; Media
-        ("^media$" "~/org/svg/icons/library.svg" nil nil :ascent center)
-        ("^news$" "~/org/svg/icons/world.svg" nil nil :ascent center)
-        ("^books$" "~/org/svg/icons/book-2.svg" nil nil :ascent center)
-        ("^trackers$" "~/org/svg/icons/share.svg" nil nil :ascent center)
-        ("^music$" "~/org/svg/icons/compact-disc.svg" nil nil :ascent center)
-        ("^film$" "~/org/svg/icons/film.svg" nil nil :ascent center)
-
-        ;; Maintenance
-        ("^mx$" "~/org/svg/icons/recycle.svg" nil nil :ascent center)
-        ("^fin$" "~/org/svg/icons/money-p.svg" nil nil :ascent center)
-        ("^cooking$" "~/org/svg/icons/salad.svg" nil nil :ascent center)
-        ("^plants$" "~/org/svg/icons/sansevieria.svg" nil nil :ascent center)
-        ("^animals$" "~/org/svg/icons/animals.svg" nil nil :ascent center)
-        ("^health$" "~/org/svg/icons/health.svg" nil nil :ascent center)
-        ("^supplies$" "~/org/svg/icons/box.svg" nil nil :ascent center)
-        ("^social$" "~/org/svg/icons/happy.svg" nil nil :ascent center)
-        ("^grooming$" "~/org/svg/icons/razor.svg" nil nil :ascent center)
-        ("^cleaning$" "~/org/svg/icons/bucket.svg" nil nil :ascent center)
-
-        (".*" '(space . (:width (24))) nil nil :ascent center)))
-
-;; Shows icons by default
-(setq org-agenda-category-icon-alist zp/org-agenda-category-icon-alist)
-
 ;; Babel
 (require 'ob-async)
 (add-hook 'ob-async-pre-execute-src-block-hook
@@ -2706,7 +2672,7 @@ off.")
   "Initial value for the scale of LaTeX previews.")
 
 (setq org-format-latex-options
-      '(:foreground auto
+      '(:foreground default
         :background default
         :scale zp/org-format-latex-default-scale
         :html-foreground "Black"
@@ -2855,7 +2821,7 @@ When KEEP-RESTRICTION is non-nil, do not widen the buffer."
     (message "Narrowing to previous tree.")
     (run-hooks 'zp/org-after-view-change-hook)))
 
-(defun zp/org-narrow-up-heading (&optional arg)
+(defun zp/org-narrow-up-heading (&optional arg keep-position)
   "Move to the upper subtree, and narrow the buffer to it."
   (interactive "p")
   (unless (buffer-narrowed-p)
@@ -2866,11 +2832,12 @@ When KEEP-RESTRICTION is non-nil, do not widen the buffer."
     (org-reveal)
     (outline-up-heading 1)
     (org-narrow-to-subtree)
-    (if (eq arg 4)
-        (progn
-          (goto-char pos-before)
-          (recenter-top-bottom)))
-    (zp/org-fold arg)
+    (when (or (eq arg 4)
+              keep-position)
+      (goto-char pos-before)
+      (recenter-top-bottom))
+    (zp/org-fold (or (eq arg 4)
+                     keep-position))
     (when arg
       (message "Narrowing to tree above.")
       (run-hooks 'zp/org-after-view-change-hook))))
@@ -3090,6 +3057,7 @@ With a C-u argument, toggle the link display."
         ;; Hacking
         ("p h e" . "/home/zaeph/org/projects/hacking/emacs/emacs.org.gpg")
         ("p h l" . "/home/zaeph/org/projects/hacking/linux/linux.org.gpg")
+        ("p h n" . "/home/zaeph/org/projects/hacking/linux/nixos.org")
         ("p h o" . "/home/zaeph/org/projects/hacking/opsec/opsec.org.gpg")
         ("p h h" . "/home/zaeph/org/projects/hacking/hacking.org.gpg")
         ("p h p" . "/home/zaeph/org/projects/hacking/python/python.org.gpg")
@@ -3355,40 +3323,158 @@ _e_: #E    _SPC_: remove
 ;; ============== ORG-AGENDA ==============
 ;; ========================================
 
-(setq org-agenda-todo-ignore-with-date nil
-      ;; org-agenda-todo-ignore-scheduled 'future
-      org-agenda-todo-ignore-scheduled nil
-      ;; org-agenda-show-future-repeats 'next
-      org-agenda-show-future-repeats t
-      ;; org-agenda-todo-ignore-scheduled 'past
-      org-agenda-todo-ignore-deadlines nil
-      org-agenda-include-deadlines 'all
-      zp/projects-include-waiting t
-      zp/org-agenda-include-scheduled 'all
-      org-agenda-cmp-user-defined 'zp/org-agenda-sort-wait
-      zp/org-agenda-sorting-strategy-user-defined 'priority
-      org-agenda-window-setup 'current-window
-      org-deadline-warning-days 30
-      org-agenda-tags-todo-honor-ignore-options 1
-      org-agenda-compact-blocks nil
-      org-agenda-todo-list-sublevels t
-      org-agenda-dim-blocked-tasks nil
+;; Category icons
+(defvar zp/org-agenda-include-category-icons nil
+  "When non-nil, show category icons in the agenda")
+
+(defvar zp/org-agenda-category-icon-alist nil
+  "Alist of category icon to be displayed in agenda views.
+
+Custom variable to hold the content when the icons are toggled
+off.")
+
+(setq zp/org-agenda-category-icon-alist
+      '(
+        ;; Life
+        ("^inbox$" "~/org/svg/icons/gmail.svg" nil nil :ascent center)
+        ("^curios$" "~/org/svg/icons/question.svg" nil nil :ascent center)
+        ("^style$" "~/org/svg/icons/suit.svg" nil nil :ascent center)
+        ("^nicolas$" "~/org/svg/icons/leaf.svg" nil nil :ascent center)
+        ("^swim$" "~/org/svg/icons/wave.svg" nil nil :ascent center)
+        ("^run$" "~/org/svg/icons/running.svg" nil nil :ascent center)
+        ("^awakening$" "~/org/svg/icons/aperture-green.svg" nil nil :ascent center)
+        ("^journal$" "~/org/svg/icons/spellbook-p.svg" nil nil :ascent center)
+        ("^psy$" "~/org/svg/icons/solution.svg" nil nil :ascent center)
+        ("^anki$" "~/org/svg/icons/anki-2-p.svg" nil nil :ascent center)
+        ("^plan$" "~/org/svg/icons/planning-p.svg" nil nil :ascent center)
+        ("^typography$" "~/org/svg/icons/typography.svg" nil nil :ascent center)
+
+        ;; Activism
+        ("^pol$" "~/org/svg/icons/fist.svg" nil nil :ascent center)
+
+        ;; Professional
+        ("^university$" "~/org/svg/icons/aperture-yellow.svg" nil nil :ascent center)
+        ("^school$" "~/org/svg/icons/university.svg" nil nil :ascent center)
+
+        ;; Research
+        ("^research$" "~/org/svg/icons/research.svg" nil nil :ascent center)
+        ("^cs$" "~/org/svg/icons/computer-science.svg" nil nil :ascent center)
+        ("^maths$" "~/org/svg/icons/pi.svg" nil nil :ascent center)
+        ("^phil$" "~/org/svg/icons/philosophy.svg" nil nil :ascent center)
+        ("^history$" "~/org/svg/icons/history.svg" nil nil :ascent center)
+        ("^ling$" "~/org/svg/icons/language.svg" nil nil :ascent center)
+
+        ;; Hacking
+        ("^hack$" "~/org/svg/icons/engineering-2.svg" nil nil :ascent center)
+        ("^emacs$" "~/org/svg/icons/spacemacs.svg" nil nil :ascent center)
+        ("^org$" "~/org/svg/icons/org-mode-unicorn.svg" nil nil :ascent center)
+        ("^python$" "~/org/svg/icons/python.svg" nil nil :ascent center)
+        ("^perl$" "~/org/svg/icons/perl.svg" nil nil :ascent center)
+        ("^contrib$" "~/org/svg/icons/chill.svg" nil nil :ascent center)
+        ("^bug$" "~/org/svg/icons/cross.svg" nil nil :ascent center)
+        ("^elisp$" "~/org/svg/icons/spacemacs-elisp.svg" nil nil :ascent center)
+        ("^tex$" "~/org/svg/icons/file-2-p.svg" nil nil :ascent center)
+        ("^linux$" "~/org/svg/icons/nixos.svg" nil nil :ascent center)
+        ("^nixos$" "~/org/svg/icons/nixos.svg" nil nil :ascent center)
+        ("^opsec$" "~/org/svg/icons/cyber-security-b.svg" nil nil :ascent center)
+        ("^git$" "~/org/svg/icons/git.svg" nil nil :ascent center)
+
+        ;; Media
+        ("^media$" "~/org/svg/icons/library.svg" nil nil :ascent center)
+        ("^news$" "~/org/svg/icons/world.svg" nil nil :ascent center)
+        ("^books$" "~/org/svg/icons/book-2.svg" nil nil :ascent center)
+        ("^trackers$" "~/org/svg/icons/share.svg" nil nil :ascent center)
+        ("^music$" "~/org/svg/icons/compact-disc.svg" nil nil :ascent center)
+        ("^film$" "~/org/svg/icons/film.svg" nil nil :ascent center)
+
+        ;; Maintenance
+        ("^mx$" "~/org/svg/icons/recycle.svg" nil nil :ascent center)
+        ("^fin$" "~/org/svg/icons/money-p.svg" nil nil :ascent center)
+        ("^cooking$" "~/org/svg/icons/salad.svg" nil nil :ascent center)
+        ("^plants$" "~/org/svg/icons/sansevieria.svg" nil nil :ascent center)
+        ("^animals$" "~/org/svg/icons/animals.svg" nil nil :ascent center)
+        ("^health$" "~/org/svg/icons/health.svg" nil nil :ascent center)
+        ("^supplies$" "~/org/svg/icons/box.svg" nil nil :ascent center)
+        ("^social$" "~/org/svg/icons/happy.svg" nil nil :ascent center)
+        ("^grooming$" "~/org/svg/icons/razor.svg" nil nil :ascent center)
+        ("^cleaning$" "~/org/svg/icons/bucket.svg" nil nil :ascent center)
+
+        (".*" '(space . (:width (24))) nil nil :ascent center)))
+
+(defvar zp/org-agenda-local-settings nil
+  "List structure for org-agenda views local settings.")
+
+(defun zp/org-agenda-local-config-init (alist)
+  "Create the data structure for org-agenda local config.
+
+This function takes every variables in
+‘zp/org-agenda-local-settings’ and store them with their value in
+a data structure, thus defining the global state of those
+variables."
+  (let ((settings))
+    (while (cdr alist)
+      (let ((var (pop alist)))
+        (push var settings)
+        (set var (eval (pop alist)))))
+    (list (cons nil (list (mapcar (lambda (setting)
+                                    (cons setting (eval setting)))
+                                  settings))))))
+
+;; org-agenda config
+(setq org-agenda-show-future-repeats t
       org-agenda-skip-scheduled-if-done 1
       org-agenda-skip-timestamp-if-done 1
       org-agenda-skip-deadline-if-done 1
+      org-agenda-tags-todo-honor-ignore-options 1
+      org-agenda-todo-ignore-with-date nil
+      org-agenda-todo-ignore-deadlines nil
+      org-agenda-todo-list-sublevels t
+      org-agenda-dim-blocked-tasks nil
+      org-agenda-include-deadlines 'all
+      org-deadline-warning-days 30
+      org-agenda-cmp-user-defined 'zp/org-cmp-created-dwim
+
+      ;; Initialise the list structure for local variables
+      zp/org-agenda-local-config
+      (zp/org-agenda-local-config-init
+       '(
+         org-habit-show-habits t
+         org-habit-show-all-today nil
+         org-agenda-include-deadlines t
+         zp/org-agenda-include-scheduled t
+         org-agenda-entry-types '(:deadline :scheduled :timestamp :sexp)
+         zp/org-agenda-include-category-icons t
+         ;; org-agenda-category-icon-alist zp/org-agenda-category-icon-alist
+         zp/org-agenda-sorting-strategy-special-first nil
+         zp/org-agenda-split-subtasks nil
+         zp/org-agenda-include-waiting t
+         org-agenda-todo-ignore-scheduled 'future
+         ))
+
+      ;; View setup
+      org-agenda-window-setup 'current-window
+      org-agenda-compact-blocks nil
       org-agenda-entry-text-maxlines 10
-      org-agenda-use-time-grid nil
       org-agenda-sticky 1
       org-agenda-block-separator 126
-      org-clock-report-include-clocking-task t
-      org-clock-out-remove-zero-time-clocks t
+      org-agenda-use-time-grid nil
       org-agenda-exporter-settings
       '((ps-print-color-p t)
         (ps-landscape-mode t)
         (ps-print-header nil)
         (ps-default-bg t))
-      org-agenda-clockreport-parameter-plist '(:link t :narrow 50 :maxlevel 2 :fileskip0 t)
-      )
+      org-agenda-clockreport-parameter-plist
+      '(:link t :narrow 50 :maxlevel 2 :fileskip0 t)
+      org-agenda-clock-consistency-checks
+      '(:max-duration "10:00"
+        :min-duration 0
+        :max-gap "0:05"
+        :gap-ok-around ("4:00" "12:30" "19:30")
+        :default-face zp/org-agenda-block-info-face
+        :gap-face nil
+        :no-end-time-face nil
+        :long-face nil
+        :short-face nil))
 
 (defun zp/org-agenda-benchmark (&optional arg)
   "Rebuild the agenda and display the time it took to do so.
@@ -3404,18 +3490,6 @@ With a prefix argument, do so in all agenda buffers."
 
 
 
-(setq org-agenda-clock-consistency-checks '(:max-duration "10:00"
-                                            :min-duration 0
-                                            :max-gap "0:05"
-                                            :gap-ok-around ("4:00" "12:30" "19:30")
-                                            :default-face zp/org-agenda-block-info-face
-                                            :gap-face nil
-                                            :no-end-time-face nil
-                                            :long-face nil
-                                            :short-face nil))
-
-
-
 (defun zp/update-org-agenda-files ()
   (interactive)
   (setq org-agenda-files '("/home/zaeph/org/life.org"))
@@ -3427,6 +3501,14 @@ With a prefix argument, do so in all agenda buffers."
 
 ;; Force habits to be shown if they’ve been disabled the previous day
 (run-at-time "06:00" 86400 '(lambda () (setq org-habit-show-habits t)))
+
+;; Variables used for debugging
+(defvar zp/org-agenda-skip-functions-debug nil
+  "When t, print helpful debugging messages for skips.")
+
+(setq zp/org-agenda-skip-functions-debug nil)
+
+
 
 ;; ========================================
 ;; =============== SORTING ================
@@ -3452,14 +3534,53 @@ With a prefix argument, do so in all agenda buffers."
     (cond ((and (string-match-p ta todo) (not (string-match-p tb todo))) +1)
           ((and (string-match-p tb todo) (not (string-match-p ta todo))) -1))))
 
-(defun zp/org-agenda-sort-special (a b)
-  (cond
-   ((org-cmp-test-todo "WAIT|STBY" a b))
-   ((org-cmp-test-todo "STRT" a b))))
+(defun zp/org-cmp-todo-special (a b)
+  (when zp/org-agenda-sorting-strategy-special-first
+      (or (org-cmp-test-todo "STRT" a b)
+          (org-cmp-test-todo "NEXT" a b))))
 
 (defun zp/org-agenda-sort-wait (a b)
   (cond
-   ((org-cmp-test-todo "WAIT|STBY" a b))))
+    ((org-cmp-test-todo "WAIT|STBY" a b))))
+
+(defun zp/org-cmp-created (a b)
+  "Sort items by creation time."
+  (let* ((a-pos (get-text-property 0 'org-marker a))
+         (b-pos (get-text-property 0 'org-marker b))
+         (prop "CREATED")
+         (a-time (or (org-entry-get a-pos prop)
+                     (org-with-point-at a-pos
+                       (zp/org-set-created-property))))
+         (b-time (or (org-entry-get b-pos prop)
+                     (org-with-point-at b-pos
+                       (zp/org-set-created-property))))
+         (a-posix (org-read-date nil t a-time))
+         (b-posix (org-read-date nil t b-time))
+         (same (string= a-time b-time))
+         (cmp (time-less-p a-posix b-posix) ))
+    (if same
+        nil
+      (if cmp
+          +1
+        -1))))
+
+(org-read-date nil t "now")
+
+(defun zp/org-cmp-created-dwim (a b)
+  "Sort items by creation time, priority and specialness conditionally.
+
+If ‘zp/org-agenda-sorting-strategy-special-first’ is non-nil,
+first sort by specialness.
+
+This function also checks for priority because only one
+‘org-agenda-cmp-user-defined’ can be specified at a time.  When
+sorting with this function, make sure not to use use ‘priority’
+afterwards."
+  (let ((cmp-created))
+    (or (when zp/org-agenda-sorting-strategy-special-first
+          (zp/org-cmp-todo-special a b))
+        (org-cmp-values a b 'priority)
+        (zp/org-cmp-created a b))))
 
 
 
@@ -3490,13 +3611,13 @@ With a prefix argument, do so in all agenda buffers."
           (zp/org-agenda-format-header-align
            (concat flanking-symbol " " header " " flanking-symbol)))
          (word-list ()))
-    (if (eq org-agenda-include-deadlines nil)
+    (unless org-agenda-include-deadlines
         (add-to-list 'word-list "-deadlines" t))
-    (if (eq org-habit-show-habits nil)
+    (unless org-habit-show-habits
         (add-to-list 'word-list "-habits" t))
-    (if (eq zp/org-agenda-include-category-icons nil)
+    (unless zp/org-agenda-include-category-icons
         (add-to-list 'word-list "-icons" t))
-    (if (eq zp/org-agenda-include-scheduled nil)
+    (unless zp/org-agenda-include-scheduled
         (add-to-list 'word-list "-scheduled" t))
     (let ((word-list-formatted (s-join ";" word-list)))
       (if (not (eq word-list nil))
@@ -3515,55 +3636,31 @@ With a prefix argument, do so in all agenda buffers."
   "Format header blocks in org-agenda, and display important
 agenda settings after them."
   (let ((word-list ()))
-    (if (eq zp/org-agenda-sorting-strategy-user-defined 'special)
-        (add-to-list 'word-list "+S↓" t))
-    (if (eq org-agenda-todo-ignore-scheduled 'future)
-        (add-to-list 'word-list "-future" t))
+    (when zp/org-agenda-sorting-strategy-special-first
+      (add-to-list 'word-list "+S↓" t))
+    (when zp/org-agenda-split-subtasks
+      (add-to-list 'word-list "+split" t))
+    ;; (if (eq org-agenda-dim-blocked-tasks nil)
+    ;;     (add-to-list 'word-list "-dimmed" t))
+    (when (eq org-agenda-todo-ignore-scheduled 'future)
+      (add-to-list 'word-list "-future" t))
+    (unless zp/org-agenda-include-waiting
+      (add-to-list 'word-list "-waiting" t))
     (let ((header-formatted (zp/org-agenda-format-header-align header))
           (word-list-formatted (zp/org-agenda-format-word-list word-list)))
       (concat header-formatted word-list-formatted))))
 
 ;; Special blocks
-(defun zp/org-agenda-format-header-projects-stuck ()
-  "Format headers of ‘Stuck Projects’ in org-agenda, and display important
-agenda settings after them."
-  (let* ((tags-column org-agenda-tags-column)
-         (flanking-symbol-left "[")
-         (flanking-symbol-right "]")
-         (header "Stuck Projects")
-         (header-formatted
-          (zp/org-agenda-format-header-align
-           (concat flanking-symbol-left " " header " " flanking-symbol-right)))
-         (word-list ()))
-    (let ((word-list-formatted (zp/org-agenda-format-word-list word-list)))
-      (concat header-formatted word-list-formatted "\n"))))
-
-(defun zp/org-agenda-format-header-scheduled ()
-  "Format headers of ‘Scheduled’ in org-agenda, and display
-important agenda settings after them."
-  (let* ((tags-column org-agenda-tags-column)
-         (header "Scheduled")
-         (word-list ()))
-    (if (eq zp/org-agenda-sorting-strategy-user-defined 'special)
-        (add-to-list 'word-list "+S↓" t))
-    (if (eq org-agenda-todo-ignore-scheduled 'future)
-        (add-to-list 'word-list "-future" t))
-    (if (eq org-agenda-todo-ignore-scheduled nil)
-        (add-to-list 'word-list "+future" t))
-    (let ((header-formatted (zp/org-agenda-format-header-align header))
-          (word-list-formatted (zp/org-agenda-format-word-list word-list)))
-      (concat header-formatted word-list-formatted "\n"))))
-
 (defun zp/org-agenda-format-header-projects ()
   "Format header blocks in org-agenda, and display important
 agenda settings after them."
   (let* ((tags-column org-agenda-tags-column)
          (header "Projects")
          (word-list ()))
-    (if (eq zp/org-agenda-sorting-strategy-user-defined 'special)
-        (add-to-list 'word-list "+S↓" t))
-    (if (eq zp/projects-include-waiting nil)
-        (add-to-list 'word-list "-waiting" t))
+    (when zp/org-agenda-sorting-strategy-special-first
+      (add-to-list 'word-list "+S↓" t))
+    (when (eq zp/org-agenda-include-waiting nil)
+      (add-to-list 'word-list "-waiting" t))
     (let ((header-formatted (zp/org-agenda-format-header-align header))
           (word-list-formatted (zp/org-agenda-format-word-list word-list)))
       (concat header-formatted word-list-formatted))))
@@ -3571,8 +3668,17 @@ agenda settings after them."
 
 
 ;; ========================================
-;; ================ BLOCKS ================
+;; =========== ORG-SUPER-AGENDA ===========
 ;; ========================================
+
+(require 'org-super-agenda)
+(setq org-super-agenda-header-separator "")
+(defun zp/org-super-agenda-update-face ()
+  (let ((ul-color (internal-get-lisp-face-attribute
+                   'font-lock-comment-face :foreground)))
+    (set-face-attribute 'org-super-agenda-header nil
+                        :slant 'italic
+                        :underline `(:color ,ul-color))))
 
 (defun zp/org-super-agenda-item-in-agenda-groups-p (item groups)
   "Check if ITEM is in agenda GROUPS."
@@ -3586,6 +3692,74 @@ agenda settings after them."
           :pred (lambda (item)
                   (zp/org-super-agenda-item-in-agenda-groups-p item ',groups))))
 
+(defun zp/org-super-agenda-groups-all ()
+  `(,(zp/org-super-agenda-groups "Inbox" '("inbox"))
+     ,(zp/org-super-agenda-groups "Life" '("life"))
+     ,(zp/org-super-agenda-groups "Maintenance" '("mx"))
+     ,(zp/org-super-agenda-groups "Professional" '("pro"))
+     ,(zp/org-super-agenda-groups "Research" '("research"))
+     ,(zp/org-super-agenda-groups "Activism" '("act"))
+     ,(zp/org-super-agenda-groups "Hacking" '("hack"))
+     ,(zp/org-super-agenda-groups "Curiosities" '("curios"))
+     ,(zp/org-super-agenda-groups "Media" '("media"))))
+
+(defun zp/org-super-agenda-subtask-p (item)
+  (let ((marker (or (get-text-property 0 'org-marker item)
+                    (get-text-property 0 'org-hd-marker item))))
+    (org-with-point-at marker
+      (zp/is-subtask-p))))
+
+(defun zp/org-super-agenda-scheduled ()
+  '((:name "Overdue"
+     :face (:foreground "red")
+     :and (:scheduled past
+           :not (:habit t)))
+    (:name "Waiting"
+     :and (:tag "waiting"
+           :scheduled nil))
+    (:name "Scheduled today"
+     :scheduled today)
+    (:name "Subtasks"
+     :and (:scheduled nil
+           :pred (lambda (item)
+                   (when zp/org-agenda-split-subtasks
+                     (zp/org-super-agenda-subtask-p item)))))
+    (:name "Current"
+     :and (:scheduled nil
+           :not (:tag "waiting")))
+    (:name "Scheduled later"
+     :scheduled future)))
+
+(defun zp/org-super-agenda-group-heads (item)
+  (let ((marker (or (get-text-property 0 'org-marker item)
+                    (get-text-property 0 'org-hd-marker item))))
+    (org-entry-get marker "AGENDA_GROUP" nil)))
+
+(defun zp/org-super-agenda-stuck-project-p (item)
+  (let ((marker (or (get-text-property 0 'org-marker item)
+                    (get-text-property 0 'org-hd-marker item))))
+    (org-with-point-at marker
+      (zp/org-project-stuck-p))))
+
+(defun zp/org-super-agenda-projects ()
+    '((:name "Group heads"
+       :pred (lambda (item)
+               (zp/org-super-agenda-group-heads item)))
+      (:name "Stuck"
+       :face (:foreground "red")
+       :pred (lambda (item)
+               (zp/org-super-agenda-stuck-project-p item)))
+      (:name "Waiting"
+       :tag "waiting")
+      (:name "Current"
+       :anything)))
+
+
+
+;; ========================================
+;; ================ BLOCKS ================
+;; ========================================
+
 (defun zp/org-agenda-block-agenda-main (header &optional file)
   `(agenda ""
            ((org-agenda-overriding-header
@@ -3594,13 +3768,7 @@ agenda settings after them."
                   `((org-agenda-files ',file)))
             (org-agenda-span 'day)
             (org-super-agenda-groups
-             '(,(zp/org-super-agenda-groups "Life" '("life"))
-               ,(zp/org-super-agenda-groups "Professional" '("pro"))
-               ,(zp/org-super-agenda-groups "Activism" '("act"))
-               ,(zp/org-super-agenda-groups "Maintenance" '("mx"))
-               ,(zp/org-super-agenda-groups "Hacking" '("hack"))
-               ,(zp/org-super-agenda-groups "Curiosities" '("curios"))
-               ,(zp/org-super-agenda-groups "Media" '("media")))))))
+             '(,@(zp/org-super-agenda-groups-all))))))
 
 (defun zp/org-agenda-block-agenda (header &optional file)
   `(agenda ""
@@ -3667,59 +3835,27 @@ agenda settings after them."
                (org-agenda-todo-ignore-scheduled 'all)
                )))
 
-(defun zp/org-agenda-block-tasks-with-group-filter (groups &optional file)
-  `(tags-todo "-standby-recurring"
+(defun zp/org-agenda-block-tasks-with-group-filter (&optional groups tags by-groups file)
+  `(tags-todo ,(or tags
+                   "-standby-cancelled-recurring-curios")
               ((org-agenda-overriding-header
                 (zp/org-agenda-format-header-block-with-settings "Tasks"))
                ,@(if (bound-and-true-p file)
                      `((org-agenda-files ',file)))
                (org-agenda-sorting-strategy
-                '(scheduled-up user-defined-down priority-down category-keep))
-               ;; (org-agenda-skip-function 'zp/skip-non-tasks-and-scheduled))))
-               ;; (org-agenda-skip-function 'bh/skip-non-tasks)
+                '(,@(unless by-groups
+                      '(scheduled-up))
+                  user-defined-down
+                  category-keep))
                (org-agenda-skip-function
                 '(or (zp/skip-tasks-not-belonging-to-agenda-groups ',groups)
-                  (bh/skip-non-tasks)))
-               ;; (org-agenda-todo-ignore-scheduled 'all)
+                  (zp/skip-non-tasks)
+                  (zp/skip-waiting)))
                (org-super-agenda-groups
-                '((:name "Overdue"
-                   :and (:scheduled past
-                         :not (:habit t)))
-                  (:name "Waiting"
-                   :and (:scheduled nil
-                         :tag "waiting"))
-                  (:name "Scheduled today"
-                   :and (:scheduled today
-                         :not (:habit t)))
-                  (:name "Active"
-                   :and (:scheduled nil
-                         :not (:tag "waiting")))
-                  (:name "Scheduled later"
-                   :scheduled future))))))
-
-(defun zp/org-agenda-block-projects-stuck (&optional file)
-  (let ((org-agenda-cmp-user-defined 'org-cmp-todo-state-wait))
-    `(tags-todo "-standby"
-                ((org-agenda-overriding-header
-                  (zp/org-agenda-format-header-projects-stuck))
-                 ,@(if (bound-and-true-p file)
-                       `((org-agenda-files ',file)))
-                 (org-agenda-skip-function 'zp/skip-non-stuck-projects)
-                 (org-agenda-todo-ignore-scheduled nil)
-                 (org-agenda-dim-blocked-tasks 'dimmed)))))
-
-(defun zp/org-agenda-block-projects-stuck-with-group-filter (groups &optional file)
-  `(tags-todo "-standby"
-              ((org-agenda-overriding-header
-                (zp/org-agenda-format-header-projects-stuck))
-               ,@(if (bound-and-true-p file)
-                     `((org-agenda-files ',file)))
-               ;; (org-agenda-skip-function 'zp/skip-non-stuck-projects)
-               (org-agenda-skip-function
-                '(or (zp/skip-tasks-not-belonging-to-agenda-groups ',groups t)
-                  (zp/skip-non-stuck-projects)))
-               (org-agenda-todo-ignore-scheduled nil)
-               (org-agenda-dim-blocked-tasks 'dimmed))))
+                ',(cond (by-groups
+                         (zp/org-super-agenda-groups-all))
+                        (t
+                         (zp/org-super-agenda-scheduled)))))))
 
 (defun zp/org-agenda-block-projects (&optional file)
   `(tags-todo "-standby-reading"
@@ -3733,8 +3869,9 @@ agenda settings after them."
                (org-agenda-todo-ignore-scheduled nil)
                (org-agenda-dim-blocked-tasks nil))))
 
-(defun zp/org-agenda-block-projects-with-group-filter (groups &optional file)
-  `(tags-todo "-standby"
+(defun zp/org-agenda-block-projects-with-group-filter (&optional groups tags file)
+  `(tags-todo ,(or tags
+                   "-standby-cancelled-curios")
               ((org-agenda-overriding-header
                 (zp/org-agenda-format-header-projects))
                ,@(if (bound-and-true-p file)
@@ -3742,16 +3879,15 @@ agenda settings after them."
                ;; (org-agenda-skip-function 'zp/skip-non-unstuck-projects-and-waiting)
                (org-agenda-skip-function
                 '(or (zp/skip-tasks-not-belonging-to-agenda-groups ',groups t)
-                  (zp/skip-non-unstuck-projects-and-waiting)))
+                  (zp/skip-non-projects)
+                  (zp/skip-waiting)))
                (org-agenda-sorting-strategy
-                '(user-defined-down priority-down category-keep))
+                '(user-defined-down
+                  category-keep))
                (org-agenda-todo-ignore-scheduled nil)
                (org-agenda-dim-blocked-tasks nil)
                (org-super-agenda-groups
-                '((:name "Waiting"
-                   :tag "waiting")
-                  (:name "Active"
-                   :anything))))))
+                (zp/org-super-agenda-projects)))))
 
 (defun zp/org-agenda-groups-format-regex (list)
   "Format LIST of agenda groups as a regex"
@@ -3774,7 +3910,7 @@ agenda settings after them."
 
 
 
-(defun zp/org-agenda-blocks-main (header groups &optional file)
+(defun zp/org-agenda-blocks-create (header &optional groups tags by-groups file)
   "Format the main agenda blocks.
 
 HEADER is the string to be used as the header of the the agenda
@@ -3790,12 +3926,35 @@ It creates 4 blocks:
 - A ‘tags-todo’ block displaying the tasks"
   `(,(zp/org-agenda-block-header
       header)
-     ,(zp/org-agenda-block-projects-stuck-with-group-filter
-       groups file)
-     ,(zp/org-agenda-block-tasks-with-group-filter
-       groups file)
      ,(zp/org-agenda-block-projects-with-group-filter
-       groups file)))
+       groups tags file)
+     ,(zp/org-agenda-block-tasks-with-group-filter
+       groups tags by-groups file)))
+
+(defun zp/org-agenda-variant-create (prefix-key key prefix-header header groups tags by-groups file)
+  (let ((variant-key (concat prefix-key key))
+        (variant-header (concat header ": " prefix-header)))
+    `(,variant-key
+      ,variant-header
+      ,(zp/org-agenda-blocks-create variant-header groups tags by-groups file))))
+
+(defun zp/org-agenda-variants-create (key header &optional groups tags by-groups file)
+  `(;; Active
+    (,key ,header
+          ,(zp/org-agenda-blocks-create header groups tags by-groups file))
+    ;; Inactive
+    ,(zp/org-agenda-variant-create
+      "i" key "Inactive"
+      header groups (concat tags "-cancelled/STBY") by-groups file)
+    ;; Curiosities
+    ,(zp/org-agenda-variant-create
+      "c" key "Curiosities"
+      header groups (concat "+curios-cancelled" tags) by-groups file)))
+
+(defun zp/org-agenda-create-all (list)
+  (mapcan (lambda (params)
+            (apply #'zp/org-agenda-variants-create params))
+          list))
 
 (defun zp/org-agenda-block-tasks-special (&optional file)
   `(tags-todo "-standby/!WAIT|STRT"
@@ -3804,28 +3963,6 @@ It creates 4 blocks:
                ,@(if (bound-and-true-p file)
                      `((org-agenda-files ',file)))
                (org-agenda-skip-function 'bh/skip-non-tasks))))
-
-(defun zp/org-agenda-block-scheduled (&optional file)
-  `(tags-todo "-recurring-reading"
-              ((org-agenda-overriding-header
-                (zp/org-agenda-format-header-scheduled))
-               ,@(if (bound-and-true-p file)
-                     `((org-agenda-files ',file)))
-               (org-agenda-skip-function
-                '(org-agenda-skip-entry-if 'notscheduled))
-               (org-agenda-dim-blocked-tasks 'dimmed)
-               (org-agenda-sorting-strategy '(timestamp-up user-defined-down priority-down)))))
-
-(defun zp/org-agenda-block-scheduled-with-filter (filter &optional file)
-  `(tags-todo ,(concat filter "-recurring")
-              ((org-agenda-overriding-header
-                (zp/org-agenda-format-header-scheduled))
-               ,@(if (bound-and-true-p file)
-                     `((org-agenda-files ',file)))
-               (org-agenda-skip-function
-                '(org-agenda-skip-entry-if 'notscheduled))
-               (org-agenda-dim-blocked-tasks 'dimmed)
-               (org-agenda-sorting-strategy '(timestamp-up user-defined-down priority-down)))))
 
 (defun zp/org-agenda-block-tasks-waiting (&optional file)
   `(tags-todo "-recurring-reading/!WAIT"
@@ -3838,7 +3975,7 @@ It creates 4 blocks:
                (org-agenda-dim-blocked-tasks 'dimmed)
                (org-agenda-sorting-strategy '(timestamp-up user-defined-down priority-down)))))
 
-(defun zp/org-agenda-block-deadines ()
+(defun zp/org-agenda-block-deadlines ()
   '(agenda ""
            ((org-agenda-span 'day)
             (org-agenda-overriding-header
@@ -3886,70 +4023,38 @@ It creates 4 blocks:
         ("K" "Weekly appointments (-recurring)"
              (,(zp/org-agenda-block-agenda-week-appointments-only "Weekly Appointments")))
 
-        ("i" "Inbox"
-             (,@(zp/org-agenda-blocks-main "Inbox" '("inbox"))))
+        ("I" "Inactive"
+             (,@(zp/org-agenda-blocks-create "Inactive" nil "/STBY")))
 
-        ("l" "Life"
-             (,@(zp/org-agenda-blocks-main "Life" '("life" "pro" "act" "mx"))))
+        ("ii" "Inactive (+groups)"
+              (,@(zp/org-agenda-blocks-create "Inactive (+groups)" nil "/STBY" t)))
 
-        ("L" "Life (strict)"
-             (,@(zp/org-agenda-blocks-main "Life (strict)" '("life" "mx"))))
+        ("C" "Curiosities"
+             (,@(zp/org-agenda-blocks-create "Curiosities" nil "+curios")))
 
-        ("c" "Curiosities"
-             (,@(zp/org-agenda-blocks-main "Curiosities" '("curios"))))
+        ("cc" "Curiosities (+groups)"
+              (,@(zp/org-agenda-blocks-create "Curiosities (+groups)" nil "+curios" t)))
 
-        ("a" "Activism"
-             (,@(zp/org-agenda-blocks-main "Activism" '("act"))))
-
-        ("p" "Professional"
-             (,@(zp/org-agenda-blocks-main "Professional" '("pro"))))
-
-        ("g" "Groupless Tasks"
-             (,@(zp/org-agenda-blocks-main "Groupless Tasks" '(nil))))
-
-        ("x" "Maintenance"
-             (,@(zp/org-agenda-blocks-main "Maintenance" '("mx"))))
+        ,@(zp/org-agenda-create-all
+           '(("l" "Life" ("life" "mx" "pro" "research" "act"))
+             ("L" "Life (strict)" ("life" "mx"))
+             ("x" "Maintenance" ("mx"))
+             ("p" "Professional" ("pro"))
+             ("r" "Research" ("research"))
+             ("h" "Hacking" ("hack"))
+             ("o" "Org" ("org"))
+             ("O" "OPSEC" ("opsec"))
+             ("P" "Activism" ("act"))
+             ("m" "Media" ("media"))
+             ("f" "Film" ("film"))
+             ("g" "Groupless" (nil))))
 
         ("j" "Journal entries"
              (,(zp/org-agenda-block-journal))
              ((org-agenda-files '("/home/zaeph/org/journal.org"))))
 
-        ("r" "Reading (-standby)"
-             (,(zp/org-agenda-block-agenda "Reading")
-               ;; ,(zp/org-agenda-block-projects-stuck)
-               ,(zp/org-agenda-block-reading-next-and-started)
-               ,(zp/org-agenda-block-reading-list))
-             ((org-agenda-tag-filter-preset (list "+reading"))
-              (org-agenda-hide-tags-regexp "reading")))
-
-        ;; ("b" "Media"
-        ;;      (,(zp/org-agenda-block-agenda "Media")
-        ;;        ,(zp/org-agenda-block-projects)
-        ;;        ,(zp/org-agenda-block-projects-stuck)
-        ;;        ,(zp/org-agenda-block-scheduled)
-        ;;        ,(zp/org-agenda-block-tasks))
-        ;;      ((org-agenda-files zp/org-agenda-files-media)))
-
-        ("b" "Media"
-             (,@(zp/org-agenda-blocks-main "Media" '("media"))))
-
-        ("B" "Music"
-             (,@(zp/org-agenda-blocks-main "Music" '("music"))))
-
-        ("f" "Film"
-             (,@(zp/org-agenda-blocks-main "Film" '("film"))))
-
-        ("h" "Hacking"
-             (,@(zp/org-agenda-blocks-main "Hacking" '("hack"))))
-
-        ("o" "OPSEC"
-             (,@(zp/org-agenda-blocks-main "OPSEC" '("opsec"))))
-
-        ("C" "Contributing & Troubleshooting"
-             (,@(zp/org-agenda-blocks-main "Contributing & Troubleshooting" '("contrib"))))
-
         ("d" "Deadlines"
-             (,(zp/org-agenda-block-deadines)))
+             (,(zp/org-agenda-block-deadlines)))
 
         ("w" "Waiting list"
              (,(zp/org-agenda-block-tasks-waiting)))
@@ -4039,7 +4144,7 @@ It creates 4 blocks:
 
 (defun zp/org-agenda-hi-lock ()
   (highlight-regexp "([-+].*?)" 'zp/org-agenda-block-info-face)
-  (highlight-regexp "^[[:space:]]*? \\[ Stuck Projects \\]" 'zp/org-agenda-block-warning-face)
+  ;; (highlight-regexp "^[[:space:]]*? \\[ Stuck Projects \\]" 'zp/org-agenda-block-warning-face)
   (highlight-regexp "^~~.*~~$" 'font-lock-comment-face))
 
 (defun zp/org-agenda-remove-mouse-face ()
@@ -4050,73 +4155,104 @@ It creates 4 blocks:
 (add-hook 'org-agenda-finalize-hook #'zp/org-agenda-delete-empty-blocks)
 (add-hook 'org-agenda-finalize-hook #'zp/org-agenda-remove-mouse-face)
 
-;; Good example for a toggle based on variables
+
+
+;; Toggles
+(defun zp/toggle-org-agenda-include-habits ()
+  "Toggle habits."
+  (interactive)
+  (if (prog1 (zp/set-agenda-local 'org-habit-show-habits
+                               (not (zp/get-agenda-local 'org-habit-show-habits)))
+        (let ((inhibit-message t))
+          (org-agenda-redo)))
+      (message "Habits turned on.")
+    (message "Habits turned off.")))
+
 (defun zp/toggle-org-habit-show-all-today ()
   "Toggle the display of habits between showing only the habits
 due today, and showing all of them."
   (interactive)
-  (cond ((bound-and-true-p org-habit-show-all-today)
-         (setq org-habit-show-all-today nil)
+  (cond ((zp/get-agenda-local 'org-habit-show-all-today)
+         (zp/set-agenda-local 'org-habit-show-all-today nil)
          (org-agenda-redo)
          (message "Habits: Showing today"))
         (t
-         (setq org-habit-show-all-today 1)
+         (zp/set-agenda-local 'org-habit-show-all-today t)
          (org-agenda-redo)
          (message "Habits: Showing all"))))
 
 (defun zp/toggle-org-agenda-include-deadlines ()
   "Toggle the inclusion of deadlines in the agenda."
   (interactive)
-  (cond ((bound-and-true-p org-agenda-include-deadlines)
-         (setq org-agenda-include-deadlines nil)
+  (cond ((zp/get-agenda-local 'org-agenda-include-deadlines)
+         (zp/set-agenda-local 'org-agenda-include-deadlines nil)
          (org-agenda-redo)
          (message "Deadlines: Hidden"))
         (t
-         (setq org-agenda-include-deadlines t)
+         (zp/set-agenda-local 'org-agenda-include-deadlines t)
          (org-agenda-redo)
          (message "Deadlines: Visible"))))
+
+(defvar zp/org-agenda-include-scheduled nil
+  "Toggle the inclusion of scheduled items in the agenda.")
 
 (defun zp/toggle-org-agenda-include-scheduled ()
   "Toggle the inclusion of scheduled items in the agenda."
   (interactive)
-  (cond ((eq zp/org-agenda-include-scheduled 'all)
-         (setq org-agenda-entry-types '(:deadline :timestamp :sexp)
-               zp/org-agenda-include-scheduled nil)
-         (org-agenda-redo)
-         (message "Scheduled: Hidden"))
+  (cond ((zp/set-agenda-local 'zp/org-agenda-include-scheduled
+                           (not (zp/get-agenda-local
+                                 'zp/org-agenda-include-scheduled)))
+         (zp/set-agenda-local 'org-agenda-entry-types
+                           '(:deadline :scheduled :timestamp :sexp))
+         (let ((inhibit-message t))
+             (org-agenda-redo))
+         (message "Scheduled: Visible"))
         (t
-         (setq org-agenda-entry-types '(:deadline :scheduled :timestamp :sexp)
-               zp/org-agenda-include-scheduled 'all)
-         (org-agenda-redo)
-         (message "Scheduled: Visible"))))
+         (zp/set-agenda-local 'org-agenda-entry-types
+                           '(:deadline :timestamp :sexp))
+         (let ((inhibit-message t))
+             (org-agenda-redo))
+         (message "Scheduled: Hidden"))))
 
 (defun zp/toggle-org-agenda-category-icons ()
   "Toggle the inclusion of category icons in the agenda."
   (interactive)
-  (cond (zp/org-agenda-include-category-icons
-         (setq org-agenda-category-icon-alist nil
-               zp/org-agenda-include-category-icons nil)
-         (org-agenda-redo)
-         (message "Icons: Hidden"))
-        (t
-         (setq org-agenda-category-icon-alist zp/org-agenda-category-icon-alist
-               zp/org-agenda-include-category-icons t)
-         (org-agenda-redo)
-         (message "Icons: Visible"))))
+  (if (prog1 (zp/set-agenda-local
+              'zp/org-agenda-include-category-icons
+              (not (zp/get-agenda-local
+                    'zp/org-agenda-include-category-icons)))
+        (let ((inhibit-message t))
+          (org-agenda-redo)))
+      (message "Showing category icons.")
+    (message "Hiding category icons.")))
 
-(defun zp/toggle-org-agenda-cmp-user-defined ()
+(defvar zp/org-agenda-sorting-strategy-special-first nil
+  "When non-nil, sort special TODOs first (STRT & NEXT).")
+
+(defun zp/toggle-org-agenda-sorting-strategy-special-first ()
   "Toggle the skip function used by the agenda."
   (interactive)
-  (cond ((eq zp/org-agenda-sorting-strategy-user-defined 'priority)
-         (setq org-agenda-cmp-user-defined 'zp/org-agenda-sort-special
-               zp/org-agenda-sorting-strategy-user-defined 'special)
-         (org-agenda-redo)
-         (message "Sorting: Special first"))
-        (t
-         (setq org-agenda-cmp-user-defined 'zp/org-agenda-sort-wait
-               zp/org-agenda-sorting-strategy-user-defined 'priority)
-         (org-agenda-redo)
-         (message "Sorting: Priority first"))))
+  (if (prog1 (zp/set-agenda-local
+              'zp/org-agenda-sorting-strategy-special-first
+              (not (zp/get-agenda-local
+                    'zp/org-agenda-sorting-strategy-special-first)))
+        (let ((inhibit-message t))
+          (org-agenda-redo)))
+      (message "Sorting: Special first.")
+    (message "Sorting: Normal.")))
+
+(defvar zp/org-agenda-split-subtasks nil
+  "When non-nil, split subtasks and lone tasks.")
+
+(defun zp/toggle-org-agenda-split-subtasks ()
+  (interactive)
+  (if (prog1 (zp/set-agenda-local
+              'zp/org-agenda-split-subtasks
+              (not (zp/get-agenda-local 'zp/org-agenda-split-subtasks)))
+        (let ((inhibit-message t))
+          (org-agenda-redo)))
+      (message "Splitting subtasks.")
+    (message "Merging subtasks.")))
 
 (defun zp/toggle-org-deadline-warning-days-range ()
   "Toggle the range of days for deadline to show up on the agenda."
@@ -4130,29 +4266,27 @@ due today, and showing all of them."
          (org-agenda-redo)
          (message "Deadline range: 1 week"))))
 
-(defun zp/toggle-org-agenda-todo-ignore-future-scheduled ()
+(defun zp/toggle-org-agenda-todo-ignore-scheduled ()
   "Toggle the range of days for deadline to show up on the agenda."
   (interactive)
-  (cond ((eq org-agenda-todo-ignore-scheduled 'future)
-         (setq org-agenda-todo-ignore-scheduled nil)
+  (cond ((eq (zp/get-agenda-local 'org-agenda-todo-ignore-scheduled) 'future)
+         (zp/set-agenda-local 'org-agenda-todo-ignore-scheduled nil)
          (org-agenda-redo)
          (message "Scheduled: All (Today + Future)"))
-        ((eq org-agenda-todo-ignore-scheduled nil)
-         (setq org-agenda-todo-ignore-scheduled 'future)
+        (t
+         (zp/set-agenda-local 'org-agenda-todo-ignore-scheduled 'future)
          (org-agenda-redo)
          (message "Scheduled: Only Today"))))
 
 (defun zp/toggle-org-agenda-projects-include-waiting ()
   "Toggle whether to include projects with a waiting task."
   (interactive)
-  (cond ((eq zp/projects-include-waiting nil)
-         (setq zp/projects-include-waiting t)
-         (org-agenda-redo)
-         (message "Projects: Showing All"))
-        ((eq zp/projects-include-waiting t)
-         (setq zp/projects-include-waiting nil)
-         (org-agenda-redo)
-         (message "Projects: Hiding Waiting"))))
+  (if (prog1 (zp/set-agenda-local 'zp/org-agenda-include-waiting
+                               (not (zp/get-agenda-local
+                                     'zp/org-agenda-include-waiting)))
+        (org-agenda-redo))
+      (message "Waiting: Visible")
+    (message "Waiting: Hidden")))
 
 (defun zp/toggle-org-agenda-dim-blocked-tasks ()
   "Toggle the dimming of blocked tags in the agenda."
@@ -4271,6 +4405,146 @@ Check their respective dosctrings for more info."
   (org-agenda-schedule arg time)
   (zp/org-agenda-to-appt))
 
+
+
+(defun zp/org-agenda-get-key ()
+  "Return the key of the current org-agenda view."
+  (unless (derived-mode-p 'org-agenda-mode)
+    (error "Not in an agenda"))
+  (let ((name (buffer-name))
+        (regex "\\*Org Agenda(\\(.*\\))\\*"))
+    (save-match-data
+      (string-match regex name)
+      (match-string 1 name))))
+
+(defvar zp/org-agenda-load-local-config-post-hook nil
+  "Hooks to run after the local org-agenda config has been
+  loaded.")
+
+(defun zp/org-agenda-set-category-icons ()
+  "Set category icons.
+
+If ‘zp/org-agenda-include-category-icons’ is non-nil, the
+function populate ‘org-agenda-category-icon-alist’.
+
+Meant to be run with ‘org-agenda-mode-hook’."
+  (setq org-agenda-category-icon-alist
+        (when zp/org-agenda-include-category-icons
+          zp/org-agenda-category-icon-alist)))
+
+(add-hook #'zp/org-agenda-load-local-config-post-hook
+          #'zp/org-agenda-set-category-icons)
+
+(defun zp/org-agenda-load-local-config ()
+  "Load the org-agenda local config for the current view."
+  (let ((agenda (zp/org-agenda-get-key)))
+    ;; Create local config if it doesn’t exist for current agenda
+    (unless (assoc agenda zp/org-agenda-local-config)
+      (setf (alist-get agenda
+                       zp/org-agenda-local-config
+                       nil nil 'equal)
+            ;; Copying the list is necessary to have different
+            ;; references to the same values.  Otherwise, we’d also
+            ;; modify the global config.
+            (list (copy-alist (car (alist-get nil
+                                              zp/org-agenda-local-config))))))
+    ;; Load all settings
+    (mapcar (lambda (cons)
+              (let ((variable (car cons))
+                    (value (cdr cons)))
+                (set variable value
+                     ;; (message "Setting ‘%s’ to ‘%s’." variable value)
+                     )))
+            ;; alist-get returns its match within a list, but we only
+            ;; need its car
+            (car (alist-get agenda
+                            zp/org-agenda-local-config
+                            nil nil 'equal)))
+    ;; Refresh mode-name based on modifications
+    (org-agenda-set-mode-name)
+    (run-hooks 'zp/org-agenda-load-local-config-post-hook)))
+
+(add-hook #'org-agenda-mode-hook #'zp/org-agenda-load-local-config)
+
+(defun zp/org-agenda-prepare-main-file ()
+  "Prepare the main file for creating an org-agenda view.
+
+Save the file it has been modified, and reveal everything in the
+file (trees, drawers, etc.)."
+  (let ((buffer (get-file-buffer "~/org/life.org")))
+    (when buffer
+      (with-current-buffer buffer
+        (when (buffer-modified-p (get-file-buffer "~/org/life.org"))
+          (save-buffer))
+        (org-show-all)))))
+
+(add-hook #'org-agenda-mode-hook #'zp/org-agenda-prepare-main-file)
+
+(defun zp/org-agenda-local-has-config-p (&optional agenda)
+  "Return t when the agenda has a local config."
+  (let ((agenda (or agenda
+                    (zp/org-agenda-get-key))))
+    (alist-get agenda zp/org-agenda-local-config nil nil 'equal)))
+
+(defun zp/get-agenda-local (symbol)
+  "Get value of SYMBOL for the current org-agenda view."
+  (let ((agenda (zp/org-agenda-get-key)))
+    (unless (zp/org-agenda-local-has-config-p agenda)
+      (zp/org-agenda-load-local-config))
+    (alist-get symbol (car (alist-get agenda
+                                      zp/org-agenda-local-config
+                                      nil nil 'equal)))))
+
+(defun zp/set-agenda-local (symbol value)
+  "Set SYMBOL to VALUE locally for the current org-agenda view."
+  (let ((agenda (zp/org-agenda-get-key)))
+    (unless (zp/org-agenda-local-has-config-p agenda)
+      (zp/org-agenda-load-local-config))
+    (setf (alist-get symbol
+                      (car (alist-get agenda
+                                      zp/org-agenda-local-config
+                                      nil nil 'equal)))
+           value)
+    value))
+
+(defvar zp/org-agenda-default-agendas-list nil
+  "List of agendas to consider as defaults.
+
+Any agenda not in this list will be considered special, thereby
+marking it for deletion upon garbage collection.")
+
+(setq zp/org-agenda-default-agendas-list '("n" "N" "l"))
+
+(defun zp/org-agenda-kill-special-agendas ()
+  "Kill all special agendas.
+
+An agenda is considered special if its key isn’t listed in
+‘zp/org-agenda-default-agendas-list’."
+  (interactive)
+  (let ((kill-count 0))
+    (dolist (buffer (buffer-list))
+      (with-current-buffer buffer
+        (when (derived-mode-p 'org-agenda-mode)
+          (let ((agenda (zp/org-agenda-get-key)))
+            (unless (member agenda zp/org-agenda-default-agendas-list)
+              (kill-buffer)
+              (setq kill-count (1+ kill-count)))))))
+    kill-count))
+
+(defun zp/org-agenda-garbage-collect (print-message)
+  "Garbage collect all special agendas and open main view."
+  (interactive "p")
+  (let ((kill-count (zp/org-agenda-kill-special-agendas)))
+    (zp/create-agenda-view nil)
+    (when print-message
+      (message (concat "Garbage collection complete: "
+                       (pcase kill-count
+                         (0 "no buffer was killed.")
+                         (1 "1 buffer was killed.")
+                         (_ (concat (number-to-string kill-count)
+                                    " buffers were killed."))))))))
+
+
 (defun zp/org-agenda-mode-config ()
   "For use with `org-agenda-mode'."
   (local-set-key (kbd "M-n") 'org-agenda-next-date-line)
@@ -4283,10 +4557,14 @@ Check their respective dosctrings for more info."
   (local-set-key (kbd "M-t") 'org-agenda-todo-yesterday)
   (local-set-key (kbd "D") 'zp/toggle-org-agenda-include-deadlines)
   (local-set-key (kbd "S") 'zp/toggle-org-agenda-include-scheduled)
+  (local-set-key (kbd "K") 'zp/toggle-org-agenda-include-habits)
   (local-set-key (kbd "M-d") 'zp/toggle-org-deadline-warning-days-range)
   (local-set-key (kbd "r") 'zp/org-agenda-benchmark)
-  (local-set-key (kbd "h") 'zp/toggle-org-agenda-cmp-user-defined)
-  (local-set-key (kbd "F") 'zp/toggle-org-agenda-todo-ignore-future-scheduled)
+  (local-set-key (kbd "R") 'zp/org-agenda-garbage-collect)
+  (local-set-key (kbd "h") 'zp/toggle-org-agenda-sorting-strategy-special-first)
+  (local-set-key (kbd "H") 'zp/toggle-org-agenda-split-subtasks)
+  ;; (local-set-key (kbd "H") 'zp/toggle-org-agenda-dim-blocked-tasks)
+  (local-set-key (kbd "F") 'zp/toggle-org-agenda-todo-ignore-scheduled)
   (local-set-key (kbd "W") 'zp/toggle-org-agenda-projects-include-waiting)
   (local-set-key (kbd "C-c C-x r") 'zp/org-agenda-set-appt-warntime)
   (local-set-key (kbd "C-c C-x l") 'zp/org-agenda-set-location)
@@ -4300,9 +4578,11 @@ Check their respective dosctrings for more info."
   (local-set-key (kbd "<return>") 'zp/org-agenda-tree-to-indirect-buffer-without-grabbing-focus)
   (local-set-key (kbd "S-<return>") 'zp/org-agenda-tree-to-indirect-buffer)
   (local-set-key (kbd "M-<return>") 'zp/org-agenda-tree-to-indirect-buffer-maximise)
-  (local-set-key (kbd "<backspace>") 'zp/org-agenda-kill-other-buffer-and-window))
+  (local-set-key (kbd "<backspace>") 'zp/org-agenda-kill-other-buffer-and-window)
 
-(add-hook 'org-agenda-mode-hook 'zp/org-agenda-mode-config)
+  (setq org-super-agenda-header-map org-agenda-mode-map))
+
+(add-hook #'org-agenda-mode-hook #'zp/org-agenda-mode-config)
 
 
 
@@ -4504,7 +4784,7 @@ TITLE and URL are those of the webpage."
 
         ("W" "Web")
         ("Wa" "Automatic template" entry (file+headline "/home/zaeph/org/life.org" "Inbox")
-              "* TODO %(print zp/org-capture-web-action) [[%?%(print zp/org-capture-web-url)][%(print zp/org-capture-web-title)]] :web:"
+              "* TODO %(print zp/org-capture-web-action) [[%?%(print zp/org-capture-web-url)][%(print zp/org-capture-web-title)]] :curios:online:"
               :add-created t)
         ("Wf" "S: Film" entry (file+olp "/home/zaeph/org/life.org" "Film" "List")
               ,zp/org-capture-web-letterboxd-template
@@ -4648,7 +4928,7 @@ TITLE and URL are those of the webpage."
 When JUMP is non-nil, jump to that other heading instead."
   (interactive "p")
   (let ((zp/hydra-org-jump-indirect nil)
-        (in-agenda (and (boundp 'org-agenda-mode) org-agenda-mode))
+        (in-agenda (derived-mode-p 'org-agenda-mode))
         (org-refile-use-outline-path t)
         (org-refile-history nil)
         file
@@ -4658,6 +4938,9 @@ When JUMP is non-nil, jump to that other heading instead."
                (org-before-first-heading-p))
       (outline-next-heading))
     (save-window-excursion
+      (when in-agenda
+        (org-goto-marker-or-bmk (or (get-text-property (point) 'org-marker)
+                                    (get-text-property (point) 'org-hd-marker))))
       (org-refile (if jump '(4) t))
       (setq file (buffer-file-name))
       (setq pos (point-marker)))
@@ -4807,6 +5090,7 @@ create a dedicated frame."
                                         'current-window))
          (last-ibuf org-last-indirect-buffer)
          (parent (current-buffer))
+         (parent-window (selected-window))
          (dedicated (or dedicated
                         (eq arg 4))))
     (when dedicated
@@ -4817,7 +5101,7 @@ create a dedicated frame."
     (org-tree-to-indirect-buffer)
     (when in-new-window
       (select-window (next-window))
-      (setq zp/org-ibuf-spawned-also-kill-window t))
+      (setq zp/org-ibuf-spawned-also-kill-window parent-window))
     (if dedicated
         (setq org-last-indirect-buffer last-ibuf)
       (zp/org-spawned-ibuf-mode t))
@@ -5121,48 +5405,81 @@ Ensures that the toggles are set to their default variable."
 
 (zp/create-hydra-org-refile nil
     "
-^Life^              ^Prog^                  ^Pro & Act^        ^Mental^
-^^^^^^^^----------------------------------------------------------------------
-_i_: Inbox          _h_: Hacking            _u_: University    _A_: Awakening
-_o_: Life           _l_: Linux              _r_: Research      _P_: Psychotherapy
-_I_: Curiosities    _e_: Emacs
-_s_: Social         _E_: Elisp              _p_: Politics
-_n_: Nicolas        _O_: Org
-_S_: Swimming       _T_: LaTeX
-_R_: Running        _g_: Git
-_t_: Typography     _b_: Troubleshooting
-^^                  _B_: Contributing
+^Life^               ^Other^        ^Mental^
+^^^^^^-----------------------------------------------
+_i_: Inbox           _u_: University    _A_: Awakening
+_o_: Life            _r_: Research      _P_: Psychotherapy
+_O_: Curiosities     _t_: Teaching
+_s_: Social          _P_: Politics
+_n_: Nicolas
+_S_: Swimming
+_R_: Running
+_T_: Typography
+^^
 _x_: Maintenance
+_p_: Pro
 _m_: Media
 _c_: Calendars
+_h_: Hacking
 "
   (("i" "~/org/life.org" "Inbox")
    ("o" "~/org/life.org" "Life")
-   ("I" "~/org/life.org" "Curiosities")
+   ("O" "~/org/life.org" "Curiosities")
    ("s" "~/org/life.org" "Social")
    ("n" "~/org/life.org" "Social" "Nicolas")
    ("S" "~/org/life.org" "Swimming")
    ("R" "~/org/life.org" "Running")
    ("M" "~/org/life.org" "Media")
-   ("t" "~/org/life.org" "Typography")
+   ("T" "~/org/life.org" "Typography")
    ("X" "~/org/life.org" "Maintenance")
    ("A" "~/org/life.org" "Awakening")
    ("P" "~/org/life.org" "Psychotherapy")
-   ("p" "~/org/life.org" "Politics")
-   ("u" "~/org/life.org" "University")
-   ("r" "~/org/life.org" "Research")
-   ("h" "~/org/life.org" "Hacking")
-   ("B" "~/org/life.org" "Contributing")
-   ("b" "~/org/life.org" "Troubleshooting")
-   ("T" "~/org/life.org" "LaTeX")
-   ("e" "~/org/life.org" "Emacs")
-   ("O" "~/org/life.org" "Org")
-   ("E" "~/org/life.org" "Elisp")
-   ("l" "~/org/life.org" "Linux")
-   ("g" "~/org/life.org" "Git"))
+   ("P" "~/org/life.org" "Politics")
+   ("r" "~/org/life.org" "Research"))
   (("c" calendars)
+   ("p" pro)
    ("x" maintenance)
-   ("m" media)))
+   ("m" media)
+   ("h" hack)))
+
+(zp/create-hydra-org-refile pro
+    "
+^Pro^
+^^----------------------------------------------------------------------
+_s_: School
+_u_: University
+"
+  (("s" "~/org/life.org" "School")
+   ("u" "~/org/life.org" "University"))
+  nil)
+
+(zp/create-hydra-org-refile hack
+    "
+^Hacking^
+^^----------------------------------------------------------------------
+_._: Root
+_e_: Emacs
+_i_: Elisp
+_o_: Org
+_t_: LaTeX
+_l_: Linux
+_n_: NixOS
+_g_: Git
+_p_: Perl
+"
+  (("." "~/org/life.org" "Hacking")
+   ("e" "~/org/life.org" "Emacs")
+   ("i" "~/org/life.org" "Elisp")
+   ("o" "~/org/life.org" "Org")
+   ("t" "~/org/life.org" "LaTeX")
+   ("l" "~/org/life.org" "Linux")
+   ("n" "~/org/life.org" "NixOS")
+   ("g" "~/org/life.org" "Git")
+   ("p" "~/org/life.org" "Perl")
+
+   ("c" "~/org/life.org" "Contributing")
+   ("b" "~/org/life.org" "Troubleshooting"))
+  nil)
 
 (zp/create-hydra-org-refile calendars
     "
@@ -5539,7 +5856,7 @@ running."
 (require 'org-noter)
 (setq org-noter-hide-other t
       org-noter-auto-save-last-location t
-      org-noter-doc-split-fraction '(0.6 0.4))
+      org-noter-doc-split-fraction '(0.59 0.41))
 
 (add-hook #'org-noter-notes-mode-hook #'visual-line-mode)
 
@@ -5700,14 +6017,25 @@ buffer, thereby propagating the indirectness."
 (defun zp/org-noter-dwim (arg)
   "Run org-noter on the current tree, even if we’re in the agenda."
   (interactive "P")
-  (if (derived-mode-p 'org-agenda-mode)
-      (let ((marker (get-text-property (point) 'org-marker)))
-        (with-current-buffer (marker-buffer marker)
-          (goto-char marker)
-          (unless (org-entry-get nil org-noter-property-doc-file)
-            (user-error "No org-noter info on this tree"))
-          (zp/org-noter-indirect arg)))
-    (zp/org-noter-indirect arg)))
+  (let ((in-agenda (derived-mode-p 'org-agenda-mode))
+        (marker))
+    (cond (in-agenda
+           (setq marker (get-text-property (point) 'org-marker))
+           (with-current-buffer (marker-buffer marker)
+             (goto-char marker)
+             (unless (org-entry-get nil org-noter-property-doc-file)
+               (user-error "No org-noter info on this tree"))
+             (zp/org-noter-indirect arg)))
+          (t
+           (zp/org-noter-indirect arg)
+           (setq marker (point-marker))))
+    (org-with-point-at marker
+      (let ((tags (org-get-tags-at)))
+        (when (and (org-entry-get nil org-noter-property-doc-file)
+                   (not (member "noter" tags)))
+          (org-set-tags (push "noter" tags)))))
+    (unless in-agenda
+      (set-marker marker nil))))
 
 
 
@@ -6607,8 +6935,6 @@ along with effort estimates and total time."
 ;; Norang
 ;; To study in depth to master org-agenda
 
-(setq org-stuck-projects (quote ("" nil nil "")))
-
 (defun bh/is-project-p ()
   "Any task with a todo keyword subtask"
   (save-restriction
@@ -6737,7 +7063,7 @@ Callers of this function already widen the buffer view."
               (forward-line 1)
               (while (and (not has-next)
                           (< (point) subtree-end)
-                          (if zp/projects-include-waiting
+                          (if zp/org-agenda-include-waiting
                               (re-search-forward "^\\*+ \\(NEXT\\|STRT\\) " subtree-end t)
                             (re-search-forward "^\\*+ \\(NEXT\\|STRT\\|WAIT\\) " subtree-end t)))
                 (unless (member "standby" (org-get-tags-at))
@@ -6747,15 +7073,53 @@ Callers of this function already widen the buffer view."
               next-headline)) ; a stuck project, has subtasks but no next task
         nil))))
 
-(defvar zp/projects-include-waiting nil
+(defvar zp/org-agenda-include-waiting nil
   "When t, includes stuck projects with a waiting task in the
 agenda.")
+
+(defun zp/org-project-stuck-p ()
+  "Skip trees that are not stuck projects"
+  ;; (bh/list-sublevels-for-projects-indented)
+  (save-restriction
+    (widen)
+    (when zp/org-agenda-skip-functions-debug
+        (message "SNSP: %s" (org-entry-get (point) "ITEM")))
+    (let ((next-headline (save-excursion (or (outline-next-heading) (point-max)))))
+      (let* ((subtree-end (save-excursion (org-end-of-subtree t)))
+             (is-waiting (string-match-p "WAIT" (org-get-todo-state)))
+             (has-next))
+        (save-excursion
+          (forward-line 1)
+          (while (and (not has-next)
+                      (< (point) subtree-end)
+                      (if is-waiting
+                          (re-search-forward "^\\*+ \\(WAIT\\) " subtree-end t)
+                        (re-search-forward "^\\*+ \\(NEXT\\|STRT\\) " subtree-end t)))
+            (setq has-next t)))
+        (if has-next
+            nil
+          next-headline)))))
+
+(defun zp/is-waiting-p ()
+  (member "waiting" (org-get-tags-at)))
+
+(defun zp/skip-waiting ()
+  (save-restriction
+    (widen)
+    (let ((next-headline (save-excursion (or (outline-next-heading)
+                                             (point-max)))))
+      (if (and (not zp/org-agenda-include-waiting)
+               (zp/is-waiting-p))
+          next-headline
+        nil))))
 
 (defun zp/skip-non-stuck-projects ()
   "Skip trees that are not stuck projects"
   ;; (bh/list-sublevels-for-projects-indented)
   (save-restriction
     (widen)
+    (when zp/org-agenda-skip-functions-debug
+      (message "SNSP: %s" (org-entry-get (point) "ITEM")))
     (let ((next-headline (save-excursion (or (outline-next-heading) (point-max)))))
       (if (bh/is-project-p)
           (let* ((subtree-end (save-excursion (org-end-of-subtree t)))
@@ -6768,11 +7132,10 @@ agenda.")
                           (if is-waiting
                               (re-search-forward "^\\*+ \\(WAIT\\) " subtree-end t)
                             (re-search-forward "^\\*+ \\(NEXT\\|STRT\\) " subtree-end t)))
-                (unless (member "standby" (org-get-tags-at))
-                  (setq has-next t))))
+                (setq has-next t)))
             (if has-next
                 next-headline
-              nil)) ; a stuck project, has subtasks but no next task
+              nil))     ; a stuck project, has subtasks but no next task
         next-headline))))
 
 (defun bh/skip-non-projects ()
@@ -6794,18 +7157,16 @@ agenda.")
 (defun zp/skip-non-projects ()
   "Skip trees that are not projects"
   ;; (bh/list-sublevels-for-projects-indented)
-  (if (save-excursion (zp/skip-non-stuck-projects))
-      (save-restriction
-        (widen)
-        (let ((subtree-end (save-excursion (org-end-of-subtree t))))
-          (cond
-           ((bh/is-project-p)
-            nil)
-           ((and (bh/is-project-subtree-p) (not (bh/is-task-p)))
-            nil)
-           (t
-            subtree-end))))
-    (save-excursion (org-end-of-subtree t))))
+  (save-restriction
+    (widen)
+    (let ((subtree-end (save-excursion (org-end-of-subtree t))))
+      (cond
+        ((bh/is-project-p)
+         nil)
+        ((and (bh/is-project-subtree-p) (not (bh/is-task-p)))
+         nil)
+        (t
+         subtree-end)))))
 
 (defun zp/skip-non-unstuck-projects ()
   "Skip trees that are not unstuck projects"
@@ -6818,7 +7179,7 @@ agenda.")
   (or
    (zp/skip-non-projects)
    ;; (zp/skip-non-unstuck-projects)
-   (if (not zp/projects-include-waiting)
+   (if (not zp/org-agenda-include-waiting)
       (org-agenda-skip-entry-if 'todo '("WAIT")))))
 
 (defun bh/skip-non-tasks ()
@@ -6832,6 +7193,37 @@ Skip project and sub-project tasks, habits, and project related tasks."
         nil)
        (t
         next-headline)))))
+
+(defun zp/is-subtask-p ()
+  (save-restriction
+    (widen)
+    (and (bh/is-task-p)
+         (save-excursion
+           (and (org-up-heading-safe)
+                (bh/is-project-p))))))
+
+(defun zp/skip-non-tasks (&optional subtasks)
+  "Show non-project tasks.
+Skip projects and habits.
+
+When SUBTASKS is non-nil, also skip project subtasks."
+  (save-restriction
+    (widen)
+    (let ((next-headline
+           (save-excursion (or (and subtasks
+                                    (org-goto-sibling)
+                                    (point))
+                               (outline-next-heading)
+                               (point-max)))))
+      (cond
+        ((and subtasks
+              (zp/is-subtask-p))
+         next-headline)
+        ((and (bh/is-task-p)
+              (not (org-is-habit-p)))
+         nil)
+        (t
+         next-headline)))))
 
 (defun zp/skip-non-tasks-and-scheduled ()
   (or
@@ -6988,6 +7380,8 @@ GROUPS is a list of AGENDA_GROUPS values to match.
 
 If EXHAUSTIVE is non-nil, the function will not skip groupless
 trees."
+  (when zp/org-agenda-skip-functions-debug
+    (message "STNG: %s" (org-entry-get (point) "ITEM")))
   (save-restriction
     (widen)
     (let* ((next-headline (save-excursion
@@ -7003,12 +7397,13 @@ trees."
           ((zp/org-task-in-agenda-groups-p groups-regex include-groupless-p)
            nil)
           ((and include-groupless-p
-                (catch 'found-next
-                  (while (re-search-backward (concat property-regex
-                                                     ".*$")
-                                             nil t)
-                    (if (org-entry-get (point) property)
-                        (throw 'found-next 't)))))
+                (or (org-entry-get (point) property)
+                    (catch 'found-next
+                      (while (re-search-backward (concat property-regex
+                                                         ".*$")
+                                                 nil t)
+                        (if (org-entry-get (point) property)
+                            (throw 'found-next 't))))))
            (outline-get-next-sibling))
           ((catch 'found-next
              (goto-char next-headline)
@@ -7254,9 +7649,11 @@ Version 2017-08-25"
 (defun zp/org-set-created-property (&optional active NAME)
   "Set a property on the entry giving the creation time.
 
-By default the property is called CREATED. If given the `NAME'
+By default the property is called CREATED. If given, the ‘NAME’
 argument will be used instead. If the property already exists, it
-will not be modified."
+will not be modified.
+
+If the function sets CREATED, it returns its value."
   (interactive)
   (let* ((created (or NAME org-created-property-name))
          (fmt (if active "<%s>" "[%s]"))
@@ -7268,7 +7665,8 @@ will not be modified."
                 (org-entry-get (point) created nil))
       (when is-capturing
         (goto-char (point-min)))
-      (org-set-property created now))))
+      (org-set-property created now)
+      now)))
 
 (add-hook 'org-capture-prepare-finalize-hook #'zp/org-set-created-property)
 
@@ -7754,13 +8152,14 @@ Every ELEM in LIST is formatted as follows:
   (let* ((other (not (one-window-p)))
          (indirect (buffer-base-buffer))
          (spawn zp/org-spawned-ibuf-mode)
-         (kill-window zp/org-ibuf-spawned-also-kill-window))
+         (parent-window zp/org-ibuf-spawned-also-kill-window))
     (unless (and indirect
                  spawn)
       (user-error "Not a spawned buffer"))
     (if (and other
-             kill-window)
-        (kill-buffer-and-window)
+             parent-window)
+        (progn (kill-buffer-and-window)
+               (select-window parent-window))
       (kill-buffer))
     (when print-message
       (message "Killed indirect buffer."))
@@ -7805,7 +8204,9 @@ With a ‘C-u’ prefix, make a separate frame for this tree."
                        (org-agenda-tree-to-indirect-buffer nil)
                        (select-window (previous-window))
                        (current-buffer))
-                   (org-agenda-tree-to-indirect-buffer nil))))
+                   (org-agenda-tree-to-indirect-buffer nil)))
+         (parent-window (selected-window))
+         subtask)
     (with-selected-window (if dedicated
                               (and (split-window-below)
                                    (next-window))
@@ -7815,10 +8216,14 @@ With a ‘C-u’ prefix, make a separate frame for this tree."
              (switch-to-buffer buffer))
             (t
              (zp/org-spawned-ibuf-mode t)
-             (setq zp/org-ibuf-spawned-also-kill-window t)))
-      (zp/org-overview nil nil t)
-          (org-back-to-heading)
-          (org-beginning-of-line))
+             (setq zp/org-ibuf-spawned-also-kill-window parent-window)))
+      (when (setq subtask (zp/is-subtask-p))
+        (zp/org-narrow-up-heading nil t))
+      (zp/org-overview nil subtask t)
+      (when subtask
+        (org-show-entry))
+      (org-back-to-heading)
+      (org-beginning-of-line))
     (balance-windows)
     (select-window (next-window))
     (message "Visiting tree in indirect buffer.")
@@ -8113,7 +8518,7 @@ mouse-1: Previous buffer\nmouse-3: Next buffer")
 (defface org-tag-location    '((t :inherit 'org-tag)) nil)
 (defface org-tag-todo        '((t :inherit 'org-tag)) nil)
 (defface org-tag-important   '((t :inherit 'org-tag)) nil)
-(defface org-tag-reading     '((t :inherit 'org-tag)) nil)
+(defface org-tag-curios      '((t :inherit 'org-tag)) nil)
 (defface org-tag-french      '((t :inherit 'org-tag)) nil)
 
 (defun zp/org-format-face (face &rest args)
@@ -8372,10 +8777,12 @@ If in variable-pitch-mode, change the variable font-preset."
   (zp/org-format-face 'org-tag-location  :weight 'bold :foreground "BlueViolet")
   (zp/org-format-face 'org-tag-todo   :weight 'bold :foreground "Skyblue4")
   (zp/org-format-face 'org-tag-important :weight 'bold :foreground "darkred")
-  (zp/org-format-face 'org-tag-reading   :weight 'bold :foreground "DeepPink")
+  (zp/org-format-face 'org-tag-curios   :weight 'bold :foreground "DeepPink")
   (zp/org-format-face 'org-tag-french    :weight 'bold :foreground "DodgerBlue1")
 
   (zp/org-format-face 'magit-tag :foreground "SpringGreen4")
+
+  (zp/org-super-agenda-update-face)
 
   (zp/mode-line-theme "dark")
   (zp/pdf-view-midnight-mode-theme))
@@ -8440,10 +8847,12 @@ If in variable-pitch-mode, change the variable font-preset."
   (zp/org-format-face 'org-tag-location  :weight 'bold :foreground "BlueViolet")
   (zp/org-format-face 'org-tag-todo      :weight 'bold :foreground "Skyblue1")
   (zp/org-format-face 'org-tag-important :weight 'bold :foreground "red")
-  (zp/org-format-face 'org-tag-reading   :weight 'bold :foreground "DeepPink")
+  (zp/org-format-face 'org-tag-curios   :weight 'bold :foreground "DeepPink")
   (zp/org-format-face 'org-tag-french    :weight 'bold :foreground "DodgerBlue1")
 
   (zp/org-format-face 'magit-tag :foreground "SpringGreen4")
+
+  (zp/org-super-agenda-update-face)
 
   (zp/mode-line-theme "light")
   (zp/pdf-view-midnight-mode-theme))
