@@ -1713,11 +1713,6 @@ If text is selected, adds furigana to the selected kanji instead."
 ;; Recentf
 (setq recentf-max-menu-items 100)
 
-;; Anzu
-;; Display search information in mode-line
-(global-anzu-mode +1)
-(setq anzu-cons-mode-line-p nil)
-
 ;; Tramp
 (setq tramp-default-method "ssh")
 
