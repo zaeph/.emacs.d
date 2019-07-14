@@ -4225,19 +4225,14 @@ due today, and showing all of them."
 (defun zp/toggle-org-agenda-category-icons ()
   "Toggle the inclusion of category icons in the agenda."
   (interactive)
-  (cond ((zp/set-agenda-local 'zp/org-agenda-include-category-icons
-                           (not (zp/get-agenda-local
-                                 'zp/org-agenda-include-category-icons)))
-         (zp/set-agenda-local 'org-agenda-category-icon-alist
-                           zp/org-agenda-category-icon-alist)
-         (let ((inhibit-message t))
-             (org-agenda-redo))
-         (message "Showing category icons."))
-        (t
-         (zp/set-agenda-local 'org-agenda-category-icon-alist nil)
-         (let ((inhibit-message t))
-             (org-agenda-redo))
-         (message "Hiding category icons."))))
+  (if (prog1 (zp/set-agenda-local
+              'zp/org-agenda-include-category-icons
+              (not (zp/get-agenda-local
+                    'zp/org-agenda-include-category-icons)))
+        (let ((inhibit-message t))
+          (org-agenda-redo)))
+      (message "Showing category icons.")
+    (message "Hiding category icons.")))
 
 (defvar zp/org-agenda-sorting-strategy-special-first nil
   "When non-nil, sort special TODOs first (STRT & NEXT).")
@@ -4441,8 +4436,8 @@ If ‘zp/org-agenda-include-category-icons’ is non-nil, the
 function populate ‘org-agenda-category-icon-alist’.
 
 Meant to be run with ‘org-agenda-mode-hook’."
-  (when zp/org-agenda-include-category-icons
-    (setq org-agenda-category-icon-alist
+  (setq org-agenda-category-icon-alist
+        (when zp/org-agenda-include-category-icons
           zp/org-agenda-category-icon-alist)))
 
 (add-hook #'zp/org-agenda-load-local-config-post-hook
