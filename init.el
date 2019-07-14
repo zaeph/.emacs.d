@@ -2676,7 +2676,7 @@ return `nil'."
   "Initial value for the scale of LaTeX previews.")
 
 (setq org-format-latex-options
-      '(:foreground auto
+      '(:foreground default
         :background default
         :scale zp/org-format-latex-default-scale
         :html-foreground "Black"
