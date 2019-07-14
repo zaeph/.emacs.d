@@ -3553,9 +3553,11 @@ With a prefix argument, do so in all agenda buffers."
          (b-pos (get-text-property 0 'org-marker b))
          (prop "CREATED")
          (a-time (or (org-entry-get a-pos prop)
-                     "now"))
+                     (org-with-point-at a-pos
+                       (zp/org-set-created-property))))
          (b-time (or (org-entry-get b-pos prop)
-                     "now"))
+                     (org-with-point-at b-pos
+                       (zp/org-set-created-property))))
          (a-posix (org-read-date nil t a-time))
          (b-posix (org-read-date nil t b-time))
          (same (string= a-time b-time))
@@ -3565,6 +3567,8 @@ With a prefix argument, do so in all agenda buffers."
       (if cmp
           +1
         -1))))
+
+(org-read-date nil t "now")
 
 (defun zp/org-cmp-created-dwim (a b)
   "Sort items by creation time, priority and specialness conditionally.
@@ -7603,9 +7607,11 @@ Version 2017-08-25"
 (defun zp/org-set-created-property (&optional active NAME)
   "Set a property on the entry giving the creation time.
 
-By default the property is called CREATED. If given the `NAME'
+By default the property is called CREATED. If given, the ‘NAME’
 argument will be used instead. If the property already exists, it
-will not be modified."
+will not be modified.
+
+If the function sets CREATED, it returns its value."
   (interactive)
   (let* ((created (or NAME org-created-property-name))
          (fmt (if active "<%s>" "[%s]"))
@@ -7617,7 +7623,8 @@ will not be modified."
                 (org-entry-get (point) created nil))
       (when is-capturing
         (goto-char (point-min)))
-      (org-set-property created now))))
+      (org-set-property created now)
+      now)))
 
 (add-hook 'org-capture-prepare-finalize-hook #'zp/org-set-created-property)
 
