@@ -7194,13 +7194,17 @@ Skip project and sub-project tasks, habits, and project related tasks."
        (t
         next-headline)))))
 
+(defun zp/is-group-head-p ()
+  (org-entry-get (point) "AGENDA_GROUP"))
+
 (defun zp/is-subtask-p ()
   (save-restriction
     (widen)
     (and (bh/is-task-p)
          (save-excursion
            (and (org-up-heading-safe)
-                (bh/is-project-p))))))
+                (bh/is-project-p)
+                (not (zp/is-group-head-p)))))))
 
 (defun zp/skip-non-tasks (&optional subtasks)
   "Show non-project tasks.
