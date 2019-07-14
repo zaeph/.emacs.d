@@ -4507,6 +4507,45 @@ file (trees, drawers, etc.)."
            value)
     value))
 
+(defvar zp/org-agenda-default-agendas-list nil
+  "List of agendas to consider as defaults.
+
+Any agenda not in this list will be considered special, thereby
+marking it for deletion upon garbage collection.")
+
+(setq zp/org-agenda-default-agendas-list '("n" "N" "l"))
+
+(defun zp/org-agenda-kill-special-agendas ()
+  "Kill all special agendas.
+
+An agenda is considered special if its key isn’t listed in
+‘zp/org-agenda-default-agendas-list’."
+  (interactive)
+  (let ((kill-count 0))
+    (dolist (buffer (buffer-list))
+      (with-current-buffer buffer
+        (when (derived-mode-p 'org-agenda-mode)
+          (let ((agenda (zp/org-agenda-get-key)))
+            (unless (member agenda zp/org-agenda-default-agendas-list)
+              (kill-buffer)
+              (setq kill-count (1+ kill-count)))))))
+    kill-count))
+
+(defun zp/org-agenda-garbage-collect (print-message)
+  "Garbage collect all special agendas and open main view."
+  (interactive "p")
+  (let ((kill-count (zp/org-agenda-kill-special-agendas)))
+    (if (window-right (selected-window))
+        (org-agenda nil "n")
+      (org-agenda nil "l"))
+    (when print-message
+      (message (concat "Garbage collection complete: "
+                       (pcase kill-count
+                         (0 "no buffer was killed.")
+                         (1 "1 buffer was killed.")
+                         (_ (concat (number-to-string kill-count)
+                                    " buffers were killed."))))))))
+
 
 (defun zp/org-agenda-mode-config ()
   "For use with `org-agenda-mode'."
@@ -4523,6 +4562,7 @@ file (trees, drawers, etc.)."
   (local-set-key (kbd "K") 'zp/toggle-org-agenda-include-habits)
   (local-set-key (kbd "M-d") 'zp/toggle-org-deadline-warning-days-range)
   (local-set-key (kbd "r") 'zp/org-agenda-benchmark)
+  (local-set-key (kbd "R") 'zp/org-agenda-garbage-collect)
   (local-set-key (kbd "h") 'zp/toggle-org-agenda-sorting-strategy-special-first)
   (local-set-key (kbd "H") 'zp/toggle-org-agenda-split-subtasks)
   ;; (local-set-key (kbd "H") 'zp/toggle-org-agenda-dim-blocked-tasks)
