@@ -4535,9 +4535,7 @@ An agenda is considered special if its key isn’t listed in
   "Garbage collect all special agendas and open main view."
   (interactive "p")
   (let ((kill-count (zp/org-agenda-kill-special-agendas)))
-    (if (window-right (selected-window))
-        (org-agenda nil "n")
-      (org-agenda nil "l"))
+    (zp/create-agenda-view nil)
     (when print-message
       (message (concat "Garbage collection complete: "
                        (pcase kill-count
