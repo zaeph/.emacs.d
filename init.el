@@ -4540,7 +4540,7 @@ An agenda is considered special if its key isn’t listed in
     (when print-message
       (message (concat "Garbage collection complete: "
                        (pcase kill-count
-                         (0 "no buffer was killed.")
+                         (0 "no buffers were killed.")
                          (1 "1 buffer was killed.")
                          (_ (concat (number-to-string kill-count)
                                     " buffers were killed."))))))))
