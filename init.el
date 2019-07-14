@@ -18,6 +18,7 @@
 
 ;; (toggle-debug-on)
 ;; (toggle-debug-on-quit)
+;; (setq garbage-collection-messages t)
 
 (defalias 'yes-or-no-p 'y-or-n-p)
 
