@@ -8180,7 +8180,9 @@ Every ELEM in LIST is formatted as follows:
     (message "Buffer is now dedicated.")))
 
 (defun zp/org-kill-spawned-ibuf-dwim (&optional dedicate)
-  "Conditionally kill the current buffer if it is an indirct buffer."
+  "Kill the current buffer if it is an indirect buffer.
+
+With a ‘C-u’ argument, dedicate the buffer instead."
   (interactive "P")
   (if dedicate
       (zp/org-ibuf-spawned-dedicate t)
