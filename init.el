@@ -3454,7 +3454,9 @@ variables."
          zp/org-agenda-sorting-strategy-special-first nil
          zp/org-agenda-split-subtasks nil
          zp/org-agenda-include-waiting t
+         zp/org-agenda-todo-ignore-future t
          org-agenda-todo-ignore-scheduled 'future
+         org-agenda-todo-ignore-timestamp 'future
          ))
 
       ;; View setup
@@ -3648,7 +3650,7 @@ agenda settings after them."
       (add-to-list 'word-list "+split" t))
     ;; (if (eq org-agenda-dim-blocked-tasks nil)
     ;;     (add-to-list 'word-list "-dimmed" t))
-    (when (eq org-agenda-todo-ignore-scheduled 'future)
+    (when zp/org-agenda-todo-ignore-future
       (add-to-list 'word-list "-future" t))
     (unless zp/org-agenda-include-waiting
       (add-to-list 'word-list "-waiting" t))
@@ -4269,17 +4271,24 @@ due today, and showing all of them."
          (org-agenda-redo)
          (message "Deadline range: 1 week"))))
 
-(defun zp/toggle-org-agenda-todo-ignore-scheduled ()
-  "Toggle the range of days for deadline to show up on the agenda."
+(defvar zp/org-agenda-todo-ignore-future nil
+  "When non-nil, ignore future SCHEDULED and timestamps.")
+
+(defun zp/toggle-org-agenda-todo-ignore-future ()
+  "Toggle whether to include future SCHEDULED and timestamps."
   (interactive)
-  (cond ((eq (zp/get-agenda-local 'org-agenda-todo-ignore-scheduled) 'future)
+  (cond ((eq (zp/get-agenda-local 'zp/org-agenda-todo-ignore-future) t)
+         (zp/set-agenda-local 'zp/org-agenda-todo-ignore-future nil)
          (zp/set-agenda-local 'org-agenda-todo-ignore-scheduled nil)
+         (zp/set-agenda-local 'org-agenda-todo-ignore-timestamp nil)
          (org-agenda-redo)
-         (message "Scheduled: All (Today + Future)"))
+         (message "Show items in the future."))
         (t
+         (zp/set-agenda-local 'zp/org-agenda-todo-ignore-future t)
          (zp/set-agenda-local 'org-agenda-todo-ignore-scheduled 'future)
+         (zp/set-agenda-local 'org-agenda-todo-ignore-timestamp 'future)
          (org-agenda-redo)
-         (message "Scheduled: Only Today"))))
+         (message "Ignore items in the future."))))
 
 (defun zp/toggle-org-agenda-projects-include-waiting ()
   "Toggle whether to include projects with a waiting task."
@@ -4569,7 +4578,7 @@ An agenda is considered special if its key isn’t listed in
   (local-set-key (kbd "h") 'zp/toggle-org-agenda-sorting-strategy-special-first)
   (local-set-key (kbd "H") 'zp/toggle-org-agenda-split-subtasks)
   ;; (local-set-key (kbd "H") 'zp/toggle-org-agenda-dim-blocked-tasks)
-  (local-set-key (kbd "F") 'zp/toggle-org-agenda-todo-ignore-scheduled)
+  (local-set-key (kbd "F") 'zp/toggle-org-agenda-todo-ignore-future)
   (local-set-key (kbd "W") 'zp/toggle-org-agenda-projects-include-waiting)
   (local-set-key (kbd "C-c C-x r") 'zp/org-agenda-set-appt-warntime)
   (local-set-key (kbd "C-c C-x l") 'zp/org-agenda-set-location)
