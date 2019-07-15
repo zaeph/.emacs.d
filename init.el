@@ -7707,6 +7707,8 @@ If the function sets CREATED, it returns its value."
                      (not add-created))
                 (org-entry-get (point) created nil))
       (when is-capturing
+        (unless (buffer-narrowed-p)
+          (error "Buffer is not narrowed"))
         (goto-char (point-min)))
       (org-set-property created now)
       now)))
