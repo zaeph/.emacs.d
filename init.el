@@ -3769,7 +3769,9 @@ agenda settings after them."
                   `((org-agenda-files ',file)))
             (org-agenda-span 'day)
             (org-super-agenda-groups
-             '(,@(zp/org-super-agenda-groups-all))))))
+             '((:name "Grid"
+                :time-grid t)
+               ,@(zp/org-super-agenda-groups-all))))))
 
 (defun zp/org-agenda-block-agenda (header &optional file)
   `(agenda ""
