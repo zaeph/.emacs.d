@@ -4166,8 +4166,7 @@ It creates 4 blocks:
   (interactive)
   (if (prog1 (zp/set-agenda-local 'org-habit-show-habits
                                (not (zp/get-agenda-local 'org-habit-show-habits)))
-        (let ((inhibit-message t))
-          (org-agenda-redo)))
+        (org-agenda-redo))
       (message "Habits turned on.")
     (message "Habits turned off.")))
 
@@ -4207,14 +4206,12 @@ due today, and showing all of them."
                                  'zp/org-agenda-include-scheduled)))
          (zp/set-agenda-local 'org-agenda-entry-types
                            '(:deadline :scheduled :timestamp :sexp))
-         (let ((inhibit-message t))
-             (org-agenda-redo))
+         (org-agenda-redo)
          (message "Scheduled: Visible"))
         (t
          (zp/set-agenda-local 'org-agenda-entry-types
                            '(:deadline :timestamp :sexp))
-         (let ((inhibit-message t))
-             (org-agenda-redo))
+         (org-agenda-redo)
          (message "Scheduled: Hidden"))))
 
 (defun zp/toggle-org-agenda-category-icons ()
@@ -4224,8 +4221,7 @@ due today, and showing all of them."
               'zp/org-agenda-include-category-icons
               (not (zp/get-agenda-local
                     'zp/org-agenda-include-category-icons)))
-        (let ((inhibit-message t))
-          (org-agenda-redo)))
+        (org-agenda-redo))
       (message "Showing category icons.")
     (message "Hiding category icons.")))
 
@@ -4239,8 +4235,7 @@ due today, and showing all of them."
               'zp/org-agenda-sorting-strategy-special-first
               (not (zp/get-agenda-local
                     'zp/org-agenda-sorting-strategy-special-first)))
-        (let ((inhibit-message t))
-          (org-agenda-redo)))
+        (org-agenda-redo))
       (message "Sorting: Special first.")
     (message "Sorting: Normal.")))
 
@@ -4252,8 +4247,7 @@ due today, and showing all of them."
   (if (prog1 (zp/set-agenda-local
               'zp/org-agenda-split-subtasks
               (not (zp/get-agenda-local 'zp/org-agenda-split-subtasks)))
-        (let ((inhibit-message t))
-          (org-agenda-redo)))
+        (org-agenda-redo))
       (message "Splitting subtasks.")
     (message "Merging subtasks.")))
 
