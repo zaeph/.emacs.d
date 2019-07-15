@@ -3551,26 +3551,32 @@ With a prefix argument, do so in all agenda buffers."
   (cond
     ((org-cmp-test-todo "WAIT|STBY" a b))))
 
-(defun zp/org-cmp-created (a b)
+(defun zp/org-cmp-time (a b property &optional create)
   "Sort items by creation time."
   (let* ((a-pos (get-text-property 0 'org-marker a))
          (b-pos (get-text-property 0 'org-marker b))
-         (prop "CREATED")
-         (a-time (or (org-entry-get a-pos prop)
-                     (org-with-point-at a-pos
-                       (zp/org-set-created-property))))
-         (b-time (or (org-entry-get b-pos prop)
-                     (org-with-point-at b-pos
-                       (zp/org-set-created-property))))
-         (a-posix (org-read-date nil t a-time))
-         (b-posix (org-read-date nil t b-time))
-         (same (string= a-time b-time))
-         (cmp (time-less-p a-posix b-posix) ))
-    (if same
-        nil
-      (if cmp
-          +1
-        -1))))
+         (prop property)
+         (ta-str (or (org-entry-get a-pos prop)
+                     (and create
+                          (org-with-point-at a-pos
+                            (zp/org-set-created-property)))))
+         (tb-str (or (org-entry-get b-pos prop)
+                     (and create
+                          (org-with-point-at b-pos
+                            (zp/org-set-created-property)))))
+         (ta (and ta-str (org-time-string-to-absolute ta-str)))
+         (tb (and tb-str (org-time-string-to-absolute tb-str))))
+    (cond ((if ta (and tb (< ta tb)) tb) +1)
+	  ((if tb (and ta (< tb ta)) ta) -1))))
+
+(defun zp/org-cmp-created (a b)
+  (zp/org-cmp-time a b "CREATED" t))
+
+(defun zp/org-cmp-scheduled (a b)
+  (zp/org-cmp-time a b "SCHEDULED"))
+
+(defun zp/org-cmp-timestamp (a b)
+  (zp/org-cmp-time a b "TIMESTAMP"))
 
 (org-read-date nil t "now")
 
@@ -3584,11 +3590,12 @@ This function also checks for priority because only one
 ‘org-agenda-cmp-user-defined’ can be specified at a time.  When
 sorting with this function, make sure not to use use ‘priority’
 afterwards."
-  (let ((cmp-created))
-    (or (when zp/org-agenda-sorting-strategy-special-first
-          (zp/org-cmp-todo-special a b))
-        (org-cmp-values a b 'priority)
-        (zp/org-cmp-created a b))))
+  (or (when zp/org-agenda-sorting-strategy-special-first
+        (zp/org-cmp-todo-special a b))
+      (org-cmp-values a b 'priority)
+      (zp/org-cmp-scheduled a b)
+      (zp/org-cmp-timestamp a b)
+      (zp/org-cmp-created a b)))
 
 
 
