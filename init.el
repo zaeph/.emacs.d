@@ -8155,7 +8155,7 @@ Every ELEM in LIST is formatted as follows:
         (kill-buffer-and-window))
     (user-error "There is only one window in the frame.")))
 
-(defun zp/org-kill-spawned-ibuf (&optional print-message)
+(defun zp/org-kill-spawned-ibuf (&optional arg)
   "Kill the current buffer if it is an indirect buffer."
   (interactive "p")
   (let* ((other (not (one-window-p)))
@@ -8168,9 +8168,11 @@ Every ELEM in LIST is formatted as follows:
     (if (and other
              parent-window)
         (progn (kill-buffer-and-window)
-               (select-window parent-window))
+               ;; Select parent when called interactively
+               (when arg
+                 (select-window parent-window)))
       (kill-buffer))
-    (when print-message
+    (when arg
       (message "Killed indirect buffer."))
     (run-hooks 'zp/org-after-view-change-hook)))
 
