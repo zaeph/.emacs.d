@@ -3733,17 +3733,22 @@ agenda settings after them."
     (:name "Waiting"
      :and (:tag "waiting"
            :scheduled nil))
-    (:name "Scheduled today"
+    (:name "Today"
+     :timestamp today)
+    (:name "Today: Scheduled"
      :scheduled today)
     (:name "Subtasks"
      :and (:scheduled nil
+           :timestamp nil
            :pred (lambda (item)
                    (when zp/org-agenda-split-subtasks
                      (zp/org-super-agenda-subtask-p item)))))
     (:name "Current"
-     :and (:scheduled nil
+     :and (:not (:scheduled t :timestamp t)
            :not (:tag "waiting")))
-    (:name "Scheduled later"
+    (:name "Later"
+     :timestamp future)
+    (:name "Later: Scheduled"
      :scheduled future)))
 
 (defun zp/org-super-agenda-group-heads (item)
@@ -3861,9 +3866,8 @@ agenda settings after them."
                ,@(if (bound-and-true-p file)
                      `((org-agenda-files ',file)))
                (org-agenda-sorting-strategy
-                '(,@(unless by-groups
-                      '(scheduled-up))
-                  user-defined-down
+                '(user-defined-down
+                  time-down
                   category-keep))
                (org-agenda-skip-function
                 '(or (zp/skip-tasks-not-belonging-to-agenda-groups ',groups)
