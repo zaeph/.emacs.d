@@ -4543,18 +4543,32 @@ An agenda is considered special if its key isn’t listed in
               (setq kill-count (1+ kill-count)))))))
     kill-count))
 
-(defun zp/org-agenda-garbage-collect (print-message)
-  "Garbage collect all special agendas and open main view."
+(defun zp/org-agenda-garbage-collect (arg)
+  "Garbage collect all special agendas and open main view.
+
+With a ‘C-u’ prefix argument, "
   (interactive "p")
-  (let ((kill-count (zp/org-agenda-kill-special-agendas)))
+  (let ((kill-main (eq arg 4))
+        (kill-count (zp/org-agenda-kill-special-agendas)))
     (zp/create-agenda-view nil)
-    (when print-message
+    (when kill-main
+      (when-let ((main (find-buffer-visiting "~/org/life.org")))
+        (with-current-buffer (find-buffer-visiting "~/org/life.org")
+          (when (buffer-modified-p)
+            (save-buffer))
+          (kill-buffer))))
+    (org-agenda-redo-all)
+      (with-selected-window (window-left (selected-window))
+        (org-agenda-redo-all))
+    (when arg
       (message (concat "Garbage collection complete: "
+                       (when kill-main
+                         "Org buffer was killed, and ")
                        (pcase kill-count
-                         (0 "no buffers were killed.")
-                         (1 "1 buffer was killed.")
+                         (0 "no agenda-buffers were killed.")
+                         (1 "1 agenda-buffer was killed.")
                          (_ (concat (number-to-string kill-count)
-                                    " buffers were killed."))))))))
+                                    " agenda-buffers were killed."))))))))
 
 
 (defun zp/org-agenda-mode-config ()
