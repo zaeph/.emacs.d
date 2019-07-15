@@ -4553,7 +4553,7 @@ An agenda is considered special if its key isn’t listed in
 (defun zp/org-agenda-garbage-collect (arg)
   "Garbage collect all special agendas and open main view.
 
-With a ‘C-u’ prefix argument, "
+With a ‘C-u’ prefix argument, also kill the main Org buffer."
   (interactive "p")
   (let ((kill-main (eq arg 4))
         (kill-count (zp/org-agenda-kill-special-agendas)))
