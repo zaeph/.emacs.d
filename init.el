@@ -383,6 +383,11 @@ that date.  Leave point on the first amount."
         fountain-outline-hide-custom-level
         olivetti-mode))
 
+;; so-long
+(require 'so-long)
+(global-so-long-mode 1)
+(add-hook #'debugger-mode-hook #'so-long-minor-mode)
+
 
 
 ;; ========================================
