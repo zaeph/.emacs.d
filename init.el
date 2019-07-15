@@ -4848,9 +4848,9 @@ TITLE and URL are those of the webpage."
 
 (setq zp/org-agenda-capture-templates
       '(("f" "Todo" entry (file+headline "/home/zaeph/org/life.org" "Inbox")
-         "* TODO %?\nSCHEDULED: %t")
+         "* TODO %?\n%t")
         ("r" "Todo (+time)" entry (file+headline "/home/zaeph/org/life.org" "Inbox")
-         "* TODO %?\nSCHEDULED: %^T")
+         "* TODO %?\n%^T")
 
         ("d" "Date" entry (file+olp "/home/zaeph/org/life.org" "Life" "Calendar")
          "* %?\n%t")
