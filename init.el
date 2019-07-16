@@ -16,10 +16,14 @@
 
 ")
 
+;; Start server
+(server-start)
+
 ;; (toggle-debug-on)
 ;; (toggle-debug-on-quit)
 ;; (setq garbage-collection-messages t)
 
+;; Alias the longform of ‘y-or-n-p’
 (defalias 'yes-or-no-p 'y-or-n-p)
 
 ;; Show current filename in titlebar
@@ -28,22 +32,14 @@
 ;; Use spaces instead of tabs
 (setq-default indent-tabs-mode nil)
 
+;; Add folders to load-path
 (add-to-list 'load-path "/home/zaeph/.emacs.d/lisp")
 (add-to-list 'load-path (expand-file-name "/usr/share/emacs/site-lisp"))
 
-(setq source-directory (concat (getenv "HOME") "/projects/forks/emacs"))
+;; Point to my Emacs fork for studying built-in functions
+(setq source-directory "~/projects/forks/emacs")
 
-;; ;; outline-minor-mode for viewing init.el
-;; (add-hook 'emacs-lisp-mode-hook
-;;           (lambda ()
-;;             (make-local-variable 'outline-regexp)
-;;             (setq outline-regexp "^;;; ")
-;;             (make-local-variable 'outline-heading-end-regexp)
-;;             (setq outline-heading-end-regexp ":\n")
-;;             (outline-minor-mode 1)
-;;             ))
-
-;; -nt background off
+;; Turn off background when Emacs is run with -nt
 (defun on-after-init ()
   (unless (display-graphic-p (selected-frame))
     (set-face-background 'default "unspecified-bg" (selected-frame))))
@@ -60,7 +56,7 @@
       `(;; Messages, errors, processes, Calendar in the bottom side window
         (,(rx bos (or "*Apropos"                ; Apropos buffers
                       "*Man"                    ; Man buffers
-                      ;; "*Help"                        ; Help buffers
+                      ;; "*Help"                   ; Help buffers
                       "*Warnings*"              ; Emacs warnings
                       "*Process List*"          ; Processes
                       "*Proced"                 ; Proced processes list
@@ -113,7 +109,7 @@
 (when (= emacs-major-version 26)
   (setq x-wait-for-event-timeout nil))
 
-;; Auth sources
+;; Path to authentication sources
 (setq auth-sources '("~/.authinfo.gpg" "~/.netrc"))
 
 
@@ -137,9 +133,9 @@
 ;; Disable org’s ELPA packages
 (setq package-load-list '(all
                           (org nil)
-                          (org-plus-contrib nil)
-                          ))
+                          (org-plus-contrib nil)))
 
+;; Initialise packages
 (package-initialize)
 
 ;; org-elpa
@@ -150,22 +146,12 @@
   (normal-top-level-add-subdirs-to-load-path))
 (add-to-list 'load-path "/home/zaeph/.emacs.d/lisp/")
 
-;; Start server
-(server-start)
-
 ;; Change indent-function to handle plists
 (setq lisp-indent-function 'common-lisp-indent-function)
 
 ;; Evil
 (require 'evil)
 (evil-mode 0)
-;; (setq evil-toggle-key "M-SPC")
-;; (setq evil-default-state 'emacs)
-;; (evil-set-initial-state 'help-mode 'emacs)
-;; (evil-set-initial-state 'messages-buffer-mode 'emacs)
-;; (evil-set-initial-state 'undo-tree-visualizer-mode 'emacs)
-;; (evil-set-initial-state 'calendar-mode 'emacs)
-;; (evil-set-initial-state 'info-mode 'emacs)
 
 ;; EasyPG (for encryption)
 (require 'epa-file)
@@ -174,75 +160,6 @@
 
 ;; Isearch
 (define-key isearch-mode-map (kbd "<backspace>") 'isearch-del-char)
-
-;; Ledger
-(autoload 'ledger-mode "ledger-mode" "A major mode for Ledger" t)
-(require 'ledger-mode)
-;; Using MELPA rather than the one from the built one
-;; (add-to-list 'load-path
-;;              (expand-file-name "/home/zaeph/builds/ledger/src/ledger-3.1.1/lisp/"))
-(add-to-list 'auto-mode-alist '("\\.ledger$" . ledger-mode))
-
-(defvar ledger-use-iso-dates nil)
-(defvar ledger-reconcile-default-commodity nil)
-(defvar ledger-post-auto-adjust-amounts nil)
-(setq ledger-use-iso-dates t
-      ledger-reconcile-default-commodity "EUR"
-      ;; Testing
-      ledger-post-auto-adjust-amounts 1
-      ledger-schedule-file "/home/zaeph/org/ledger/main-schedule.ledger.gpg")
-
-(add-hook 'ledger-reconcile-mode-hook #'balance-windows)
-;; (setq ledger-reconcile-mode-hook nil)
-
-(defun zp/ledger-close-scheduled ()
-  (interactive)
-  (if (string-match-p (regexp-quote "*Ledger Schedule*") (buffer-name))
-      (progn
-        (kill-buffer)
-        (select-window (previous-window))
-        (delete-other-windows))))
-(define-key ledger-mode-map (kbd "S-<backspace>") 'zp/ledger-close-scheduled)
-
-;; -----------------------------------------------------------------------------
-;; Patch for inserting an empty line after copied transactions
-(defvar ledger-copy-transaction-insert-blank-line-after nil
-  "Non-nil means insert blank line after a transaction inserted
-  with ‘ledger-copy-transaction-at-point’.")
-
-(defun ledger-copy-transaction-at-point (date)
-  "Ask for a new DATE and copy the transaction under point to
-that date.  Leave point on the first amount."
-  (interactive  (list
-                 (ledger-read-date "Copy to date: ")))
-  (let* ((extents (ledger-navigate-find-xact-extents (point)))
-         (transaction (buffer-substring-no-properties (car extents) (cadr extents)))
-         (encoded-date (ledger-parse-iso-date date)))
-    (ledger-xact-find-slot encoded-date)
-    (insert transaction
-            (if ledger-copy-transaction-insert-blank-line-after
-                "\n\n"
-              "\n"))
-    (beginning-of-line -1)
-    (ledger-navigate-beginning-of-xact)
-    (re-search-forward ledger-iso-date-regexp)
-    (replace-match date)
-    (ledger-next-amount)
-    (if (re-search-forward "[-0-9]")
-        (goto-char (match-beginning 0)))))
-
-(setq ledger-copy-transaction-insert-blank-line-after t)
-
-
-;; Patch for killing transaction
-(defun ledger-kill-current-transaction (pos)
-  "Delete the transaction surrounging POS."
-  (interactive "d")
-  (let ((bounds (ledger-navigate-find-xact-extents pos)))
-    (kill-region (car bounds) (cadr bounds))))
-
-(define-key ledger-mode-map (kbd "C-c C-d") 'ledger-kill-current-transaction)
-;; -----------------------------------------------------------------------------
 
 ;; zshrc
 (add-to-list 'auto-mode-alist '("\\zshrc\\'" . shell-script-mode))
@@ -268,56 +185,27 @@ that date.  Leave point on the first amount."
 (require 'volatile-highlights)
 (volatile-highlights-mode)
 
-;; Removed because of conflict with use-hard-newlines
+;; Removed because of conflict with ‘use-hard-newlines’
 ;; (require 'clean-aindent-mode)
 ;; (add-hook 'prog-mode-hook #'clean-aindent-mode)
 
 (require 'ws-butler)
 (add-hook 'prog-mode-hook #'ws-butler-mode)
-
 (add-hook 'prog-mode-hook #'zp/whitespace-mode-lines-tail)
 
+;; Force fringe indicators in ‘prog-mode’
 (defun zp/enable-visual-line-fringe-indicators ()
   "Enable visual line fringe indicators."
   (setq-local visual-line-fringe-indicators '(left-curly-arrow right-curly-arrow)))
 
 (add-hook 'prog-mode-hook #'zp/enable-visual-line-fringe-indicators)
 
-(global-set-key (kbd "M-U") 'universal-argument)
-(global-set-key (kbd "M-SPC") 'delete-horizontal-space)
-(global-set-key (kbd "M-S-SPC") 'just-one-space)
-(define-key universal-argument-map "\M-U" 'universal-argument-more)
-(global-set-key (kbd "M-J") 'duplicate-thing)
-
-(require 'flycheck)
-;; (add-hook 'after-init-hook #'global-flycheck-mode)
-(setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc))
-(setq flycheck-emacs-lisp-load-path 'inherit
-      flycheck-display-errors-delay 0.5)
-
-(add-hook #'sh-mode-hook #'flycheck-mode)
-(add-hook #'cperl-mode-hook #'flycheck-mode)
-(add-hook #'elisp-mode-hook #'flycheck-mode)
-
-;; (require 'flycheck-pos-tip)
-;; (flycheck-pos-tip-mode)
-
-
-;; (add-to-list 'load-path "/home/zaeph/.emacs.d/pkg/emacswiki.org/info+.el")
-;; (load "/home/zaeph/.emacs.d/pkg/emacswiki.org/info+.el")
+;; info+
 (require 'info+)
-;; (define-key Info-mode-map (kbd "<mouse-4>") 'Info-mouse-scroll-up)
-;; (define-key Info-mode-map (kbd "<mouse-5>") 'Info-mouse-scroll-down)
 (define-key Info-mode-map (kbd "<mouse-4>") 'mwheel-scroll)
 (define-key Info-mode-map (kbd "<mouse-5>") 'mwheel-scroll)
 (define-key Info-mode-map (kbd "j") 'next-line)
 (define-key Info-mode-map (kbd "k") 'previous-line)
-;; (define-key Info-mode-map (kbd "h") 'Info-history-back)
-;; (define-key Info-mode-map (kbd "l") 'Info-history-forward)
-
-;; dired+
-;; (setq diredp-hide-details-initially-flag nil)
-;; (require 'dired+)
 
 ;; dired-x
 (add-hook 'dired-load-hook
@@ -333,29 +221,33 @@ that date.  Leave point on the first amount."
             ;; (dired-omit-mode 1)
             ))
 
+;; recentf-ext
 (require 'recentf-ext)
 
+;; diff-hl
 (require 'diff-hl)
 (global-diff-hl-mode)
-(add-hook 'dired-mode-hook 'diff-hl-dired-mode)
-(add-hook 'dired-mode-hook 'turn-on-gnus-dired-mode)
-
+(add-hook #'dired-mode-hook #'diff-hl-dired-mode)
+(add-hook #'dired-mode-hook #'turn-on-gnus-dired-mode)
 (diff-hl-flydiff-mode)
 
+;; eyebrowse
 (require 'eyebrowse)
 ;; (eyebrowse-mode)
 
+;; which-key
 (require 'which-key)
 (which-key-mode)
 (setq which-key-idle-delay 1)
 
+;; lilypond-mode
 (require 'lilypond-mode)
 
 ;; Nov
 (add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode))
 (add-to-list 'auto-mode-alist '("\\.mobi\\'" . nov-mode))
 
-(add-hook 'nov-mode-hook #'olivetti-mode)
+(add-hook #'nov-mode-hook #'olivetti-mode)
 
 ;; Anki-Editor
 ;; (require 'anki-editor)
@@ -402,10 +294,33 @@ that date.  Leave point on the first amount."
 
 
 ;; ========================================
+;; =============== FLYCHECK ===============
+;; ========================================
+
+(require 'flycheck)
+(setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc))
+(setq flycheck-emacs-lisp-load-path 'inherit
+      flycheck-display-errors-delay 0.5)
+
+;; Enable flycheck everywhere
+;; Disabled because of slow-downs in large files
+;; (add-hook 'after-init-hook #'global-flycheck-mode)
+
+;; Enable flycheck for some major-modes
+(add-hook #'sh-mode-hook #'flycheck-mode)
+(add-hook #'cperl-mode-hook #'flycheck-mode)
+(add-hook #'elisp-mode-hook #'flycheck-mode)
+
+;; (require 'flycheck-pos-tip)
+;; (flycheck-pos-tip-mode)
+
+
+
+;; ========================================
 ;; ================= LISPY ================
 ;; ========================================
 
-(add-hook 'emacs-lisp-mode-hook (lambda () (lispy-mode 1)))
+(add-hook #'emacs-lisp-mode-hook #'lispy-mode)
 
 (require 'lispy)
 (defun lispy-mode-unbind-keys ()
@@ -517,590 +432,10 @@ LANGUAGE should be the name of an Ispell dictionary."
 ;; ========================================
 
 (defun zp/get-string-from-file (file-path)
+  "Read file content from path."
   (with-temp-buffer
     (insert-file-contents file-path)
     (buffer-string)))
-
-
-
-;; ========================================
-;; ================= ERC ==================
-;; ========================================
-
-(require 'erc)
-(setq erc-autojoin-timing 'connect
-      erc-autojoin-channels-alist
-      '(("freenode.net" "#emacs" "#ranger")
-        ("myanonamouse.net" "#anonamouse.net" "#am-members"))
-      erc-join-buffer 'bury
-      erc-fill-function 'erc-fill-static
-      erc-fill-static-center 22
-      erc-hide-list '("JOIN" "PART" "QUIT")
-      erc-lurker-hide-list '("JOIN" "PART" "QUIT")
-      erc-lurker-threshold-time 43200
-      erc-prompt-for-nickserv-password nil
-      erc-server-reconnect-attempts 5
-      erc-server-reconnect-timeout 3
-      erc-track-exclude-types '("JOIN" "MODE" "NICK" "PART" "QUIT"
-                                 "324" "329" "332" "333" "353" "477"))
-
-(add-to-list 'erc-modules 'notify)
-(add-to-list 'erc-modules 'notifications)
-(erc-update-modules)
-(add-to-list 'erc-notify-list "toonn")
-;; (setq erc-notify-list nil)
-
-(defun zp/erc-connect ()
-  (interactive)
-  (erc :server "176.188.242.162" :port 15873 :nick "zaeph" :password (concat "zaeph/freenode:" (zp/get-string-from-file "/home/zaeph/org/pp/irc/freenode/pp.gpg")))
-  ;; (erc :server "irc.freenode.net" :port 6667 :nick "zaeph" :password (zp/get-string-from-file "/home/zaeph/org/pp/irc/freenode/pp.gpg"))
-  ;; (erc-tls :server "irc.myanonamouse.net" :port 6697 :nick "zaeph" :password (zp/get-string-from-file "/home/zaeph/org/pp/irc/mam/pp.gpg"))
-  )
-
-;; ========================================
-;; ================ CIRCE =================
-;; ========================================
-
-(require 'circe)
-
-(enable-circe-color-nicks)
-(enable-lui-track-bar)
-
-(setq circe-format-say "{nick:15s} {body}")
-(setq circe-format-server-message "               *** {body}")
-(setq circe-format-self-say "{nick:15s} {body}")
-;; (setq circe-format-say "<{nick}> {body}")
-
-(setq
- lui-time-stamp-position 'right-margin
- lui-fill-type nil)
-
-(defun my-lui-setup ()
-  (setq
-   fringes-outside-margins t
-   right-margin-width 5
-   word-wrap t
-   wrap-prefix "                "))
-(add-hook 'lui-mode-hook 'my-lui-setup)
-
-(add-hook 'lui-mode-hook 'olivetti-mode)
-
-(defface circe-prompt-server-face nil
-  "Face used for displaying the name of the server in circe.")
-(set-face-attribute 'circe-prompt-server-face nil
-                    :foreground "purple"
-                    :weight 'normal)
-(set-face-attribute 'circe-prompt-face nil
-                    :foreground "black"
-                    :background "LightSeaGreen")
-
-(defun my-circe-prompt ()
-  (lui-set-prompt
-   (concat
-    "\n"
-    (format "%15s"
-            (concat
-             (propertize
-              (concat (buffer-name) " ")
-              'face 'circe-prompt-server-face)
-             (concat
-              (propertize
-               ">"
-               'face 'circe-prompt-face))))
-    " ")))
-(add-hook 'circe-chat-mode-hook 'my-circe-prompt)
-
-
-(setq circe-reduce-lurker-spam t)
-(setq circe-use-cycle-completion t)
-
-;; (circe-set-display-handler "JOIN" (lambda (&rest ignored) nil))
-
-;; From vifon
-(define-key lui-mode-map (kbd "C-c C-o")
-  (lambda ()
-    (interactive)
-    (ffap-next-url t)))
-
-(setq lui-formatting-list '(("\\[[[:digit:]][[:digit:]]\\:[[:digit:]][[:digit:]]\\]" 0 font-lock-comment-face)))
-
-(defun zp/circe-get-pp (server)
-  (concat "freenode:" (zp/get-string-from-file "/home/zaeph/org/pp/irc/freenode/pp.gpg")))
-
-(setq circe-network-options
-      '(
-        ;; ("ZNC SSL"
-        ;;  :host "zaeph.tk"
-        ;;  ;; :host "176.188.242.162"
-        ;;  :port "15873"
-        ;;  :tls t
-        ;;  :server-buffer-name "{host} ⇄ ZNC"
-        ;;  ;; :nick "zaeph"
-        ;;  ;; :nickserv-password zp/circe-get-pp
-        ;;  :sasl-username "zaeph"
-        ;;  :sasl-password zp/circe-get-pp
-        ;;  :user "zaeph/freenode"
-        ;;  :pass zp/circe-get-pp
-        ;;  :channels ("#ranger" "#emacs")
-        ;;  )
-        ("Weechat Relay"
-         :host "zaeph.tk"
-         ;; :host "176.188.242.162"
-         :port "15873"
-         :tls t
-         :server-buffer-name "{host} ⇄ Weechat"
-         :nick "zaeph"
-         ;; :nickserv-password zp/circe-get-pp
-         ;; :user "zaeph"
-         :pass zp/circe-get-pp
-         :channels ("#ranger")
-         )
-        ("Freenode Rescue"
-         :nick "zaeph_"
-         :host "chat.freenode.net"
-         :port 6667
-         :nickserv-password zp/circe-get-pp
-         :channels ("#ranger")
-         )))
-
-(defun zp/switch-to-circe-ranger ()
-  (interactive)
-  (if (string-match "#ranger" (buffer-name))
-      (mode-line-other-buffer)
-    (switch-to-buffer "#ranger")))
-
-;; (global-set-key (kbd "H-p") 'zp/switch-to-circe-ranger)
-
-;; circe-notifications
-(autoload 'enable-circe-notifications "circe-notifications" nil t)
-(eval-after-load "circe-notifications"
-  '(setq circe-notifications-watch-strings
-      '("vifon")))
-
-(add-hook 'circe-server-connected-hook 'enable-circe-notifications)
-
-;; ========================================
-;; ================= MU4E =================
-;; ========================================
-
-;; (add-to-list 'load-path "/usr/share/emacs/site-lisp/mu4e")
-(add-to-list 'load-path "/home/zaeph/.emacs.d/pkg/mu/mu4e")
-(require 'mu4e)
-(require 'mu4e-alert)
-(require 'org-mu4e)
-(setq org-mu4e-link-query-in-headers-mode nil)
-
-;; ;; -----------------------------------------------------------------------------
-;; ;; To investigate
-;; (defun remove-nth-element (nth list)
-;;   (if (zerop nth) (cdr list)
-;;     (let ((last (nthcdr (1- nth) list)))
-;;       (setcdr last (cddr last))
-;;       list)))
-;; (setq mu4e-marks (remove-nth-element 5 mu4e-marks))
-;; (add-to-list 'mu4e-marks
-;;      '(trash
-;;        :char ("d" . "▼")
-;;        :prompt "dtrash"
-;;        :dyn-target (lambda (target msg) (mu4e-get-trash-folder msg))
-;;        :action (lambda (docid msg target)
-;;                  (mu4e~proc-move docid
-;;                               (mu4e~mark-check-target target) "+S-u-N"))))
-
-;; (setq mu4e-alert-interesting-mail-query
-;;       (concat
-;;        "flag:unread maildir:/private/inbox"
-;;        ;; "maildir:/private/inbox"
-;;        " OR "
-;;        "flag:unread maildir:/work/inbox"
-;;        ;; "maildir:/work/inbox"
-;;        ))
-
-;; (setq mu4e-bookmarks
-;;   `(,(make-mu4e-bookmark
-;;       :name  "Inbox"
-;;       :query "maildir:/private/inbox OR maildir:/work/inbox"
-;;       :key ?i)
-;;     ,(make-mu4e-bookmark
-;;       :name  "Inbox (excluding read)"
-;;       :query "flag:unread AND (maildir:/private/inbox OR maildir:/work/inbox)"
-;;       :key ?I)
-;;     ,(make-mu4e-bookmark
-;;       :name  "Sent"
-;;       :query "maildir:/private/sent OR maildir:/work/sent"
-;;       :key ?s)
-;;     ,(make-mu4e-bookmark
-;;       :name  "Drafts"
-;;       :query "maildir:/private/drafts OR maildir:/work/drafts"
-;;       :key ?d)
-;;     ,(make-mu4e-bookmark
-;;       :name  "Archive (last week)"
-;;       :query "date:1w.. AND (maildir:/private/archive OR maildir:/work/archive)"
-;;       :key ?a)
-;;     ,(make-mu4e-bookmark
-;;       :name  "Unread messages"
-;;       :query "flag:unread AND NOT (maildir:/private/trash OR maildir:/work/trash)"
-;;       :key ?u)
-;;     ,(make-mu4e-bookmark
-;;       :name "Today's messages"
-;;       :query "date:today..now"
-;;       :key ?t)
-;;     ,(make-mu4e-bookmark
-;;       :name "Last 7 days"
-;;       :query "date:7d..now"
-;;       :key ?w)
-;;     ,(make-mu4e-bookmark
-;;       :name "Messages with images"
-;;       :query "mime:image/*"
-;;       :key ?p)))
-
-;; (define-key mu4e-main-mode-map (kbd "c") 'mu4e-compose-new)
-;; (define-key mu4e-headers-mode-map (kbd "c") 'mu4e-compose-new)
-
-
-;; ;; show images
-;; ;; (setq mu4e-view-show-images t
-;; ;;       mu4e-view-image-max-width 800)
-
-;; ;; use imagemagick, if available
-;; ;; (when (fboundp 'imagemagick-register-types)
-;; ;;   (imagemagick-register-types))
-
-;; ;; IMAP takes care of deletion
-;; (setq mu4e-sent-messages-behavior 'delete)
-
-;; ;; ;; Add a column to display what email account the email belongs to.
-;; ;; (add-to-list 'mu4e-header-info-custom
-;; ;;        '(:account
-;; ;;          :name "Account"
-;; ;;          :shortname "Account"
-;; ;;          :help "Which account this email belongs to"
-;; ;;          :function
-;; ;;          (lambda (msg)
-;; ;;            (let ((maildir (mu4e-message-field msg :maildir)))
-;; ;;              (format "%s" (substring maildir 1 (string-match-p "/" maildir 1)))))))
-
-;; ;; -----------------------------------------------------------------------------
-
-
-
-;; (defun zp/mu4e-alert-grouped-mail-notification-formatter (mail-group all-mails)
-;;   "Default function to format MAIL-GROUP for notification.
-
-;; ALL-MAILS are the all the unread emails"
-;;   (let* ((mail-count (length mail-group))
-;;          (total-mails (length all-mails))
-;;          (first-mail (car mail-group))
-;;       ;; Other possible icon:✉
-;;          ;; (title-prefix (format "<span foreground='#75d075'><span font_desc='Noto Color Emoji'>💬</span> [%d/%d] New mail%s</span>"
-;;          (title-prefix (format "[%d/%d] <span foreground='#F04949'>New mail%s</span>"
-;;                                mail-count
-;;                                total-mails
-;;                                (if (> mail-count 1) "s" "")))
-;;          (field-value (mu4e-alert--get-group first-mail))
-;;          (title-suffix (format (pcase mu4e-alert-group-by
-;;                                  (`:from "from %s:")
-;;                                  (`:to "to %s:")
-;;                                  (`:maildir "in %s:")
-;;                                  (`:priority "with %s priority:")
-;;                                  (`:flags "with %s flags:"))
-;;                                field-value))
-;;          (title (format "%s %s" title-prefix title-suffix)))
-;;     (list :title title
-;;           :body (concat "• "
-;;                         (s-join "\n• "
-;;                                 (mapcar (lambda (mail)
-;;                                           (replace-regexp-in-string "&" "&amp;" (plist-get mail :subject)))
-;;                                         mail-group))))))
-
-;; ;; Redefine default notify function to include icon
-;; (defun mu4e-alert-notify-unread-messages (mails)
-;;   "Display desktop notification for given MAILS."
-;;   (let* ((mail-groups (funcall mu4e-alert-mail-grouper
-;;                                mails))
-;;          (sorted-mail-groups (sort mail-groups
-;;                                    mu4e-alert-grouped-mail-sorter))
-;;          (notifications (mapcar (lambda (group)
-;;                                   (funcall mu4e-alert-grouped-mail-notification-formatter
-;;                                            group
-;;                                            mails))
-;;                                 sorted-mail-groups)))
-;;     (dolist (notification (cl-subseq notifications 0 (min 5 (length notifications))))
-;;       (alert (plist-get notification :body)
-;;              :title (plist-get notification :title)
-;;              :category "mu4e-alert"
-;;           :icon "gmail-2"))
-;;     (when notifications
-;;       (mu4e-alert-set-window-urgency-maybe))))
-
-;; (setq mu4e-alert-set-window-urgency nil
-;;       mu4e-alert-email-notification-types '(subjects)
-;;       mu4e-alert-grouped-mail-notification-formatter 'zp/mu4e-alert-grouped-mail-notification-formatter
-;;       mu4e-headers-show-threads t)
-
-
-
-;; (defun zp/mu4e-alert-refresh ()
-;;   (interactive)
-;;   (mu4e-alert-enable-mode-line-display)
-;;   (mu4e-alert-enable-notifications))
-
-;; (defun zp/mu4e-update-index-and-refresh ()
-;;   (interactive)
-;;   (mu4e-update-index)
-;;   (mu4e~request-contacts)
-;;   ;; (mu4e~headers-maybe-auto-update)
-;;   (zp/mu4e-alert-refresh))
-
-;; (mu4e-alert-set-default-style 'libnotify)
-;; (add-hook 'mu4e-main-mode-hook 'delete-other-windows)
-
-;; (add-hook 'after-init-hook #'mu4e-alert-enable-notifications)
-;; (add-hook 'after-init-hook #'mu4e-alert-enable-mode-line-display)
-;; (add-hook 'mu4e-index-updated-hook 'mu4e~headers-maybe-auto-update)
-;; (add-hook 'mu4e-index-updated-hook 'zp/mu4e-alert-refresh)
-
-;; (add-hook 'mu4e-view-mode-hook #'visual-line-mode)
-
-;; (defun mu4e-headers-config ()
-;;   "Modify keymaps used by `mu4e-mode'."
-;;   (local-set-key (kbd "C-/") 'mu4e-headers-query-prev)
-;;   (local-set-key (kbd "\\")  'mu4e-headers-query-prev)
-;;   (local-set-key (kbd "C-?") 'mu4e-headers-query-next)
-;;   (local-set-key (kbd "|")   'mu4e-headers-query-next)
-;;   )
-;; (setq mu4e-headers-mode-hook 'mu4e-headers-config)
-
-;; (setq mu4e-maildir (expand-file-name "/home/zaeph/mail")
-;;       mu4e-change-filenames-when-moving   t
-;;       mu4e-get-mail-command "check-mail active"
-;;       mu4e-hide-index-messages t
-;;       mu4e-update-interval nil
-;;       mu4e-headers-date-format "%Y-%m-%d %H:%M"
-;;       )
-
-;; (defun zp/rewrite-function (contact)
-;;   (let ((name (or (plist-get contact :name) ""))
-;;          (mail (plist-get contact :mail)))
-;;     (cond
-;;       ;; jonh smiht --> John Smith
-;;       ;; ((string= "jonh smiht" name)
-;;       ;;   (plist-put contact :name "John C. Smith")
-;;       ;;   contact)
-;;       ;; remove evilspammer from the contacts list
-;;       ((string= "nic022@hotnail.fr" mail) nil)
-;;       ;; others stay as the are
-;;       (t contact))))
-
-;; (setq mu4e-contact-rewrite-function 'zp/rewrite-function)
-
-;; (setq mu4e-headers-fields
-;;       '( (:date          .  25)    ;; alternatively, use :human-date
-;;       (:flags         .   6)
-;;       (:from          .  22)
-;;       (:subject       .  nil)))
-
-;; (setq mu4e-compose-format-flowed t)
-
-;; ;; This allows me to use 'helm' to select mailboxes
-;; (setq mu4e-completing-read-function 'completing-read)
-;; ;; Why would I want to leave my message open after I've sent it?
-;; (setq message-kill-buffer-on-exit t)
-;; ;; Don't ask for a 'context' upon opening mu4e
-;; (setq mu4e-context-policy 'pick-first)
-;; ;; Don't ask to quit... why is this the default?
-;; (setq mu4e-confirm-quit nil)
-
-;; (add-to-list 'mu4e-view-actions
-;;   '("ViewInBrowser" . mu4e-action-view-in-browser) t)
-
-;; (setq mu4e-contexts
-;;       `( ,(make-mu4e-context
-;;         :name "Private"
-;;         :match-func (lambda (msg) (when msg
-;;                                     (string-prefix-p "/private" (mu4e-message-field msg :maildir))))
-;;         :vars `(
-;;                 (user-mail-address . ,(zp/get-string-from-file "/home/zaeph/org/pp/private/email"))
-;;                 (user-full-name . "Zaeph")
-;;                 (message-signature-file . "/home/zaeph/org/sig/private")
-
-;;                 (mu4e-trash-folder  . "/private/trash")
-;;                 (mu4e-refile-folder . "/private/archive")
-;;                 (mu4e-sent-folder   . "/private/sent")
-;;                 (mu4e-drafts-folder . "/private/drafts")
-
-;;                 (mu4e-maildir-shortcuts . (("/private/inbox"   . ?i)
-;;                                            ("/private/sent"    . ?s)
-;;                                            ("/private/trash"   . ?t)
-;;                                            ("/private/archive" . ?a)))
-;;                 ))
-;;       ,(make-mu4e-context
-;;         :name "Work"
-;;         :match-func (lambda (msg) (when msg
-;;                                     (string-prefix-p "/work" (mu4e-message-field msg :maildir))))
-;;         :vars `(
-;;                 (user-mail-address . ,(zp/get-string-from-file "/home/zaeph/org/pp/work/email"))
-;;                 (user-full-name . "Leo Vivier")
-;;                 (message-signature-file . "/home/zaeph/org/sig/work")
-
-;;                 (mu4e-trash-folder  . "/work/trash")
-;;                 (mu4e-refile-folder . "/work/archive")
-;;                 (mu4e-sent-folder   . "/work/sent")
-;;                 (mu4e-drafts-folder . "/work/drafts")
-
-;;                 (mu4e-maildir-shortcuts . (("/work/inbox"   . ?i)
-;;                                            ("/work/sent"    . ?s)
-;;                                            ("/work/trash"   . ?t)
-;;                                            ("/work/archive" . ?a)))
-;;                 ))
-;;       ))
-
-;; ;; Editing modeline display to add a space after the `]'
-;; (defun mu4e-context-label ()
-;;   "Propertized string with the current context name, or \"\" if
-;;   there is none."
-;;   (if (mu4e-context-current)
-;;     (concat "[" (propertize (mu4e~quote-for-modeline
-;;                            (mu4e-context-name (mu4e-context-current)))
-;;                'face 'mu4e-context-face) "] ") ""))
-
-;; (setq message-send-mail-function 'smtpmail-send-it
-;;       smtpmail-auth-credentials
-;;       (expand-file-name "/home/zaeph/.authinfo.gpg")
-;;       )
-
-;; (setq send-mail-function 'sendmail-send-it)
-;; (setq message-send-mail-function 'message-send-mail-with-sendmail)
-
-;; (require 'footnote)
-
-;; ;; Format footnotes for message-mode
-;; ;; Default value had a space at the end causing it to be reflowed.
-;; (setq footnote-section-tag "Footnotes:")
-
-;; (require 'epg-config)
-;; (setq mml2015-use 'epg
-;;       epg-user-id (zp/get-string-from-file "/home/zaeph/org/pp/gpg/gpg-key-id")
-;;       mml-secure-openpgp-sign-with-sender t
-;;       mml-secure-openpgp-encrypt-to-self t)
-
-;; (add-hook 'message-mode-hook #'flyspell-mode)
-;; (add-hook 'message-mode-hook #'electric-quote-local-mode)
-;; (add-hook 'message-mode-hook #'footnote-mode)
-;; (add-hook 'message-mode-hook (lambda ()
-;;                              (zp/helm-ispell-preselect "French")))
-
-;; (setq electric-quote-context-sensitive 1)
-;; ;; -----------------------------------------------------------------------------
-;; ;; Experimental patch for electric-quote
-;; ;; Not necessary since 26.1, since this function has been modified to accommodate ‘electric-quote-chars’
-;; ;; (defun electric-quote-post-self-insert-function ()
-;; ;;   "Function that `electric-quote-mode' adds to `post-self-insert-hook'.
-;; ;; This requotes when a quoting key is typed."
-;; ;;   (when (and electric-quote-mode
-;; ;;              (memq last-command-event '(?\' ?\`)))
-;; ;;     (let ((start
-;; ;;            (if (and comment-start comment-use-syntax)
-;; ;;                (when (or electric-quote-comment electric-quote-string)
-;; ;;                  (let* ((syntax (syntax-ppss))
-;; ;;                         (beg (nth 8 syntax)))
-;; ;;                    (and beg
-;; ;;                         (or (and electric-quote-comment (nth 4 syntax))
-;; ;;                             (and electric-quote-string (nth 3 syntax)))
-;; ;;                         ;; Do not requote a quote that starts or ends
-;; ;;                         ;; a comment or string.
-;; ;;                         (eq beg (nth 8 (save-excursion
-;; ;;                                          (syntax-ppss (1- (point)))))))))
-;; ;;              (and electric-quote-paragraph
-;; ;;                   (derived-mode-p 'text-mode)
-;; ;;                   (or (eq last-command-event ?\`)
-;; ;;                       (save-excursion (backward-paragraph) (point)))))))
-;; ;;       (when start
-;; ;;         (save-excursion
-;; ;;           (if (eq last-command-event ?\`)
-;; ;;               (cond ((search-backward "“`" (- (point) 2) t)
-;; ;;                      (replace-match "`")
-;; ;;                      (when (and electric-pair-mode
-;; ;;                                 (eq (cdr-safe
-;; ;;                                      (assq ?‘ electric-pair-text-pairs))
-;; ;;                                     (char-after)))
-;; ;;                        (delete-char 1))
-;; ;;                      (setq last-command-event ?“))
-;; ;;               ((search-backward "‘`" (- (point) 2) t)
-;; ;;                      (replace-match "“")
-;; ;;                      (when (and electric-pair-mode
-;; ;;                                 (eq (cdr-safe
-;; ;;                                      (assq ?‘ electric-pair-text-pairs))
-;; ;;                                     (char-after)))
-;; ;;                        (delete-char 1))
-;; ;;                      (setq last-command-event ?“))
-;; ;;                     ((search-backward "`" (1- (point)) t)
-;; ;;                      (replace-match "‘")
-;; ;;                      (setq last-command-event ?‘)))
-;; ;;             (cond ((search-backward "”'" (- (point) 2) t)
-;; ;;                    (replace-match "'")
-;; ;;                    (setq last-command-event ?”))
-;; ;;             ((search-backward "’'" (- (point) 2) t)
-;; ;;                    (replace-match "”")
-;; ;;                    (setq last-command-event ?”))
-;; ;;                   ((search-backward "'" (1- (point)) t)
-;; ;;                    (replace-match "’")
-;; ;;                    (setq last-command-event ?’)))))))))
-;; ;; -----------------------------------------------------------------------------
-
-
-
-;; ;; SMTP
-;; ;; I have my "default" parameters from Gmail
-;; ;; (setq mu4e-sent-folder "/home/zaeph/mail/sent"
-;; ;;       ;; mu4e-sent-messages-behavior 'delete ;; Unsure how this should be configured
-;; ;;       mu4e-drafts-folder "/home/zaeph/mail/drafts"
-;; ;;       user-mail-address "[DATA EXPUNGED]"
-;; ;;       smtpmail-default-smtp-server "smtp.gmail.com"
-;; ;;       smtpmail-smtp-server "smtp.gmail.com"
-;; ;;       smtpmail-smtp-service 587)
-
-;; ;; Now I set a list of
-;; ;; (defvar my-mu4e-account-alist
-;; ;;   '(("personal"
-;; ;;      (mu4e-sent-folder "/personal/sent")
-;; ;;      (user-mail-address "[DATA EXPUNGED]")
-;; ;;      (smtpmail-smtp-user "[DATA EXPUNGED]")
-;; ;;      (smtpmail-local-domain "gmail.com")
-;; ;;      (smtpmail-default-smtp-server "smtp.gmail.com")
-;; ;;      (smtpmail-smtp-server "smtp.gmail.com")
-;; ;;      (smtpmail-smtp-service 587)
-;; ;;      )
-;; ;;     ("work"
-;; ;;      (mu4e-sent-folder "/work/sent")
-;; ;;      (user-mail-address "[DATA EXPUNGED]")
-;; ;;      (smtpmail-smtp-user "[DATA EXPUNGED]")
-;; ;;      (smtpmail-local-domain "gmail.com")
-;; ;;      (smtpmail-default-smtp-server "smtp.gmail.com")
-;; ;;      (smtpmail-smtp-server "smtp.gmail.com")
-;; ;;      (smtpmail-smtp-service 587)
-;; ;;      )
-;; ;;     ))
-
-;; ;; (defun my-mu4e-set-account ()
-;; ;;   "Set the account for composing a message."
-;; ;;   (let* ((account
-;; ;;           (if mu4e-compose-parent-message
-;; ;;               (let ((maildir (mu4e-message-field mu4e-compose-parent-message :maildir)))
-;; ;;                 (string-match "/\\(.*?\\)/" maildir)
-;; ;;                 (match-string 1 maildir))
-;; ;;             (completing-read (format "Compose with account: (%s) "
-;; ;;                                      (mapconcat #'(lambda (var) (car var))
-;; ;;                                                 my-mu4e-account-alist "/"))
-;; ;;                              (mapcar #'(lambda (var) (car var)) my-mu4e-account-alist)
-;; ;;                              nil t nil nil (caar my-mu4e-account-alist))))
-;; ;;          (account-vars (cdr (assoc account my-mu4e-account-alist))))
-;; ;;     (if account-vars
-;; ;;         (mapc #'(lambda (var)
-;; ;;                   (set (car var) (cadr var)))
-;; ;;               account-vars)
-;; ;;       (error "No email account found"))))
-;; ;; (add-hook 'mu4e-compose-pre-hook 'my-mu4e-set-account)
 
 
 
@@ -1188,24 +523,9 @@ If REGEX is non-nil, creates a regex to match the email alias."
         (,(regexp-quote zp/email-dev) .
           "work/sent -inbox +sent -unread +dev")))
 
-;; (setq notmuch-user-name
-;;                   (lambda ()
-;;                     (let* ((signature-override
-;;                             (concat (file-name-as-directory "~/org/sig")
-;;                                     (message-sendmail-envelope-from)))
-;;                            (signature-file
-;;                             (if (file-readable-p signature-override)
-;;                                 signature-override
-;;                               "~/.signature")))
-;;                       (when (file-readable-p signature-file)
-;;                         (with-temp-buffer
-;;                           (insert-file-contents signature-file)
-;;                        (buffer-string))))))
-
 (setq message-send-mail-function 'smtpmail-send-it
       smtpmail-auth-credentials
-      (expand-file-name "/home/zaeph/.authinfo.gpg")
-      )
+      (expand-file-name "/home/zaeph/.authinfo.gpg"))
 
 (setq send-mail-function 'sendmail-send-it)
 (setq message-send-mail-function 'message-send-mail-with-sendmail)
@@ -1730,50 +1050,6 @@ If text is selected, adds furigana to the selected kanji instead."
 
 
 ;; ========================================
-;; ============= INPUT METHODS ============
-;; ========================================
-
-(setq lang 'en)
-
-;; Old input method
-
-;; ;; Korean
-;; (global-set-key (kbd "C-S-k")
-;;              (lambda ()
-;;                (interactive)
-;;                (if (not (eq lang 'ko))
-;;                    (progn
-;;                      (set-input-method 'korean-hangul)
-;;                      (setq lang 'ko))
-;;                  (progn
-;;                    (set-input-method 'nil)
-;;                    (setq lang 'en)))))
-;; ;; Latin
-;; (global-set-key (kbd "C-S-l")
-;;              (lambda ()
-;;                (interactive)
-;;                (if (not (eq lang 'fr))
-;;                    (progn
-;;                      (set-input-method 'latin-1-prefix)
-;;                      (setq lang 'fr))
-;;                  (progn
-;;                    (set-input-method 'nil)
-;;                    (setq lang 'en)))))
-;; ;; IPA
-;; (global-set-key (kbd "C-M-;")
-;;              (lambda ()
-;;                (interactive)
-;;                (if (not (eq lang 'ipa))
-;;                    (progn
-;;                      (set-input-method 'ipa-x-sampa)
-;;                      (setq lang 'ipa))
-;;                  (progn
-;;                    (set-input-method 'nil)
-;;                    (setq lang 'en)))))
-
-
-
-;; ========================================
 ;; ================ BACKUP ================
 ;; ========================================
 
@@ -1817,6 +1093,44 @@ Modifies ‘diff-command’ and ‘diff-switches’ to use ‘git diff’."
 ;; ========================================
 
 (setq diary-file "/home/zaeph/diary")
+
+
+
+
+
+
+;; ========================================
+;; ================= PERL =================
+;; ========================================
+
+;; Prefer cperl-mode to perl-mode
+(require 'cperl-mode)
+(defalias 'perl-mode 'cperl-mode)
+
+(defun zp/perl-eval-region ()
+  "Run selected region as Perl code"
+  (interactive)
+  (let ((max-mini-window-height nil))
+    (call-process (mark) (point) "perl")))
+
+(defun zp/perl-eval-buffer-in-terminator ()
+  "Run selected region as Perl code"
+  (interactive)
+  (call-process "terminator" (buffer-file-name) nil nil (concat "-x perl" ))
+  ;; (call-process (concat "terminator -x perl "
+  ;;                       (buffer-file-name)))
+  )
+
+(defun zp/perl-eval-buffer (arg)
+  "Run current buffer as Perl code"
+  (interactive "P")
+  (let (max-mini-window-height)
+    (unless arg
+      (setq max-mini-window-height 999))
+    (shell-command-on-region (point-min) (point-max) "perl")))
+
+(define-key cperl-mode-map (kbd "M-RET") 'zp/perl-eval-buffer)
+(define-key cperl-mode-map (kbd "<C-return>") 'zp/perl-eval-region)
 
 
 
@@ -1875,7 +1189,7 @@ Modifies ‘diff-command’ and ‘diff-switches’ to use ‘git diff’."
 
 
 ;; ========================================
-;; =============== AUCTeX =================
+;; =============== AUCTEX =================
 ;; ========================================
 
 (require 'latex)
@@ -2226,37 +1540,6 @@ return `nil'."
            (message "XeLaTeX process mode: Full"))))
 (zp/toggle-org-latex-pdf-process)
 
-;; latexmk
-;; (setq org-latex-pdf-process '("latexmk -xelatex %f"))
-;; (setq org-latex-to-pdf-process (list "latexmk -f -pdf %f"))
-
-;; pdfTeX
-;; Need to rework the packages I use before I can use pdfTeX
-;; Will need tinkering.
-;;
-;; microtype:
-;; #+LATEX_HEADER: \usepackage[activate={true,nocompatibility},final,tracking=true,kerning=true,spacing=true,factor=1100,stretch=10,shrink=10]{microtype}
-;;
-;; (setq org-latex-pdf-process
-;;       '("pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
-;;      "biber %b"
-;;      "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
-;;      "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
-
-;; LuaTeX
-;; Not as good as XeTeX, since I can't figure out how to make CJK characters work.
-;; To investigate.
-;;
-;; # LuaTeXJA
-;; #+LATEX_HEADER: \usepackage{luatexja-fontspec}
-;; #+LATEX_HEADER: \setmainjfont{A-OTF Ryumin Pr5}
-;;
-;; (setq org-latex-pdf-process
-;;       '("lualatex -shell-escape -interaction nonstopmode -output-directory %o %f"
-;;      "biber %b"
-;;      "lualatex -shell-escape -interaction nonstopmode -output-directory %o %f"
-;;      "lualatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
-
 ;; Suppress creation of labels when converting org→tex
 (defun remove-orgmode-latex-labels ()
   "Remove labels generated by org-mode"
@@ -2386,104 +1669,37 @@ return `nil'."
 
 
 ;; ========================================
-;; ================= PERL =================
-;; ========================================
-
-;; Prefer cperl-mode to perl-mode
-(require 'cperl-mode)
-(defalias 'perl-mode 'cperl-mode)
-
-(defun zp/perl-eval-region ()
-  "Run selected region as Perl code"
-  (interactive)
-  (let ((max-mini-window-height nil))
-    (call-process (mark) (point) "perl")))
-
-(defun zp/perl-eval-buffer-in-terminator ()
-  "Run selected region as Perl code"
-  (interactive)
-  (call-process "terminator" (buffer-file-name) nil nil (concat "-x perl" ))
-  ;; (call-process (concat "terminator -x perl "
-  ;;                       (buffer-file-name)))
-  )
-
-(defun zp/perl-eval-buffer (arg)
-  "Run current buffer as Perl code"
-  (interactive "P")
-  (let (max-mini-window-height)
-    (unless arg
-      (setq max-mini-window-height 999))
-    (shell-command-on-region (point-min) (point-max) "perl")))
-
-(define-key cperl-mode-map (kbd "M-RET") 'zp/perl-eval-buffer)
-(define-key cperl-mode-map (kbd "<C-return>") 'zp/perl-eval-region)
-
-
-
-;; ========================================
 ;; =============== ORG-MODE ===============
 ;; ========================================
 
 ;; Load org-habit
 (require 'org-habit)
 (add-to-list 'org-modules 'org-habit)
-;; (setq org-habit-show-habits-only-for-today nil)
-
-;; Load org-collector
-;; (require 'org-collector)
-;; (add-to-list 'org-modules 'org-collector)
-
-
-
-;; Experimental way to handle narrowing from org-agenda for my journal
-;; Couldn't figure out how to limit it to a particular custom-agenda
-;; (advice-add 'org-agenda-goto :after
-;;             (lambda (&rest args)
-;;               (org-narrow-to-subtree)))
-;; (advice-add 'org-agenda-switch-to :after
-;;             (lambda (&rest args)
-;;               (org-narrow-to-subtree)))
-
-;; Possibe solution to async export
-;; (setq org-export-async-init-file "/home/zaeph/.emacs.d/async-init.el")
-
-;;; Hook for org-clock-in
-;;; Deprecated because I don't really need it
-;; (defun zp/org-todo-started ()
-;;   "Mark entry as started.
-;; Used as a hook to `org-clock-in-hook'."
-;;   (org-todo "STRT"))
-
-;; (add-hook 'org-clock-in-hook 'zp/org-todo-started)
 
 ;; Options
 (setq org-agenda-inhibit-startup nil
       org-clock-into-drawer "LOGBOOK-CLOCK"
-      ;; org-clock-into-drawer nil
       org-log-into-drawer "LOGBOOK-NOTES"
-      ;; org-log-into-drawer nil
       org-log-state-notes-insert-after-drawers nil
       org-special-ctrl-a/e 't
-      ;; org-log-into-drawer nil
-      ;; org-log-state-notes-insert-after-drawers t
       org-log-done 'time
-      org-enforce-todo-dependencies nil ;Careful with this one, easy to fuck up
-      ;; org-enforce-todo-dependencies nil
+      org-enforce-todo-dependencies nil
       org-adapt-indentation nil
       org-clock-sound t
       org-clock-report-include-clocking-task t
       org-clock-out-remove-zero-time-clocks t
       org-export-in-background t
       org-export-with-sub-superscripts nil
-      org-image-actual-width nil ;Ensures that images displayed within emacs can be resized with #+ATTR_ORG:
-      org-hide-emphasis-markers t                 ;Fontification
+      org-hide-emphasis-markers t
       org-ellipsis "…"
       org-track-ordered-property-with-tag "ORDERED"
-      ;; org-tags-exclude-from-inheritance '("project")
       org-tags-exclude-from-inheritance nil
       org-agenda-hide-tags-regexp "recurring\\|waiting\\|standby"
       org-catch-invisible-edits 'error
       org-footnote-define-inline 1)
+
+;; Ensure that images can be resized with deferred #+ATTR_ORG:
+(setq org-image-actual-width nil)
 
 ;; Prevent auto insertion of blank-lines before heading but not for lists
 (setq org-blank-before-new-entry (quote ((heading)
@@ -2500,8 +1716,10 @@ return `nil'."
 ;; Set the RESET_CHECK_BOXES property to t for the heading
 (require 'org-checklist)
 
-;; (eval-after-load 'org '(require 'org-pdfview))
+;; Length of the habit graph
+(setq org-habit-graph-column 50)
 
+;; Set the default apps to use when opening org-links
 (add-to-list 'org-file-apps
              '("\\.pdf\\'" . (lambda (file link)
                                (org-pdfview-open link))))
@@ -2509,74 +1727,41 @@ return `nil'."
 ;; Enforce French spacing when filling paragraphs
 (add-to-list 'fill-nobreak-predicate 'fill-french-nobreak-p)
 
-;; (setq org-file-apps '(("\\.pdf\\'" lambda
-;;                     (file link)
-;;                     (org-pdfview-open link))
-;;                    (auto-mode . emacs)
-;;                    ("\\.mm\\'" . default)
-;;                    ("\\.x?html?\\'" . default)
-;;                    ("\\.pdf\\'" . default)))
-
-;; -----------------------------------------------------------------------------
-;; Template for new emphasis / fontify
-;; Do not modify org-emphasis-alist, it's only for modifying the default ones
-;; Also, has a little bug where it colours the rest of the line white
-;; (defun org-add-my-extra-fonts ()
-;;   "Add alert and overdue fonts."
-;;   (add-to-list 'org-font-lock-extra-keywords '("\\(!\\)\\([^\n\r\t]+?\\)\\(!\\)" (1 '(face org-habit-overdue-face invisible t)) (2 'org-todo) (3 '(face org-habit-overdue-face invisible t)))))
-;;   (add-to-list 'org-font-lock-extra-keywords '("\\(%\\)\\([^\n\r\t]+?\\)\\(%\\)" (1 '(face org-habit-overdue-face invisible t)) (2 'org-done) (3 '(face org-habit-overdue-face invisible t)))))
-
-;; (add-hook 'org-font-lock-set-keywords-hook #'org-add-my-extra-fonts)
-;; -----------------------------------------------------------------------------
-
-(setq org-todo-keywords '(
-        ;; Default
+;; Define TODO keywords
+(setq org-todo-keywords
+      '(;; Default
         (sequence "TODO(t)" "NEXT(n)" "STRT(S!)" "|" "DONE(d)")
-        ;; Action
-        ;; (sequence "SCHD(m!)" "PREP(!)" "READ(r!)" "DBRF(D!)" "REVW(R!)" "|" "DONE(d!)")
         ;; Extra
-        ;; (sequence "STBY(s)" "WAIT(w@/!)" "|" "CXLD(x@/!)")
         (sequence "STBY(s)" "|" "CXLD(x@/!)")
-        (sequence "WAIT(w!)" "|" "CXLD(x@/!)")
-        ))
-(setq org-todo-keyword-faces '(
-                               ("TODO" :inherit org-todo-todo)
-                               ("NEXT" :inherit org-todo-next)
-                               ("STRT" :inherit org-todo-strt)
-                               ("DONE" :inherit org-todo-done)
+        (sequence "WAIT(w!)" "|" "CXLD(x@/!)")))
 
-                               ("STBY" :inherit org-todo-stby)
-                               ("WAIT" :inherit org-todo-wait)
-                               ("CXLD" :inherit org-todo-cxld)))
+(setq org-todo-keyword-faces
+      '(("TODO" :inherit org-todo-todo)
+        ("NEXT" :inherit org-todo-next)
+        ("STRT" :inherit org-todo-strt)
+        ("DONE" :inherit org-todo-done)
 
-                               ;; ("SCHD" :inherit org-todo-box :background "DeepPink1")
-                               ;; ("PREP" :inherit org-todo-box :background "DeepPink1")
-                               ;; ("READ" :inherit org-todo-box :background "SkyBlue4")
-                               ;; ("DBRF" :inherit org-todo-box :background "gold3")
-                               ;; ("REVW" :inherit org-todo-box :background "gold3")
+        ("STBY" :inherit org-todo-stby)
+        ("WAIT" :inherit org-todo-wait)
+        ("CXLD" :inherit org-todo-cxld)))
 
-(setq org-highest-priority 65
-      org-lowest-priority 69
-      org-default-priority 68)
+;; Priorities
+(setq org-highest-priority ?A
+      org-default-priority ?D
+      org-lowest-priority  ?E)
 
-;; (setq org-priority-faces '((65 . (:foreground "red1"))
-;;                         (66 . (:foreground "DarkOrange1"))
-;;                         (67 . (:foreground "gold1"))
-;;                         (68 . (:foreground "gray40"))
-;;                         (69 . (:foreground "gray20"))))
-
-;; DEFCON theme
+;; Priority theme
 (setq org-priority-faces '((?A . (:inherit org-priority-face-a))
                            (?B . (:inherit org-priority-face-b))
                            (?C . (:inherit org-priority-face-c))
                            (?D . (:inherit org-priority-face-d))
                            (?E . (:inherit org-priority-face-e))))
-(setq org-tags-column -77)              ;Default: -77
-;; Default: auto OR -80.
-;; 89 and not 90 because of org-agenda-category-icon-alist
-(setq org-agenda-tags-column -94)
-(setq org-habit-graph-column 50)
 
+;; Tag columns
+(setq org-tags-column -77)
+(setq org-agenda-tags-column -94)
+
+;; State triggers
 (setq org-todo-state-tags-triggers
       '(("CXLD" ("cancelled" . t) ("standby") ("waiting"))
         ("STBY" ("standby"   . t) ("cancelled") ("waiting"))
@@ -2587,8 +1772,7 @@ return `nil'."
         ("WAIT" ("cancelled") ("standby") ("waiting"))
         ("DONE" ("cancelled") ("standby") ("waiting"))
         (""     ("cancelled") ("standby") ("waiting")))
-      ;; Custom colours for specific tags
-      ;; Used to cause problem when rescheduling items in the agenda, but it seems to be gone now.
+      ;; Custom faces for specific tags
       org-tag-faces
       '(("@home"        . org-tag-location)
         ("@work"        . org-tag-location)
@@ -2606,7 +1790,7 @@ return `nil'."
 
 
 
-;; (setq org-columns-default-format "%TODO(State) %Effort(Effort){:} %CLOCKSUM %70ITEM(Task)")
+;; Default settings for ‘org-columns’
 (setq org-columns-default-format "%55ITEM(Task) %TODO(State) %Effort(Effort){:} %CLOCKSUM")
 
 ;; Global values for properties
@@ -2616,13 +1800,8 @@ return `nil'."
                                     ("SESSION_DURATION_ALL" . "0:45 0:15 0:20 0:30 1:00")
                                     )))
 
-;; (setq org-global-properties nil)
-
-
+;; Archiving location
 (setq org-archive-location "%s.archive::")
-;; (setq org-archive-location "%s.archive.org.gpg::")
-;; (setq org-archive-location "archive.org.gpg::")
-;; (setq org-archive-location "/home/zaeph/org/archive.org.gpg::* From %s")
 
 ;; Keep hierarchy when archiving
 ;; Source: https://fuco1.github.io/2017-04-20-Archive-subtrees-under-the-same-hierarchy-as-original-in-the-archive-files.html
@@ -2678,6 +1857,7 @@ return `nil'."
 (defvar zp/org-format-latex-default-scale 3.0
   "Initial value for the scale of LaTeX previews.")
 
+;; Formatting options for LaTeX preview-blocks
 (setq org-format-latex-options
       '(:foreground default
         :background default
@@ -2699,29 +1879,25 @@ return `nil'."
                 (plist-put org-format-latex-options :scale new-scale))
     (org-latex-preview arg)))
 
-;; Deactivated since migrated to Linux
+;; Load languages with Babel
 (org-babel-do-load-languages 'org-babel-load-languages
                              '((R . t)
                                (python . t)
                                (latex . t)
                                (ledger . t)))
 
-;; Prototype babel
-(org-babel-do-load-languages 'org-babel-load-languages
-                             '((shell . t)
-                               (ditaa . t)))
+(add-hook #'org-babel-after-execute-hook #'org-display-inline-images 'append)
 
-(add-hook 'org-babel-after-execute-hook 'org-display-inline-images 'append)
-
+;; Load library required for PlantUML
 (setq org-ditaa-jar-path "/usr/share/java/ditaa/ditaa-0.11.jar")
 
-
-(add-to-list 'safe-local-variable-values
-             '(after-save-hook . org-html-export-to-html))
-(add-to-list 'safe-local-variable-values
-             '(org-confirm-babel-evaluate . nil))
-(add-to-list 'safe-local-variable-values
-             '( . nil))
+;; Mak some commands safe to use as local-variables
+;; (add-to-list 'safe-local-variable-values
+;;              '(after-save-hook . org-html-export-to-html))
+;; (add-to-list 'safe-local-variable-values
+;;              '(org-confirm-babel-evaluate . nil))
+;; (add-to-list 'safe-local-variable-values
+;;              '( . nil))
 
 (defun zp/org-overview (&optional arg keep-position keep-restriction)
   "Switch to overview mode, showing only top-level headlines.
@@ -2945,14 +2121,14 @@ With a C-u argument, toggle the link display."
   (local-set-key (kbd "M-I") 'org-indent-mode)
   (local-set-key (kbd "M-*") 'zp/org-toggle-fontifications)
   (local-set-key (kbd "C-c C-j") 'zp/org-jump-dwim)
-  (local-set-key (kbd "C-c C-x C-l") #'zp/org-latex-preview-dwim)
-  ;; (local-set-key (kbd "C-c C-w") 'org-refile)
-  ;; (local-set-key (kbd "C-c C-S-w") 'zp/org-refile-with-paths)
-  )
+  (local-set-key (kbd "C-c C-x C-l") #'zp/org-latex-preview-dwim))
+
 (setq org-mode-hook 'org-mode-config)
+
 (define-key mode-specific-map (kbd "a") 'org-agenda)
 
 (defun zp/org-agenda-redo-all ()
+  "Redo all the agenda views."
   (interactive)
   (let ((inhibit-message t))
     (dolist (buffer (buffer-list))
@@ -2960,6 +2136,8 @@ With a C-u argument, toggle the link display."
         (when (derived-mode-p 'org-agenda-mode)
           (org-agenda-maybe-redo))))))
 
+;; Idle timer for rebuilding all the agenda views
+;; Disabled for review
 ;; (run-with-idle-timer 300 t #'zp/org-agenda-redo-all)
 
 
@@ -3078,6 +2256,8 @@ With a C-u argument, toggle the link display."
 
 (defun zp/set-shortcuts-all ()
   (zp/set-shortcuts zp/shortcuts-alist))
+
+
 
 ;; ========================================
 ;; ================= HELM =================
@@ -4744,6 +3924,8 @@ With a ‘C-u’ prefix argument, also kill the main Org buffer."
 ;; ============= ORG-CAPTURE ==============
 ;; ========================================
 
+(require 'org-capture)
+
 (setq org-default-notes-file "/home/zaeph/org/life.org")
 
 ;;; Helper functions
@@ -5765,8 +4947,7 @@ Ensures that the toggles are set to their default variable."
   nil
   media)
 
-
-
+;; Add key bindings
 (global-set-key (kbd "C-c C-w") 'zp/hydra-org-refile)
 (global-set-key (kbd "C-c C-j") 'zp/hydra-org-jump)
 (define-key org-capture-mode-map (kbd "C-c C-w") 'zp/hydra-org-refile)
@@ -5882,6 +5063,78 @@ on init and them removes itself."
     (start-process "zp/appt-notification-app" nil zp/appt-notification-app min-to-app msg)
   (dolist (i (number-sequence 0 (1- (length min-to-app))))
     (start-process "zp/appt-notification-app" nil zp/appt-notification-app (nth i min-to-app) (nth i msg)))))
+
+
+
+;; ========================================
+;; =============== LEDGER =================
+;; ========================================
+
+(autoload 'ledger-mode "ledger-mode" "A major mode for Ledger" t)
+(require 'ledger-mode)
+(add-to-list 'auto-mode-alist '("\\.ledger$" . ledger-mode))
+
+(defvar ledger-use-iso-dates nil)
+(defvar ledger-reconcile-default-commodity nil)
+(defvar ledger-post-auto-adjust-amounts nil)
+(setq ledger-use-iso-dates t
+      ledger-reconcile-default-commodity "EUR"
+      ;; Testing
+      ledger-post-auto-adjust-amounts 1
+      ledger-schedule-file "/home/zaeph/org/ledger/main-schedule.ledger.gpg")
+
+(add-hook 'ledger-reconcile-mode-hook #'balance-windows)
+
+(defun zp/ledger-close-scheduled ()
+  "Close the Ledger Scheduled buffer and window."
+  (interactive)
+  (if (string-match-p (regexp-quote "*Ledger Schedule*") (buffer-name))
+      (progn
+        (kill-buffer)
+        (select-window (previous-window))
+        (delete-other-windows))))
+(define-key ledger-mode-map (kbd "S-<backspace>") 'zp/ledger-close-scheduled)
+
+;; -----------------------------------------------------------------------------
+;; Patch for inserting an empty line after copied transactions
+(defvar ledger-copy-transaction-insert-blank-line-after nil
+  "Non-nil means insert blank line after a transaction inserted
+  with ‘ledger-copy-transaction-at-point’.")
+
+(defun ledger-copy-transaction-at-point (date)
+  "Ask for a new DATE and copy the transaction under point to
+that date.  Leave point on the first amount."
+  (interactive  (list
+                 (ledger-read-date "Copy to date: ")))
+  (let* ((extents (ledger-navigate-find-xact-extents (point)))
+         (transaction (buffer-substring-no-properties (car extents) (cadr extents)))
+         (encoded-date (ledger-parse-iso-date date)))
+    (ledger-xact-find-slot encoded-date)
+    (insert transaction
+            (if ledger-copy-transaction-insert-blank-line-after
+                "\n\n"
+              "\n"))
+    (beginning-of-line -1)
+    (ledger-navigate-beginning-of-xact)
+    (re-search-forward ledger-iso-date-regexp)
+    (replace-match date)
+    (ledger-next-amount)
+    (if (re-search-forward "[-0-9]")
+        (goto-char (match-beginning 0)))))
+
+(setq ledger-copy-transaction-insert-blank-line-after t)
+;; -----------------------------------------------------------------------------
+
+;; -----------------------------------------------------------------------------
+;; Patch for killing transaction
+(defun ledger-kill-current-transaction (pos)
+  "Delete the transaction surrounging POS."
+  (interactive "d")
+  (let ((bounds (ledger-navigate-find-xact-extents pos)))
+    (kill-region (car bounds) (cadr bounds))))
+
+(define-key ledger-mode-map (kbd "C-c C-d") 'ledger-kill-current-transaction)
+;; -----------------------------------------------------------------------------
 
 
 
@@ -8185,12 +7438,16 @@ Every ELEM in LIST is formatted as follows:
 
 (global-set-key [M-kanji] 'ignore)
 
+;; Make M-U equivalent to C-u
+(global-set-key (kbd "M-U") 'universal-argument)
+(define-key universal-argument-map "\M-U" 'universal-argument-more)
+
 ;; (global-set-key (kbd "C-x C-g") 'xah-open-in-external-app)
 
 ;; Unset org-mode keys
 (eval-after-load "org"
   '(progn
-     (define-key org-mode-map (kbd "C-,") nil)))
+    (define-key org-mode-map (kbd "C-,") nil)))
 ;; other-window with neg argument for global-set-key
 (defun other-window-reverse ()
     (interactive)
@@ -8234,6 +7491,9 @@ Every ELEM in LIST is formatted as follows:
 ;; Other toggles
 
 ;; Actions
+(global-set-key (kbd "M-SPC") 'delete-horizontal-space)
+(global-set-key (kbd "M-S-SPC") 'just-one-space)
+(global-set-key (kbd "M-J") 'duplicate-thing)
 (global-set-key (kbd "C-x r q") 'save-buffers-kill-terminal) ;magnar
 (global-set-key (kbd "C-x C-c") 'delete-frame)               ;magnars
 (global-set-key (kbd "C-c c") 'calendar)
@@ -8941,11 +8201,8 @@ If in variable-pitch-mode, change the variable font-preset."
   (set-face-attribute 'org-level-4 nil :foreground "#ed3971")
   (set-face-attribute 'org-meta-line nil :foreground "DodgerBlue3")
   (set-face-attribute 'header-line nil :foreground "#777")
-  (set-face-attribute 'mu4e-system-face nil :foreground "SlateBlue")
-  (set-face-attribute 'mu4e-modeline-face nil :foreground "LightBlue4")
   (set-face-attribute 'line-number nil :foreground "#969996" :background "#2d2d2d")
   (set-face-attribute 'secondary-selection nil :background "#3B3273")
-  (set-face-attribute 'lui-track-bar nil :background "RoyalBlue4")
   (set-face-attribute 'org-column nil :background "#1F1F1F")
   (set-face-attribute 'org-block nil :foreground nil :inherit 'default :background "#1F1F1F")
 
@@ -9005,13 +8262,10 @@ If in variable-pitch-mode, change the variable font-preset."
   (set-face-attribute 'helm-selection nil :background "SteelBlue1")
   (set-face-attribute 'helm-visible-mark nil :background "goldenrod1")
   (set-face-attribute 'header-line nil :foreground "#ccc")
-  (set-face-attribute 'mu4e-system-face nil :foreground "SlateBlue3")
-  (set-face-attribute 'mu4e-modeline-face nil :foreground "LightBlue3")
   (set-face-attribute 'org-agenda-structure nil :foreground "DodgerBlue1" :weight 'bold)
   (set-face-attribute 'line-number nil :foreground "#636663" :background "#d4cdaa")
   ;; (set-face-attribute 'line-number-current-line nil :foreground "#707370" :background "#ccc6a4")
   (set-face-attribute 'secondary-selection nil :background "#d3ccff")
-  (set-face-attribute 'lui-track-bar nil :background "RoyalBlue1")
   (set-face-attribute 'org-column nil :background "#F0E4BE")
   (set-face-attribute 'org-block nil :foreground nil :inherit 'default :background "#F0E6BE")
 
