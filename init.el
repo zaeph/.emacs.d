@@ -3722,14 +3722,14 @@ agenda settings after them."
   (let ((word-list ()))
     (when zp/org-agenda-sorting-strategy-special-first
       (add-to-list 'word-list "+S↓" t))
-    (when zp/org-agenda-split-subtasks
-      (add-to-list 'word-list "+split" t))
     ;; (if (eq org-agenda-dim-blocked-tasks nil)
     ;;     (add-to-list 'word-list "-dimmed" t))
     (when zp/org-agenda-todo-ignore-future
       (add-to-list 'word-list "-future" t))
     (when zp/org-agenda-sort-by-rev-fifo
       (add-to-list 'word-list "+rev-fifo" t))
+    (when zp/org-agenda-split-subtasks
+      (add-to-list 'word-list "+split" t))
     (unless zp/org-agenda-include-waiting
       (add-to-list 'word-list "-waiting" t))
     (let ((header-formatted (zp/org-agenda-format-header-align header))
