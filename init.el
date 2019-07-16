@@ -3551,23 +3551,88 @@ With a prefix argument, do so in all agenda buffers."
   (cond
     ((org-cmp-test-todo "WAIT|STBY" a b))))
 
-(defun zp/org-cmp-time (a b property &optional create)
-  "Sort items by creation time."
-  (let* ((a-pos (get-text-property 0 'org-marker a))
+(defvar zp/org-cmp-time-debug nil
+  "When non-nil, print debug messages when running
+  ‘zp/org-cmp-time’.")
+
+(defun zp/org-cmp-time (a b property &optional set-created)
+  "Sort items by time property.
+
+A and B are the objects to compare (taken from the org-agenda
+building function).
+
+When SET-CREATED is non-nil, create the ‘CREATED’ property and
+set it to the current time.
+
+PROPERTY can either be:
+
+- the name of the property to match as a string,
+  e.g. ‘TIMESTAMP’, ‘SCHEDULED’, ‘DEADLINE’, or any user-defined
+  property like ‘CREATED’
+
+- a list containing the names of the properties to match as
+  strings"
+  (let* ((debug zp/org-cmp-time-debug)
+         (properties (when (and (symbolp property)
+                                (eq property 'all))
+                       '("SCHEDULED" "TIMESTAMP" "CREATED")))
+         (a-pos (get-text-property 0 'org-marker a))
          (b-pos (get-text-property 0 'org-marker b))
          (prop property)
-         (ta-str (or (org-entry-get a-pos prop)
-                     (and create
-                          (org-with-point-at a-pos
-                            (zp/org-set-created-property)))))
-         (tb-str (or (org-entry-get b-pos prop)
-                     (and create
-                          (org-with-point-at b-pos
-                            (zp/org-set-created-property)))))
-         (ta (and ta-str (org-time-string-to-absolute ta-str)))
-         (tb (and tb-str (org-time-string-to-absolute tb-str))))
-    (cond ((if ta (and tb (< ta tb)) tb) +1)
-	  ((if tb (and ta (< tb ta)) ta) -1))))
+         (get-property (lambda (pos)
+                         (if properties
+                             (let* ((data (mapcar (lambda (prop)
+                                                    (org-entry-get pos prop))
+                                                  properties))
+                                    (scheduled-str (pop data))
+                                    (timestamp-str (pop data))
+                                    (created-str   (pop data))
+                                    (scheduled (and scheduled-str
+                                                    (org-time-string-to-seconds
+                                                     scheduled-str)))
+                                    (timestamp (and timestamp-str
+                                                    (org-time-string-to-seconds
+                                                     timestamp-str)))
+                                    (created   (and created-str
+                                                    (org-time-string-to-seconds
+                                                     created-str))))
+                               (prog1 (or scheduled
+                                          timestamp
+                                          created)
+                                 (when debug
+                                   (cond (scheduled-str
+                                          (message "  Scheduled: %s" scheduled-str))
+                                         (timestamp-str
+                                          (message "  Timestamp: %s" timestamp-str))
+                                         (timestamp-str
+                                          (message "  Created: %s" timestamp-str))
+                                         (t
+                                          (message "No time info"))))))
+                           (when-let ((data (org-entry-get pos prop)))
+                             (org-time-string-to-seconds data)))))
+         (ta (progn (when debug
+                      (message "\nComparing ‘%s’"
+                               (org-entry-get a-pos "ITEM")))
+                    (funcall get-property a-pos)))
+         (tb (progn (when debug
+                      (message "With ‘%s’"
+                               (org-entry-get b-pos "ITEM")))
+                    (funcall get-property b-pos))))
+    (when set-created
+      (mapc (lambda (pos)
+              (unless (org-entry-get pos "CREATED")
+                (org-with-point-at pos
+                  (zp/org-set-created-property))))
+            (list a-pos b-pos)))
+    (when-let ((result (cond ((if ta (and tb (< ta tb)) tb) 1)
+                             ((if tb (and ta (< tb ta)) ta) -1))))
+      (when debug
+        (message "Result: %s\n"
+                 (pcase result
+                   (1  "UP: A goes up")
+                   (-1 "DN:A goes down")
+                   (_  "EQ: A and B are equal"))))
+      result)))
 
 (defun zp/org-cmp-created (a b)
   (zp/org-cmp-time a b "CREATED" t))
@@ -3578,7 +3643,18 @@ With a prefix argument, do so in all agenda buffers."
 (defun zp/org-cmp-timestamp (a b)
   (zp/org-cmp-time a b "TIMESTAMP"))
 
-(org-read-date nil t "now")
+(defun zp/org-cmp-time-all (a b)
+  "Sort objects according to their time data.
+
+The objects will be sorted in that order:
+
+- Earlier ‘SCHEDULED’ or ‘TIMESTAMP’ first.
+
+- If ‘SCHEDULED’ and ‘TIMESTAMP’, favour ‘SCHEDULED’.
+
+- Earlier ‘CREATED’ first, and create the property if it doesn’t
+  exist."
+  (zp/org-cmp-time a b 'all t))
 
 (defun zp/org-cmp-created-dwim (a b)
   "Sort items by creation time, priority and specialness conditionally.
@@ -3593,9 +3669,7 @@ afterwards."
   (or (when zp/org-agenda-sorting-strategy-special-first
         (zp/org-cmp-todo-special a b))
       (org-cmp-values a b 'priority)
-      (zp/org-cmp-scheduled a b)
-      (zp/org-cmp-timestamp a b)
-      (zp/org-cmp-created a b)))
+      (zp/org-cmp-time-all a b)))
 
 
 
@@ -3726,16 +3800,18 @@ agenda settings after them."
       (zp/is-subtask-p))))
 
 (defun zp/org-super-agenda-scheduled ()
-  '((:name "Overdue"
+  '((:name "Past appointments"
      :face (:foreground "red")
-     :and (:scheduled past
-           :not (:habit t)))
+     :timestamp past)
+    (:name "Overdue"
+     :face (:foreground "red")
+     :scheduled past)
     (:name "Waiting"
      :and (:tag "waiting"
            :scheduled nil))
-    (:name "Today"
+    (:name "Appointments"
      :timestamp today)
-    (:name "Today: Scheduled"
+    (:name "Scheduled"
      :scheduled today)
     (:name "Subtasks"
      :and (:scheduled nil
@@ -3747,9 +3823,7 @@ agenda settings after them."
      :and (:not (:scheduled t :timestamp t)
            :not (:tag "waiting")))
     (:name "Later"
-     :timestamp future)
-    (:name "Later: Scheduled"
-     :scheduled future)))
+     :anything)))
 
 (defun zp/org-super-agenda-group-heads (item)
   (let ((marker (or (get-text-property 0 'org-marker item)
@@ -3867,7 +3941,6 @@ agenda settings after them."
                      `((org-agenda-files ',file)))
                (org-agenda-sorting-strategy
                 '(user-defined-down
-                  time-down
                   category-keep))
                (org-agenda-skip-function
                 '(or (zp/skip-tasks-not-belonging-to-agenda-groups ',groups)
