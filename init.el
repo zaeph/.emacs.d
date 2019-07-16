@@ -2594,6 +2594,7 @@ return `nil'."
         ("@work"        . org-tag-location)
         ("@town"        . org-tag-location)
         ("standby"      . org-tag-todo)
+        ("routine"      . org-tag-todo)
         ("cxld"         . org-tag-todo)
         ("waiting"      . org-tag-todo)
         ("recurring"    . org-tag-todo)
@@ -3914,7 +3915,7 @@ agenda settings after them."
             ,@(if (bound-and-true-p file)
                   `((org-agenda-files ',file)))
             (org-agenda-span 'week)
-            (org-agenda-tag-filter-preset '("-recurring"))
+            (org-agenda-tag-filter-preset '("-routine"))
             (org-agenda-skip-function
              '(org-agenda-skip-entry-if
                'todo '("CXLD") 'scheduled 'deadline))
@@ -4115,11 +4116,12 @@ It creates 4 blocks:
         ("N" "Agenda (w/o groups)"
              (,(zp/org-agenda-block-agenda "Agenda (w/o groups)" org-agenda-files)))
 
-        ("k" "Weekly agenda (-recurring)"
+        ("k" "Weekly agenda"
              (,(zp/org-agenda-block-agenda-week "Weekly Agenda")))
 
-        ("K" "Weekly appointments (-recurring)"
-             (,(zp/org-agenda-block-agenda-week-appointments-only "Weekly Appointments")))
+        ("K" "Weekly appointments"
+             (,(zp/org-agenda-block-agenda-week-appointments-only
+                "Weekly Appointments (-routine)")))
 
         ("I" "Inactive"
              (,@(zp/org-agenda-blocks-create "Inactive" nil "/STBY")))
