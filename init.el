@@ -3457,6 +3457,7 @@ variables."
          zp/org-agenda-todo-ignore-future t
          org-agenda-todo-ignore-scheduled 'future
          org-agenda-todo-ignore-timestamp 'future
+         zp/org-agenda-sort-by-rev-fifo nil
          ))
 
       ;; View setup
@@ -3575,7 +3576,7 @@ PROPERTY can either be:
   (let* ((debug zp/org-cmp-time-debug)
          (properties (when (and (symbolp property)
                                 (eq property 'all))
-                       '("SCHEDULED" "TIMESTAMP" "CREATED")))
+                       '("SCHEDULED" "TIMESTAMP")))
          (a-pos (get-text-property 0 'org-marker a))
          (b-pos (get-text-property 0 'org-marker b))
          (prop property)
@@ -3586,26 +3587,19 @@ PROPERTY can either be:
                                                   properties))
                                     (scheduled-str (pop data))
                                     (timestamp-str (pop data))
-                                    (created-str   (pop data))
                                     (scheduled (and scheduled-str
                                                     (org-time-string-to-seconds
                                                      scheduled-str)))
                                     (timestamp (and timestamp-str
                                                     (org-time-string-to-seconds
-                                                     timestamp-str)))
-                                    (created   (and created-str
-                                                    (org-time-string-to-seconds
-                                                     created-str))))
+                                                     timestamp-str))))
                                (prog1 (or scheduled
-                                          timestamp
-                                          created)
+                                          timestamp)
                                  (when debug
                                    (cond (scheduled-str
                                           (message "  Scheduled: %s" scheduled-str))
                                          (timestamp-str
                                           (message "  Timestamp: %s" timestamp-str))
-                                         (timestamp-str
-                                          (message "  Created: %s" timestamp-str))
                                          (t
                                           (message "No time info"))))))
                            (when-let ((data (org-entry-get pos prop)))
@@ -3650,11 +3644,8 @@ The objects will be sorted in that order:
 
 - Earlier ‘SCHEDULED’ or ‘TIMESTAMP’ first.
 
-- If ‘SCHEDULED’ and ‘TIMESTAMP’, favour ‘SCHEDULED’.
-
-- Earlier ‘CREATED’ first, and create the property if it doesn’t
-  exist."
-  (zp/org-cmp-time a b 'all t))
+- If ‘SCHEDULED’ and ‘TIMESTAMP’, favour ‘SCHEDULED’."
+  (zp/org-cmp-time a b 'all))
 
 (defun zp/org-cmp-created-dwim (a b)
   "Sort items by creation time, priority and specialness conditionally.
@@ -3666,10 +3657,14 @@ This function also checks for priority because only one
 ‘org-agenda-cmp-user-defined’ can be specified at a time.  When
 sorting with this function, make sure not to use use ‘priority’
 afterwards."
-  (or (when zp/org-agenda-sorting-strategy-special-first
-        (zp/org-cmp-todo-special a b))
-      (org-cmp-values a b 'priority)
-      (zp/org-cmp-time-all a b)))
+  (let ((reverse zp/org-agenda-sort-by-rev-fifo))
+    (or (zp/org-cmp-time-all (if reverse b a)
+                             (if reverse a b))
+        (when zp/org-agenda-sorting-strategy-special-first
+          (zp/org-cmp-todo-special a b))
+        (org-cmp-values a b 'priority)
+        (zp/org-cmp-created (if reverse b a)
+                            (if reverse a b)))))
 
 
 
@@ -3733,6 +3728,8 @@ agenda settings after them."
     ;;     (add-to-list 'word-list "-dimmed" t))
     (when zp/org-agenda-todo-ignore-future
       (add-to-list 'word-list "-future" t))
+    (when zp/org-agenda-sort-by-rev-fifo
+      (add-to-list 'word-list "+rev-fifo" t))
     (unless zp/org-agenda-include-waiting
       (add-to-list 'word-list "-waiting" t))
     (let ((header-formatted (zp/org-agenda-format-header-align header))
@@ -4376,12 +4373,24 @@ due today, and showing all of them."
          (org-agenda-redo)
          (message "Ignore items in the future."))))
 
+(defvar zp/org-agenda-sort-by-rev-fifo nil
+  "When non-nil, sort by reverse FIFO order.")
+
+(defun zp/toggle-org-agenda-sort-by-rev-fifo ()
+  (interactive)
+  (if (prog1 (zp/set-agenda-local 'zp/org-agenda-sort-by-rev-fifo
+                                  (not (zp/get-agenda-local
+                                        'zp/org-agenda-sort-by-rev-fifo)))
+        (org-agenda-redo))
+      (message "Show items in reverse FIFO order.")
+    (message "Show items in FIFO order.")))
+
 (defun zp/toggle-org-agenda-projects-include-waiting ()
   "Toggle whether to include projects with a waiting task."
   (interactive)
   (if (prog1 (zp/set-agenda-local 'zp/org-agenda-include-waiting
-                               (not (zp/get-agenda-local
-                                     'zp/org-agenda-include-waiting)))
+                                  (not (zp/get-agenda-local
+                                        'zp/org-agenda-include-waiting)))
         (org-agenda-redo))
       (message "Waiting: Visible")
     (message "Waiting: Hidden")))
