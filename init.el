@@ -4030,7 +4030,7 @@ It creates 4 blocks:
 
 (defun zp/org-agenda-variant-create (prefix-key key prefix-header header groups tags by-groups file)
   (let ((variant-key (concat prefix-key key))
-        (variant-header (concat header ": " prefix-header)))
+        (variant-header (concat prefix-header ": " header)))
     `(,variant-key
       ,variant-header
       ,(zp/org-agenda-blocks-create variant-header groups tags by-groups file))))
