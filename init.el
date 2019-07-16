@@ -295,8 +295,9 @@ that date.  Leave point on the first amount."
 (setq flycheck-emacs-lisp-load-path 'inherit
       flycheck-display-errors-delay 0.5)
 
-(add-hook 'sh-mode-hook 'flycheck-mode)
-(add-hook 'cperl-mode-hook 'flycheck-mode)
+(add-hook #'sh-mode-hook #'flycheck-mode)
+(add-hook #'cperl-mode-hook #'flycheck-mode)
+(add-hook #'elisp-mode-hook #'flycheck-mode)
 
 ;; (require 'flycheck-pos-tip)
 ;; (flycheck-pos-tip-mode)
