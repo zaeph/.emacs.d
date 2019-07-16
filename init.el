@@ -2480,7 +2480,7 @@ return `nil'."
       org-track-ordered-property-with-tag "ORDERED"
       ;; org-tags-exclude-from-inheritance '("project")
       org-tags-exclude-from-inheritance nil
-      org-agenda-hide-tags-regexp "recurring\\|waiting\\|standby\\|curios"
+      org-agenda-hide-tags-regexp "recurring\\|waiting\\|standby"
       org-catch-invisible-edits 'error
       org-footnote-define-inline 1)
 
@@ -3939,6 +3939,8 @@ agenda settings after them."
                 (zp/org-agenda-format-header-block-with-settings "Tasks"))
                ,@(if (bound-and-true-p file)
                      `((org-agenda-files ',file)))
+               (org-agenda-hide-tags-regexp
+                (concat org-agenda-hide-tags-regexp "\\|curios"))
                (org-agenda-sorting-strategy
                 '(user-defined-down
                   category-keep))
