@@ -3463,6 +3463,7 @@ variables."
          ))
 
       ;; View setup
+      org-agenda-timegrid-use-ampm t
       org-agenda-window-setup 'current-window
       org-agenda-compact-blocks nil
       org-agenda-entry-text-maxlines 10
