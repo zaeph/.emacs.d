@@ -3454,9 +3454,11 @@ variables."
          zp/org-agenda-sorting-strategy-special-first nil
          zp/org-agenda-split-subtasks nil
          zp/org-agenda-include-waiting t
+
          zp/org-agenda-todo-ignore-future t
          org-agenda-todo-ignore-scheduled 'future
          org-agenda-todo-ignore-timestamp 'future
+
          zp/org-agenda-sort-by-rev-fifo nil
          ))
 
