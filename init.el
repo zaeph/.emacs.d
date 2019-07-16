@@ -5422,7 +5422,7 @@ Ensures that the toggles are set to their default variable."
     (zp/hydra-org-refile-cleanup))
   (zp/hydra-org-jump/body))
 
-(defmacro zp/create-hydra-org-refile-protocol (protocol chain name docstring targets heads &optional back)
+(defmacro zp/create-hydra-org-refile-protocol (protocol chain name docstring targets &optional heads back)
   (declare (indent defun) (doc-string 2))
   (let* ((protocol-name (symbol-name protocol))
          (hydra (intern (concat "zp/hydra-org-"
@@ -5474,17 +5474,18 @@ Ensures that the toggles are set to their default variable."
                                  `(zp/hydra-org-refile-cleanup))))))
                  targets)
        ;; Create other heads
-       ,@(mapcar (lambda (head)
-                   (let* ((key (car head))
-                          (head-name (symbol-name (cadr head)))
-                          (head-hydra (intern (concat "zp/hydra-org-"
-                                                      protocol-name
-                                                      (when chain
-                                                        "-chain")
-                                                      "-" head-name
-                                                      "/body"))))
-                     `(,key ,head-hydra :exit t)))
-                 heads)
+       ,@(when heads
+           (mapcar (lambda (head)
+                     (let* ((key (car head))
+                            (head-name (symbol-name (cadr head)))
+                            (head-hydra (intern (concat "zp/hydra-org-"
+                                                        protocol-name
+                                                        (when chain
+                                                          "-chain")
+                                                        "-" head-name
+                                                        "/body"))))
+                       `(,key ,head-hydra :exit t)))
+                   heads))
        ;; Conditional actions
        ("C-c" ,hydra-sister
             (concat (if zp/hydra-org-refile-chain
@@ -5521,7 +5522,7 @@ Ensures that the toggles are set to their default variable."
               (zp/hydra-org-refile-cleanup)
               (message "Cancelled")) "cancel" :exit t))))
 
-(defmacro zp/create-hydra-org-refile (name docstring targets heads &optional back)
+(defmacro zp/create-hydra-org-refile (name docstring targets &optional heads back)
   (declare (indent 2) (doc-string 2))
   `(progn
      (zp/create-hydra-org-refile-protocol refile nil
@@ -5535,67 +5536,85 @@ Ensures that the toggles are set to their default variable."
 
 (zp/create-hydra-org-refile nil
     "
-^Life^               ^Other^        ^Mental^
-^^^^^^-----------------------------------------------
-_i_: Inbox           _u_: University    _A_: Awakening
-_o_: Life            _r_: Research      _P_: Psychotherapy
-_O_: Curiosities     _t_: Teaching
-_s_: Social          _P_: Politics
-_n_: Nicolas
-_S_: Swimming
-_R_: Running
-_T_: Typography
-^^
-_x_: Maintenance
-_p_: Pro
-_m_: Media
-_c_: Calendars
-_h_: Hacking
+  ^Life^              ^Pages^^^
+ ^^^^^^------------------------------------
+  _i_: Inbox          _x_/_X_: Maintenance
+  _o_: Life           _p_/_P_: Pro
+  _k_: Curiosities    _r_/_R_: Research
+  _s_: Social         _m_/_M_: Media
+  _n_: Nicolas        _h_/_H_: Hacking
+  _S_: Swimming
+  _R_: Running
+  _a_: Politics       _c_/_C_: Calendars
 "
   (("i" "~/org/life.org" "Inbox")
    ("o" "~/org/life.org" "Life")
-   ("O" "~/org/life.org" "Curiosities")
+   ("k" "~/org/life.org" "Curiosities")
    ("s" "~/org/life.org" "Social")
    ("n" "~/org/life.org" "Social" "Nicolas")
    ("S" "~/org/life.org" "Swimming")
    ("R" "~/org/life.org" "Running")
-   ("M" "~/org/life.org" "Media")
-   ("T" "~/org/life.org" "Typography")
+   ("a" "~/org/life.org" "Politics")
+
    ("X" "~/org/life.org" "Maintenance")
-   ("A" "~/org/life.org" "Awakening")
-   ("P" "~/org/life.org" "Psychotherapy")
-   ("P" "~/org/life.org" "Politics")
-   ("r" "~/org/life.org" "Research"))
-  (("c" calendars)
+   ("P" "~/org/life.org" "Professional")
+   ("R" "~/org/life.org" "Research")
+   ("M" "~/org/life.org" "Media")
+   ("H" "~/org/life.org" "Hacking")
+
+   ("C" "~/org/life.org" "Life" "Calendar"))
+  (("x" mx)
    ("p" pro)
-   ("x" maintenance)
+   ("r" research)
    ("m" media)
-   ("h" hack)))
+   ("h" hack)
+   ("c" calendars)))
+
+(zp/create-hydra-org-refile research
+    "
+  ^Research^
+ ^^---------------------
+  _._: Root
+  _c_: Computer Science
+  _m_: Mathematics
+  _p_: Philosophy
+  _l_: Linguistics
+  _h_: History
+  _t_: Typography
+"
+  (("." "~/org/life.org" "Research")
+   ("c" "~/org/life.org" "Computer Science")
+   ("m" "~/org/life.org" "Mathematics")
+   ("p" "~/org/life.org" "Philosophy")
+   ("l" "~/org/life.org" "Linguistics")
+   ("h" "~/org/life.org" "History")
+   ("t" "~/org/life.org" "Typography")))
 
 (zp/create-hydra-org-refile pro
     "
-^Pro^
-^^----------------------------------------------------------------------
-_s_: School
-_u_: University
+  ^Professional^
+ ^^---------------
+  _._: Root
+  _s_: School
+  _u_: University
 "
-  (("s" "~/org/life.org" "School")
-   ("u" "~/org/life.org" "University"))
-  nil)
+  (("." "~/org/life.org" "Professional")
+   ("s" "~/org/life.org" "School")
+   ("u" "~/org/life.org" "University")))
 
 (zp/create-hydra-org-refile hack
     "
-^Hacking^
-^^----------------------------------------------------------------------
-_._: Root
-_e_: Emacs
-_i_: Elisp
-_o_: Org
-_t_: LaTeX
-_l_: Linux
-_n_: NixOS
-_g_: Git
-_p_: Perl
+  ^Hacking^
+ ^^----------
+  _._: Root
+  _e_: Emacs
+  _i_: Elisp
+  _o_: Org
+  _t_: LaTeX
+  _l_: Linux
+  _n_: NixOS
+  _g_: Git
+  _p_: Perl
 "
   (("." "~/org/life.org" "Hacking")
    ("e" "~/org/life.org" "Emacs")
@@ -5607,99 +5626,94 @@ _p_: Perl
    ("g" "~/org/life.org" "Git")
    ("p" "~/org/life.org" "Perl")
 
-   ("c" "~/org/life.org" "Contributing")
-   ("b" "~/org/life.org" "Troubleshooting"))
-  nil)
+   ;; ("c" "~/org/life.org" "Contributing")
+   ;; ("b" "~/org/life.org" "Troubleshooting")
+   ))
 
 (zp/create-hydra-org-refile calendars
     "
-^Calendars^
-^^----------------------------------------------------------------------
-_o_: Life
-_P_: Psychotherapy
-_p_: Politics
-_m_: Media
-_n_: Nicolas
-_a_: Animals
-_s_: Social
-_f_: Finances
-_h_: Hacking
-_u_: University
+  ^Calendars^
+ ^^------------------
+  _o_: Life
+  _s_: Social
+  _n_: Nicolas
+  _x_: Maintenance
+  _f_: Finances
+  _a_: Animals
+  _p_: Professional
+  _s_: School
+  _u_: University
+  _r_: Research
+  _h_: Hacking
+  _P_: Politics
+  _m_: Media
 "
   (("o" "/home/zaeph/org/life.org" "Life" "Calendar")
-   ("p" "/home/zaeph/org/life.org" "Politics" "Calendar")
-   ("h" "/home/zaeph/org/life.org" "Hacking" "Calendar")
-   ("u" "/home/zaeph/org/life.org" "University" "Calendar")
-   ("P" "/home/zaeph/org/life.org" "Psychotherapy" "Calendar")
-   ("m" "/home/zaeph/org/life.org" "Media" "Calendar")
-   ("n" "/home/zaeph/org/life.org" "Social" "Nicolas" "Calendar")
-   ("a" "/home/zaeph/org/life.org" "Animals" "Calendar")
    ("s" "/home/zaeph/org/life.org" "Social" "Calendar")
-   ("f" "/home/zaeph/org/life.org" "Finances" "Calendar"))
+   ("n" "/home/zaeph/org/life.org" "Social" "Nicolas" "Calendar")
+   ("x" "/home/zaeph/org/life.org" "Maintenance" "Calendar")
+   ("f" "/home/zaeph/org/life.org" "Finances" "Calendar")
+   ("a" "/home/zaeph/org/life.org" "Animals" "Calendar")
+   ("p" "/home/zaeph/org/life.org" "Professional" "Calendar")
+   ("s" "/home/zaeph/org/life.org" "School" "Calendar")
+   ("u" "/home/zaeph/org/life.org" "University" "Calendar")
+   ("r" "/home/zaeph/org/life.org" "Research" "Calendar")
+   ("h" "/home/zaeph/org/life.org" "Hacking" "Calendar")
+   ("P" "/home/zaeph/org/life.org" "Politics" "Calendar")
+   ("m" "/home/zaeph/org/life.org" "Media" "Calendar"))
   nil)
 
-(zp/create-hydra-org-refile maintenance
+(zp/create-hydra-org-refile mx
     "
-^Maintenance^
-^^----------------------------------------------------------------------
-_._: Root
-_c_: Cleaning
-_k_: Cooking
-_h_: Health
-_s_: Supplies
-_f_: Finances
+  ^Maintenance^
+ ^^-------------
+  _._: Root
+  _f_: Finances
+  _a_: Animals
+  _c_: Cleaning
+  _p_: Plants
+  _s_: Supplies
+  _k_: Cooking
+  _g_: Grooming
+  _h_: Health
 "
   (("." "/home/zaeph/org/life.org" "Maintenance")
-   ("c" "/home/zaeph/org/life.org" "Cleaning")
-   ("k" "/home/zaeph/org/life.org" "Cooking")
-   ("h" "/home/zaeph/org/life.org" "Health")
    ("f" "/home/zaeph/org/life.org" "Finances")
-   ("s" "/home/zaeph/org/life.org" "Supplies"))
-  nil
-  nil)
+   ("a" "/home/zaeph/org/life.org" "Animals")
+   ("c" "/home/zaeph/org/life.org" "Cleaning")
+   ("p" "/home/zaeph/org/life.org" "Plants")
+   ("s" "/home/zaeph/org/life.org" "Supplies")
+   ("k" "/home/zaeph/org/life.org" "Cooking")
+   ("g" "/home/zaeph/org/life.org" "Grooming")
+   ("h" "/home/zaeph/org/life.org" "Health")))
 
 (zp/create-hydra-org-refile media
     "
-^Media^
-^^----------------------------------------------------------------------
-_._: Root
-_m_: Music
-_n_: News
-_f_: Film
-_b_: Books
+  ^Media^      ^Pages^^^
+ ^^^^^^------------------------
+  _._: Root    _b_/_B_: Books
+  _n_: News    _f_/_F_: Film
+             ^^_s_/_S_: Series
+             ^^_m_/_M_: Music
 "
   (("." "/home/zaeph/org/life.org" "Media")
-   ("M" "/home/zaeph/org/life.org" "Music")
-   ("n" "/home/zaeph/org/life.org" "News")
-   ("F" "/home/zaeph/org/life.org" "Film")
    ("B" "/home/zaeph/org/life.org" "Books")
-   ("W" "/home/zaeph/org/life.org" "Film"))
-  (("m" music)
-   ("b" books)
-   ("f" film))
-  nil)
-
-(zp/create-hydra-org-refile film
-    "
-^Film^
-^^----------------------------------------------------------------------
-_._: Root
-_l_: List
-_d_: Watched
-"
-  (("." "/home/zaeph/org/life.org" "Film")
-   ("l" "/home/zaeph/org/life.org" "Film" "List")
-   ("d" "/home/zaeph/org/life.org" "Film" "Watched"))
-  nil
-  media)
+   ("n" "/home/zaeph/org/life.org" "News")
+   ("M" "/home/zaeph/org/life.org" "Music")
+   ("F" "/home/zaeph/org/life.org" "Film")
+   ("S" "/home/zaeph/org/life.org" "Series"))
+  (("b" books)
+   ("f" film)
+   ("s" series)
+   ("m" music)))
 
 (zp/create-hydra-org-refile books
     "
-^Books^
-^^----------------------------------------------------------------------
-_._: Root
-_l_: List
-_d_: Read
+  ^Books^
+ ^^---------
+  _._: Root
+  _l_: List
+  _d_: Read
 "
   (("." "/home/zaeph/org/life.org" "Books")
    ("l" "/home/zaeph/org/life.org" "Books" "List")
@@ -5707,17 +5721,47 @@ _d_: Read
   nil
   media)
 
+(zp/create-hydra-org-refile film
+    "
+  ^Film^
+ ^^------------
+  _._: Root
+  _l_: List
+  _d_: Watched
+"
+  (("." "/home/zaeph/org/life.org" "Film")
+   ("l" "/home/zaeph/org/life.org" "Film" "List")
+   ("d" "/home/zaeph/org/life.org" "Film" "Watched"))
+  nil
+  media)
+
+(zp/create-hydra-org-refile series
+    "
+  ^Series^
+ ^^------------
+  _._: Root
+  _l_: List
+  _d_: Watched
+"
+  (("." "/home/zaeph/org/life.org" "Series")
+   ("l" "/home/zaeph/org/life.org" "Series" "List")
+   ("d" "/home/zaeph/org/life.org" "Series" "Watched"))
+  nil
+  media)
+
 (zp/create-hydra-org-refile music
     "
-^Music^
-^^----------------------------------------------------------------------
-_._: Root
-_c_: Classical
-_J_: Jazz
+  ^Music^
+ ^^-----------------
+  _._: Root
+  _c_: Classical
+  _j_: Jazz
+  _o_: Other genres
 "
   (("." "/home/zaeph/org/life.org" "Music")
    ("c" "/home/zaeph/org/life.org" "Music" "List of classical pieces")
-   ("J" "/home/zaeph/org/life.org" "Music" "List of jazz pieces"))
+   ("j" "/home/zaeph/org/life.org" "Music" "List of jazz pieces")
+   ("o" "/home/zaeph/org/life.org" "Music" "List of other genres"))
   nil
   media)
 
