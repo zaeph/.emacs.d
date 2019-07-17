@@ -225,8 +225,7 @@
   ;; (setq which-key-idle-delay 1) ;Default
 )
 
-;; lilypond-mode
-(require 'lilypond-mode)
+(use-package lilypond-mode)
 
 ;; Nov
 (add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode))
