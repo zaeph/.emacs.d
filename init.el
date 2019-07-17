@@ -244,8 +244,6 @@
 ;; (require 'exwm-config)
 ;; (exwm-config-default)
 
-;; line-number-mode
-;; (setq display-line-numbers 'relative)
 
 ;; Fountain
 (require 'fountain-mode)
