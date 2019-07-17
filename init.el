@@ -2439,7 +2439,10 @@ variables."
                                            (cons setting (eval setting)))
                                          settings))))))
 
+  ;;----------------
   ;; Category icons
+  ;;----------------
+
   (defvar zp/org-agenda-include-category-icons nil
     "When non-nil, show category icons in the agenda")
 
@@ -2516,6 +2519,10 @@ off.")
           ("^cleaning$" "~/org/svg/icons/bucket.svg" nil nil :ascent center)
 
           (".*" '(space . (:width (24))) nil nil :ascent center)))
+
+  ;;----------
+  ;; Commands
+  ;;----------
 
   (defun zp/org-agenda-benchmark (&optional arg)
     "Rebuild the agenda and display the time it took to do so.
