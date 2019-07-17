@@ -105,6 +105,10 @@
 ;; Disable final newline insertion
 (setq-default require-final-newline nil)
 
+;; Disable mouse focus
+(setq focus-follows-mouse nil)
+(setq mouse-autoselect-window nil)
+
 ;; Transparency
 ;; (set-frame-parameter (selected-frame) 'alpha '(95 . 95))
 ;; (add-to-list 'default-frame-alist '(alpha . (95 . 95)))
@@ -924,8 +928,6 @@ based on ‘zp/message-mode-ispell-alist’."
 ;; Focus follows mouse
 ;; (setq focus-follows-mouse t)
 ;; (setq mouse-autoselect-window t)
-(setq focus-follows-mouse nil)
-(setq mouse-autoselect-window nil)
 
 ;; Linum parameters
 (require 'linum)
