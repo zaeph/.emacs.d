@@ -112,6 +112,9 @@
 (setq focus-follows-mouse nil)
 (setq mouse-autoselect-window nil)
 
+;; Enable visual bell
+(setq visible-bell 1)
+
 ;; Transparency
 ;; (set-frame-parameter (selected-frame) 'alpha '(95 . 95))
 ;; (add-to-list 'default-frame-alist '(alpha . (95 . 95)))
@@ -1050,9 +1053,6 @@ based on ‘zp/message-mode-ispell-alist’."
 ;; (global-set-key (kbd "<mouse-7>") 'ignore)
 ;; (global-set-key (kbd "<triple-mouse-7>") 'ignore)
 ;; (global-set-key (kbd "<triple-mouse-6>") 'ignore)
-
-;; Bell
-(setq visible-bell 1)
 
 ;; Fullscreen
 (toggle-frame-maximized)
