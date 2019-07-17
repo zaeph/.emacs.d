@@ -217,9 +217,7 @@
   :config
   (add-hook #'dired-mode-hook #'turn-on-gnus-dired-mode))
 
-;; eyebrowse
-(require 'eyebrowse)
-;; (eyebrowse-mode)
+(use-package eyebrowse)
 
 ;; which-key
 (require 'which-key)
