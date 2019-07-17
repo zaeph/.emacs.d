@@ -255,9 +255,10 @@
                              olivetti-mode)))
 
 ;; so-long
-(require 'so-long)
-(global-so-long-mode 1)
-(add-hook #'debugger-mode-hook #'so-long-minor-mode)
+(use-package so-long
+  :config
+  (global-so-long-mode 1)
+  (add-hook #'debugger-mode-hook #'so-long-minor-mode))
 
 
 
