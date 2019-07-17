@@ -390,8 +390,24 @@ time is displayed."
 
 (use-package ws-butler
   :config
-  (add-hook 'prog-mode-hook #'ws-butler-mode)
-  (add-hook 'prog-mode-hook #'zp/whitespace-mode-lines-tail))
+  (add-hook 'prog-mode-hook #'ws-butler-mode))
+
+(use-package whitespace
+  :config
+  (defun zp/whitespace-mode-lines-tail ()
+    (interactive)
+    (if (bound-and-true-p whitespace-mode)
+        (progn
+          (whitespace-mode -1)
+          (message "Whitespace mode disabled in current buffer"))
+      (let ((whitespace-style '(face trailing lines-tail))
+            (whitespace-line-column 80))
+        (whitespace-mode t)
+        (message "Whitespace mode enabled in current buffer"))))
+
+  (add-hook 'prog-mode-hook #'zp/whitespace-mode-lines-tail)
+
+  (global-set-key (kbd "C-c w") 'zp/whitespace-mode-lines-tail))
 
 (use-package info+
   :config
@@ -4641,17 +4657,8 @@ running."
 ;; =========== WHITESPACE-MODE ============
 ;; ========================================
 
-(require 'whitespace)
-(defun zp/whitespace-mode-lines-tail ()
-  (interactive)
-  (if (bound-and-true-p whitespace-mode)
-      (progn
-        (whitespace-mode -1)
-        (message "Whitespace mode disabled in current buffer"))
-    (let ((whitespace-style '(face trailing lines-tail))
-          (whitespace-line-column 80))
-      (whitespace-mode t)
-      (message "Whitespace mode enabled in current buffer"))))
+
+
 
 
 
@@ -6846,7 +6853,6 @@ Every ELEM in LIST is formatted as follows:
 (global-set-key (kbd "M-U")   'visual-line-mode)
 (global-set-key (kbd "M-O")   'olivetti-mode)
 (global-set-key (kbd "M-W")   'writeroom-mode)
-(global-set-key (kbd "C-c w") 'zp/whitespace-mode-lines-tail)
 (global-set-key (kbd "C-c W") 'whitespace-mode)
 
 ;; Prototype
