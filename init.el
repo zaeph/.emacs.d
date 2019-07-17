@@ -32,7 +32,7 @@
 
 ;; Add folders to load-path
 (add-to-list 'load-path "~/.emacs.d/lisp")
-(add-to-list 'load-path (expand-file-name "/usr/share/emacs/site-lisp"))
+(add-to-list 'load-path "/usr/share/emacs/site-lisp")
 
 ;; Point to my Emacs fork for studying built-in functions
 (setq source-directory "~/projects/forks/emacs")
