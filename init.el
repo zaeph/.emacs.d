@@ -233,8 +233,7 @@
   (add-to-list 'auto-mode-alist '("\\.mobi\\'" . nov-mode))
   (add-hook #'nov-mode-hook #'olivetti-mode))
 
-;; el-patch
-(require 'el-patch)
+(use-package el-patch)
 
 ;; org-mind-map
 (require 'ox-org)
