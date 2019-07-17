@@ -239,11 +239,13 @@
 
 (use-package org-mind-map)
 
-;; EXWM
-;; (require 'exwm)
-;; (require 'exwm-config)
-;; (exwm-config-default)
+(use-package exwm-config)
 
+(use-package exwm
+  :disabled
+  :requires exwm-config
+  :config
+  (exwm-config-default))
 
 ;; Fountain
 (require 'fountain-mode)
