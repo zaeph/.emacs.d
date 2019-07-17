@@ -1066,8 +1066,10 @@ based on ‘zp/message-mode-ispell-alist’."
 ;; (global-set-key (kbd "<triple-mouse-6>") 'ignore)
 
 ;; Time
-(setq display-time-default-load-average nil)
-(display-time-mode 1)
+(use-package time
+  :config
+  (setq display-time-default-load-average nil)
+  (display-time-mode 1))
 
 ;; DocView
 ;; (add-hook 'doc-view-mode-hook 'auto-revert-mode)
