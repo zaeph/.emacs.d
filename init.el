@@ -99,6 +99,12 @@
 ;; Enable disabled commands
 (setq disabled-command-function nil)
 
+;; Do not display continuation lines
+(set-default 'truncate-lines t)
+
+;; Disable final newline insertion
+(setq-default require-final-newline nil)
+
 ;; Transparency
 ;; (set-frame-parameter (selected-frame) 'alpha '(95 . 95))
 ;; (add-to-list 'default-frame-alist '(alpha . (95 . 95)))
@@ -849,32 +855,61 @@ based on ‘zp/message-mode-ispell-alist’."
 
   (add-hook 'notmuch-show-mode-hook #'zp/notmuch-show-mode-config))
 
-;; ========================================
-;; ================ MODES =================
-;; ========================================
-
-;; Modes
-(menu-bar-mode -1)
-(tool-bar-mode -1)
-(scroll-bar-mode 0)
-(fringe-mode 20)
-(show-paren-mode 1)
-(yas-global-mode 1)
-(column-number-mode 1)
-(blink-cursor-mode -1)
-(winner-mode 1)
-(set-default 'truncate-lines t)
-(electric-quote-mode 1)
-;; (dumb-jump-mode)
-;; (global-visible-mark-mode 1)
-
-(setq next-line-add-newlines nil)
-(setq-default require-final-newline nil)
-(setq scroll-preserve-screen-position 't)
 
 
-;; (global-linum-mode 1)
-;; (global-hl-line-mode 1)
+;;----------------------------------------------------------------------------
+;; Cosmetic options
+;;----------------------------------------------------------------------------
+
+(use-package menu-bar
+  :config
+  (menu-bar-mode -1))
+
+(use-package tool-bar
+  :config
+  (tool-bar-mode -1))
+
+(use-package scroll-bar
+  :config
+  (scroll-bar-mode 0))
+
+(use-package fringe
+  :config
+  (fringe-mode 20))
+
+(use-package paren
+  :config
+  (show-paren-mode 1))
+
+(use-package yasnippet
+  :config
+  (yas-global-mode 1))
+
+(use-package simple
+  :config
+  (column-number-mode 1)
+  (setq next-line-add-newlines nil))
+
+(use-package frame
+  :config
+  (blink-cursor-mode -1))
+
+(use-package winner
+  :config
+  (winner-mode 1))
+
+(use-package electric
+  :config
+  (electric-quote-mode 1))
+
+;; (use-package dumb-jump
+;;   :config
+;;   (dumb-jump-mode)
+;;   (global-visible-mark-mode 1))
+
+(use-package files
+  :config
+  (setq-default require-final-newline nil))
 
 ;; Windmove
 (windmove-default-keybindings 'super)
