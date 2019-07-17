@@ -161,6 +161,18 @@
 
 
 ;;----------------------------------------------------------------------------
+;; Helper functions
+;;----------------------------------------------------------------------------
+
+(defun zp/get-string-from-file (file-path)
+  "Read file content from path."
+  (with-temp-buffer
+    (insert-file-contents file-path)
+    (buffer-string)))
+
+
+
+;;----------------------------------------------------------------------------
 ;; Packages
 ;;----------------------------------------------------------------------------
 
@@ -414,18 +426,6 @@ LANGUAGE should be the name of an Ispell dictionary."
                           (string-match-p current "british"))
                          "French"
                        "English"))))
-
-
-
-;; ========================================
-;; ================= DEFUN ================
-;; ========================================
-
-(defun zp/get-string-from-file (file-path)
-  "Read file content from path."
-  (with-temp-buffer
-    (insert-file-contents file-path)
-    (buffer-string)))
 
 
 
