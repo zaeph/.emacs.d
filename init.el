@@ -2536,10 +2536,10 @@ variables."
         org-deadline-warning-days 30
         org-agenda-cmp-user-defined 'zp/org-cmp-created-dwim
         org-agenda-sorting-strategy
-        '((agenda user-defined-down category-keep)
+        '((agenda habit-down deadline-up time-up scheduled-up priority-down category-keep)
           (tags user-defined-down category-keep)
           (todo user-defined-down category-keep)
-          (search user-defined-down category-keep))
+          (search category-keep))
 
         ;; Initialise the list structure for local variables
         zp/org-agenda-local-config
