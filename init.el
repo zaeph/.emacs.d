@@ -1058,11 +1058,11 @@ based on ‘zp/message-mode-ispell-alist’."
     (local-set-key (kbd "C-c C-z") #'zp/message-kill-to-signature))
 
   (require 'orgalist)
-  (add-hook 'message-setup-hook #'flyspell-mode)
-  (add-hook 'message-setup-hook #'orgalist-mode)
-  (add-hook 'message-setup-hook #'zp/message-flyspell-auto)
-  (add-hook 'message-setup-hook #'electric-quote-local-mode)
-  (add-hook 'message-setup-hook #'zp/notmuch-message-mode-config)
+  (add-hook #'message-setup-hook #'flyspell-mode)
+  (add-hook #'message-setup-hook #'orgalist-mode)
+  (add-hook #'message-setup-hook #'zp/message-flyspell-auto)
+  (add-hook #'message-setup-hook #'electric-quote-local-mode)
+  (add-hook #'message-setup-hook #'zp/notmuch-message-mode-config)
   ;; (add-hook 'message-mode-hook #'footnote-mode)
 
   (defun zp/notmuch-show-mode-config ()
