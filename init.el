@@ -911,10 +911,15 @@ based on ‘zp/message-mode-ispell-alist’."
   :config
   (setq-default require-final-newline nil))
 
-;; Windmove
-(windmove-default-keybindings 'super)
-(setq windmove-wrap-around t)
-;; (desktop-save-mode 1)
+(use-package windmove
+  :config
+  (windmove-default-keybindings 'super)
+  (setq windmove-wrap-around t))
+
+(use-package desktop
+  :disabled
+  :config
+  (desktop-save-mode 1))
 
 ;; Focus follows mouse
 ;; (setq focus-follows-mouse t)
