@@ -1071,8 +1071,6 @@ based on ‘zp/message-mode-ispell-alist’."
   (setq display-time-default-load-average nil)
   (display-time-mode 1))
 
-;; DocView
-;; (add-hook 'doc-view-mode-hook 'auto-revert-mode)
 
 (defun zp/toggle-pdf-view-auto-slice-minor-mode ()
   (interactive)
