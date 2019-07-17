@@ -489,6 +489,11 @@ end-of-buffer signals; pass the rest to the default handler."
 
   (add-hook #'emacs-lisp-mode-hook #'lispy-mode))
 
+(use-package olivetti
+  :config
+  (setq-default olivetti-body-width 0.6
+                olivetti-minimum-body-width 80))
+
 
 
 ;;----------------------------------------------------------------------------
@@ -2371,10 +2376,7 @@ indirect-buffers."
 ;; =============== OLIVETTI ===============
 ;; ========================================
 
-(use-package olivetti
-  :config
-  (setq-default olivetti-body-width 0.6
-                olivetti-minimum-body-width 80))
+
 
 
 
