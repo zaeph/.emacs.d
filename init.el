@@ -4423,75 +4423,72 @@ Check their respective dosctrings for more info."
 
 
 
-;; ========================================
-;; =============== LEDGER =================
-;; ========================================
+;;----------------------------------------------------------------------------
+;; ledger-mode
+;;----------------------------------------------------------------------------
 
-(autoload 'ledger-mode "ledger-mode" "A major mode for Ledger" t)
-(require 'ledger-mode)
-(add-to-list 'auto-mode-alist '("\\.ledger$" . ledger-mode))
+(use-package ledger-mode
+  :config
+  (add-to-list 'auto-mode-alist '("\\.ledger$" . ledger-mode))
 
-(defvar ledger-use-iso-dates nil)
-(defvar ledger-reconcile-default-commodity nil)
-(defvar ledger-post-auto-adjust-amounts nil)
-(setq ledger-use-iso-dates t
-      ledger-reconcile-default-commodity "EUR"
-      ;; Testing
-      ledger-post-auto-adjust-amounts 1
-      ledger-schedule-file "~/org/ledger/main-schedule.ledger.gpg")
+  (defvar ledger-use-iso-dates nil)
+  (defvar ledger-reconcile-default-commodity nil)
+  (defvar ledger-post-auto-adjust-amounts nil)
+  (setq ledger-use-iso-dates t
+        ledger-reconcile-default-commodity "EUR"
+        ;; Testing
+        ledger-post-auto-adjust-amounts 1
+        ledger-schedule-file "~/org/ledger/main-schedule.ledger.gpg")
 
-(add-hook 'ledger-reconcile-mode-hook #'balance-windows)
+  (add-hook 'ledger-reconcile-mode-hook #'balance-windows)
 
-(defun zp/ledger-close-scheduled ()
-  "Close the Ledger Scheduled buffer and window."
-  (interactive)
-  (if (string-match-p (regexp-quote "*Ledger Schedule*") (buffer-name))
-      (progn
-        (kill-buffer)
-        (select-window (previous-window))
-        (delete-other-windows))))
-(define-key ledger-mode-map (kbd "S-<backspace>") 'zp/ledger-close-scheduled)
+  (defun zp/ledger-close-scheduled ()
+    "Close the Ledger Scheduled buffer and window."
+    (interactive)
+    (if (string-match-p (regexp-quote "*Ledger Schedule*") (buffer-name))
+        (progn
+          (kill-buffer)
+          (select-window (previous-window))
+          (delete-other-windows))))
+  (define-key ledger-mode-map (kbd "S-<backspace>") 'zp/ledger-close-scheduled)
 
-;; -----------------------------------------------------------------------------
-;; Patch for inserting an empty line after copied transactions
-(defvar ledger-copy-transaction-insert-blank-line-after nil
-  "Non-nil means insert blank line after a transaction inserted
+  ;; Patch for inserting an empty line after copied transactions
+  (defvar ledger-copy-transaction-insert-blank-line-after nil
+    "Non-nil means insert blank line after a transaction inserted
   with ‘ledger-copy-transaction-at-point’.")
 
-(defun ledger-copy-transaction-at-point (date)
-  "Ask for a new DATE and copy the transaction under point to
+  (defun ledger-copy-transaction-at-point (date)
+    "Ask for a new DATE and copy the transaction under point to
 that date.  Leave point on the first amount."
-  (interactive  (list
-                 (ledger-read-date "Copy to date: ")))
-  (let* ((extents (ledger-navigate-find-xact-extents (point)))
-         (transaction (buffer-substring-no-properties (car extents) (cadr extents)))
-         (encoded-date (ledger-parse-iso-date date)))
-    (ledger-xact-find-slot encoded-date)
-    (insert transaction
-            (if ledger-copy-transaction-insert-blank-line-after
-                "\n\n"
-              "\n"))
-    (beginning-of-line -1)
-    (ledger-navigate-beginning-of-xact)
-    (re-search-forward ledger-iso-date-regexp)
-    (replace-match date)
-    (ledger-next-amount)
-    (if (re-search-forward "[-0-9]")
-        (goto-char (match-beginning 0)))))
+    (interactive (list
+                  (ledger-read-date "Copy to date: ")))
+    (let* ((extents (ledger-navigate-find-xact-extents (point)))
+           (transaction (buffer-substring-no-properties (car extents) (cadr extents)))
+           (encoded-date (ledger-parse-iso-date date)))
+      (ledger-xact-find-slot encoded-date)
+      (insert transaction
+              (if ledger-copy-transaction-insert-blank-line-after
+                  "\n\n"
+                "\n"))
+      (beginning-of-line -1)
+      (ledger-navigate-beginning-of-xact)
+      (re-search-forward ledger-iso-date-regexp)
+      (replace-match date)
+      (ledger-next-amount)
+      (if (re-search-forward "[-0-9]")
+          (goto-char (match-beginning 0)))))
 
-(setq ledger-copy-transaction-insert-blank-line-after t)
-;; -----------------------------------------------------------------------------
+  (setq ledger-copy-transaction-insert-blank-line-after t)
 
-;; -----------------------------------------------------------------------------
-;; Patch for killing transaction
-(defun ledger-kill-current-transaction (pos)
-  "Delete the transaction surrounging POS."
-  (interactive "d")
-  (let ((bounds (ledger-navigate-find-xact-extents pos)))
-    (kill-region (car bounds) (cadr bounds))))
+  ;; Patch for killing transaction
+  (defun ledger-kill-current-transaction (pos)
+    "Delete the transaction surrounging POS."
+    (interactive "d")
+    (let ((bounds (ledger-navigate-find-xact-extents pos)))
+      (kill-region (car bounds) (cadr bounds))))
 
-(define-key ledger-mode-map (kbd "C-c C-d") 'ledger-kill-current-transaction)
-;; -----------------------------------------------------------------------------
+  (define-key ledger-mode-map (kbd "C-c C-d") 'ledger-kill-current-transaction))
+
 
 
 
