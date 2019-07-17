@@ -115,6 +115,9 @@
 ;; Enable visual bell
 (setq visible-bell 1)
 
+;; Maximise the frame
+(toggle-frame-maximized)
+
 ;; Transparency
 ;; (set-frame-parameter (selected-frame) 'alpha '(95 . 95))
 ;; (add-to-list 'default-frame-alist '(alpha . (95 . 95)))
@@ -1058,9 +1061,6 @@ based on ‘zp/message-mode-ispell-alist’."
 ;; (global-set-key (kbd "<mouse-7>") 'ignore)
 ;; (global-set-key (kbd "<triple-mouse-7>") 'ignore)
 ;; (global-set-key (kbd "<triple-mouse-6>") 'ignore)
-
-;; Maximise the frame
-(toggle-frame-maximized)
 
 ;; Time
 (setq display-time-default-load-average nil)
