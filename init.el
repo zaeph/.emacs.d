@@ -309,27 +309,23 @@
   :config
   (flycheck-pos-tip-mode))
 
+(use-package lispy
+  :config
+  (defun lispy-mode-unbind-keys ()
+    "Modify keymaps used by ‘lispy-mode’."
+    (define-key lispy-mode-map (kbd "M-o") nil))
+  (lispy-mode-unbind-keys)
 
-;; ========================================
-;; ================= LISPY ================
-;; ========================================
+  (setq lispy-avy-keys
+        '(?a ?b ?c ?d ?e ?f ?g ?h ?i ?j ?k ?l ?m
+             ?n ?o ?p ?q ?r ?s ?t ?u ?v ?w ?x ?y ?z
+             ?A ?B ?C ?D ?E ?F ?G ?H ?I ?J ?K ?L ?M
+             ?N ?O ?P ?Q ?R ?S ?T ?U ?V ?W ?X ?Y ?Z))
 
-(add-hook #'emacs-lisp-mode-hook #'lispy-mode)
+  (setq semantic-inhibit-functions
+        (list (lambda () (not (eq major-mode org-mode)))))
 
-(require 'lispy)
-(defun lispy-mode-unbind-keys ()
-  "Modify keymaps used by ‘lispy-mode’."
-  (define-key lispy-mode-map (kbd "M-o") nil))
-(lispy-mode-unbind-keys)
-
-(setq lispy-avy-keys
-      '(?a ?b ?c ?d ?e ?f ?g ?h ?i ?j ?k ?l ?m
-        ?n ?o ?p ?q ?r ?s ?t ?u ?v ?w ?x ?y ?z
-        ?A ?B ?C ?D ?E ?F ?G ?H ?I ?J ?K ?L ?M
-        ?N ?O ?P ?Q ?R ?S ?T ?U ?V ?W ?X ?Y ?Z))
-
-(setq semantic-inhibit-functions
-      (list (lambda () (not (eq major-mode org-mode)))))
+  (add-hook #'emacs-lisp-mode-hook #'lispy-mode))
 
 
 
