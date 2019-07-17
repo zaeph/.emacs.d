@@ -3323,6 +3323,7 @@ It creates 4 blocks:
              ("r" "Research" ("research"))
              ("h" "Hacking" ("hack"))
              ("o" "Org" ("org"))
+             ("e" "Emacs" ("emacs"))
              ("O" "OPSEC" ("opsec"))
              ("P" "Activism" ("act"))
              ("m" "Media" ("media"))
