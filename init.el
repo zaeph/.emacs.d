@@ -191,8 +191,9 @@
   :config
   (global-set-key (kbd "M-J") 'duplicate-thing))
 
-(require 'volatile-highlights)
-(volatile-highlights-mode)
+(use-package volatile-highlights
+  :config
+  (volatile-highlights-mode))
 
 ;; Removed because of conflict with ‘use-hard-newlines’
 ;; (require 'clean-aindent-mode)
