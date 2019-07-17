@@ -806,31 +806,6 @@ If REGEX is non-nil, creates a regex to match the email alias."
       (notmuch-show-next-thread-show)))
 
   ;; -----------------------------------------------------------------------------
-  ;; Patch submitted upstream
-  ;; Waiting for approval
-  (defvar notmuch-search-refine-replace-buffer nil
-    "Should ‘not-much-refine’ replace the current search?")
-
-  (defun notmuch-search-refine (query &optional replace)
-    "Refine the current query string.
-
-When REPLACE is non-nil, do not create another buffer.  See also
-‘notmuch-search-refine-replace-buffer’."
-    (interactive (list (minibuffer-with-setup-hook
-                           (lambda ()
-                             (next-history-element 1)
-                             (end-of-line)
-                             (insert " "))
-                         (notmuch-read-query "Refine search: "))))
-    (let ((grouped-query (notmuch-group-disjunctive-query-string
-                          query)))
-      (when (or replace
-	        notmuch-search-refine-replace-buffer)
-        (notmuch-bury-or-kill-this-buffer))
-      (notmuch-search grouped-query notmuch-search-oldest-first)))
-  ;; -----------------------------------------------------------------------------
-
-  ;; -----------------------------------------------------------------------------
   ;; Movements for message-mode
 
   (defun zp/message-goto-bottom-1 ()
