@@ -373,6 +373,11 @@
 
 (use-package el-patch)
 
+(use-package ox
+  :config
+  (setq org-export-in-background t
+        org-export-with-sub-superscripts nil))
+
 (use-package ox-org)
 
 (use-package org-mind-map)
@@ -1649,27 +1654,39 @@ return `nil'."
   :config
   (add-to-list 'org-modules 'org-habit))
 
+(use-package org
+  :config
+  (setq org-agenda-inhibit-startup nil
+        org-log-into-drawer "LOGBOOK-NOTES"
+        org-log-state-notes-insert-after-drawers nil
+        org-special-ctrl-a/e 't
+        org-log-done 'time
+        org-enforce-todo-dependencies nil
+        org-adapt-indentation nil
+
+        org-clock-report-include-clocking-task t
+        org-clock-out-remove-zero-time-clocks t
+
+        org-hide-emphasis-markers t
+        org-ellipsis "…"
+        org-track-ordered-property-with-tag "ORDERED"
+        org-tags-exclude-from-inheritance nil
+        org-catch-invisible-edits 'error))
+
+(use-package org-footnote
+  :config
+  (setq org-footnote-define-inline 1))
+
+(use-package org-agenda
+  :config
+  (setq org-agenda-hide-tags-regexp "recurring\\|waiting\\|standby"))
+
+(use-package org-clock
+  :config
+  (setq org-clock-into-drawer "LOGBOOK-CLOCK"
+        org-clock-sound t))
+
 ;; Options
-(setq org-agenda-inhibit-startup nil
-      org-clock-into-drawer "LOGBOOK-CLOCK"
-      org-log-into-drawer "LOGBOOK-NOTES"
-      org-log-state-notes-insert-after-drawers nil
-      org-special-ctrl-a/e 't
-      org-log-done 'time
-      org-enforce-todo-dependencies nil
-      org-adapt-indentation nil
-      org-clock-sound t
-      org-clock-report-include-clocking-task t
-      org-clock-out-remove-zero-time-clocks t
-      org-export-in-background t
-      org-export-with-sub-superscripts nil
-      org-hide-emphasis-markers t
-      org-ellipsis "…"
-      org-track-ordered-property-with-tag "ORDERED"
-      org-tags-exclude-from-inheritance nil
-      org-agenda-hide-tags-regexp "recurring\\|waiting\\|standby"
-      org-catch-invisible-edits 'error
-      org-footnote-define-inline 1)
 
 ;; Ensure that images can be resized with deferred #+ATTR_ORG:
 (setq org-image-actual-width nil)
