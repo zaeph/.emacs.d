@@ -3498,46 +3498,6 @@ Based on `org-agenda-set-property'."
   (interactive)
   (zp/org-agenda-set-property 'org-delete-property))
 
-(defun zp/org-set-appt-warntime (&optional arg)
-  "Set the `APPT_WARNTIME' property."
-  (interactive "P")
-  (if arg
-      (org-delete-property "APPT_WARNTIME")
-    (org-set-property "APPT_WARNTIME" (org-read-property-value "APPT_WARNTIME"))))
-
-(defun zp/org-agenda-set-appt-warntime (arg)
-  "Set the `APPT_WARNTIME' for the current entry in the agenda."
-  (interactive "P")
-  (zp/org-agenda-set-property 'zp/org-set-appt-warntime)
-  (zp/org-agenda-to-appt arg))
-
-(defun zp/org-set-location ()
-  "Set the `LOCATION' property."
-  (interactive)
-  (org-set-property "LOCATION" (org-read-property-value "LOCATION")))
-(defun zp/org-agenda-set-location ()
-  "Set the `LOCATION' for the current entry in the agenda."
-  (interactive)
-  (zp/org-agenda-set-property 'zp/org-set-location))
-
-(defun zp/org-agenda-date-prompt-and-update-appt (arg)
-  "Combine ‘org-agenda-date-prompt’ and ‘zp/org-agenda-to-appt’.
-
-Check their respective docstrings for more info."
-  (interactive "P")
-  (org-agenda-date-prompt arg)
-  (zp/org-agenda-to-appt))
-
-(defun zp/org-agenda-schedule-and-update-appt (arg &optional time)
-  "Combine ‘org-agenda-schedule’ and ‘zp/org-agenda-to-appt’.
-
-Check their respective dosctrings for more info."
-  (interactive "P")
-  (org-agenda-schedule arg time)
-  (zp/org-agenda-to-appt))
-
-
-
 (defun zp/org-agenda-get-key ()
   "Return the key of the current org-agenda view."
   (unless (derived-mode-p 'org-agenda-mode)
@@ -4881,6 +4841,46 @@ on init and them removes itself."
 (defun zp/org-agenda-to-appt-on-save ()
   (if (member buffer-file-name org-agenda-files)
       (zp/org-agenda-to-appt)))
+
+
+
+(defun zp/org-set-appt-warntime (&optional arg)
+  "Set the `APPT_WARNTIME' property."
+  (interactive "P")
+  (if arg
+      (org-delete-property "APPT_WARNTIME")
+    (org-set-property "APPT_WARNTIME" (org-read-property-value "APPT_WARNTIME"))))
+
+(defun zp/org-agenda-set-appt-warntime (arg)
+  "Set the `APPT_WARNTIME' for the current entry in the agenda."
+  (interactive "P")
+  (zp/org-agenda-set-property 'zp/org-set-appt-warntime)
+  (zp/org-agenda-to-appt arg))
+
+(defun zp/org-set-location ()
+  "Set the `LOCATION' property."
+  (interactive)
+  (org-set-property "LOCATION" (org-read-property-value "LOCATION")))
+(defun zp/org-agenda-set-location ()
+  "Set the `LOCATION' for the current entry in the agenda."
+  (interactive)
+  (zp/org-agenda-set-property 'zp/org-set-location))
+
+(defun zp/org-agenda-date-prompt-and-update-appt (arg)
+  "Combine ‘org-agenda-date-prompt’ and ‘zp/org-agenda-to-appt’.
+
+Check their respective docstrings for more info."
+  (interactive "P")
+  (org-agenda-date-prompt arg)
+  (zp/org-agenda-to-appt))
+
+(defun zp/org-agenda-schedule-and-update-appt (arg &optional time)
+  "Combine ‘org-agenda-schedule’ and ‘zp/org-agenda-to-appt’.
+
+Check their respective dosctrings for more info."
+  (interactive "P")
+  (org-agenda-schedule arg time)
+  (zp/org-agenda-to-appt))
 
 
 
