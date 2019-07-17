@@ -508,6 +508,8 @@ time is displayed."
 ;; Shortcuts
 ;;----------------------------------------------------------------------------
 
+;; TODO: Consider optimising this section
+
 (define-prefix-command 'ledger-map)
 (global-set-key (kbd "C-c l") 'ledger-map)
 
