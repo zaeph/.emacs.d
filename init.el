@@ -1054,7 +1054,7 @@ based on ‘zp/message-mode-ispell-alist’."
 ;; (global-set-key (kbd "<triple-mouse-7>") 'ignore)
 ;; (global-set-key (kbd "<triple-mouse-6>") 'ignore)
 
-;; Fullscreen
+;; Maximise the frame
 (toggle-frame-maximized)
 
 ;; Time
