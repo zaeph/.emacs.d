@@ -187,12 +187,9 @@
 
 (use-package ox-hugo)
 
-;; duplicate-thing
-(require 'duplicate-thing)
-
-(global-set-key (kbd "M-U") 'universal-argument)
-(define-key universal-argument-map "M-U" 'universal-argument-more)
-(global-set-key (kbd "M-J") 'duplicate-thing)
+(use-package duplicate-thing
+  :config
+  (global-set-key (kbd "M-J") 'duplicate-thing))
 
 (require 'volatile-highlights)
 (volatile-highlights-mode)
