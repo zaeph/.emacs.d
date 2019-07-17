@@ -1440,7 +1440,6 @@ return `nil'."
   (define-key LaTeX-mode-map (kbd "C-x n b") #'zp/LaTeX-narrow-backwards)
   (define-key LaTeX-mode-map (kbd "C-x n u") #'zp/LaTeX-narrow-up)
 
-  ;; Hook
   (defun zp/LaTeX-mode-config ()
     "Modify keymaps used by `latex-mode'."
     (local-set-key (kbd "C-x n e") #'zp/LaTeX-narrow-to-environment)
