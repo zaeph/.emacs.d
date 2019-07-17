@@ -321,6 +321,10 @@
   :config
   (flycheck-pos-tip-mode))
 
+;; Required for ‘mode-line-buffer-id-inactive’ (face)
+;; TODO: Disable once I’ve defined the face internally
+(use-package spaceling-config)
+
 (use-package lispy
   :config
   (defun lispy-mode-unbind-keys ()
@@ -843,12 +847,6 @@ based on ‘zp/message-mode-ispell-alist’."
     (local-set-key (kbd "C-c C-o") #'goto-address-at-point))
 
   (add-hook 'notmuch-show-mode-hook #'zp/notmuch-show-mode-config))
-
-;; Required for ‘mode-line-buffer-id-inactive’ (face)
-;; TODO: Disable once I’ve defined the face internally
-(use-package spaceling-config)
-
-
 
 ;; ========================================
 ;; ================ MODES =================
