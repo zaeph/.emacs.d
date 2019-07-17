@@ -322,6 +322,30 @@ time is displayed."
                 (float-time (time-subtract (current-time) ,nowvar))))
            (message "%s...done (%.3fs)" ,title elapsed))))))
 
+(defmacro zp/advise-commands (method commands where function)
+  (let ((where-keyword (intern-soft (concat ":" (symbol-name where)))))
+    `(progn
+       ,@(cond ((string= method 'add)
+                (mapcar (lambda (command)
+                          `(advice-add ',command ,where-keyword #',function))
+                        commands))
+               ((string= method 'remove)
+                (mapcar (lambda (command)
+                          `(advice-remove ',command  #',function))
+                        commands))))))
+
+(defmacro zp/add-hooks (method commands function)
+  (let ((where-keyword (intern-soft (concat ":" (symbol-name where)))))
+    `(progn
+       ,@(cond ((string= method 'add)
+                (mapcar (lambda (command)
+                          `(add-hook ',command #',function))
+                        commands))
+               ((string= method 'remove)
+                (mapcar (lambda (command)
+                          `(remove-hook ',command  #',function))
+                        commands))))))
+
 
 
 ;;----------------------------------------------------------------------------
@@ -4740,7 +4764,7 @@ buffer, thereby propagating the indirectness."
 ;; ================ SOUNDS ================
 ;; ========================================
 
-;; TODO: Simplify
+;; TODO: Simplify, and use more meaningful names for functions
 
 (defun zp/play-sound-clock-in ()
   (start-process-shell-command "play-sound" nil "notification-sound-org clock-in"))
@@ -4750,11 +4774,8 @@ buffer, thereby propagating the indirectness."
   (start-process-shell-command "play-sound" nil "notification-sound-org clock-out"))
 (add-hook 'org-clock-out-hook 'zp/play-sound-clock-out)
 
-;;; Extra sounds
-
 (defun zp/play-sound-reward ()
   (when (string-equal org-state "DONE")
-    ;; (org-clock-out-if-current)               ;Default value
     (start-process-shell-command "play-sound" nil "notification-sound-org done")))
 (add-hook 'org-after-todo-state-change-hook 'zp/play-sound-reward)
 
@@ -4771,30 +4792,6 @@ buffer, thereby propagating the indirectness."
 
 (defun zp/play-sound-turn-page ()
   (start-process-shell-command "play-sound" nil "notification-sound-org page"))
-
-(defmacro zp/advise-commands (method commands where function)
-  (let ((where-keyword (intern-soft (concat ":" (symbol-name where)))))
-    `(progn
-       ,@(cond ((string= method 'add)
-                (mapcar (lambda (command)
-                          `(advice-add ',command ,where-keyword #',function))
-                        commands))
-               ((string= method 'remove)
-                (mapcar (lambda (command)
-                          `(advice-remove ',command  #',function))
-                        commands))))))
-
-(defmacro zp/add-hooks (method commands function)
-  (let ((where-keyword (intern-soft (concat ":" (symbol-name where)))))
-    `(progn
-       ,@(cond ((string= method 'add)
-                (mapcar (lambda (command)
-                          `(add-hook ',command #',function))
-                        commands))
-               ((string= method 'remove)
-                (mapcar (lambda (command)
-                          `(remove-hook ',command  #',function))
-                        commands))))))
 
 (defun zp/movement--play-sound-turn-page ()
   (zp/play-sound-turn-page))
