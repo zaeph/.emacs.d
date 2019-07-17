@@ -390,8 +390,8 @@ time is displayed."
 
 (use-package ws-butler
   :config
-  (add-hook #'prog-mode-hook #'ws-butler-mode)
-  (add-hook #'prog-mode-hook #'zp/whitespace-mode-lines-tail))
+  (add-hook 'prog-mode-hook #'ws-butler-mode)
+  (add-hook 'prog-mode-hook #'zp/whitespace-mode-lines-tail))
 
 (use-package info+
   :config
@@ -407,11 +407,11 @@ time is displayed."
   :config
   (global-diff-hl-mode)
   (diff-hl-flydiff-mode)
-  (add-hook #'dired-mode-hook #'diff-hl-dired-mode))
+  (add-hook 'dired-mode-hook #'diff-hl-dired-mode))
 
 (use-package dired
   :config
-  (add-hook #'dired-mode-hook #'turn-on-gnus-dired-mode))
+  (add-hook 'dired-mode-hook #'turn-on-gnus-dired-mode))
 
 (use-package eyebrowse)
 
@@ -427,7 +427,7 @@ time is displayed."
   :config
   (add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode))
   (add-to-list 'auto-mode-alist '("\\.mobi\\'" . nov-mode))
-  (add-hook #'nov-mode-hook #'olivetti-mode))
+  (add-hook 'nov-mode-hook #'olivetti-mode))
 
 (use-package el-patch)
 
@@ -459,7 +459,7 @@ time is displayed."
 (use-package so-long
   :config
   (global-so-long-mode 1)
-  (add-hook #'debugger-mode-hook #'so-long-minor-mode))
+  (add-hook 'debugger-mode-hook #'so-long-minor-mode))
 
 (use-package sh-script
   :config
@@ -478,7 +478,7 @@ time is displayed."
     (setq-local visual-line-fringe-indicators '(left-curly-arrow right-curly-arrow)))
 
   ;; Force fringe indicators in ‘prog-mode’
-  (add-hook #'prog-mode-hook #'zp/enable-visual-line-fringe-indicators))
+  (add-hook 'prog-mode-hook #'zp/enable-visual-line-fringe-indicators))
 
 (use-package free-keys
   :config
@@ -492,12 +492,12 @@ time is displayed."
 
   ;; Enable flycheck everywhere
   ;; Disabled because of slow-downs in large files
-  ;; (add-hook #'after-init-hook #'global-flycheck-mode)
+  ;; (add-hook 'after-init-hook #'global-flycheck-mode)
 
   ;; Enable flycheck for some major-modes
-  (add-hook #'sh-mode-hook #'flycheck-mode)
-  (add-hook #'cperl-mode-hook #'flycheck-mode)
-  (add-hook #'elisp-mode-hook #'flycheck-mode))
+  (add-hook 'sh-mode-hook #'flycheck-mode)
+  (add-hook 'cperl-mode-hook #'flycheck-mode)
+  (add-hook 'elisp-mode-hook #'flycheck-mode))
 
 ;; Minor-mode to show Flycheck error messages in a popup
 (use-package fly-check-pos-tip
@@ -523,7 +523,7 @@ time is displayed."
   (setq semantic-inhibit-functions
         (list (lambda () (not (eq major-mode org-mode)))))
 
-  (add-hook #'emacs-lisp-mode-hook #'lispy-mode))
+  (add-hook 'emacs-lisp-mode-hook #'lispy-mode))
 
 (use-package olivetti
   :config
@@ -1103,11 +1103,11 @@ based on ‘zp/message-mode-ispell-alist’."
     (local-set-key (kbd "C-c C-z") #'zp/message-kill-to-signature))
 
   (require 'orgalist)
-  (add-hook #'message-setup-hook #'flyspell-mode)
-  (add-hook #'message-setup-hook #'orgalist-mode)
-  (add-hook #'message-setup-hook #'zp/message-flyspell-auto)
-  (add-hook #'message-setup-hook #'electric-quote-local-mode)
-  (add-hook #'message-setup-hook #'zp/notmuch-message-mode-config)
+  (add-hook 'message-setup-hook #'flyspell-mode)
+  (add-hook 'message-setup-hook #'orgalist-mode)
+  (add-hook 'message-setup-hook #'zp/message-flyspell-auto)
+  (add-hook 'message-setup-hook #'electric-quote-local-mode)
+  (add-hook 'message-setup-hook #'zp/notmuch-message-mode-config)
   ;; (add-hook 'message-mode-hook #'footnote-mode)
 
   (defun zp/notmuch-show-mode-config ()
@@ -1224,7 +1224,7 @@ Modifies ‘diff-command’ and ‘diff-switches’ to use ‘git diff’."
     (setq-local diff-command "git --no-pager diff")
     (setq-local diff-switches "--textconv"))
 
-  (add-hook #'backup-walker-mode-hook #'zp/set-diff-backend-git-diff))
+  (add-hook 'backup-walker-mode-hook #'zp/set-diff-backend-git-diff))
 
 (use-package windmove
   :config
@@ -1302,8 +1302,8 @@ Modifies ‘diff-command’ and ‘diff-switches’ to use ‘git diff’."
   (define-key pdf-view-mode-map (kbd "S m") 'pdf-view-set-slice-using-mouse)
   (define-key pdf-view-mode-map (kbd "S r") 'pdf-view-reset-slice)
 
-  (add-hook #'pdf-view-mode-hook #'pdf-view-midnight-minor-mode)
-  (add-hook #'pdf-view-mode-hook #'pdf-view-auto-slice-minor-mode))
+  (add-hook 'pdf-view-mode-hook #'pdf-view-midnight-minor-mode)
+  (add-hook 'pdf-view-mode-hook #'pdf-view-auto-slice-minor-mode))
 
 (use-package pdf-links
   :config
@@ -1551,7 +1551,7 @@ entry in `TeX-view-program-list-builtin'."
           '((output-pdf "PDF Tools"))
           TeX-source-correlate-start-server t
           zp/tex-view-program 'pdf-tools)
-    (add-hook #'TeX-after-compilation-finished-functions
+    (add-hook 'TeX-after-compilation-finished-functions
               #'TeX-revert-document-buffer))
 
   (defun zp/tex-view-program-set-evince ()
@@ -1968,7 +1968,7 @@ return `nil'."
   ;; Show images after executing a src-block that generated one
   ;; TODO: Limit the scope of the hook by testing if the block actually
   ;; generated an image
-  (add-hook #'org-babel-after-execute-hook #'org-display-inline-images 'append)
+  (add-hook 'org-babel-after-execute-hook #'org-display-inline-images 'append)
 
   ;; Load library required for PlantUML
   (setq org-ditaa-jar-path "/usr/share/java/ditaa/ditaa-0.11.jar")
@@ -2204,7 +2204,7 @@ With a C-u argument, toggle the link display."
     (local-set-key (kbd "C-c C-j") #'zp/org-jump-dwim)
     (local-set-key (kbd "C-c C-x C-l") #'zp/org-latex-preview-dwim))
 
-  (add-hook #'org-mode-hook #'zp/org-mode-config))
+  (add-hook 'org-mode-hook #'zp/org-mode-config))
 
 (use-package org-footnote
   :config
@@ -2248,7 +2248,7 @@ With a C-u argument, toggle the link display."
 ;; Babel
 (use-package ob-async
   :config
-  (add-hook #'ob-async-pre-execute-src-block-hook
+  (add-hook 'ob-async-pre-execute-src-block-hook
             (lambda ()
               (setq org-ditaa-jar-path "/usr/share/java/ditaa/ditaa-0.11.jar"))))
 
@@ -3252,7 +3252,7 @@ It creates 4 blocks:
           (delete-region (point) (1+ (point-at-eol))))))
     (setq buffer-read-only t))
 
-  (add-hook #'org-agenda-finalize-hook #'zp/org-agenda-delete-empty-blocks)
+  (add-hook 'org-agenda-finalize-hook #'zp/org-agenda-delete-empty-blocks)
 
   ;;---------
   ;; Toggles
@@ -3764,6 +3764,7 @@ Based on `org-agenda-set-property'."
     (local-set-key (kbd "M-<return>") 'zp/org-agenda-tree-to-indirect-buffer-maximise)
     (local-set-key (kbd "<backspace>") 'zp/org-agenda-kill-other-buffer-and-window)
 
+    ;; Update org-super-agenda-header-map
     (setq org-super-agenda-header-map org-agenda-mode-map))
 
   (add-hook 'org-agenda-mode-hook #'zp/org-agenda-mode-config))
@@ -5173,7 +5174,7 @@ running."
       org-noter-auto-save-last-location t
       org-noter-doc-split-fraction '(0.59 0.41))
 
-(add-hook #'org-noter-notes-mode-hook #'visual-line-mode)
+(add-hook 'org-noter-notes-mode-hook #'visual-line-mode)
 
 ;;; Fix for hiding truncation
 (defun org-noter--set-notes-scroll (window &rest ignored)
@@ -7265,7 +7266,7 @@ Every ELEM in LIST is formatted as follows:
     (if minor-mode
         (funcall minor-mode))))
 
-(add-hook #'org-capture-mode-hook #'zp/org-capture-load-extra-minor-mode)
+(add-hook 'org-capture-mode-hook #'zp/org-capture-load-extra-minor-mode)
 
 
 
