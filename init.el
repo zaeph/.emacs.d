@@ -299,7 +299,7 @@ end-of-buffer signals; pass the rest to the default handler."
 
 
 ;;----------------------------------------------------------------------------
-;; Helper functions
+;; Helper functions & macros
 ;;----------------------------------------------------------------------------
 
 (defun zp/get-string-from-file (file-path)
