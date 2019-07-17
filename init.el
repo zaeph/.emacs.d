@@ -3663,6 +3663,24 @@ With a ‘C-u’ prefix argument, also kill the main Org buffer."
   ;; Rest
   ;;------
 
+  ;; Commented because unushed
+  ;; (defmacro zp/org-agenda-run-on-current-entry (&rest body)
+  ;;   "Run BODY on current org-agenda entry.
+
+  ;; Functions in BODY can make use of the following local
+  ;; variables:
+  ;; - ‘hdmarker’: Marker on the entry.
+  ;; - ‘buffer’: Buffer of the entry."
+  ;;   (interactive)
+  ;;   `(progn
+  ;;      (org-agenda-check-no-diary)
+  ;;      (let* ((hdmarker (or (org-get-at-bol 'org-hd-marker)
+  ;;                           (org-agenda-error)))
+  ;;             (buffer (marker-buffer hdmarker))
+  ;;             (inhibit-read-only t))
+  ;;        (with-current-buffer buffer
+  ;;          ,@body))))
+
   (defun zp/org-agenda-set-property (property-function)
     "Set a property for the current headline in the agenda.
 Based on `org-agenda-set-property'."
@@ -4804,136 +4822,123 @@ Ensures that the toggles are set to their default variable."
 ;; ================= APPT =================
 ;; ========================================
 
-(require 'appt)
-(appt-activate t)
+(use-package appt
+  :config
+  (appt-activate t)
 
-(setq appt-message-warning-time 15
-      appt-display-interval 5
-      appt-display-mode-line nil)
-;; (setq appt-display-interval 1)
+  (setq appt-message-warning-time 15
+        appt-display-interval 5
+        appt-display-mode-line nil)
 
-
-(defmacro zp/org-agenda-run-on-current-entry (&rest body)
-  "Run BODY on current org-agenda entry.
-
-Functions in BODY can make use of the following local
-variables:
-- ‘hdmarker’: Marker on the entry.
-- ‘buffer’: Buffer of the entry."
-  (interactive)
-  `(progn
-     (org-agenda-check-no-diary)
-     (let* ((hdmarker (or (org-get-at-bol 'org-hd-marker)
-                          (org-agenda-error)))
-            (buffer (marker-buffer hdmarker))
-            (inhibit-read-only t))
-       (with-current-buffer buffer
-         ,@body))))
-
-(defun zp/org-agenda-to-appt-check-warntime (arg)
-  "Check APPT_WARNTIME for current entry.
+  (defun zp/org-agenda-to-appt-check-warntime (arg)
+    "Check APPT_WARNTIME for current entry.
 
 Return nil if APPT_WARNTIME is ‘none’."
-  (let ((marker (get-text-property (1- (length arg)) 'org-hd-marker arg)))
-    (not (string= "none" (org-entry-get marker "APPT_WARNTIME")))))
+    (let ((marker (get-text-property (1- (length arg)) 'org-hd-marker arg)))
+      (not (string= "none" (org-entry-get marker "APPT_WARNTIME")))))
 
-; Use appointment data from org-mode
-(defun zp/org-agenda-to-appt (&optional arg)
-  "Update appt-list based on org-agenda items."
-  (interactive "P")
-  (setq appt-time-msg-list nil)
-  (unless (not (equal arg '(4)))
-    (appt-check)
-    (message "Appt has been reset"))
-  (let ((inhibit-message t))
-    (org-agenda-to-appt nil 'zp/org-agenda-to-appt-check-warntime)))
+                                                  ; Use appointment data from org-mode
+  (defun zp/org-agenda-to-appt (&optional arg)
+    "Update appt-list based on org-agenda items."
+    (interactive "P")
+    (setq appt-time-msg-list nil)
+    (unless (not (equal arg '(4)))
+      (appt-check)
+      (message "Appt has been reset"))
+    (let ((inhibit-message t))
+      (org-agenda-to-appt nil 'zp/org-agenda-to-appt-check-warntime)))
 
-(defun zp/org-agenda-to-appt-on-load ()
-  "Hook to `org-agenda-finalize-hook' which creates the appt-list
+  ;; TODO: Rename variables to more meaningful names
+  ;; The name refers to the rôle they’ll have in the hook rather than to what
+  ;; they’re actually doing
+
+  (defun zp/org-agenda-to-appt-on-load ()
+    "Hook to `org-agenda-finalize-hook' which creates the appt-list
 on init and them removes itself."
-  (zp/org-agenda-to-appt)
-  (remove-hook 'org-agenda-finalize-hook #'zp/org-agenda-to-appt-on-load))
+    (zp/org-agenda-to-appt)
+    (remove-hook 'org-agenda-finalize-hook #'zp/org-agenda-to-appt-on-load))
 
-(defun zp/org-agenda-to-appt-on-save ()
-  (if (member buffer-file-name org-agenda-files)
-      (zp/org-agenda-to-appt)))
+  (defun zp/org-agenda-to-appt-on-save ()
+    "Update appt if buffer is visiting a file in ‘org-agenda-files’."
+    (if (member buffer-file-name org-agenda-files)
+        (zp/org-agenda-to-appt)))
 
+  (defun zp/org-set-appt-warntime (&optional arg)
+    "Set the `APPT_WARNTIME' property."
+    (interactive "P")
+    (if arg
+        (org-delete-property "APPT_WARNTIME")
+      (org-set-property "APPT_WARNTIME" (org-read-property-value "APPT_WARNTIME"))))
 
+  (defun zp/org-agenda-set-appt-warntime (arg)
+    "Set the `APPT_WARNTIME' for the current entry in the agenda."
+    (interactive "P")
+    (zp/org-agenda-set-property 'zp/org-set-appt-warntime)
+    (zp/org-agenda-to-appt arg))
 
-(defun zp/org-set-appt-warntime (&optional arg)
-  "Set the `APPT_WARNTIME' property."
-  (interactive "P")
-  (if arg
-      (org-delete-property "APPT_WARNTIME")
-    (org-set-property "APPT_WARNTIME" (org-read-property-value "APPT_WARNTIME"))))
+  (defun zp/org-set-location ()
+    "Set the `LOCATION' property."
+    (interactive)
+    (org-set-property "LOCATION" (org-read-property-value "LOCATION")))
+  (defun zp/org-agenda-set-location ()
+    "Set the `LOCATION' for the current entry in the agenda."
+    (interactive)
+    (zp/org-agenda-set-property 'zp/org-set-location))
 
-(defun zp/org-agenda-set-appt-warntime (arg)
-  "Set the `APPT_WARNTIME' for the current entry in the agenda."
-  (interactive "P")
-  (zp/org-agenda-set-property 'zp/org-set-appt-warntime)
-  (zp/org-agenda-to-appt arg))
-
-(defun zp/org-set-location ()
-  "Set the `LOCATION' property."
-  (interactive)
-  (org-set-property "LOCATION" (org-read-property-value "LOCATION")))
-(defun zp/org-agenda-set-location ()
-  "Set the `LOCATION' for the current entry in the agenda."
-  (interactive)
-  (zp/org-agenda-set-property 'zp/org-set-location))
-
-(defun zp/org-agenda-date-prompt-and-update-appt (arg)
-  "Combine ‘org-agenda-date-prompt’ and ‘zp/org-agenda-to-appt’.
+  (defun zp/org-agenda-date-prompt-and-update-appt (arg)
+    "Combine ‘org-agenda-date-prompt’ and ‘zp/org-agenda-to-appt’.
 
 Check their respective docstrings for more info."
-  (interactive "P")
-  (org-agenda-date-prompt arg)
-  (zp/org-agenda-to-appt))
+    (interactive "P")
+    (org-agenda-date-prompt arg)
+    (zp/org-agenda-to-appt))
 
-(defun zp/org-agenda-schedule-and-update-appt (arg &optional time)
-  "Combine ‘org-agenda-schedule’ and ‘zp/org-agenda-to-appt’.
+  (defun zp/org-agenda-schedule-and-update-appt (arg &optional time)
+    "Combine ‘org-agenda-schedule’ and ‘zp/org-agenda-to-appt’.
 
 Check their respective dosctrings for more info."
-  (interactive "P")
-  (org-agenda-schedule arg time)
-  (zp/org-agenda-to-appt))
+    (interactive "P")
+    (org-agenda-schedule arg time)
+    (zp/org-agenda-to-appt))
 
 
 
-;; ----------------------------------------
-;; Update reminders when...
+  ;; ----------------------------------------
+  ;; Update reminders when...
 
-;; Starting Emacs
-;; (zp/org-agenda-to-appt)
+  ;; Starting Emacs
+  ;; (zp/org-agenda-to-appt)
 
-;; Everyday at 12:05am
-;; (run-at-time "12:05am" (* 24 3600) 'zp/org-agenda-to-appt)
+  ;; Everyday at 12:05am
+  ;; (run-at-time "12:05am" (* 24 3600) 'zp/org-agenda-to-appt)
 
-;; When saving org-agenda-files
-(add-hook 'after-save-hook #'zp/org-agenda-to-appt-on-save)
+  ;; When saving org-agenda-files
+  (add-hook 'after-save-hook #'zp/org-agenda-to-appt-on-save)
 
-;; When loading org-agenda for the first time
-(add-hook 'org-agenda-finalize-hook #'zp/org-agenda-to-appt-on-load)
+  ;; When loading org-agenda for the first time
+  (add-hook 'org-agenda-finalize-hook #'zp/org-agenda-to-appt-on-load)
 
-;; ----------------------------------------
-;; Remove hooks
-;; (remove-hook 'after-save-hook 'zp/org-agenda-to-appt-on-save)
-;; (remove-hook 'org-agenda-finalize-hook 'zp/org-agenda-to-appt)
+  ;; ----------------------------------------
+  ;; Remove hooks
+  ;; (remove-hook 'after-save-hook 'zp/org-agenda-to-appt-on-save)
+  ;; (remove-hook 'org-agenda-finalize-hook 'zp/org-agenda-to-appt)
 
-;; ----------------------------------------
+  ;; ----------------------------------------
 
-; Display appointments as a window manager notification
-(setq appt-disp-window-function 'zp/appt-display)
-(setq appt-delete-window-function (lambda () t))
+  ;; Display appointments as a window manager notification
+  (setq appt-disp-window-function 'zp/appt-display)
 
-;; (setq my-appt-notification-app (concat (getenv "HOME") "/bin/appt-notification"))
-(setq zp/appt-notification-app "~/.bin/appt-notify")
+  ;; Prevent appt from deletingg any windows after notifying
+  (setq appt-delete-window-function (lambda () t))
 
-(defun zp/appt-display (min-to-app new-time msg)
-  (if (atom min-to-app)
-    (start-process "zp/appt-notification-app" nil zp/appt-notification-app min-to-app msg)
-  (dolist (i (number-sequence 0 (1- (length min-to-app))))
-    (start-process "zp/appt-notification-app" nil zp/appt-notification-app (nth i min-to-app) (nth i msg)))))
+  ;; Notification script to handle appt
+  (setq zp/appt-notification-app "~/.bin/appt-notify")
+
+  (defun zp/appt-display (min-to-app new-time msg)
+    (if (atom min-to-app)
+        (start-process "zp/appt-notification-app" nil zp/appt-notification-app min-to-app msg)
+      (dolist (i (number-sequence 0 (1- (length min-to-app))))
+        (start-process "zp/appt-notification-app" nil zp/appt-notification-app (nth i min-to-app) (nth i msg))))))
 
 
 
