@@ -7392,6 +7392,7 @@ Every ELEM in LIST is formatted as follows:
 (global-set-key (kbd "H-M-l") 'mu4e-compose-new)
 ;; (global-set-key (kbd "H-m") 'zp/switch-to-magit)
 (global-set-key (kbd "H-m") 'magit-status)
+(global-set-key (kbd "C-x B") 'rename-buffer)
 
 ;; Clocking commands
 (global-set-key (kbd "C-c C-x C-j") 'org-clock-goto)
