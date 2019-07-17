@@ -2165,26 +2165,6 @@ With a C-u argument, toggle the link display."
   :config
   (setq org-footnote-define-inline 1))
 
-(use-package org-agenda
-  :config
-  (setq org-agenda-hide-tags-regexp "recurring\\|waiting\\|standby"
-        org-agenda-tags-column -94)
-
-  (defun zp/org-agenda-redo-all ()
-    "Redo all the agenda views."
-    (interactive)
-    (let ((inhibit-message t))
-      (dolist (buffer (buffer-list))
-        (with-current-buffer buffer
-          (when (derived-mode-p 'org-agenda-mode)
-            (org-agenda-maybe-redo))))))
-
-  ;; Idle timer for rebuilding all the agenda views
-  ;; Disabled for review
-  ;; (run-with-idle-timer 300 t #'zp/org-agenda-redo-all)
-
-  (define-key mode-specific-map (kbd "a") 'org-agenda))
-
 (use-package org-clock
   :config
   (setq org-clock-into-drawer "LOGBOOK-CLOCK"
@@ -2360,6 +2340,28 @@ indirect-buffers."
 ;;----------------------------------------------------------------------------
 ;; org-agenda
 ;;----------------------------------------------------------------------------
+
+(use-package org-agenda
+  :config
+  (setq org-agenda-hide-tags-regexp "recurring\\|waiting\\|standby"
+        org-agenda-tags-column -94)
+
+  (defun zp/org-agenda-redo-all ()
+    "Redo all the agenda views."
+    (interactive)
+    (let ((inhibit-message t))
+      (dolist (buffer (buffer-list))
+        (with-current-buffer buffer
+          (when (derived-mode-p 'org-agenda-mode)
+            (org-agenda-maybe-redo))))))
+
+  ;; Idle timer for rebuilding all the agenda views
+  ;; Disabled for review
+  ;; (run-with-idle-timer 300 t #'zp/org-agenda-redo-all)
+
+  (define-key mode-specific-map (kbd "a") 'org-agenda))
+
+
 
 ;; Category icons
 (defvar zp/org-agenda-include-category-icons nil
