@@ -451,9 +451,6 @@ LANGUAGE should be the name of an Ispell dictionary."
 ;; notmuch
 ;;----------------------------------------------------------------------------
 
-(use-package org-notmuch
-  :after notmuch)
-
 (use-package notmuch
   :config
   (setq message-signature
@@ -858,6 +855,9 @@ based on ‘zp/message-mode-ispell-alist’."
     (local-set-key (kbd "C-c C-o") #'goto-address-at-point))
 
   (add-hook 'notmuch-show-mode-hook #'zp/notmuch-show-mode-config))
+
+(use-package org-notmuch
+  :after notmuch)
 
 
 
