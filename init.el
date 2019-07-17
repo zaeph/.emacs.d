@@ -8,7 +8,7 @@
 ;; ===============================  ~ Zaeph ~  ===============================
 ;; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-(setq default-directory "/home/zaeph/")
+(setq default-directory "~")
 (setq inhibit-startup-screen 1)
 (setq initial-scratch-message ";; Emacs Scratch
 
@@ -31,7 +31,7 @@
 (setq-default indent-tabs-mode nil)
 
 ;; Add folders to load-path
-(add-to-list 'load-path "/home/zaeph/.emacs.d/lisp")
+(add-to-list 'load-path "~/.emacs.d/lisp")
 (add-to-list 'load-path (expand-file-name "/usr/share/emacs/site-lisp"))
 
 ;; Point to my Emacs fork for studying built-in functions
@@ -485,10 +485,10 @@ LANGUAGE should be the name of an Ispell dictionary."
 
 
 
-  (defvar zp/email-private (zp/get-string-from-file "/home/zaeph/org/pp/private/email")
+  (defvar zp/email-private (zp/get-string-from-file "~/org/pp/private/email")
     "Email used for private communications.")
 
-  (defvar zp/email-work (zp/get-string-from-file "/home/zaeph/org/pp/work/email")
+  (defvar zp/email-work (zp/get-string-from-file "~/org/pp/work/email")
     "Email used for work-related communications.")
 
   (defun zp/notmuch-get-email-with-alias (email alias &optional regex)
@@ -528,7 +528,7 @@ If REGEX is non-nil, creates a regex to match the email alias."
 
   (setq message-send-mail-function 'smtpmail-send-it
         smtpmail-auth-credentials
-        (expand-file-name "/home/zaeph/.authinfo.gpg"))
+        (expand-file-name "~/.authinfo.gpg"))
 
   (setq send-mail-function 'sendmail-send-it)
   (setq message-send-mail-function 'message-send-mail-with-sendmail)
@@ -760,7 +760,7 @@ of lines before the signature intact."
 
   (require 'epg-config)
   (setq mml2015-use 'epg
-        epg-user-id (zp/get-string-from-file "/home/zaeph/org/pp/gpg/gpg-key-id")
+        epg-user-id (zp/get-string-from-file "~/org/pp/gpg/gpg-key-id")
         mml-secure-openpgp-sign-with-sender t
         mml-secure-openpgp-encrypt-to-self t)
 
@@ -921,7 +921,8 @@ based on ‘zp/message-mode-ispell-alist’."
   :config
   (desktop-save-mode 1))
 
-;; Disabled since Emacs now has a native package for line-numbers
+;; Disabled since Emacs now has a native package for showing
+;; line-numbers
 (use-package linum
   :disabled
   ;Add spaces before and after
@@ -1097,7 +1098,7 @@ If text is selected, adds furigana to the selected kanji instead."
  kept-old-versions 0
  delete-old-versions t
 
- backup-directory-alist `(("." . "/home/zaeph/.saves")))
+ backup-directory-alist `(("." . "~/.saves")))
 
 ;; Diff backend (default)
 (setq diff-command "diff"
@@ -1117,7 +1118,7 @@ Modifies ‘diff-command’ and ‘diff-switches’ to use ‘git diff’."
 ;; ================ DIARY =================
 ;; ========================================
 
-(setq diary-file "/home/zaeph/diary")
+(setq diary-file "~/diary")
 
 
 
@@ -1225,7 +1226,7 @@ Modifies ‘diff-command’ and ‘diff-switches’ to use ‘git diff’."
               TeX-parse-self t
               TeX-auto-save t
               LaTeX-includegraphics-read-file 'LaTeX-includegraphics-read-file-relative)
-(setq reftex-default-bibliography '("/home/zaeph/org/bib/monty-python.bib"))
+(setq reftex-default-bibliography '("~/org/bib/monty-python.bib"))
 ;; (setq reftex-default-bibliography nil)
 (setq warning-suppress-types nil)
 (add-to-list 'warning-suppress-types '(yasnippet backquote-change))
@@ -1547,7 +1548,7 @@ return `nil'."
       (progn (setq org-latex-pdf-process '("xelatex -shell-escape\
                                                   -interaction nonstopmode\
                                                   -output-directory %o %f")
-                   org-export-async-init-file "/home/zaeph/.emacs.d/async/main-short.el"
+                   org-export-async-init-file "~/.emacs.d/async/main-short.el"
                    zp/org-latex-pdf-process-mode 'short)
              (message "XeLaTeX process mode: Short"))
     (progn (setq org-latex-pdf-process '("xelatex -shell-escape\
@@ -1560,7 +1561,7 @@ return `nil'."
                                            "xelatex -shell-escape\
                                                     -interaction nonstopmode\
                                                     -output-directory %o %f")
-                 org-export-async-init-file "/home/zaeph/.emacs.d/async/main-full.el"
+                 org-export-async-init-file "~/.emacs.d/async/main-full.el"
                  zp/org-latex-pdf-process-mode 'full)
            (message "XeLaTeX process mode: Full"))))
 (zp/toggle-org-latex-pdf-process)
@@ -2201,83 +2202,83 @@ With a C-u argument, toggle the link display."
 (setq zp/shortcuts-alist
       '(
         ;; Misc
-        ("e" . "/home/zaeph/.emacs.d/init.el")
-        ("I" . "/home/zaeph/org/info.org.gpg")
-        ("p d" . "/ssh:asus:/home/zaeph/Downloads/Sharing/dl.org")
+        ("e" . "~/.emacs.d/init.el")
+        ("I" . "~/org/info.org.gpg")
+        ("p d" . "/ssh:asus:~/Downloads/Sharing/dl.org")
 
         ;; Ledger
-        ("l l" . "/home/zaeph/org/ledger/main.ledger.gpg")
-        ("l s" . "/home/zaeph/org/ledger/main-schedule.ledger.gpg")
-        ;; ("l f" . "/home/zaeph/org/ledger/french-house.ledger.gpg")
+        ("l l" . "~/org/ledger/main.ledger.gpg")
+        ("l s" . "~/org/ledger/main-schedule.ledger.gpg")
+        ;; ("l f" . "~/org/ledger/french-house.ledger.gpg")
 
         ;; Research
-        ("p T" . "/home/zaeph/org/projects/university/research/thesis/thesis.tex")
-        ;; ("p T" . "/home/zaeph/org/projects/university/research/presentation/presentation.tex")
-        ("p b" . "/home/zaeph/org/bib/monty-python.bib")
-        ("p B" . "/home/zaeph/org/projects/university/research/thesis/bibliography/bibliography.tex")
-        ;; ("p c" . "/home/zaeph/org/projects/university/research/sty/zaeph.sty")
-        ;; ("p C" . "/home/zaeph/org/projects/university/research/sty/presentation.sty")
-        ;; ("p d" . "/tmp/asus/home/zaeph/Downloads/Sharing/dl.org")
+        ("p T" . "~/org/projects/university/research/thesis/thesis.tex")
+        ;; ("p T" . "~/org/projects/university/research/presentation/presentation.tex")
+        ("p b" . "~/org/bib/monty-python.bib")
+        ("p B" . "~/org/projects/university/research/thesis/bibliography/bibliography.tex")
+        ;; ("p c" . "~/org/projects/university/research/sty/zaeph.sty")
+        ;; ("p C" . "~/org/projects/university/research/sty/presentation.sty")
+        ;; ("p d" . "/tmp/asus~/Downloads/Sharing/dl.org")
 
         ;; Journal
-        ("j" . "/home/zaeph/org/journal.org")
+        ("j" . "~/org/journal.org")
 
         ;; Projects
-        ("p w" . "/home/zaeph/org/projects/writing/writing.org.gpg")
-        ;; ("p t" . "/home/zaeph/org/projects/tavocat/tavocat.org.gpg")
-        ;; ("p k". "/home/zaeph/org/projects/kendeskiñ/kendeskiñ.org.gpg")
-        ("p t" . "/home/zaeph/org/projects/typography/typography.org.gpg")
+        ("p w" . "~/org/projects/writing/writing.org.gpg")
+        ;; ("p t" . "~/org/projects/tavocat/tavocat.org.gpg")
+        ;; ("p k". "~/org/projects/kendeskiñ/kendeskiñ.org.gpg")
+        ("p t" . "~/org/projects/typography/typography.org.gpg")
 
         ;; University
-        ("p u" . "/home/zaeph/org/projects/university/university.org.gpg")
-        ("p r" . "/home/zaeph/org/projects/university/research/research.org.gpg")
-        ;; ("p c l"     . "/home/zaeph/org/projects/university/classes/university/ling/ling.org.gpg")
-        ;; ("p c u"     . "/home/zaeph/org/projects/university/classes/university/civ-us/civ-us.org.gpg")
-        ;; ("p c g"     . "/home/zaeph/org/projects/university/classes/university/civ-gb/civ-gb.org.gpg")
-        ;; ("p c s"     . "/home/zaeph/org/projects/university/classes/university/space/space.org.gpg")
-        ;; ("p c i"     . "/home/zaeph/org/projects/university/classes/university/lit/lit.org.gpg")
-        ;; ("p c s"     . "/home/zaeph/org/projects/university/classes/university/syn/syn.org.gpg")
-        ;; ("p c t"     . "/home/zaeph/org/projects/university/classes/espe/tronc-commun.org.gpg")
+        ("p u" . "~/org/projects/university/university.org.gpg")
+        ("p r" . "~/org/projects/university/research/research.org.gpg")
+        ;; ("p c l"     . "~/org/projects/university/classes/university/ling/ling.org.gpg")
+        ;; ("p c u"     . "~/org/projects/university/classes/university/civ-us/civ-us.org.gpg")
+        ;; ("p c g"     . "~/org/projects/university/classes/university/civ-gb/civ-gb.org.gpg")
+        ;; ("p c s"     . "~/org/projects/university/classes/university/space/space.org.gpg")
+        ;; ("p c i"     . "~/org/projects/university/classes/university/lit/lit.org.gpg")
+        ;; ("p c s"     . "~/org/projects/university/classes/university/syn/syn.org.gpg")
+        ;; ("p c t"     . "~/org/projects/university/classes/espe/tronc-commun.org.gpg")
 
         ;; Languages
-        ("p j" . "/home/zaeph/org/projects/lang/ja/ja.org.gpg")
-        ("p g" . "/home/zaeph/org/projects/lang/de/de.org.gpg")
+        ("p j" . "~/org/projects/lang/ja/ja.org.gpg")
+        ("p g" . "~/org/projects/lang/de/de.org.gpg")
 
         ;; Activism
-        ("p a" . "/home/zaeph/org/projects/activism/politics/politics.org.gpg")
+        ("p a" . "~/org/projects/activism/politics/politics.org.gpg")
         ;; ("p a d"  . "[DATA EXPUNGED]")
         ;; ("p a s"  . "[DATA EXPUNGED]")
         ;; ("p a c"  . "[DATA EXPUNGED]")
         ;; ("p a m"  . "[DATA EXPUNGED]")
 
         ;; Media
-        ("p n" . "/home/zaeph/org/projects/media/news/news.org.gpg")
+        ("p n" . "~/org/projects/media/news/news.org.gpg")
 
         ;; Music
-        ("p P" "/home/zaeph/org/piano.org.gpg")
+        ("p P" "~/org/piano.org.gpg")
 
         ;; Awakening
-        ("p A" . "/home/zaeph/org/projects/awakening/awakening.org.gpg")
+        ("p A" . "~/org/projects/awakening/awakening.org.gpg")
 
         ;; Psychotherapy
-        ("p p" . "/home/zaeph/org/projects/psychotherapy/psychotherapy.org.gpg")
+        ("p p" . "~/org/projects/psychotherapy/psychotherapy.org.gpg")
         ;; Sports
-        ("p S" . "/home/zaeph/org/sports/swimming/swimming.org.gpg")
-        ("p R" . "/home/zaeph/org/sports/running/running.org.gpg")
+        ("p S" . "~/org/sports/swimming/swimming.org.gpg")
+        ("p R" . "~/org/sports/running/running.org.gpg")
 
         ;; Hacking
-        ("p h e" . "/home/zaeph/org/projects/hacking/emacs/emacs.org.gpg")
-        ("p h l" . "/home/zaeph/org/projects/hacking/linux/linux.org.gpg")
-        ("p h n" . "/home/zaeph/org/projects/hacking/linux/nixos.org")
-        ("p h o" . "/home/zaeph/org/projects/hacking/opsec/opsec.org.gpg")
-        ("p h h" . "/home/zaeph/org/projects/hacking/hacking.org.gpg")
-        ("p h p" . "/home/zaeph/org/projects/hacking/python/python.org.gpg")
+        ("p h e" . "~/org/projects/hacking/emacs/emacs.org.gpg")
+        ("p h l" . "~/org/projects/hacking/linux/linux.org.gpg")
+        ("p h n" . "~/org/projects/hacking/linux/nixos.org")
+        ("p h o" . "~/org/projects/hacking/opsec/opsec.org.gpg")
+        ("p h h" . "~/org/projects/hacking/hacking.org.gpg")
+        ("p h p" . "~/org/projects/hacking/python/python.org.gpg")
 
         ;; Media
-        ("b" . "/home/zaeph/org/media.org.gpg")
+        ("b" . "~/org/media.org.gpg")
 
         ;; Life
-        ("o" . "/home/zaeph/org/life.org")))
+        ("o" . "~/org/life.org")))
 
 (defun zp/set-shortcuts-all ()
   (zp/set-shortcuts zp/shortcuts-alist))
@@ -2711,7 +2712,7 @@ With a prefix argument, do so in all agenda buffers."
 
 (defun zp/update-org-agenda-files ()
   (interactive)
-  (setq org-agenda-files '("/home/zaeph/org/life.org"))
+  (setq org-agenda-files '("~/org/life.org"))
   (zp/set-shortcuts-all))
 
 (zp/update-org-agenda-files)
@@ -3357,7 +3358,7 @@ It creates 4 blocks:
 
         ("j" "Journal entries"
              (,(zp/org-agenda-block-journal))
-             ((org-agenda-files '("/home/zaeph/org/journal.org"))))
+             ((org-agenda-files '("~/org/journal.org"))))
 
         ("d" "Deadlines"
              (,(zp/org-agenda-block-deadlines)))
@@ -3952,7 +3953,7 @@ With a ‘C-u’ prefix argument, also kill the main Org buffer."
 
 (require 'org-capture)
 
-(setq org-default-notes-file "/home/zaeph/org/life.org")
+(setq org-default-notes-file "~/org/life.org")
 
 ;;; Helper functions
 
@@ -4035,96 +4036,96 @@ TITLE and URL are those of the webpage."
   (message (concat "Link added to kill-ring: \n" url)))
 
 (setq org-capture-templates
-      `(("n" "Note" entry (file+headline "/home/zaeph/org/life.org" "Inbox")
+      `(("n" "Note" entry (file+headline "~/org/life.org" "Inbox")
              "* %?" :add-created t)
-        ("f" "Todo" entry (file+headline "/home/zaeph/org/life.org" "Inbox")
+        ("f" "Todo" entry (file+headline "~/org/life.org" "Inbox")
              "* TODO %?" :add-created t)
-        ("F" "Todo + Clock" entry (file+headline "/home/zaeph/org/life.org" "Inbox")
+        ("F" "Todo + Clock" entry (file+headline "~/org/life.org" "Inbox")
              "* TODO %?\n" :add-created t :clock-in t)
-        ("r" "Todo with Context" entry (file+headline "/home/zaeph/org/life.org" "Inbox")
+        ("r" "Todo with Context" entry (file+headline "~/org/life.org" "Inbox")
              "* TODO %?\n%a" :add-created t)
-        ("R" "Todo with Context + Clock" entry (file+headline "/home/zaeph/org/life.org" "Inbox")
+        ("R" "Todo with Context + Clock" entry (file+headline "~/org/life.org" "Inbox")
              "* TODO %?\n%a" :add-created t :clock-in t)
-        ;; ("r" "Todo + Reminder" entry (file+headline "/home/zaeph/org/life.org" "Inbox")
+        ;; ("r" "Todo + Reminder" entry (file+headline "~/org/life.org" "Inbox")
         ;;  "* TODO %?\nSCHEDULED: %^T\n:PROPERTIES:\n:APPT_WARNTIME:  %^{APPT_WARNTIME|5|15|30|60}\n:END:")
-        ;; ("T" "Todo (with keyword selection)" entry (file+headline "/home/zaeph/org/life.org" "Inbox")
+        ;; ("T" "Todo (with keyword selection)" entry (file+headline "~/org/life.org" "Inbox")
         ;;  "* %^{State|TODO|NEXT|STBY|WAIT} %?")
-        ;; ("e" "Todo + Creation time" entry (file+headline "/home/zaeph/org/life.org" "Inbox")
+        ;; ("e" "Todo + Creation time" entry (file+headline "~/org/life.org" "Inbox")
         ;;  "* TODO %?\n:PROPERTIES:\n:CREATED:  %U\n:END:")
-        ;; ("C" "Todo + Clock" entry (file+headline "/home/zaeph/org/life.org" "Inbox")
+        ;; ("C" "Todo + Clock" entry (file+headline "~/org/life.org" "Inbox")
         ;;  "* TODO %^{Task}%?" :clock-in t)
-        ;; ("C" "Todo + Clock (with keyword selection)" entry (file+headline "/home/zaeph/org/life.org" "Inbox")
+        ;; ("C" "Todo + Clock (with keyword selection)" entry (file+headline "~/org/life.org" "Inbox")
         ;;  "* %^{State|TODO|NEXT} %?" :clock-in t)
-        ("d" "Date" entry (file+headline "/home/zaeph/org/life.org" "Calendar")
+        ("d" "Date" entry (file+headline "~/org/life.org" "Calendar")
              "* %?\n" :add-created t)
-        ("e" "Date + Context" entry (file+headline "/home/zaeph/org/life.org" "Calendar")
+        ("e" "Date + Context" entry (file+headline "~/org/life.org" "Calendar")
              "* %?\n%a" :add-created t)
 
-        ;; ("D" "Date + Reminder" entry (file+headline "/home/zaeph/org/life.org" "Calendar")
+        ;; ("D" "Date + Reminder" entry (file+headline "~/org/life.org" "Calendar")
         ;;  "* %?\n%^T\n\n%^{APPT_WARNTIME}p")
-        ;; ("R" "Reminder" entry (file+headline "/home/zaeph/org/life.org" "Inbox")
+        ;; ("R" "Reminder" entry (file+headline "~/org/life.org" "Inbox")
         ;;  "* %?\n%^T%^{APPT_WARNTIME}p")
 
-        ("p" "Phone-call" entry (file+headline "/home/zaeph/org/life.org" "Inbox")
+        ("p" "Phone-call" entry (file+headline "~/org/life.org" "Inbox")
              "* TODO Phone-call with %^{Interlocutor|Nicolas|Mum}%?\n:STATES:\n- State \"TODO\"       from              %U\n:END:" :clock-in t)
-        ("m" "Meeting" entry (file+headline "/home/zaeph/org/life.org" "Inbox")
+        ("m" "Meeting" entry (file+headline "~/org/life.org" "Inbox")
              "* TODO Meeting with %^{Meeting with}%?" :clock-in t)
 
         ("s" "Special")
-        ("ss" "Code Snippet" entry (file "/home/zaeph/org/projects/hacking/snippets.org.gpg")
+        ("ss" "Code Snippet" entry (file "~/org/projects/hacking/snippets.org.gpg")
               ;; Prompt for tag and language
               "* %?\t%^g\n#+BEGIN_SRC %^{language}\n\n#+END_SRC")
-        ;; ("sf" "Film recommendation" entry (file+olp "/home/zaeph/org/media.org.gpg" "Films" "List")
+        ;; ("sf" "Film recommendation" entry (file+olp "~/org/media.org.gpg" "Films" "List")
         ;;  "* %(zp/org-capture-set-media-link-letterboxd)%?%^{MEDIA_DIRECTOR}p%^{MEDIA_YEAR}p%^{MEDIA_DURATION}p")
-        ;; ("sf" "Film recommendation" entry (file+olp "/home/zaeph/org/media.org.gpg" "Films" "List")
+        ;; ("sf" "Film recommendation" entry (file+olp "~/org/media.org.gpg" "Films" "List")
         ;;  "* %(zp/letterboxd-set-link)%?%^{MEDIA_DIRECTOR}p%^{MEDIA_YEAR}p%(zp/letterboxd-set-duration)")
-        ("sf" "Film" entry (file+olp "/home/zaeph/org/media.org.gpg" "Films" "List")
+        ("sf" "Film" entry (file+olp "~/org/media.org.gpg" "Films" "List")
               "* %(zp/letterboxd-capture)")
-        ("sF" "Film (insert at top)" entry (file+olp "/home/zaeph/org/media.org.gpg" "Films" "List")
+        ("sF" "Film (insert at top)" entry (file+olp "~/org/media.org.gpg" "Films" "List")
               "* %(zp/letterboxd-capture)" :prepend t)
-        ("sw" "Swimming workout" entry (file+weektree+prompt "/home/zaeph/org/sports/swimming/swimming.org.gpg")
+        ("sw" "Swimming workout" entry (file+weektree+prompt "~/org/sports/swimming/swimming.org.gpg")
               "* DONE Training%^{SWIM_DISTANCE}p%^{SWIM_DURATION}p\n%t%(print zp/swimming-workout-default)")
 
         ("j" "Journal")
-        ("jj" "Journal" entry (file+olp "/home/zaeph/org/journal.org" "Life")
+        ("jj" "Journal" entry (file+olp "~/org/journal.org" "Life")
               "* %^{Title|Entry}\n%T\n\n%?" :full-frame t)
-        ("ja" "Awakening" entry (file+olp "/home/zaeph/org/journal.org" "Awakening")
+        ("ja" "Awakening" entry (file+olp "~/org/journal.org" "Awakening")
               "* %^{Title|Entry}\n%T\n\n%?" :full-frame t)
-        ("jp" "Psychotherapy" entry (file+olp "/home/zaeph/org/journal.org" "Psychotherapy")
+        ("jp" "Psychotherapy" entry (file+olp "~/org/journal.org" "Psychotherapy")
               "* %^{Title|Entry}\n%T\n\n%?" :full-frame t)
-        ("jw" "Writing" entry (file+olp "/home/zaeph/org/journal.org" "Writing")
+        ("jw" "Writing" entry (file+olp "~/org/journal.org" "Writing")
               "* %^{Title|Entry} %^g\n%T\n\n%?" :full-frame t)
-        ("jr" "Research" entry (file+olp "/home/zaeph/org/journal.org" "Research")
+        ("jr" "Research" entry (file+olp "~/org/journal.org" "Research")
               "* %^{Title|Entry}\n%T\n\n%?" :full-frame t)
-        ("ju" "University" entry (file+olp "/home/zaeph/org/journal.org" "University")
+        ("ju" "University" entry (file+olp "~/org/journal.org" "University")
               "* %^{Title|Entry}\n%T\n\n%?" :full-frame t)
-        ("jh" "Hacking" entry (file+olp "/home/zaeph/org/journal.org" "Hacking")
+        ("jh" "Hacking" entry (file+olp "~/org/journal.org" "Hacking")
               "* %^{Title|Entry}\n%T\n\n%?" :full-frame t)
-        ("jm" "Music" entry (file+olp "/home/zaeph/org/journal.org" "Music")
+        ("jm" "Music" entry (file+olp "~/org/journal.org" "Music")
               "* %^{Title|Entry}\n%T\n\n%?" :full-frame t)
-        ("js" "Swimming" entry (file+olp "/home/zaeph/org/journal.org" "Swimming")
+        ("js" "Swimming" entry (file+olp "~/org/journal.org" "Swimming")
               "* %^{Title|Entry}\n%T\n\n%?" :full-frame t)
 
         ;; Daily Record of Dysfunctional Thoughts
-        ("D" "Record Dysfunctional Thoughts" entry (file+headline "/home/zaeph/org/journal.org" "Psychotherapy")
+        ("D" "Record Dysfunctional Thoughts" entry (file+headline "~/org/journal.org" "Psychotherapy")
              "* Record of Dysfunctional Thoughts\n%T\n** Situation\n%?\n** Emotions\n** Thoughts")
 
         ;; Pain Diary
-        ("P" "Pain Diary" entry (file+olp "/home/zaeph/org/life.org" "Psychotherapy" "Pain Diary")
+        ("P" "Pain Diary" entry (file+olp "~/org/life.org" "Psychotherapy" "Pain Diary")
              "* Entry: %U
 ** What were you doing or what happened?
 %?
 ** What did you start struggling with psychologically?
 ** What thoughts came up in association with that struggle?")
 
-        ("a" "Meditation session" entry (file+headline "/home/zaeph/org/projects/awakening/awakening.org.gpg" "Sessions")
+        ("a" "Meditation session" entry (file+headline "~/org/projects/awakening/awakening.org.gpg" "Sessions")
              "* DONE Session%^{SESSION_DURATION}p\n%t" :immediate-finish t)
 
         ("W" "Web")
-        ("Wa" "Automatic template" entry (file+headline "/home/zaeph/org/life.org" "Inbox")
+        ("Wa" "Automatic template" entry (file+headline "~/org/life.org" "Inbox")
               "* TODO %(print zp/org-capture-web-action) [[%?%(print zp/org-capture-web-url)][%(print zp/org-capture-web-title)]] :curios:online:"
               :add-created t)
-        ("Wf" "S: Film" entry (file+olp "/home/zaeph/org/life.org" "Film" "List")
+        ("Wf" "S: Film" entry (file+olp "~/org/life.org" "Film" "List")
               ,zp/org-capture-web-letterboxd-template
               :prepend t)))
 
@@ -4146,24 +4147,24 @@ TITLE and URL are those of the webpage."
 |-----+-----------------------------------|")
 
 (setq zp/org-agenda-capture-templates
-      '(("f" "Todo" entry (file+headline "/home/zaeph/org/life.org" "Inbox")
+      '(("f" "Todo" entry (file+headline "~/org/life.org" "Inbox")
          "* TODO %?\n%t")
-        ("r" "Todo (+time)" entry (file+headline "/home/zaeph/org/life.org" "Inbox")
+        ("r" "Todo (+time)" entry (file+headline "~/org/life.org" "Inbox")
          "* TODO %?\n%^T")
 
-        ("d" "Date" entry (file+olp "/home/zaeph/org/life.org" "Life" "Calendar")
+        ("d" "Date" entry (file+olp "~/org/life.org" "Life" "Calendar")
          "* %?\n%t")
-        ("e" "Date (+time)" entry (file+olp "/home/zaeph/org/life.org" "Life" "Calendar")
+        ("e" "Date (+time)" entry (file+olp "~/org/life.org" "Life" "Calendar")
          "* %?\n%^T")
 
-        ("s" "Todo & Scheduled" entry (file+headline "/home/zaeph/org/life.org" "Inbox")
+        ("s" "Todo & Scheduled" entry (file+headline "~/org/life.org" "Inbox")
          "* TODO %?\nSCHEDULED: %t")
-        ("w" "Todo & Scheduled (+time)" entry (file+headline "/home/zaeph/org/life.org" "Inbox")
+        ("w" "Todo & Scheduled (+time)" entry (file+headline "~/org/life.org" "Inbox")
          "* TODO %?\nSCHEDULED: %^T")
 
-        ("g" "Todo + Deadline" entry (file+headline "/home/zaeph/org/life.org" "Inbox")
+        ("g" "Todo + Deadline" entry (file+headline "~/org/life.org" "Inbox")
          "* TODO %?\nDEADLINE: %t")
-        ("t" "Todo & Deadline (+time)" entry (file+headline "/home/zaeph/org/life.org" "Inbox")
+        ("t" "Todo & Deadline (+time)" entry (file+headline "~/org/life.org" "Inbox")
          "* TODO %?\nDEADLINE: %^T")))
 
 (defun zp/org-agenda-capture (&optional arg)
@@ -4174,22 +4175,22 @@ TITLE and URL are those of the webpage."
 
 
         ;; ("v" "Vocabulary")
-        ;; ("ve" "EN" entry (file+olp "/home/zaeph/org/life.org" "Vocabulary")
+        ;; ("ve" "EN" entry (file+olp "~/org/life.org" "Vocabulary")
         ;;  "* EN: %?\n%U\n")
-        ;; ("vf" "FR" entry (file+olp "/home/zaeph/org/life.org" "Vocabulary")
+        ;; ("vf" "FR" entry (file+olp "~/org/life.org" "Vocabulary")
         ;;  "* FR: %?\n%U\n")
-        ;; ("vj" "JA" entry (file+olp "/home/zaeph/org/life.org" "Vocabulary")
+        ;; ("vj" "JA" entry (file+olp "~/org/life.org" "Vocabulary")
         ;;  "* JA: %?\n%U\n")
-        ;; ("vk" "KO" entry (file+olp "/home/zaeph/org/life.org" "Vocabulary")
+        ;; ("vk" "KO" entry (file+olp "~/org/life.org" "Vocabulary")
         ;;  "* KO: %?\n%U\n")))
 
 ;; ;; Empty lines before and after
 ;; (setq org-capture-templates
-;;       '(("t" "Todo" entry (file+headline "/home/zaeph/org/life.org" "Inbox")
+;;       '(("t" "Todo" entry (file+headline "~/org/life.org" "Inbox")
 ;;       "* TODO %?" :empty-lines-before 1 :empty-lines-after 1)
-;;      ("T" "Todo+" entry (file+headline "/home/zaeph/org/life.org" "Inbox")
+;;      ("T" "Todo+" entry (file+headline "~/org/life.org" "Inbox")
 ;;       "* TODO %?\n%U\n%a\n" :empty-lines-before 1 :empty-lines-after 1)
-;;      ("j" "Journal" entry (file+datetree "/home/zaeph/org/journal.org")
+;;      ("j" "Journal" entry (file+datetree "~/org/journal.org")
 ;;       "* %?\n%U\n")))
 
 (defvar zp/org-capture-before-config nil
@@ -4856,19 +4857,19 @@ Ensures that the toggles are set to their default variable."
   _P_: Politics
   _m_: Media
 "
-  (("o" "/home/zaeph/org/life.org" "Life" "Calendar")
-   ("s" "/home/zaeph/org/life.org" "Social" "Calendar")
-   ("n" "/home/zaeph/org/life.org" "Social" "Nicolas" "Calendar")
-   ("x" "/home/zaeph/org/life.org" "Maintenance" "Calendar")
-   ("f" "/home/zaeph/org/life.org" "Finances" "Calendar")
-   ("a" "/home/zaeph/org/life.org" "Animals" "Calendar")
-   ("p" "/home/zaeph/org/life.org" "Professional" "Calendar")
-   ("s" "/home/zaeph/org/life.org" "School" "Calendar")
-   ("u" "/home/zaeph/org/life.org" "University" "Calendar")
-   ("r" "/home/zaeph/org/life.org" "Research" "Calendar")
-   ("h" "/home/zaeph/org/life.org" "Hacking" "Calendar")
-   ("P" "/home/zaeph/org/life.org" "Politics" "Calendar")
-   ("m" "/home/zaeph/org/life.org" "Media" "Calendar"))
+  (("o" "~/org/life.org" "Life" "Calendar")
+   ("s" "~/org/life.org" "Social" "Calendar")
+   ("n" "~/org/life.org" "Social" "Nicolas" "Calendar")
+   ("x" "~/org/life.org" "Maintenance" "Calendar")
+   ("f" "~/org/life.org" "Finances" "Calendar")
+   ("a" "~/org/life.org" "Animals" "Calendar")
+   ("p" "~/org/life.org" "Professional" "Calendar")
+   ("s" "~/org/life.org" "School" "Calendar")
+   ("u" "~/org/life.org" "University" "Calendar")
+   ("r" "~/org/life.org" "Research" "Calendar")
+   ("h" "~/org/life.org" "Hacking" "Calendar")
+   ("P" "~/org/life.org" "Politics" "Calendar")
+   ("m" "~/org/life.org" "Media" "Calendar"))
   nil)
 
 (zp/create-hydra-org-refile mx
@@ -4885,15 +4886,15 @@ Ensures that the toggles are set to their default variable."
   _g_: Grooming
   _h_: Health
 "
-  (("." "/home/zaeph/org/life.org" "Maintenance")
-   ("f" "/home/zaeph/org/life.org" "Finances")
-   ("a" "/home/zaeph/org/life.org" "Animals")
-   ("c" "/home/zaeph/org/life.org" "Cleaning")
-   ("p" "/home/zaeph/org/life.org" "Plants")
-   ("s" "/home/zaeph/org/life.org" "Supplies")
-   ("k" "/home/zaeph/org/life.org" "Cooking")
-   ("g" "/home/zaeph/org/life.org" "Grooming")
-   ("h" "/home/zaeph/org/life.org" "Health")))
+  (("." "~/org/life.org" "Maintenance")
+   ("f" "~/org/life.org" "Finances")
+   ("a" "~/org/life.org" "Animals")
+   ("c" "~/org/life.org" "Cleaning")
+   ("p" "~/org/life.org" "Plants")
+   ("s" "~/org/life.org" "Supplies")
+   ("k" "~/org/life.org" "Cooking")
+   ("g" "~/org/life.org" "Grooming")
+   ("h" "~/org/life.org" "Health")))
 
 (zp/create-hydra-org-refile media
     "
@@ -4904,12 +4905,12 @@ Ensures that the toggles are set to their default variable."
              ^^_s_/_S_: Series
              ^^_m_/_M_: Music
 "
-  (("." "/home/zaeph/org/life.org" "Media")
-   ("B" "/home/zaeph/org/life.org" "Books")
-   ("n" "/home/zaeph/org/life.org" "News")
-   ("M" "/home/zaeph/org/life.org" "Music")
-   ("F" "/home/zaeph/org/life.org" "Film")
-   ("S" "/home/zaeph/org/life.org" "Series"))
+  (("." "~/org/life.org" "Media")
+   ("B" "~/org/life.org" "Books")
+   ("n" "~/org/life.org" "News")
+   ("M" "~/org/life.org" "Music")
+   ("F" "~/org/life.org" "Film")
+   ("S" "~/org/life.org" "Series"))
   (("b" books)
    ("f" film)
    ("s" series)
@@ -4923,9 +4924,9 @@ Ensures that the toggles are set to their default variable."
   _l_: List
   _d_: Read
 "
-  (("." "/home/zaeph/org/life.org" "Books")
-   ("l" "/home/zaeph/org/life.org" "Books" "List")
-   ("d" "/home/zaeph/org/life.org" "Books" "Read"))
+  (("." "~/org/life.org" "Books")
+   ("l" "~/org/life.org" "Books" "List")
+   ("d" "~/org/life.org" "Books" "Read"))
   nil
   media)
 
@@ -4937,9 +4938,9 @@ Ensures that the toggles are set to their default variable."
   _l_: List
   _d_: Watched
 "
-  (("." "/home/zaeph/org/life.org" "Film")
-   ("l" "/home/zaeph/org/life.org" "Film" "List")
-   ("d" "/home/zaeph/org/life.org" "Film" "Watched"))
+  (("." "~/org/life.org" "Film")
+   ("l" "~/org/life.org" "Film" "List")
+   ("d" "~/org/life.org" "Film" "Watched"))
   nil
   media)
 
@@ -4951,9 +4952,9 @@ Ensures that the toggles are set to their default variable."
   _l_: List
   _d_: Watched
 "
-  (("." "/home/zaeph/org/life.org" "Series")
-   ("l" "/home/zaeph/org/life.org" "Series" "List")
-   ("d" "/home/zaeph/org/life.org" "Series" "Watched"))
+  (("." "~/org/life.org" "Series")
+   ("l" "~/org/life.org" "Series" "List")
+   ("d" "~/org/life.org" "Series" "Watched"))
   nil
   media)
 
@@ -4966,10 +4967,10 @@ Ensures that the toggles are set to their default variable."
   _j_: Jazz
   _o_: Other genres
 "
-  (("." "/home/zaeph/org/life.org" "Music")
-   ("c" "/home/zaeph/org/life.org" "Music" "List of classical pieces")
-   ("j" "/home/zaeph/org/life.org" "Music" "List of jazz pieces")
-   ("o" "/home/zaeph/org/life.org" "Music" "List of other genres"))
+  (("." "~/org/life.org" "Music")
+   ("c" "~/org/life.org" "Music" "List of classical pieces")
+   ("j" "~/org/life.org" "Music" "List of jazz pieces")
+   ("o" "~/org/life.org" "Music" "List of other genres"))
   nil
   media)
 
@@ -5082,7 +5083,7 @@ on init and them removes itself."
 (setq appt-delete-window-function (lambda () t))
 
 ;; (setq my-appt-notification-app (concat (getenv "HOME") "/bin/appt-notification"))
-(setq zp/appt-notification-app "/home/zaeph/.bin/appt-notify")
+(setq zp/appt-notification-app "~/.bin/appt-notify")
 
 (defun zp/appt-display (min-to-app new-time msg)
   (if (atom min-to-app)
@@ -5107,7 +5108,7 @@ on init and them removes itself."
       ledger-reconcile-default-commodity "EUR"
       ;; Testing
       ledger-post-auto-adjust-amounts 1
-      ledger-schedule-file "/home/zaeph/org/ledger/main-schedule.ledger.gpg")
+      ledger-schedule-file "~/org/ledger/main-schedule.ledger.gpg")
 
 (add-hook 'ledger-reconcile-mode-hook #'balance-windows)
 
@@ -5179,7 +5180,7 @@ that date.  Leave point on the first amount."
 ;; ========================================
 
 (require 'chronos)
-(load "/home/zaeph/.emacs.d/lisp/helm-chronos-patched.el")
+(load "~/.emacs.d/lisp/helm-chronos-patched.el")
 (require 'helm-chronos)  ;; Doesn't support creating new timers from helm
 
 (setq chronos-expiry-functions '(chronos-notify))
@@ -5317,8 +5318,8 @@ running."
 ;; ============== ORG-NOTER ===============
 ;; ========================================
 
-;; (load "/home/zaeph/.emacs.d/lisp/org-noter-patched.el")
-;; (load "/home/zaeph/.emacs.d/pkg/org-noter/org-noter.el")
+;; (load "~/.emacs.d/lisp/org-noter-patched.el")
+;; (load "~/.emacs.d/pkg/org-noter/org-noter.el")
 (require 'org-noter)
 (setq org-noter-hide-other t
       org-noter-auto-save-last-location t
@@ -5607,10 +5608,10 @@ Also run after a jump.")
 
 (require 'org-ref)
 
-(setq org-ref-bibliography-notes "/home/zaeph/org/bib/notes.org"
-      reftex-default-bibliography '("/home/zaeph/org/bib/monty-python.bib")
-      org-ref-default-bibliography '("/home/zaeph/org/bib/monty-python.bib")
-      org-ref-pdf-directory "/home/zaeph/org/bib/pdf")
+(setq org-ref-bibliography-notes "~/org/bib/notes.org"
+      reftex-default-bibliography '("~/org/bib/monty-python.bib")
+      org-ref-default-bibliography '("~/org/bib/monty-python.bib")
+      org-ref-pdf-directory "~/org/bib/pdf")
 
 
 
@@ -5677,9 +5678,9 @@ Also run after a jump.")
 
 
 (setq zp/bibtex-completion-bib-data-alist
-      '(("Monty Python" . "/home/zaeph/org/bib/monty-python.bib")
-        ;; ("Monty Python - Extra" . "/home/zaeph/org/bib/monty-python-extra.bib")
-        ("FromSoftware" . "/home/zaeph/org/bib/fromsoftware.bib")))
+      '(("Monty Python" . "~/org/bib/monty-python.bib")
+        ;; ("Monty Python - Extra" . "~/org/bib/monty-python-extra.bib")
+        ("FromSoftware" . "~/org/bib/fromsoftware.bib")))
 
 (zp/bibtex-select-bib-init)
 
@@ -5830,8 +5831,8 @@ commas and space."
 ;; (setq bibtex-completion-pdf-symbol "P"
 ;;       bibtex-completion-notes-symbol "N")
 
-;; ;; (setq bibtex-completion-bibliography '("/home/zaeph/org/uni/phonology/refs.bib"
-;; ;;                                  "/home/zaeph/org/uni/civ/refs.bib"))
+;; ;; (setq bibtex-completion-bibliography '("~/org/uni/phonology/refs.bib"
+;; ;;                                  "~/org/uni/civ/refs.bib"))
 
 ;; ;; Obsolete with `helm-bibtex-switch'
 ;; ;; (setq helm-bibtex-pdf-open-function 'org-open-file
@@ -5914,18 +5915,18 @@ commas and space."
 ;;                ("Attach PDF to email"                   . bibtex-completion-add-PDF-attachment)))))
 
 ;; ;; bib files
-;; (setq bib-data '(("All" . ("/home/zaeph/org/old/uni/phonology/refs.bib"
-;;                         "/home/zaeph/org/old/uni/civilisation/refs.bib"
-;;                         "/home/zaeph/org/old/uni/physics/refs.bib"))
-;;               ("Phonology" . "/home/zaeph/org/old/uni/phonology/refs.bib")
-;;               ("Civilisation" . "/home/zaeph/org/old/uni/civilisation/refs.bib")
-;;               ("Physics" . "/home/zaeph/org/old/uni/physics/refs.bib")
-;;               ("Labour" . "/home/zaeph/org/projects/university/courses/civilisation/refs.bib")))
+;; (setq bib-data '(("All" . ("~/org/old/uni/phonology/refs.bib"
+;;                         "~/org/old/uni/civilisation/refs.bib"
+;;                         "~/org/old/uni/physics/refs.bib"))
+;;               ("Phonology" . "~/org/old/uni/phonology/refs.bib")
+;;               ("Civilisation" . "~/org/old/uni/civilisation/refs.bib")
+;;               ("Physics" . "~/org/old/uni/physics/refs.bib")
+;;               ("Labour" . "~/org/projects/university/courses/civilisation/refs.bib")))
 
 ;; ;; Folders where the PDFs and notes are
-;; (setq bibtex-completion-notes-path "/home/zaeph/org/refs/notes.org"
-;;       bibtex-completion-library-path '("/home/zaeph/../pdfs/phonology"
-;;                                     "/home/zaeph/../pdfs/civilisation"
+;; (setq bibtex-completion-notes-path "~/org/refs/notes.org"
+;;       bibtex-completion-library-path '("~/../pdfs/phonology"
+;;                                     "~/../pdfs/civilisation"
 ;;                                     "k:/pdfs/phonology"
 ;;                                     "k:/pdfs/civilisation"))
 
@@ -5996,7 +5997,7 @@ commas and space."
 ;;                       :body (format "You have an appointment in %d minutes" 10)
 ;;                       :app-name "Emacs: Org"
 ;;                    :urgency "critical"
-;;                       :sound-name "/home/zaeph/SFX/Misc/rimshot.mp3")
+;;                       :sound-name "~/SFX/Misc/rimshot.mp3")
 
 ;; Source: https://gitlab.com/marcowahl/herald-the-mode-lined
 (defun herald-the-mode-line ()
@@ -8538,7 +8539,7 @@ Trim unnecessary TRAMP information from the path (e.g. /sudo:…),
 and forward it to terminology. ARGUMENTS can be any argument
 accepted by terminology (e.g. ‘-x command’).
 
-See ‘/home/zaeph/.bin/terminology-dwim’ for more info."
+See ‘~/.bin/terminology-dwim’ for more info."
   (interactive)
   (let ((client-buffer (current-buffer))
         (arg ARGUMENTS))
@@ -8560,7 +8561,7 @@ Trim unnecessary TRAMP information from the path (e.g. /sudo:…),
 and forward it to terminator. ARGUMENTS can be any argument
 accepted by terminator (e.g. ‘-x command’).
 
-See ‘/home/zaeph/.bin/terminator-dwim’ for more info."
+See ‘~/.bin/terminator-dwim’ for more info."
   (interactive)
   (let ((client-buffer (current-buffer))
         (arg ARGUMENTS))
@@ -8775,7 +8776,7 @@ time is displayed."
    (quote
     (("bal-last" "ledger bal ^expenses -p last\\ week and not commons and not swimming")
      ("bal-week" "ledger bal ^expenses -p this\\ week and not commons and not swimming")
-     ("bal" "ledger -f /home/zaeph/org/main.ledger bal")
+     ("bal" "ledger -f ~/org/main.ledger bal")
      ("reg" "%(binary) -f %(ledger-file) reg")
      ("payee" "%(binary) -f %(ledger-file) reg @%(payee)")
      ("account" "%(binary) -f %(ledger-file) reg %(account)"))))
