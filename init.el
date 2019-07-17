@@ -174,7 +174,7 @@
   :config
   (define-key isearch-mode-map (kbd "<backspace>") 'isearch-del-char))
 
-;; zshrc
+;; Use ‘shell-script-mode’ with prezto’s zshrc
 (add-to-list 'auto-mode-alist '("\\zshrc\\'" . shell-script-mode))
 (add-to-list 'auto-mode-alist '("\\prompt_.*_setup\\'" . shell-script-mode))
 
