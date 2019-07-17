@@ -4330,8 +4330,7 @@ If JUMP is non-nil, jump to it instead."
            (goto-char (point-max))
            nil)
           (t
-           (zp/org-refile-target-verify-exclude-separators)))
-    ))
+           (zp/org-refile-target-verify-exclude-separators)))))
 
 (defun zp/org-refile-restricted (&optional print-message jump)
     "Refile current heading to another within the current restriction.
