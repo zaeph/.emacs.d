@@ -2555,6 +2555,10 @@ With a prefix argument, do so in all agenda buffers."
 
   (run-at-time "06:00" 86400 #'zp/org-agenda-redo-all)
 
+  ;; Idle timer for rebuilding all the agenda views
+  ;; Disabled for review
+  ;; (run-with-idle-timer 300 t #'zp/org-agenda-redo-all)
+
   (defun zp/org-habit-show-habits-force ()
     "Enable habits in all local agendas, even if they’ve been disabled."
     (interactive)
@@ -2572,10 +2576,6 @@ With a prefix argument, do so in all agenda buffers."
     "When t, print helpful debugging messages for skips.")
 
   (setq zp/org-agenda-skip-functions-debug nil)
-
-  ;; Idle timer for rebuilding all the agenda views
-  ;; Disabled for review
-  ;; (run-with-idle-timer 300 t #'zp/org-agenda-redo-all)
 
   (define-key mode-specific-map (kbd "a") 'org-agenda))
 
