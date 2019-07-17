@@ -204,8 +204,7 @@
   (define-key Info-mode-map (kbd "j") 'next-line)
   (define-key Info-mode-map (kbd "k") 'previous-line))
 
-;; recentf-ext
-(require 'recentf-ext)
+(use-package recentf-ext)
 
 ;; diff-hl
 (require 'diff-hl)
