@@ -2453,8 +2453,17 @@ With a prefix argument, do so in all agenda buffers."
 
   (run-at-time "06:00" 86400 #'zp/org-agenda-redo-all)
 
+  (defun zp/org-habit-show-habits-force ()
+    "Enable habits in all local agendas, even if they’ve been disabled."
+    (interactive)
+    (mapcar (lambda (cons)
+              (let ((agenda (car cons)))
+                (unless (eq agenda 'default)
+                  (zp/set-agenda-local 'org-habit-show-habits t agenda))))
+            zp/org-agenda-local-config))
+
   ;; Force habits to be shown if they’ve been disabled the previous day
-  (run-at-time "06:00" 86400 '(lambda () (setq org-habit-show-habits t)))
+  (run-at-time "06:00" 86400 #'zp/org-habit-show-habits-force)
 
   ;; Variables used for debugging
   (defvar zp/org-agenda-skip-functions-debug nil
