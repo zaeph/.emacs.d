@@ -2560,9 +2560,9 @@ variables."
       (let ((var (pop alist)))
         (push var settings)
         (set var (eval (pop alist)))))
-    (list (cons nil (list (mapcar (lambda (setting)
-                                    (cons setting (eval setting)))
-                                  settings))))))
+    (list (cons 'default (list (mapcar (lambda (setting)
+                                         (cons setting (eval setting)))
+                                       settings))))))
 
 ;; org-agenda config
 
@@ -3595,9 +3595,10 @@ Meant to be run with ‘org-agenda-mode-hook’."
 (add-hook #'zp/org-agenda-load-local-config-post-hook
           #'zp/org-agenda-set-category-icons)
 
-(defun zp/org-agenda-load-local-config ()
+(defun zp/org-agenda-load-local-config (&optional agenda)
   "Load the org-agenda local config for the current view."
-  (let ((agenda (zp/org-agenda-get-key)))
+  (let ((agenda (or agenda
+                    (zp/org-agenda-get-key))))
     ;; Create local config if it doesn’t exist for current agenda
     (unless (assoc agenda zp/org-agenda-local-config)
       (setf (alist-get agenda
@@ -3606,7 +3607,7 @@ Meant to be run with ‘org-agenda-mode-hook’."
             ;; Copying the list is necessary to have different
             ;; references to the same values.  Otherwise, we’d also
             ;; modify the global config.
-            (list (copy-alist (car (alist-get nil
+            (list (copy-alist (car (alist-get 'default
                                               zp/org-agenda-local-config))))))
     ;; Load all settings
     (mapcar (lambda (cons)
@@ -3646,26 +3647,43 @@ file (trees, drawers, etc.)."
                     (zp/org-agenda-get-key))))
     (alist-get agenda zp/org-agenda-local-config nil nil 'equal)))
 
-(defun zp/get-agenda-local (symbol)
-  "Get value of SYMBOL for the current org-agenda view."
-  (let ((agenda (zp/org-agenda-get-key)))
+(defun zp/get-agenda-local (symbol &optional agenda)
+  "Get value of SYMBOL for the current org-agenda view.
+
+If AGENDA is an agenda key (as a string), set SYMBOL to VALUE in
+that agenda.
+
+If AGENDA is 'default, set SYMBOL to VALUE globally."
+  (let ((agenda (or agenda
+                    (zp/org-agenda-get-key))))
     (unless (zp/org-agenda-local-has-config-p agenda)
       (zp/org-agenda-load-local-config))
     (alist-get symbol (car (alist-get agenda
                                       zp/org-agenda-local-config
                                       nil nil 'equal)))))
 
-(defun zp/set-agenda-local (symbol value)
-  "Set SYMBOL to VALUE locally for the current org-agenda view."
-  (let ((agenda (zp/org-agenda-get-key)))
+(defun zp/set-agenda-local (symbol value &optional agenda)
+  "Set SYMBOL to VALUE locally for the current org-agenda view.
+
+If AGENDA is an agenda key (as a string), set SYMBOL to VALUE in
+that agenda.
+
+If AGENDA is 'default, set SYMBOL to VALUE globally."
+  (let ((agenda (or agenda
+                    (zp/org-agenda-get-key))))
     (unless (zp/org-agenda-local-has-config-p agenda)
       (zp/org-agenda-load-local-config))
     (setf (alist-get symbol
-                      (car (alist-get agenda
-                                      zp/org-agenda-local-config
-                                      nil nil 'equal)))
-           value)
+                     (car (alist-get agenda
+                                     zp/org-agenda-local-config
+                                     nil nil 'equal)))
+          value)
     value))
+
+(defun zp/testing (&optional agenda)
+  (bound-and-true-p agenda))
+
+(zp/testing nil)
 
 (defvar zp/org-agenda-default-agendas-list nil
   "List of agendas to consider as defaults.
