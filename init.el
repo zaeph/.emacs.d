@@ -1775,6 +1775,7 @@ return `nil'."
   :config
   (setq org-agenda-inhibit-startup nil
         org-log-into-drawer "LOGBOOK-NOTES"
+        org-use-property-inheritance '("AGENDA_GROUP")
         org-log-state-notes-insert-after-drawers nil
         org-special-ctrl-a/e 't
         org-log-done 'time
@@ -2492,6 +2493,11 @@ variables."
         org-agenda-include-deadlines 'all
         org-deadline-warning-days 30
         org-agenda-cmp-user-defined 'zp/org-cmp-created-dwim
+        org-agenda-sorting-strategy
+        '((agenda user-defined-down category-keep)
+          (tags user-defined-down category-keep)
+          (todo user-defined-down category-keep)
+          (search user-defined-down category-keep))
 
         ;; Initialise the list structure for local variables
         zp/org-agenda-local-config
@@ -2905,6 +2911,21 @@ agenda settings after them."
             (word-list-formatted (zp/org-agenda-format-word-list word-list)))
         (concat header-formatted word-list-formatted))))
 
+  ;;--------------------------
+  ;; Show modes in headers
+  ;;--------------------------
+
+  (defface zp/org-agenda-block-info-face nil
+    "Info for blocked faces in org-agenda.")
+
+  (defface zp/org-agenda-block-warning-face nil
+    "Warning for blocked faces in org-agenda.")
+
+  (defun zp/org-agenda-hi-lock ()
+    (highlight-regexp "([-+].*?)" 'zp/org-agenda-block-info-face)
+    ;; (highlight-regexp "^[[:space:]]*? \\[ Stuck Projects \\]" 'zp/org-agenda-block-warning-face)
+    (highlight-regexp "^~~.*~~$" 'font-lock-comment-face))
+
   ;;--------
   ;; Blocks
   ;;--------
@@ -3156,77 +3177,291 @@ It creates 4 blocks:
              ((org-agenda-overriding-header
                (zp/org-agenda-format-header-main "Journal")))))
 
-  (setq org-use-property-inheritance '("AGENDA_GROUP"))
+  (defun zp/org-agenda-delete-empty-blocks ()
+    "Remove empty agenda blocks.
+  A block is identified as empty if there are fewer than 2
+  non-empty lines in the block (excluding the line with
+  `org-agenda-block-separator' characters)."
+    (when org-agenda-compact-blocks
+      (user-error "Cannot delete empty compact blocks"))
+    (setq buffer-read-only nil)
+    (save-excursion
+      (goto-char (point-min))
+      (let* ((blank-line-re "^\\s-*$")
+             (content-line-count (if (looking-at-p blank-line-re) 0 1))
+             (start-pos (point))
+             (block-re (format "%c\\{10,\\}" org-agenda-block-separator)))
+        (while (and (not (eobp)) (forward-line))
+          (cond
+           ((looking-at-p block-re)
+            (when (< content-line-count 2)
+              (delete-region start-pos (1+ (point-at-bol))))
+            (setq start-pos (point))
+            (forward-line)
+            (setq content-line-count (if (looking-at-p blank-line-re) 0 1)))
+           ((not (looking-at-p blank-line-re))
+            (setq content-line-count (1+ content-line-count)))))
+        (when (< content-line-count 2)
+          (delete-region start-pos (point-max)))
+        (goto-char (point-min))
+        ;; The above strategy can leave a separator line at the beginning
+        ;; of the buffer.
+        (when (looking-at-p block-re)
+          (delete-region (point) (1+ (point-at-eol))))))
+    (setq buffer-read-only t))
+
+  (add-hook #'org-agenda-finalize-hook #'zp/org-agenda-delete-empty-blocks)
+
+  ;;---------
+  ;; Toggles
+  ;;---------
+
+  (defun zp/toggle-org-agenda-include-habits ()
+    "Toggle habits."
+    (interactive)
+    (if (prog1 (zp/set-agenda-local 'org-habit-show-habits
+                                    (not (zp/get-agenda-local 'org-habit-show-habits)))
+          (org-agenda-redo))
+        (message "Habits turned on.")
+      (message "Habits turned off.")))
+
+  (defun zp/toggle-org-habit-show-all-today ()
+    "Toggle the display of habits between showing only the habits
+due today, and showing all of them."
+    (interactive)
+    (cond ((zp/get-agenda-local 'org-habit-show-all-today)
+           (zp/set-agenda-local 'org-habit-show-all-today nil)
+           (org-agenda-redo)
+           (message "Habits: Showing today"))
+          (t
+           (zp/set-agenda-local 'org-habit-show-all-today t)
+           (org-agenda-redo)
+           (message "Habits: Showing all"))))
+
+  (defun zp/toggle-org-agenda-include-deadlines ()
+    "Toggle the inclusion of deadlines in the agenda."
+    (interactive)
+    (cond ((zp/get-agenda-local 'org-agenda-include-deadlines)
+           (zp/set-agenda-local 'org-agenda-include-deadlines nil)
+           (org-agenda-redo)
+           (message "Deadlines: Hidden"))
+          (t
+           (zp/set-agenda-local 'org-agenda-include-deadlines t)
+           (org-agenda-redo)
+           (message "Deadlines: Visible"))))
+
+  (defvar zp/org-agenda-include-scheduled nil
+    "Toggle the inclusion of scheduled items in the agenda.")
+
+  (defun zp/toggle-org-agenda-include-scheduled ()
+    "Toggle the inclusion of scheduled items in the agenda."
+    (interactive)
+    (cond ((zp/set-agenda-local 'zp/org-agenda-include-scheduled
+                                (not (zp/get-agenda-local
+                                      'zp/org-agenda-include-scheduled)))
+           (zp/set-agenda-local 'org-agenda-entry-types
+                                '(:deadline :scheduled :timestamp :sexp))
+           (org-agenda-redo)
+           (message "Scheduled: Visible"))
+          (t
+           (zp/set-agenda-local 'org-agenda-entry-types
+                                '(:deadline :timestamp :sexp))
+           (org-agenda-redo)
+           (message "Scheduled: Hidden"))))
+
+  (defun zp/toggle-org-agenda-category-icons ()
+    "Toggle the inclusion of category icons in the agenda."
+    (interactive)
+    (if (prog1 (zp/set-agenda-local
+                'zp/org-agenda-include-category-icons
+                (not (zp/get-agenda-local
+                      'zp/org-agenda-include-category-icons)))
+          (org-agenda-redo))
+        (message "Showing category icons.")
+      (message "Hiding category icons.")))
+
+  (defvar zp/org-agenda-sorting-strategy-special-first nil
+    "When non-nil, sort special TODOs first (STRT & NEXT).")
+
+  (defun zp/toggle-org-agenda-sorting-strategy-special-first ()
+    "Toggle the skip function used by the agenda."
+    (interactive)
+    (if (prog1 (zp/set-agenda-local
+                'zp/org-agenda-sorting-strategy-special-first
+                (not (zp/get-agenda-local
+                      'zp/org-agenda-sorting-strategy-special-first)))
+          (org-agenda-redo))
+        (message "Sorting: Special first.")
+      (message "Sorting: Normal.")))
+
+  (defvar zp/org-agenda-split-subtasks nil
+    "When non-nil, split subtasks and lone tasks.")
+
+  (defun zp/toggle-org-agenda-split-subtasks ()
+    (interactive)
+    (if (prog1 (zp/set-agenda-local
+                'zp/org-agenda-split-subtasks
+                (not (zp/get-agenda-local 'zp/org-agenda-split-subtasks)))
+          (org-agenda-redo))
+        (message "Splitting subtasks.")
+      (message "Merging subtasks.")))
+
+  (defun zp/toggle-org-deadline-warning-days-range ()
+    "Toggle the range of days for deadline to show up on the agenda."
+    (interactive)
+    (cond ((eq org-deadline-warning-days 7)
+           (setq org-deadline-warning-days 31)
+           (org-agenda-redo)
+           (message "Deadline range: 1 month"))
+          ((eq org-deadline-warning-days 31)
+           (setq org-deadline-warning-days 7)
+           (org-agenda-redo)
+           (message "Deadline range: 1 week"))))
+
+  (defvar zp/org-agenda-todo-ignore-future nil
+    "When non-nil, ignore future SCHEDULED and timestamps.")
+
+  (defun zp/toggle-org-agenda-todo-ignore-future ()
+    "Toggle whether to include future SCHEDULED and timestamps."
+    (interactive)
+    (cond ((eq (zp/get-agenda-local 'zp/org-agenda-todo-ignore-future) t)
+           (zp/set-agenda-local 'zp/org-agenda-todo-ignore-future nil)
+           (zp/set-agenda-local 'org-agenda-todo-ignore-scheduled nil)
+           (zp/set-agenda-local 'org-agenda-todo-ignore-timestamp nil)
+           (org-agenda-redo)
+           (message "Show items in the future."))
+          (t
+           (zp/set-agenda-local 'zp/org-agenda-todo-ignore-future t)
+           (zp/set-agenda-local 'org-agenda-todo-ignore-scheduled 'future)
+           (zp/set-agenda-local 'org-agenda-todo-ignore-timestamp 'future)
+           (org-agenda-redo)
+           (message "Ignore items in the future."))))
+
+  (defvar zp/org-agenda-sort-by-rev-fifo nil
+    "When non-nil, sort by reverse FIFO order.")
+
+  (defun zp/toggle-org-agenda-sort-by-rev-fifo ()
+    (interactive)
+    (if (prog1 (zp/set-agenda-local 'zp/org-agenda-sort-by-rev-fifo
+                                    (not (zp/get-agenda-local
+                                          'zp/org-agenda-sort-by-rev-fifo)))
+          (org-agenda-redo))
+        (message "Show items in reverse FIFO order.")
+      (message "Show items in FIFO order.")))
+
+  (defun zp/toggle-org-agenda-projects-include-waiting ()
+    "Toggle whether to include projects with a waiting task."
+    (interactive)
+    (if (prog1 (zp/set-agenda-local 'zp/org-agenda-include-waiting
+                                    (not (zp/get-agenda-local
+                                          'zp/org-agenda-include-waiting)))
+          (org-agenda-redo))
+        (message "Waiting: Visible")
+      (message "Waiting: Hidden")))
+
+  (defun zp/toggle-org-agenda-dim-blocked-tasks ()
+    "Toggle the dimming of blocked tags in the agenda."
+    (interactive)
+    (cond ((or (eq org-agenda-dim-blocked-tasks nil)
+               (eq org-agenda-dim-blocked-tasks 'invisible))
+           (setq org-agenda-dim-blocked-tasks t)
+           (org-agenda-redo)
+           (message "Blocked tasks: Dimmed"))
+          (t
+           (setq org-agenda-dim-blocked-tasks nil)
+           (org-agenda-redo)
+           (message "Blocked tasks: Plain"))))
+
+  (defun zp/toggle-org-agenda-hide-blocked-tasks ()
+    "Toggle the visibility of blocked tags in the agenda."
+    (interactive)
+    (cond ((or (eq org-agenda-dim-blocked-tasks nil)
+               (eq org-agenda-dim-blocked-tasks t))
+           (setq org-agenda-dim-blocked-tasks 'invisible)
+           (org-agenda-redo)
+           (message "Blocked tasks: Invisible"))
+          (t
+           (setq org-agenda-dim-blocked-tasks t)
+           (org-agenda-redo)
+           (message "Blocked tasks: Dimmed"))))
 
   ;;---------
   ;; Agendas
   ;;---------
 
   (setq org-agenda-custom-commands
-      `(("n" "Agenda"
-             (,(zp/org-agenda-block-agenda-main "Agenda" org-agenda-files)))
+        `(("n" "Agenda"
+           (,(zp/org-agenda-block-agenda-main "Agenda" org-agenda-files)))
 
-        ("N" "Agenda (w/o groups)"
-             (,(zp/org-agenda-block-agenda "Agenda (w/o groups)" org-agenda-files)))
+          ("N" "Agenda (w/o groups)"
+           (,(zp/org-agenda-block-agenda "Agenda (w/o groups)" org-agenda-files)))
 
-        ("k" "Weekly agenda"
-             (,(zp/org-agenda-block-agenda-week "Weekly Agenda")))
+          ("k" "Weekly agenda"
+           (,(zp/org-agenda-block-agenda-week "Weekly Agenda")))
 
-        ("K" "Weekly appointments"
-             (,(zp/org-agenda-block-agenda-week-appointments-only
-                "Weekly Appointments (-routine)")))
+          ("K" "Weekly appointments"
+           (,(zp/org-agenda-block-agenda-week-appointments-only
+              "Weekly Appointments (-routine)")))
 
-        ("I" "Inactive"
-             (,@(zp/org-agenda-blocks-create "Inactive" nil "/STBY")))
+          ("I" "Inactive"
+           (,@(zp/org-agenda-blocks-create "Inactive" nil "/STBY")))
 
-        ("ii" "Inactive (+groups)"
-              (,@(zp/org-agenda-blocks-create "Inactive (+groups)" nil "/STBY" t)))
+          ("ii" "Inactive (+groups)"
+           (,@(zp/org-agenda-blocks-create "Inactive (+groups)" nil "/STBY" t)))
 
-        ("C" "Curiosities"
-             (,@(zp/org-agenda-blocks-create "Curiosities" nil "+curios")))
+          ("C" "Curiosities"
+           (,@(zp/org-agenda-blocks-create "Curiosities" nil "+curios")))
 
-        ("cc" "Curiosities (+groups)"
-              (,@(zp/org-agenda-blocks-create "Curiosities (+groups)" nil "+curios" t)))
+          ("cc" "Curiosities (+groups)"
+           (,@(zp/org-agenda-blocks-create "Curiosities (+groups)" nil "+curios" t)))
 
-        ,@(zp/org-agenda-create-all
-           '(("l" "Life" ("life" "mx" "pro" "research" "act"))
-             ("L" "Life (strict)" ("life" "mx"))
-             ("x" "Maintenance" ("mx"))
-             ("p" "Professional" ("pro"))
-             ("r" "Research" ("research"))
-             ("h" "Hacking" ("hack"))
-             ("o" "Org" ("org"))
-             ("e" "Emacs" ("emacs"))
-             ("O" "OPSEC" ("opsec"))
-             ("P" "Activism" ("act"))
-             ("m" "Media" ("media"))
-             ("f" "Film" ("film"))
-             ("g" "Groupless" (nil))))
+          ,@(zp/org-agenda-create-all
+             '(("l" "Life" ("life" "mx" "pro" "research" "act"))
+               ("L" "Life (strict)" ("life" "mx"))
+               ("x" "Maintenance" ("mx"))
+               ("p" "Professional" ("pro"))
+               ("r" "Research" ("research"))
+               ("h" "Hacking" ("hack"))
+               ("o" "Org" ("org"))
+               ("e" "Emacs" ("emacs"))
+               ("O" "OPSEC" ("opsec"))
+               ("P" "Activism" ("act"))
+               ("m" "Media" ("media"))
+               ("f" "Film" ("film"))
+               ("g" "Groupless" (nil))))
 
-        ("j" "Journal entries"
-             (,(zp/org-agenda-block-journal))
-             ((org-agenda-files '("~/org/journal.org"))))
+          ("j" "Journal entries"
+           (,(zp/org-agenda-block-journal))
+           ((org-agenda-files '("~/org/journal.org"))))
 
-        ("d" "Deadlines"
-             (,(zp/org-agenda-block-deadlines)))
+          ("d" "Deadlines"
+           (,(zp/org-agenda-block-deadlines)))
 
-        ("w" "Waiting list"
-             (,(zp/org-agenda-block-tasks-waiting)))
+          ("w" "Waiting list"
+           (,(zp/org-agenda-block-tasks-waiting)))
 
-        ("A" "Meditation records"
-             ((agenda ""
-                      ((org-agenda-files zp/org-agenda-files-awakening)
-                       (org-agenda-log-mode))))
-             ((org-agenda-skip-timestamp-if-done nil)))
+          ("A" "Meditation records"
+           ((agenda ""
+                    ((org-agenda-files zp/org-agenda-files-awakening)
+                     (org-agenda-log-mode))))
+           ((org-agenda-skip-timestamp-if-done nil)))
 
-        ("S" "Swimming records"
-             ((agenda ""
-                      ((org-agenda-files zp/org-agenda-files-sports))))
-             ((org-agenda-skip-timestamp-if-done nil)))))
+          ("S" "Swimming records"
+           ((agenda ""
+                    ((org-agenda-files zp/org-agenda-files-sports))))
+           ((org-agenda-skip-timestamp-if-done nil)))))
 
   ;;------
   ;; Rest
   ;;------
+
+  (defun zp/org-agenda-remove-mouse-face ()
+    "Remove mouse-face from org-agenda."
+    (remove-text-properties(point-min) (point-max) '(mouse-face t)))
+
+  (add-hook #'org-agenda-finalize-hook #'zp/org-agenda-hi-lock)
+  (add-hook #'org-agenda-finalize-hook #'zp/org-agenda-remove-mouse-face)
+
 
   ;; Force habits to be shown if they’ve been disabled the previous day
   (run-at-time "06:00" 86400 #'zp/org-habit-show-habits-force)
@@ -3240,265 +3475,8 @@ It creates 4 blocks:
   (define-key mode-specific-map (kbd "a") 'org-agenda))
 
 
-
-;; ========================================
-;; ================ BLOCKS ================
-;; ========================================
-
-
-
-;; Example for layers
-;; ("h" . "Test")
-;; ("he" . "Another test")
-;; ("hec" tags "+home")
-
-
-
-
-
-
-;; (setq org-agenda-sorting-strategy
-(setq org-agenda-sorting-strategy '((agenda habit-down deadline-up time-up scheduled-up priority-down category-keep)
-                                    (tags priority-down category-keep)
-                                    ;; (tags category-keep priority-down)
-                                    (todo priority-down category-keep)
-                                    (search category-keep)))
-
-;; Previous priority for agenda
-;; '((agenda habit-down time-up priority-down category-keep)
-
-
-
-;; Cumulate TODO-keywords
-;; Remember the `|'
-;; (tags-todo "+TODO=\"NEXT\"|+TODO=\"STARTED\"")
-
-;; Prototype for inserting colours
-;; (insert (propertize "Test" 'font-lock-face '(:foreground "green" :background "gray6")))
-
-(defun zp/org-agenda-delete-empty-blocks ()
-  "Remove empty agenda blocks.
-  A block is identified as empty if there are fewer than 2
-  non-empty lines in the block (excluding the line with
-  `org-agenda-block-separator' characters)."
-  (when org-agenda-compact-blocks
-    (user-error "Cannot delete empty compact blocks"))
-  (setq buffer-read-only nil)
-  (save-excursion
-    (goto-char (point-min))
-    (let* ((blank-line-re "^\\s-*$")
-           (content-line-count (if (looking-at-p blank-line-re) 0 1))
-           (start-pos (point))
-           (block-re (format "%c\\{10,\\}" org-agenda-block-separator)))
-      (while (and (not (eobp)) (forward-line))
-        (cond
-         ((looking-at-p block-re)
-          (when (< content-line-count 2)
-            (delete-region start-pos (1+ (point-at-bol))))
-          (setq start-pos (point))
-          (forward-line)
-          (setq content-line-count (if (looking-at-p blank-line-re) 0 1)))
-         ((not (looking-at-p blank-line-re))
-          (setq content-line-count (1+ content-line-count)))))
-      (when (< content-line-count 2)
-        (delete-region start-pos (point-max)))
-      (goto-char (point-min))
-      ;; The above strategy can leave a separator line at the beginning
-      ;; of the buffer.
-      (when (looking-at-p block-re)
-        (delete-region (point) (1+ (point-at-eol))))))
-  (setq buffer-read-only t))
-
-(defface zp/org-agenda-block-info-face nil
-  "Info for blocked faces in org-agenda.")
-
-(defface zp/org-agenda-block-warning-face nil
-  "Warning for blocked faces in org-agenda.")
-
-(defun zp/org-agenda-hi-lock ()
-  (highlight-regexp "([-+].*?)" 'zp/org-agenda-block-info-face)
-  ;; (highlight-regexp "^[[:space:]]*? \\[ Stuck Projects \\]" 'zp/org-agenda-block-warning-face)
-  (highlight-regexp "^~~.*~~$" 'font-lock-comment-face))
-
-(defun zp/org-agenda-remove-mouse-face ()
-  "Remove mouse-face from org-agenda."
-  (remove-text-properties(point-min) (point-max) '(mouse-face t)))
-
-(add-hook 'org-agenda-finalize-hook #'zp/org-agenda-hi-lock)
-(add-hook 'org-agenda-finalize-hook #'zp/org-agenda-delete-empty-blocks)
-(add-hook 'org-agenda-finalize-hook #'zp/org-agenda-remove-mouse-face)
-
-
-
 ;; Toggles
-(defun zp/toggle-org-agenda-include-habits ()
-  "Toggle habits."
-  (interactive)
-  (if (prog1 (zp/set-agenda-local 'org-habit-show-habits
-                               (not (zp/get-agenda-local 'org-habit-show-habits)))
-        (org-agenda-redo))
-      (message "Habits turned on.")
-    (message "Habits turned off.")))
 
-(defun zp/toggle-org-habit-show-all-today ()
-  "Toggle the display of habits between showing only the habits
-due today, and showing all of them."
-  (interactive)
-  (cond ((zp/get-agenda-local 'org-habit-show-all-today)
-         (zp/set-agenda-local 'org-habit-show-all-today nil)
-         (org-agenda-redo)
-         (message "Habits: Showing today"))
-        (t
-         (zp/set-agenda-local 'org-habit-show-all-today t)
-         (org-agenda-redo)
-         (message "Habits: Showing all"))))
-
-(defun zp/toggle-org-agenda-include-deadlines ()
-  "Toggle the inclusion of deadlines in the agenda."
-  (interactive)
-  (cond ((zp/get-agenda-local 'org-agenda-include-deadlines)
-         (zp/set-agenda-local 'org-agenda-include-deadlines nil)
-         (org-agenda-redo)
-         (message "Deadlines: Hidden"))
-        (t
-         (zp/set-agenda-local 'org-agenda-include-deadlines t)
-         (org-agenda-redo)
-         (message "Deadlines: Visible"))))
-
-(defvar zp/org-agenda-include-scheduled nil
-  "Toggle the inclusion of scheduled items in the agenda.")
-
-(defun zp/toggle-org-agenda-include-scheduled ()
-  "Toggle the inclusion of scheduled items in the agenda."
-  (interactive)
-  (cond ((zp/set-agenda-local 'zp/org-agenda-include-scheduled
-                           (not (zp/get-agenda-local
-                                 'zp/org-agenda-include-scheduled)))
-         (zp/set-agenda-local 'org-agenda-entry-types
-                           '(:deadline :scheduled :timestamp :sexp))
-         (org-agenda-redo)
-         (message "Scheduled: Visible"))
-        (t
-         (zp/set-agenda-local 'org-agenda-entry-types
-                           '(:deadline :timestamp :sexp))
-         (org-agenda-redo)
-         (message "Scheduled: Hidden"))))
-
-(defun zp/toggle-org-agenda-category-icons ()
-  "Toggle the inclusion of category icons in the agenda."
-  (interactive)
-  (if (prog1 (zp/set-agenda-local
-              'zp/org-agenda-include-category-icons
-              (not (zp/get-agenda-local
-                    'zp/org-agenda-include-category-icons)))
-        (org-agenda-redo))
-      (message "Showing category icons.")
-    (message "Hiding category icons.")))
-
-(defvar zp/org-agenda-sorting-strategy-special-first nil
-  "When non-nil, sort special TODOs first (STRT & NEXT).")
-
-(defun zp/toggle-org-agenda-sorting-strategy-special-first ()
-  "Toggle the skip function used by the agenda."
-  (interactive)
-  (if (prog1 (zp/set-agenda-local
-              'zp/org-agenda-sorting-strategy-special-first
-              (not (zp/get-agenda-local
-                    'zp/org-agenda-sorting-strategy-special-first)))
-        (org-agenda-redo))
-      (message "Sorting: Special first.")
-    (message "Sorting: Normal.")))
-
-(defvar zp/org-agenda-split-subtasks nil
-  "When non-nil, split subtasks and lone tasks.")
-
-(defun zp/toggle-org-agenda-split-subtasks ()
-  (interactive)
-  (if (prog1 (zp/set-agenda-local
-              'zp/org-agenda-split-subtasks
-              (not (zp/get-agenda-local 'zp/org-agenda-split-subtasks)))
-        (org-agenda-redo))
-      (message "Splitting subtasks.")
-    (message "Merging subtasks.")))
-
-(defun zp/toggle-org-deadline-warning-days-range ()
-  "Toggle the range of days for deadline to show up on the agenda."
-  (interactive)
-  (cond ((eq org-deadline-warning-days 7)
-         (setq org-deadline-warning-days 31)
-         (org-agenda-redo)
-         (message "Deadline range: 1 month"))
-        ((eq org-deadline-warning-days 31)
-         (setq org-deadline-warning-days 7)
-         (org-agenda-redo)
-         (message "Deadline range: 1 week"))))
-
-(defvar zp/org-agenda-todo-ignore-future nil
-  "When non-nil, ignore future SCHEDULED and timestamps.")
-
-(defun zp/toggle-org-agenda-todo-ignore-future ()
-  "Toggle whether to include future SCHEDULED and timestamps."
-  (interactive)
-  (cond ((eq (zp/get-agenda-local 'zp/org-agenda-todo-ignore-future) t)
-         (zp/set-agenda-local 'zp/org-agenda-todo-ignore-future nil)
-         (zp/set-agenda-local 'org-agenda-todo-ignore-scheduled nil)
-         (zp/set-agenda-local 'org-agenda-todo-ignore-timestamp nil)
-         (org-agenda-redo)
-         (message "Show items in the future."))
-        (t
-         (zp/set-agenda-local 'zp/org-agenda-todo-ignore-future t)
-         (zp/set-agenda-local 'org-agenda-todo-ignore-scheduled 'future)
-         (zp/set-agenda-local 'org-agenda-todo-ignore-timestamp 'future)
-         (org-agenda-redo)
-         (message "Ignore items in the future."))))
-
-(defvar zp/org-agenda-sort-by-rev-fifo nil
-  "When non-nil, sort by reverse FIFO order.")
-
-(defun zp/toggle-org-agenda-sort-by-rev-fifo ()
-  (interactive)
-  (if (prog1 (zp/set-agenda-local 'zp/org-agenda-sort-by-rev-fifo
-                                  (not (zp/get-agenda-local
-                                        'zp/org-agenda-sort-by-rev-fifo)))
-        (org-agenda-redo))
-      (message "Show items in reverse FIFO order.")
-    (message "Show items in FIFO order.")))
-
-(defun zp/toggle-org-agenda-projects-include-waiting ()
-  "Toggle whether to include projects with a waiting task."
-  (interactive)
-  (if (prog1 (zp/set-agenda-local 'zp/org-agenda-include-waiting
-                                  (not (zp/get-agenda-local
-                                        'zp/org-agenda-include-waiting)))
-        (org-agenda-redo))
-      (message "Waiting: Visible")
-    (message "Waiting: Hidden")))
-
-(defun zp/toggle-org-agenda-dim-blocked-tasks ()
-  "Toggle the dimming of blocked tags in the agenda."
-  (interactive)
-  (cond ((or (eq org-agenda-dim-blocked-tasks nil)
-             (eq org-agenda-dim-blocked-tasks 'invisible))
-         (setq org-agenda-dim-blocked-tasks t)
-         (org-agenda-redo)
-         (message "Blocked tasks: Dimmed"))
-        (t
-         (setq org-agenda-dim-blocked-tasks nil)
-         (org-agenda-redo)
-         (message "Blocked tasks: Plain"))))
-
-(defun zp/toggle-org-agenda-hide-blocked-tasks ()
-  "Toggle the visibility of blocked tags in the agenda."
-  (interactive)
-  (cond ((or (eq org-agenda-dim-blocked-tasks nil)
-             (eq org-agenda-dim-blocked-tasks t))
-         (setq org-agenda-dim-blocked-tasks 'invisible)
-         (org-agenda-redo)
-         (message "Blocked tasks: Invisible"))
-        (t
-         (setq org-agenda-dim-blocked-tasks t)
-         (org-agenda-redo)
-         (message "Blocked tasks: Dimmed"))))
 
 ;; Dangerous, since it might hide important tasks to do.
 ;; (defun zp/org-tags-match-list-sublevels ()
