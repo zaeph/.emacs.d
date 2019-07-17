@@ -2435,6 +2435,7 @@ With a prefix argument, do so in all agenda buffers."
 
 
   (defun zp/update-org-agenda-files ()
+    "Initialise ‘org-agenda-files’ and all the shortcuts."
     (interactive)
     (setq org-agenda-files '("~/org/life.org"))
     (zp/set-shortcuts-all))
