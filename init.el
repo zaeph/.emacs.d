@@ -247,14 +247,12 @@
   :config
   (exwm-config-default))
 
-;; Fountain
-(require 'fountain-mode)
-(setq fountain-export-font "Courier Prime")
-
-(setq fountain-mode-hook
-      '(turn-on-visual-line-mode
-        fountain-outline-hide-custom-level
-        olivetti-mode))
+(use-package fountain-mode
+  :config
+  (setq fountain-export-font "Courier Prime")
+  (setq fountain-mode-hook '(turn-on-visual-line-mode
+                             fountain-outline-hide-custom-level
+                             olivetti-mode)))
 
 ;; so-long
 (require 'so-long)
