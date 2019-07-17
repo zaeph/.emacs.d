@@ -1,4 +1,4 @@
-;; -*- fill-column: 72; comment-column: 50; -*-
+;; -*- fill-column: 78; comment-column: 50; -*-
 ;;; init.el --- Initialization file for Emacs
 ;;; Commentary: Emacs Startup File --- initialization for Emacs
 
