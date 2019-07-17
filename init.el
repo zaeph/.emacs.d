@@ -4740,18 +4740,7 @@ buffer, thereby propagating the indirectness."
 ;; ================ SOUNDS ================
 ;; ========================================
 
-;; Might have to simplify the code one day. Lots of repeat.
-
-;; Windows legacy
-;; (defun org-timer-done-sound ()
-;;   (start-process-shell-command "play-sound" nil "sounder /id timer-sound /unique ../.emacs.d/sfx/timer.wav"))
-;; (setq org-timer-done-hook 'org-timer-done-sound)
-
-;; Max volume is 65536
-
-;; (defun org-timer-done-sound ()
-;;   (start-process-shell-command "play-sound" nil "foobar"))
-;; (setq org-timer-done-hook 'org-timer-done-sound)
+;; TODO: Simplify
 
 (defun zp/play-sound-clock-in ()
   (start-process-shell-command "play-sound" nil "notification-sound-org clock-in"))
