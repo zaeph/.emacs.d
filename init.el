@@ -1062,7 +1062,7 @@ based on ‘zp/message-mode-ispell-alist’."
 
   ;; Number of backups to keep
   (setq kept-new-versions 10
-        kept-old versions 0
+        kept-old-versions 0
         delete-old-versions t)
 
   ;; Backup directories
