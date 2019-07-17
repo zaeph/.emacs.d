@@ -2420,6 +2420,103 @@ indirect-buffers."
                         :long-face nil
                         :short-face nil))
 
+  (defvar zp/org-agenda-local-settings nil
+    "List structure for org-agenda views local settings.")
+
+  (defun zp/org-agenda-local-config-init (alist)
+    "Create the data structure for org-agenda local config.
+
+This function takes every variables in
+‘zp/org-agenda-local-settings’ and store them with their value in
+a data structure, thus defining the global state of those
+variables."
+    (let ((settings))
+      (while (cdr alist)
+        (let ((var (pop alist)))
+          (push var settings)
+          (set var (eval (pop alist)))))
+      (list (cons 'default (list (mapcar (lambda (setting)
+                                           (cons setting (eval setting)))
+                                         settings))))))
+
+  ;; Category icons
+  (defvar zp/org-agenda-include-category-icons nil
+    "When non-nil, show category icons in the agenda")
+
+  (defvar zp/org-agenda-category-icon-alist nil
+    "Alist of category icon to be displayed in agenda views.
+
+Custom variable to hold the content when the icons are toggled
+off.")
+
+  (setq zp/org-agenda-category-icon-alist
+        '(
+          ;; Life
+          ("^inbox$" "~/org/svg/icons/gmail.svg" nil nil :ascent center)
+          ("^curios$" "~/org/svg/icons/question.svg" nil nil :ascent center)
+          ("^style$" "~/org/svg/icons/suit.svg" nil nil :ascent center)
+          ("^nicolas$" "~/org/svg/icons/leaf.svg" nil nil :ascent center)
+          ("^swim$" "~/org/svg/icons/wave.svg" nil nil :ascent center)
+          ("^run$" "~/org/svg/icons/running.svg" nil nil :ascent center)
+          ("^awakening$" "~/org/svg/icons/aperture-green.svg" nil nil :ascent center)
+          ("^journal$" "~/org/svg/icons/spellbook-p.svg" nil nil :ascent center)
+          ("^psy$" "~/org/svg/icons/solution.svg" nil nil :ascent center)
+          ("^anki$" "~/org/svg/icons/anki-2-p.svg" nil nil :ascent center)
+          ("^plan$" "~/org/svg/icons/planning-p.svg" nil nil :ascent center)
+          ("^typography$" "~/org/svg/icons/typography.svg" nil nil :ascent center)
+
+          ;; Activism
+          ("^pol$" "~/org/svg/icons/fist.svg" nil nil :ascent center)
+
+          ;; Professional
+          ("^university$" "~/org/svg/icons/aperture-yellow.svg" nil nil :ascent center)
+          ("^school$" "~/org/svg/icons/university.svg" nil nil :ascent center)
+
+          ;; Research
+          ("^research$" "~/org/svg/icons/research.svg" nil nil :ascent center)
+          ("^cs$" "~/org/svg/icons/computer-science.svg" nil nil :ascent center)
+          ("^maths$" "~/org/svg/icons/pi.svg" nil nil :ascent center)
+          ("^phil$" "~/org/svg/icons/philosophy.svg" nil nil :ascent center)
+          ("^history$" "~/org/svg/icons/history.svg" nil nil :ascent center)
+          ("^ling$" "~/org/svg/icons/language.svg" nil nil :ascent center)
+
+          ;; Hacking
+          ("^hack$" "~/org/svg/icons/engineering-2.svg" nil nil :ascent center)
+          ("^emacs$" "~/org/svg/icons/spacemacs.svg" nil nil :ascent center)
+          ("^org$" "~/org/svg/icons/org-mode-unicorn.svg" nil nil :ascent center)
+          ("^python$" "~/org/svg/icons/python.svg" nil nil :ascent center)
+          ("^perl$" "~/org/svg/icons/perl.svg" nil nil :ascent center)
+          ("^contrib$" "~/org/svg/icons/chill.svg" nil nil :ascent center)
+          ("^bug$" "~/org/svg/icons/cross.svg" nil nil :ascent center)
+          ("^elisp$" "~/org/svg/icons/spacemacs-elisp.svg" nil nil :ascent center)
+          ("^tex$" "~/org/svg/icons/file-2-p.svg" nil nil :ascent center)
+          ("^linux$" "~/org/svg/icons/nixos.svg" nil nil :ascent center)
+          ("^nixos$" "~/org/svg/icons/nixos.svg" nil nil :ascent center)
+          ("^opsec$" "~/org/svg/icons/cyber-security-b.svg" nil nil :ascent center)
+          ("^git$" "~/org/svg/icons/git.svg" nil nil :ascent center)
+
+          ;; Media
+          ("^media$" "~/org/svg/icons/library.svg" nil nil :ascent center)
+          ("^news$" "~/org/svg/icons/world.svg" nil nil :ascent center)
+          ("^books$" "~/org/svg/icons/book-2.svg" nil nil :ascent center)
+          ("^trackers$" "~/org/svg/icons/share.svg" nil nil :ascent center)
+          ("^music$" "~/org/svg/icons/compact-disc.svg" nil nil :ascent center)
+          ("^film$" "~/org/svg/icons/film.svg" nil nil :ascent center)
+
+          ;; Maintenance
+          ("^mx$" "~/org/svg/icons/recycle.svg" nil nil :ascent center)
+          ("^fin$" "~/org/svg/icons/money-p.svg" nil nil :ascent center)
+          ("^cooking$" "~/org/svg/icons/salad.svg" nil nil :ascent center)
+          ("^plants$" "~/org/svg/icons/sansevieria.svg" nil nil :ascent center)
+          ("^animals$" "~/org/svg/icons/animals.svg" nil nil :ascent center)
+          ("^health$" "~/org/svg/icons/health.svg" nil nil :ascent center)
+          ("^supplies$" "~/org/svg/icons/box.svg" nil nil :ascent center)
+          ("^social$" "~/org/svg/icons/happy.svg" nil nil :ascent center)
+          ("^grooming$" "~/org/svg/icons/razor.svg" nil nil :ascent center)
+          ("^cleaning$" "~/org/svg/icons/bucket.svg" nil nil :ascent center)
+
+          (".*" '(space . (:width (24))) nil nil :ascent center)))
+
   (defun zp/org-agenda-benchmark (&optional arg)
     "Rebuild the agenda and display the time it took to do so.
 
@@ -2431,8 +2528,6 @@ With a prefix argument, do so in all agenda buffers."
           (t
            (with-timer "Rebuilding agenda buffer"
              (org-agenda-redo)))))
-
-
 
   (defun zp/update-org-agenda-files ()
     "Initialise ‘org-agenda-files’ and all the shortcuts."
@@ -2476,105 +2571,6 @@ With a prefix argument, do so in all agenda buffers."
   ;; (run-with-idle-timer 300 t #'zp/org-agenda-redo-all)
 
   (define-key mode-specific-map (kbd "a") 'org-agenda))
-
-;; Category icons
-(defvar zp/org-agenda-include-category-icons nil
-  "When non-nil, show category icons in the agenda")
-
-(defvar zp/org-agenda-category-icon-alist nil
-  "Alist of category icon to be displayed in agenda views.
-
-Custom variable to hold the content when the icons are toggled
-off.")
-
-(setq zp/org-agenda-category-icon-alist
-      '(
-        ;; Life
-        ("^inbox$" "~/org/svg/icons/gmail.svg" nil nil :ascent center)
-        ("^curios$" "~/org/svg/icons/question.svg" nil nil :ascent center)
-        ("^style$" "~/org/svg/icons/suit.svg" nil nil :ascent center)
-        ("^nicolas$" "~/org/svg/icons/leaf.svg" nil nil :ascent center)
-        ("^swim$" "~/org/svg/icons/wave.svg" nil nil :ascent center)
-        ("^run$" "~/org/svg/icons/running.svg" nil nil :ascent center)
-        ("^awakening$" "~/org/svg/icons/aperture-green.svg" nil nil :ascent center)
-        ("^journal$" "~/org/svg/icons/spellbook-p.svg" nil nil :ascent center)
-        ("^psy$" "~/org/svg/icons/solution.svg" nil nil :ascent center)
-        ("^anki$" "~/org/svg/icons/anki-2-p.svg" nil nil :ascent center)
-        ("^plan$" "~/org/svg/icons/planning-p.svg" nil nil :ascent center)
-        ("^typography$" "~/org/svg/icons/typography.svg" nil nil :ascent center)
-
-        ;; Activism
-        ("^pol$" "~/org/svg/icons/fist.svg" nil nil :ascent center)
-
-        ;; Professional
-        ("^university$" "~/org/svg/icons/aperture-yellow.svg" nil nil :ascent center)
-        ("^school$" "~/org/svg/icons/university.svg" nil nil :ascent center)
-
-        ;; Research
-        ("^research$" "~/org/svg/icons/research.svg" nil nil :ascent center)
-        ("^cs$" "~/org/svg/icons/computer-science.svg" nil nil :ascent center)
-        ("^maths$" "~/org/svg/icons/pi.svg" nil nil :ascent center)
-        ("^phil$" "~/org/svg/icons/philosophy.svg" nil nil :ascent center)
-        ("^history$" "~/org/svg/icons/history.svg" nil nil :ascent center)
-        ("^ling$" "~/org/svg/icons/language.svg" nil nil :ascent center)
-
-        ;; Hacking
-        ("^hack$" "~/org/svg/icons/engineering-2.svg" nil nil :ascent center)
-        ("^emacs$" "~/org/svg/icons/spacemacs.svg" nil nil :ascent center)
-        ("^org$" "~/org/svg/icons/org-mode-unicorn.svg" nil nil :ascent center)
-        ("^python$" "~/org/svg/icons/python.svg" nil nil :ascent center)
-        ("^perl$" "~/org/svg/icons/perl.svg" nil nil :ascent center)
-        ("^contrib$" "~/org/svg/icons/chill.svg" nil nil :ascent center)
-        ("^bug$" "~/org/svg/icons/cross.svg" nil nil :ascent center)
-        ("^elisp$" "~/org/svg/icons/spacemacs-elisp.svg" nil nil :ascent center)
-        ("^tex$" "~/org/svg/icons/file-2-p.svg" nil nil :ascent center)
-        ("^linux$" "~/org/svg/icons/nixos.svg" nil nil :ascent center)
-        ("^nixos$" "~/org/svg/icons/nixos.svg" nil nil :ascent center)
-        ("^opsec$" "~/org/svg/icons/cyber-security-b.svg" nil nil :ascent center)
-        ("^git$" "~/org/svg/icons/git.svg" nil nil :ascent center)
-
-        ;; Media
-        ("^media$" "~/org/svg/icons/library.svg" nil nil :ascent center)
-        ("^news$" "~/org/svg/icons/world.svg" nil nil :ascent center)
-        ("^books$" "~/org/svg/icons/book-2.svg" nil nil :ascent center)
-        ("^trackers$" "~/org/svg/icons/share.svg" nil nil :ascent center)
-        ("^music$" "~/org/svg/icons/compact-disc.svg" nil nil :ascent center)
-        ("^film$" "~/org/svg/icons/film.svg" nil nil :ascent center)
-
-        ;; Maintenance
-        ("^mx$" "~/org/svg/icons/recycle.svg" nil nil :ascent center)
-        ("^fin$" "~/org/svg/icons/money-p.svg" nil nil :ascent center)
-        ("^cooking$" "~/org/svg/icons/salad.svg" nil nil :ascent center)
-        ("^plants$" "~/org/svg/icons/sansevieria.svg" nil nil :ascent center)
-        ("^animals$" "~/org/svg/icons/animals.svg" nil nil :ascent center)
-        ("^health$" "~/org/svg/icons/health.svg" nil nil :ascent center)
-        ("^supplies$" "~/org/svg/icons/box.svg" nil nil :ascent center)
-        ("^social$" "~/org/svg/icons/happy.svg" nil nil :ascent center)
-        ("^grooming$" "~/org/svg/icons/razor.svg" nil nil :ascent center)
-        ("^cleaning$" "~/org/svg/icons/bucket.svg" nil nil :ascent center)
-
-        (".*" '(space . (:width (24))) nil nil :ascent center)))
-
-(defvar zp/org-agenda-local-settings nil
-  "List structure for org-agenda views local settings.")
-
-(defun zp/org-agenda-local-config-init (alist)
-  "Create the data structure for org-agenda local config.
-
-This function takes every variables in
-‘zp/org-agenda-local-settings’ and store them with their value in
-a data structure, thus defining the global state of those
-variables."
-  (let ((settings))
-    (while (cdr alist)
-      (let ((var (pop alist)))
-        (push var settings)
-        (set var (eval (pop alist)))))
-    (list (cons 'default (list (mapcar (lambda (setting)
-                                         (cons setting (eval setting)))
-                                       settings))))))
-
-;; org-agenda config
 
 
 
