@@ -2568,6 +2568,157 @@ With a prefix argument, do so in all agenda buffers."
                   (zp/set-agenda-local 'org-habit-show-habits t agenda))))
             zp/org-agenda-local-config))
 
+  ;;---------
+  ;; Sorting
+  ;;---------
+
+  (defun zp/org-cmp-test-todo (todo a b)
+    "Compare the todo states of strings A and B."
+    (let* ((ma (or (get-text-property 1 'org-marker a)
+                   (get-text-property 1 'org-hd-marker a)))
+           (mb (or (get-text-property 1 'org-marker b)
+                   (get-text-property 1 'org-hd-marker b)))
+           (fa (and ma (marker-buffer ma)))
+           (fb (and mb (marker-buffer mb)))
+           (todo-kwds
+            (or (and fa (with-current-buffer fa org-todo-keywords-1))
+                (and fb (with-current-buffer fb org-todo-keywords-1))))
+           (ta (or (get-text-property 1 'todo-state a) ""))
+           (tb (or (get-text-property 1 'todo-state b) ""))
+           (la (- (length (member ta todo-kwds))))
+           (lb (- (length (member tb todo-kwds))))
+           (donepa (member ta org-done-keywords-for-agenda))
+           (donepb (member tb org-done-keywords-for-agenda)))
+      (cond ((and (string-match-p ta todo) (not (string-match-p tb todo))) +1)
+            ((and (string-match-p tb todo) (not (string-match-p ta todo))) -1))))
+
+  (defun zp/org-cmp-todo-special (a b)
+    (when zp/org-agenda-sorting-strategy-special-first
+      (or (zp/org-cmp-test-todo "STRT" a b)
+          (zp/org-cmp-test-todo "NEXT" a b))))
+
+  (defun zp/org-agenda-sort-wait (a b)
+    (cond
+     ((zp/org-cmp-test-todo "WAIT|STBY" a b))))
+
+  (defvar zp/org-cmp-time-debug nil
+    "When non-nil, print debug messages when running
+  ‘zp/org-cmp-time’.")
+
+  (defun zp/org-cmp-time (a b property &optional set-created)
+    "Sort items by time property.
+
+A and B are the objects to compare (taken from the org-agenda
+building function).
+
+When SET-CREATED is non-nil, create the ‘CREATED’ property and
+set it to the current time.
+
+PROPERTY can either be:
+
+- the name of the property to match as a string,
+  e.g. ‘TIMESTAMP’, ‘SCHEDULED’, ‘DEADLINE’, or any user-defined
+  property like ‘CREATED’
+
+- a list containing the names of the properties to match as
+  strings"
+    (let* ((debug zp/org-cmp-time-debug)
+           (properties (when (and (symbolp property)
+                                  (eq property 'all))
+                         '("SCHEDULED" "TIMESTAMP")))
+           (a-pos (get-text-property 0 'org-marker a))
+           (b-pos (get-text-property 0 'org-marker b))
+           (prop property)
+           (get-property (lambda (pos)
+                           (if properties
+                               (let* ((data (mapcar (lambda (prop)
+                                                      (org-entry-get pos prop))
+                                                    properties))
+                                      (scheduled-str (pop data))
+                                      (timestamp-str (pop data))
+                                      (scheduled (and scheduled-str
+                                                      (org-time-string-to-seconds
+                                                       scheduled-str)))
+                                      (timestamp (and timestamp-str
+                                                      (org-time-string-to-seconds
+                                                       timestamp-str))))
+                                 (prog1 (or scheduled
+                                            timestamp)
+                                   (when debug
+                                     (cond (scheduled-str
+                                            (message "  Scheduled: %s" scheduled-str))
+                                           (timestamp-str
+                                            (message "  Timestamp: %s" timestamp-str))
+                                           (t
+                                            (message "No time info"))))))
+                             (when-let ((data (org-entry-get pos prop)))
+                               (org-time-string-to-seconds data)))))
+           (ta (progn (when debug
+                        (message "\nComparing ‘%s’"
+                                 (org-entry-get a-pos "ITEM")))
+                      (funcall get-property a-pos)))
+           (tb (progn (when debug
+                        (message "With ‘%s’"
+                                 (org-entry-get b-pos "ITEM")))
+                      (funcall get-property b-pos))))
+      (when set-created
+        (mapc (lambda (pos)
+                (unless (org-entry-get pos "CREATED")
+                  (org-with-point-at pos
+                    (zp/org-set-created-property))))
+              (list a-pos b-pos)))
+      (when-let ((result (cond ((if ta (and tb (< ta tb)) tb) 1)
+                               ((if tb (and ta (< tb ta)) ta) -1))))
+        (when debug
+          (message "Result: %s\n"
+                   (pcase result
+                     (1  "UP: A goes up")
+                     (-1 "DN:A goes down")
+                     (_  "EQ: A and B are equal"))))
+        result)))
+
+  (defun zp/org-cmp-created (a b)
+    (zp/org-cmp-time a b "CREATED" t))
+
+  (defun zp/org-cmp-scheduled (a b)
+    (zp/org-cmp-time a b "SCHEDULED"))
+
+  (defun zp/org-cmp-timestamp (a b)
+    (zp/org-cmp-time a b "TIMESTAMP"))
+
+  (defun zp/org-cmp-time-all (a b)
+    "Sort objects according to their time data.
+
+The objects will be sorted in that order:
+
+- Earlier ‘SCHEDULED’ or ‘TIMESTAMP’ first.
+
+- If ‘SCHEDULED’ and ‘TIMESTAMP’, favour ‘SCHEDULED’."
+    (zp/org-cmp-time a b 'all))
+
+  (defun zp/org-cmp-created-dwim (a b)
+    "Sort items by creation time, priority and specialness conditionally.
+
+If ‘zp/org-agenda-sorting-strategy-special-first’ is non-nil,
+first sort by specialness.
+
+This function also checks for priority because only one
+‘org-agenda-cmp-user-defined’ can be specified at a time.  When
+sorting with this function, make sure not to use use ‘priority’
+afterwards."
+    (let ((reverse zp/org-agenda-sort-by-rev-fifo))
+      (or (zp/org-cmp-time-all (if reverse b a)
+                               (if reverse a b))
+          (when zp/org-agenda-sorting-strategy-special-first
+            (zp/org-cmp-todo-special a b))
+          (org-cmp-values a b 'priority)
+          (zp/org-cmp-created (if reverse b a)
+                              (if reverse a b)))))
+
+  ;;------
+  ;; Rest
+  ;;------
+
   ;; Force habits to be shown if they’ve been disabled the previous day
   (run-at-time "06:00" 86400 #'zp/org-habit-show-habits-force)
 
@@ -2584,151 +2735,6 @@ With a prefix argument, do so in all agenda buffers."
 ;; ========================================
 ;; =============== SORTING ================
 ;; ========================================
-
-(defun zp/org-cmp-test-todo (todo a b)
-  "Compare the todo states of strings A and B."
-  (let* ((ma (or (get-text-property 1 'org-marker a)
-                 (get-text-property 1 'org-hd-marker a)))
-         (mb (or (get-text-property 1 'org-marker b)
-                 (get-text-property 1 'org-hd-marker b)))
-         (fa (and ma (marker-buffer ma)))
-         (fb (and mb (marker-buffer mb)))
-         (todo-kwds
-          (or (and fa (with-current-buffer fa org-todo-keywords-1))
-              (and fb (with-current-buffer fb org-todo-keywords-1))))
-         (ta (or (get-text-property 1 'todo-state a) ""))
-         (tb (or (get-text-property 1 'todo-state b) ""))
-         (la (- (length (member ta todo-kwds))))
-         (lb (- (length (member tb todo-kwds))))
-         (donepa (member ta org-done-keywords-for-agenda))
-         (donepb (member tb org-done-keywords-for-agenda)))
-    (cond ((and (string-match-p ta todo) (not (string-match-p tb todo))) +1)
-          ((and (string-match-p tb todo) (not (string-match-p ta todo))) -1))))
-
-(defun zp/org-cmp-todo-special (a b)
-  (when zp/org-agenda-sorting-strategy-special-first
-      (or (zp/org-cmp-test-todo "STRT" a b)
-          (zp/org-cmp-test-todo "NEXT" a b))))
-
-(defun zp/org-agenda-sort-wait (a b)
-  (cond
-    ((zp/org-cmp-test-todo "WAIT|STBY" a b))))
-
-(defvar zp/org-cmp-time-debug nil
-  "When non-nil, print debug messages when running
-  ‘zp/org-cmp-time’.")
-
-(defun zp/org-cmp-time (a b property &optional set-created)
-  "Sort items by time property.
-
-A and B are the objects to compare (taken from the org-agenda
-building function).
-
-When SET-CREATED is non-nil, create the ‘CREATED’ property and
-set it to the current time.
-
-PROPERTY can either be:
-
-- the name of the property to match as a string,
-  e.g. ‘TIMESTAMP’, ‘SCHEDULED’, ‘DEADLINE’, or any user-defined
-  property like ‘CREATED’
-
-- a list containing the names of the properties to match as
-  strings"
-  (let* ((debug zp/org-cmp-time-debug)
-         (properties (when (and (symbolp property)
-                                (eq property 'all))
-                       '("SCHEDULED" "TIMESTAMP")))
-         (a-pos (get-text-property 0 'org-marker a))
-         (b-pos (get-text-property 0 'org-marker b))
-         (prop property)
-         (get-property (lambda (pos)
-                         (if properties
-                             (let* ((data (mapcar (lambda (prop)
-                                                    (org-entry-get pos prop))
-                                                  properties))
-                                    (scheduled-str (pop data))
-                                    (timestamp-str (pop data))
-                                    (scheduled (and scheduled-str
-                                                    (org-time-string-to-seconds
-                                                     scheduled-str)))
-                                    (timestamp (and timestamp-str
-                                                    (org-time-string-to-seconds
-                                                     timestamp-str))))
-                               (prog1 (or scheduled
-                                          timestamp)
-                                 (when debug
-                                   (cond (scheduled-str
-                                          (message "  Scheduled: %s" scheduled-str))
-                                         (timestamp-str
-                                          (message "  Timestamp: %s" timestamp-str))
-                                         (t
-                                          (message "No time info"))))))
-                           (when-let ((data (org-entry-get pos prop)))
-                             (org-time-string-to-seconds data)))))
-         (ta (progn (when debug
-                      (message "\nComparing ‘%s’"
-                               (org-entry-get a-pos "ITEM")))
-                    (funcall get-property a-pos)))
-         (tb (progn (when debug
-                      (message "With ‘%s’"
-                               (org-entry-get b-pos "ITEM")))
-                    (funcall get-property b-pos))))
-    (when set-created
-      (mapc (lambda (pos)
-              (unless (org-entry-get pos "CREATED")
-                (org-with-point-at pos
-                  (zp/org-set-created-property))))
-            (list a-pos b-pos)))
-    (when-let ((result (cond ((if ta (and tb (< ta tb)) tb) 1)
-                             ((if tb (and ta (< tb ta)) ta) -1))))
-      (when debug
-        (message "Result: %s\n"
-                 (pcase result
-                   (1  "UP: A goes up")
-                   (-1 "DN:A goes down")
-                   (_  "EQ: A and B are equal"))))
-      result)))
-
-(defun zp/org-cmp-created (a b)
-  (zp/org-cmp-time a b "CREATED" t))
-
-(defun zp/org-cmp-scheduled (a b)
-  (zp/org-cmp-time a b "SCHEDULED"))
-
-(defun zp/org-cmp-timestamp (a b)
-  (zp/org-cmp-time a b "TIMESTAMP"))
-
-(defun zp/org-cmp-time-all (a b)
-  "Sort objects according to their time data.
-
-The objects will be sorted in that order:
-
-- Earlier ‘SCHEDULED’ or ‘TIMESTAMP’ first.
-
-- If ‘SCHEDULED’ and ‘TIMESTAMP’, favour ‘SCHEDULED’."
-  (zp/org-cmp-time a b 'all))
-
-(defun zp/org-cmp-created-dwim (a b)
-  "Sort items by creation time, priority and specialness conditionally.
-
-If ‘zp/org-agenda-sorting-strategy-special-first’ is non-nil,
-first sort by specialness.
-
-This function also checks for priority because only one
-‘org-agenda-cmp-user-defined’ can be specified at a time.  When
-sorting with this function, make sure not to use use ‘priority’
-afterwards."
-  (let ((reverse zp/org-agenda-sort-by-rev-fifo))
-    (or (zp/org-cmp-time-all (if reverse b a)
-                             (if reverse a b))
-        (when zp/org-agenda-sorting-strategy-special-first
-          (zp/org-cmp-todo-special a b))
-        (org-cmp-values a b 'priority)
-        (zp/org-cmp-created (if reverse b a)
-                            (if reverse a b)))))
-
-
 
 ;; ========================================
 ;; =============== HEADERS ================
