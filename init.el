@@ -164,10 +164,11 @@
   :config
   (evil-mode 0))
 
-;; EasyPG (for encryption)
-(require 'epa-file)
-(epa-file-enable)
-(setq epg-gpg-program "gpg2")
+;; For handling encryption
+(use-package epa-file
+  :config
+  (epa-file-enable)
+  (setq epg-gpg-program "gpg2"))
 
 ;; Isearch
 (define-key isearch-mode-map (kbd "<backspace>") 'isearch-del-char)
