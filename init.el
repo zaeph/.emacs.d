@@ -148,9 +148,9 @@
   (require 'use-package))
 
 ;; Load extra files, and search subdirs
-(let ((default-directory  "/home/zaeph/.emacs.d/lisp/"))
+(let ((default-directory  "~/.emacs.d/lisp/"))
   (normal-top-level-add-subdirs-to-load-path))
-(add-to-list 'load-path "/home/zaeph/.emacs.d/lisp/")
+(add-to-list 'load-path "~/.emacs.d/lisp/")
 
 ;; Change indent-function to handle plists
 (setq lisp-indent-function 'common-lisp-indent-function)
