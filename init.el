@@ -1148,39 +1148,34 @@ Modifies ‘diff-command’ and ‘diff-switches’ to use ‘git diff’."
   (define-key cperl-mode-map (kbd "M-RET") 'zp/perl-eval-buffer)
   (define-key cperl-mode-map (kbd "<C-return>") 'zp/perl-eval-region))
 
+(use-package python
+  :config
+  (defun zp/inferior-python-mode-config ()
+    "Modify keymaps for ‘inferior-python-mode’."
+    (local-set-key (kbd "C-l") #'comint-clear-buffer))
 
+  (setq inferior-python-mode-hook 'zp/inferior-python-mode-config)
 
-;; ========================================
-;; =============== PYTHON =================
-;; ========================================
+  (defun zp/python-eval-buffer (arg)
+    "Run current buffer as Perl code"
+    (interactive "P")
+    (let (max-mini-window-height)
+      (unless arg
+        (setq max-mini-window-height 999))
+      (shell-command-on-region (point-min) (point-max) "python")))
 
-(require 'python)
+  ;; Prototype for something that I’ve now forgotten
+  ;; (defun zp/recenter-bottom (arg)
+  ;; "Recenter screen at the end of the buffer."
+  ;; (interactive "p")
+  ;; (let ((inhibit-message t))
+  ;;   (goto-char (point-max))
+  ;;   (end-of-buffer)
+  ;;   (recenter-top-bottom arg)
+  ;;   (recenter-top-bottom arg)
+  ;;   (scroll-up-line)))
 
-;; (defun zp/recenter-bottom (arg)
-;;   "Recenter screen at the end of the buffer."
-;;   (interactive "p")
-;;   (let ((inhibit-message t))
-;;     (goto-char (point-max))
-;;     (end-of-buffer)
-;;     (recenter-top-bottom arg)
-;;     (recenter-top-bottom arg)
-;;     (scroll-up-line)))
-
-(defun zp/inferior-python-mode-config ()
-  "Modify keymaps for ‘inferior-python-mode’."
-  (local-set-key (kbd "C-l") #'comint-clear-buffer))
-
-(setq inferior-python-mode-hook 'zp/inferior-python-mode-config)
-
-(defun zp/python-eval-buffer (arg)
-  "Run current buffer as Perl code"
-  (interactive "P")
-  (let (max-mini-window-height)
-    (unless arg
-      (setq max-mini-window-height 999))
-    (shell-command-on-region (point-min) (point-max) "python")))
-
-(define-key python-mode-map (kbd "M-RET") 'zp/python-eval-buffer)
+  (define-key python-mode-map (kbd "M-RET") 'zp/python-eval-buffer))
 
 
 
