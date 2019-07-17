@@ -144,6 +144,10 @@ end-of-buffer signals; pass the rest to the default handler."
 ;; Path to authentication sources
 (setq auth-sources '("~/.authinfo.gpg" "~/.netrc"))
 
+;; Enable recursive minibuffers
+;; Necessary for for some Ivy/Helm commands
+(setq enable-recursive-minibuffers t)
+
 
 
 ;;----------------------------------------------------------------------------
@@ -151,23 +155,23 @@ end-of-buffer signals; pass the rest to the default handler."
 ;;----------------------------------------------------------------------------
 
 (define-fringe-bitmap 'left-curly-arrow
-    (vector #b0011111110000000
-            #b0011111110000000
-            #b0011111110000000
-            #b0011100000000000
-            #b0011100000000000
-            #b0011100000000000
-            #b0011100000000000
-            #b0011100001000000
-            #b0011100001100000
-            #b0011100001110000
-            #b0011111111111000
-            #b0011111111111100
-            #b0011111111111000
-            #b0000000001110000
-            #b0000000001100000
-            #b0000000001000000
-            )
+  (vector #b0011111110000000
+          #b0011111110000000
+          #b0011111110000000
+          #b0011100000000000
+          #b0011100000000000
+          #b0011100000000000
+          #b0011100000000000
+          #b0011100001000000
+          #b0011100001100000
+          #b0011100001110000
+          #b0011111111111000
+          #b0011111111111100
+          #b0011111111111000
+          #b0000000001110000
+          #b0000000001100000
+          #b0000000001000000
+          )
   16 16)
 
 (define-fringe-bitmap 'right-curly-arrow
@@ -2292,52 +2296,68 @@ With a C-u argument, toggle the link display."
 
 
 
-;; ========================================
-;; ================= IVY ==================
-;; ========================================
+;;----------------------------------------------------------------------------
+;; Ivy
+;;----------------------------------------------------------------------------
 
-(defun zp/counsel-grep-or-swiper (&optional arg)
-  "Call ‘swiper’ for small buffers and ‘counsel-grep’ for large ones.
+(use-package ivy
+  :config
+  (ivy-mode 1)
+  (setq ivy-height 10                             ;Default
+        ivy-use-virtual-buffers t
+        ivy-count-format "(%d/%d) ")
+
+  (global-set-key (kbd "C-c C-r") 'ivy-resume)
+  (global-set-key (kbd "<f6>") 'ivy-resume)
+
+  ;; Commented because I use Helm for those commands
+  ;; (global-set-key (kbd "C-x C-b") 'ivy-switch-buffer))
+
+(use-package swiper
+  :config
+  ;; Commented because I now use counsel-grep-or-swiper
+  ;; (global-set-key "\C-s" #'swiper)
+  )
+
+(use-package counsel
+  :requires swiper
+  :config
+  (setq counsel-find-file-at-point t)
+
+  ;; Use rg insted of grep
+  (setq counsel-grep-base-command "rg -i -M 120 --no-heading --line-number --color never %s %s")
+
+  (defun zp/counsel-grep-or-swiper (&optional arg)
+    "Call ‘swiper’ for small buffers and ‘counsel-grep’ for large ones.
 Wrapper to always use swiper for gpg-encrypted files and
 indirect-buffers."
-  (interactive "P")
-  (let* ((file (buffer-file-name))
-         (ext (if file (file-name-extension file))))
-    (if (or (equal arg '(4))                      ;Forcing?
-            (not file)                            ;Indirect buffer?
-            (string= ext "gpg"))                  ;Encrypted buffer?
-        (swiper)
-      (counsel-grep-or-swiper))))
+    (interactive "P")
+    (let* ((file (buffer-file-name))
+           (ext (if file (file-name-extension file))))
+      (if (or (equal arg '(4))                    ;Forcing?
+              (not file)                          ;Indirect buffer?
+              (string= ext "gpg"))                ;Encrypted buffer?
+          (swiper)
+        (counsel-grep-or-swiper))))
 
-;; Use rg insted of grep
-(setq counsel-grep-base-command "rg -i -M 120 --no-heading --line-number --color never %s %s")
+  (global-set-key "\C-s" #'zp/counsel-grep-or-swiper)
+  (global-set-key (kbd "<f1> f") 'counsel-describe-function)
+  (global-set-key (kbd "<f1> v") 'counsel-describe-variable)
+  (global-set-key (kbd "<f1> l") 'counsel-find-library)
+  (global-set-key (kbd "<f2> i") 'counsel-info-lookup-symbol)
+  (global-set-key (kbd "<f2> u") 'counsel-unicode-char)
+  (global-set-key (kbd "C-c g") 'counsel-git)
+  (global-set-key (kbd "C-c k") 'counsel-ag)
+  (global-set-key (kbd "C-x l") 'counsel-locate)
+  (global-set-key (kbd "C-S-o") 'counsel-rhythmbox)
+  (define-key minibuffer-local-map (kbd "C-r") 'counsel-minibuffer-history)
 
-(ivy-mode 1)
-(setq ivy-use-virtual-buffers t)
-(setq enable-recursive-minibuffers t)
-(setq ivy-count-format "(%d/%d) "
-      ivy-height 10                     ;Default
-      counsel-find-file-at-point t)
-;; (global-set-key "\C-s" 'swiper)
-(global-set-key "\C-s" 'zp/counsel-grep-or-swiper)
-(global-set-key (kbd "C-c C-r") 'ivy-resume)
-(global-set-key (kbd "<f6>") 'ivy-resume)
-;; (global-set-key (kbd "C-x C-b") 'ivy-switch-buffer)
-;; (global-set-key (kbd "M-x") 'counsel-M-x)
-;; (global-set-key (kbd "<menu>") 'counsel-M-x)
-;; (global-set-key (kbd "C-x C-f") 'counsel-find-file)
-(global-set-key (kbd "<f1> f") 'counsel-describe-function)
-(global-set-key (kbd "<f1> v") 'counsel-describe-variable)
-(global-set-key (kbd "<f1> l") 'counsel-find-library)
-(global-set-key (kbd "<f2> i") 'counsel-info-lookup-symbol)
-(global-set-key (kbd "<f2> u") 'counsel-unicode-char)
-(global-set-key (kbd "C-c g") 'counsel-git)
-;; (global-set-key (kbd "C-c j") 'counsel-git-grep)
-(global-set-key (kbd "C-c k") 'counsel-ag)
-(global-set-key (kbd "C-x l") 'counsel-locate)
-(global-set-key (kbd "C-S-o") 'counsel-rhythmbox)
-(define-key minibuffer-local-map (kbd "C-r") 'counsel-minibuffer-history)
-
+  ;; Commented because I use the Helm equivalent
+  ;; (global-set-key (kbd "M-x") 'counsel-M-x)
+  ;; (global-set-key (kbd "<menu>") 'counsel-M-x)
+  ;; (global-set-key (kbd "C-x C-f") 'counsel-find-file)
+  ;; (global-set-key (kbd "C-c j") 'counsel-git-grep)
+  )
 
 
 
