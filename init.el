@@ -2357,8 +2357,98 @@ indirect-buffers."
 
 (use-package org-agenda
   :config
-  (setq org-agenda-hide-tags-regexp "recurring\\|waiting\\|standby"
-        org-agenda-tags-column -94)
+  (setq org-agenda-show-future-repeats t
+        org-agenda-skip-scheduled-if-done 1
+        org-agenda-skip-timestamp-if-done 1
+        org-agenda-skip-deadline-if-done 1
+        org-agenda-tags-todo-honor-ignore-options 1
+        org-agenda-todo-ignore-with-date nil
+        org-agenda-todo-ignore-deadlines nil
+        org-agenda-todo-list-sublevels t
+        org-agenda-dim-blocked-tasks nil
+        org-agenda-include-deadlines 'all
+        org-deadline-warning-days 30
+        org-agenda-cmp-user-defined 'zp/org-cmp-created-dwim
+
+        ;; Initialise the list structure for local variables
+        zp/org-agenda-local-config
+        (zp/org-agenda-local-config-init
+         '(
+           org-habit-show-habits t
+           org-habit-show-all-today nil
+           org-agenda-include-deadlines t
+           zp/org-agenda-include-scheduled t
+           org-agenda-entry-types '(:deadline :scheduled :timestamp :sexp)
+           zp/org-agenda-include-category-icons t
+           zp/org-agenda-sorting-strategy-special-first nil
+           zp/org-agenda-split-subtasks nil
+           zp/org-agenda-include-waiting t
+
+           zp/org-agenda-todo-ignore-future t
+           org-agenda-todo-ignore-scheduled 'future
+           org-agenda-todo-ignore-timestamp 'future
+
+           zp/org-agenda-sort-by-rev-fifo nil))
+
+        ;; View setup
+        org-agenda-hide-tags-regexp "recurring\\|waiting\\|standby"
+        org-agenda-tags-column -94
+        org-agenda-timegrid-use-ampm nil
+        org-agenda-window-setup 'current-window
+        org-agenda-compact-blocks nil
+        org-agenda-entry-text-maxlines 10
+        org-agenda-sticky 1
+        org-agenda-block-separator 126
+        org-agenda-use-time-grid nil
+        org-agenda-exporter-settings
+        '((ps-print-color-p t)
+          (ps-landscape-mode t)
+          (ps-print-header nil)
+          (ps-default-bg t))
+        org-agenda-clockreport-parameter-plist
+        '(:link t :narrow 50 :maxlevel 2 :fileskip0 t)
+        org-agenda-clock-consistency-checks
+        '(:max-duration "10:00"
+                        :min-duration 0
+                        :max-gap "0:05"
+                        :gap-ok-around ("4:00" "12:30" "19:30")
+                        :default-face zp/org-agenda-block-info-face
+                        :gap-face nil
+                        :no-end-time-face nil
+                        :long-face nil
+                        :short-face nil))
+
+  (defun zp/org-agenda-benchmark (&optional arg)
+    "Rebuild the agenda and display the time it took to do so.
+
+With a prefix argument, do so in all agenda buffers."
+    (interactive "P")
+    (cond ((equal arg '(4))
+           (with-timer "Rebuilding agenda buffer"
+             (zp/org-agenda-redo-all)))
+          (t
+           (with-timer "Rebuilding agenda buffer"
+             (org-agenda-redo)))))
+
+
+
+  (defun zp/update-org-agenda-files ()
+    (interactive)
+    (setq org-agenda-files '("~/org/life.org"))
+    (zp/set-shortcuts-all))
+
+  (zp/update-org-agenda-files)
+
+  (run-at-time "06:00" 86400 #'zp/org-agenda-redo-all)
+
+  ;; Force habits to be shown if they’ve been disabled the previous day
+  (run-at-time "06:00" 86400 '(lambda () (setq org-habit-show-habits t)))
+
+  ;; Variables used for debugging
+  (defvar zp/org-agenda-skip-functions-debug nil
+    "When t, print helpful debugging messages for skips.")
+
+  (setq zp/org-agenda-skip-functions-debug nil)
 
   (defun zp/org-agenda-redo-all ()
     "Redo all the agenda views."
@@ -2475,97 +2565,6 @@ variables."
                                   settings))))))
 
 ;; org-agenda config
-(setq org-agenda-show-future-repeats t
-      org-agenda-skip-scheduled-if-done 1
-      org-agenda-skip-timestamp-if-done 1
-      org-agenda-skip-deadline-if-done 1
-      org-agenda-tags-todo-honor-ignore-options 1
-      org-agenda-todo-ignore-with-date nil
-      org-agenda-todo-ignore-deadlines nil
-      org-agenda-todo-list-sublevels t
-      org-agenda-dim-blocked-tasks nil
-      org-agenda-include-deadlines 'all
-      org-deadline-warning-days 30
-      org-agenda-cmp-user-defined 'zp/org-cmp-created-dwim
-
-      ;; Initialise the list structure for local variables
-      zp/org-agenda-local-config
-      (zp/org-agenda-local-config-init
-       '(
-         org-habit-show-habits t
-         org-habit-show-all-today nil
-         org-agenda-include-deadlines t
-         zp/org-agenda-include-scheduled t
-         org-agenda-entry-types '(:deadline :scheduled :timestamp :sexp)
-         zp/org-agenda-include-category-icons t
-         zp/org-agenda-sorting-strategy-special-first nil
-         zp/org-agenda-split-subtasks nil
-         zp/org-agenda-include-waiting t
-
-         zp/org-agenda-todo-ignore-future t
-         org-agenda-todo-ignore-scheduled 'future
-         org-agenda-todo-ignore-timestamp 'future
-
-         zp/org-agenda-sort-by-rev-fifo nil
-         ))
-
-      ;; View setup
-      org-agenda-timegrid-use-ampm nil
-      org-agenda-window-setup 'current-window
-      org-agenda-compact-blocks nil
-      org-agenda-entry-text-maxlines 10
-      org-agenda-sticky 1
-      org-agenda-block-separator 126
-      org-agenda-use-time-grid nil
-      org-agenda-exporter-settings
-      '((ps-print-color-p t)
-        (ps-landscape-mode t)
-        (ps-print-header nil)
-        (ps-default-bg t))
-      org-agenda-clockreport-parameter-plist
-      '(:link t :narrow 50 :maxlevel 2 :fileskip0 t)
-      org-agenda-clock-consistency-checks
-      '(:max-duration "10:00"
-        :min-duration 0
-        :max-gap "0:05"
-        :gap-ok-around ("4:00" "12:30" "19:30")
-        :default-face zp/org-agenda-block-info-face
-        :gap-face nil
-        :no-end-time-face nil
-        :long-face nil
-        :short-face nil))
-
-(defun zp/org-agenda-benchmark (&optional arg)
-  "Rebuild the agenda and display the time it took to do so.
-
-With a prefix argument, do so in all agenda buffers."
-  (interactive "P")
-  (cond ((equal arg '(4))
-         (with-timer "Rebuilding agenda buffer"
-           (zp/org-agenda-redo-all)))
-        (t
-         (with-timer "Rebuilding agenda buffer"
-           (org-agenda-redo)))))
-
-
-
-(defun zp/update-org-agenda-files ()
-  (interactive)
-  (setq org-agenda-files '("~/org/life.org"))
-  (zp/set-shortcuts-all))
-
-(zp/update-org-agenda-files)
-
-(run-at-time "06:00" 86400 #'zp/org-agenda-redo-all)
-
-;; Force habits to be shown if they’ve been disabled the previous day
-(run-at-time "06:00" 86400 '(lambda () (setq org-habit-show-habits t)))
-
-;; Variables used for debugging
-(defvar zp/org-agenda-skip-functions-debug nil
-  "When t, print helpful debugging messages for skips.")
-
-(setq zp/org-agenda-skip-functions-debug nil)
 
 
 
