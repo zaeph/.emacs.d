@@ -192,9 +192,10 @@
 ;; (require 'clean-aindent-mode)
 ;; (add-hook 'prog-mode-hook #'clean-aindent-mode)
 
-(require 'ws-butler)
-(add-hook 'prog-mode-hook #'ws-butler-mode)
-(add-hook 'prog-mode-hook #'zp/whitespace-mode-lines-tail)
+(use-package ws-butler
+  :config
+  (add-hook #'prog-mode-hook #'ws-butler-mode)
+  (add-hook #'prog-mode-hook #'zp/whitespace-mode-lines-tail))
 
 ;; Force fringe indicators in ‘prog-mode’
 (defun zp/enable-visual-line-fringe-indicators ()
