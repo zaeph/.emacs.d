@@ -1653,7 +1653,10 @@ return `nil'."
 ;; Load org-habit
 (use-package org-habit
   :config
-  (add-to-list 'org-modules 'org-habit))
+  (add-to-list 'org-modules 'org-habit)
+
+  ;; Length of the habit graph
+  (setq org-habit-graph-column 50))
 
 (use-package org
   :config
@@ -1672,7 +1675,386 @@ return `nil'."
         org-ellipsis "…"
         org-track-ordered-property-with-tag "ORDERED"
         org-tags-exclude-from-inheritance nil
-        org-catch-invisible-edits 'error))
+        org-catch-invisible-edits 'error
+
+        org-tags-column -77)
+
+  ;; Ensure that images can be resized with deferred #+ATTR_ORG:
+  (setq org-image-actual-width nil)
+
+  ;; Prevent auto insertion of blank-lines before heading (but not for lists)
+  (setq org-blank-before-new-entry (quote ((heading)
+                                           (plain-list-item . auto))))
+
+  ;; Prevent blank-lines from being displayed between headings in folded state
+  (setq org-cycle-separator-lines 0)
+
+  ;; Add curly quotes to list of pre- and post-matches for emphasis markers
+  ;; Otherwise, curly quotes prevent fontification
+  (setq org-emphasis-regexp-components '("-       ('‘\"“’{" "-    .,:!?;'’\"”)}\\[" "     
+" "." 1))
+
+  ;; Define TODO keywords
+  (setq org-todo-keywords
+        '(;; Default set
+          (sequence "TODO(t)" "NEXT(n)" "STRT(S!)" "|" "DONE(d)")
+          ;; Extra sets
+          (sequence "STBY(s)" "|" "CXLD(x@/!)")
+          (sequence "WAIT(w!)" "|" "CXLD(x@/!)")))
+
+  ;; State triggers
+  (setq org-todo-state-tags-triggers
+        '(("CXLD" ("cancelled" . t) ("standby") ("waiting"))
+          ("STBY" ("standby" . t) ("cancelled") ("waiting"))
+          ("WAIT" ("waiting" . t) ("cancelled") ("standby"))
+          ("TODO" ("cancelled") ("standby") ("waiting"))
+          ("NEXT" ("cancelled") ("standby") ("waiting"))
+          ("STRT" ("cancelled") ("standby") ("waiting"))
+          ("WAIT" ("cancelled") ("standby") ("waiting"))
+          ("DONE" ("cancelled") ("standby") ("waiting"))
+          ("" ("cancelled") ("standby") ("waiting")))
+        ;; Custom faces for specific tags
+        org-tag-faces
+        '(("@home" . org-tag-location)
+          ("@work" . org-tag-location)
+          ("@town" . org-tag-location)
+          ("standby" . org-tag-todo)
+          ("routine" . org-tag-todo)
+          ("cxld" . org-tag-todo)
+          ("waiting" . org-tag-todo)
+          ("recurring" . org-tag-todo)
+          ("assignment" . org-tag-important)
+          ("exam" . org-tag-important)
+          ("important" . org-tag-important)
+          ("curios" . org-tag-curios)
+          ("french" . org-tag-french)))
+
+  ;; Set characters used for priorities
+  (setq org-highest-priority ?A
+        org-default-priority ?D
+        org-lowest-priority ?E)
+
+  ;; Default settings for ‘org-columns’
+  (setq org-columns-default-format "%55ITEM(Task) %TODO(State) %Effort(Effort){:} %CLOCKSUM")
+
+  ;; Global values for properties
+  (setq org-global-properties (quote (("Effort_ALL" . "0:05 0:10 0:15 0:30 0:45 1:00 1:30 2:00 2:30 3:00 3:30 4:00 4:30 5:00 5:30 6:00 0:00")
+                                      ("STYLE_ALL" . "habit")
+                                      ("APPT_WARNTIME_ALL" . "0 5 10 15 20 25 30 35 40 45 50 55 60 none")
+                                      ("SESSION_DURATION_ALL" . "0:45 0:15 0:20 0:30 1:00"))))
+
+  ;; Archiving location
+  (setq org-archive-location "%s.archive::")
+
+  ;; Keep hierarchy when archiving
+  ;; Source: https://fuco1.github.io/2017-04-20-Archive-subtrees-under-the-same-hierarchy-as-original-in-the-archive-files.html
+  (defadvice org-archive-subtree (around fix-hierarchy activate)
+    (let* ((fix-archive-p (and (not current-prefix-arg)
+                               (not (use-region-p))))
+           (location (org-archive--compute-location
+                      (or (org-entry-get nil "ARCHIVE" 'inherit)
+                          org-archive-location)))
+           (afile (car location))
+           (buffer (or (find-buffer-visiting afile) (find-file-noselect afile))))
+      ad-do-it
+      (when fix-archive-p
+        (with-current-buffer buffer
+          (goto-char (point-max))
+          (while (org-up-heading-safe))
+          (let* ((olpath (org-entry-get (point) "ARCHIVE_OLPATH"))
+                 (path (and olpath (split-string olpath "/")))
+                 (level 1)
+                 tree-text)
+            (when olpath
+              (org-mark-subtree)
+              (setq tree-text (buffer-substring (region-beginning) (region-end)))
+              (let (this-command) (org-cut-subtree))
+              (goto-char (point-min))
+              (save-restriction
+                (widen)
+                (-each path
+                  (lambda (heading)
+                    (if (re-search-forward
+                         (rx-to-string
+                          `(: bol (repeat ,level "*") (1+ " ") ,heading)) nil t)
+                        (org-narrow-to-subtree)
+                      (goto-char (point-max))
+                      (unless (looking-at "^")
+                        (insert "\n"))
+                      (insert (make-string level ?*)
+                              " "
+                              heading
+                              "\n"))
+                    (cl-incf level)))
+                (widen)
+                (org-end-of-subtree t t)
+                (org-paste-subtree level tree-text))))))))
+
+  ;; LaTeX export
+  (defvar zp/org-format-latex-default-scale 3.0
+    "Initial value for the scale of LaTeX previews.")
+
+  ;; Formatting options for LaTeX preview-blocks
+  (setq org-format-latex-options
+        '(:foreground default
+                      :background default
+                      :scale zp/org-format-latex-default-scale
+                      :html-foreground "Black"
+                      :html-background "Transparent"
+                      :html-scale 1.0
+                      :matchers ("begin" "$1" "$" "$$" "\\(" "\\[")))
+
+  (defun zp/org-latex-preview-dwim (arg)
+    "Run org-latex-preview after updating the scale."
+    (interactive "P")
+    (let* ((default-scale 3)
+           (scale-amount (or (and (boundp 'text-scale-mode-amount)
+                                  text-scale-mode-amount)
+                             0))
+           (new-scale (+ default-scale scale-amount)))
+      (setq-local org-format-latex-options
+                  (plist-put org-format-latex-options :scale new-scale))
+      (org-latex-preview arg)))
+
+  ;; Load languages with Babel
+  (org-babel-do-load-languages 'org-babel-load-languages
+                               '((R . t)
+                                 (python . t)
+                                 (latex . t)
+                                 (ledger . t)))
+
+  ;; Show images after executing a src-block that generated one
+  ;; TODO: Limit the scope of the hook by testing if the block actually
+  ;; generated an image
+  (add-hook #'org-babel-after-execute-hook #'org-display-inline-images 'append)
+
+  ;; Load library required for PlantUML
+  (setq org-ditaa-jar-path "/usr/share/java/ditaa/ditaa-0.11.jar")
+
+  (defun zp/org-overview (&optional arg keep-position keep-restriction)
+    "Switch to overview mode, showing only top-level headlines.
+
+With a ‘C-u’ prefix, do not move point.
+
+When KEEP-RESTRICTION is non-nil, do not widen the buffer."
+    (interactive "p")
+    (let ((pos-before (point))
+          (indirect (not (buffer-file-name)))
+          (narrowed (buffer-narrowed-p)))
+      (setq-local zp/org-narrow-previous-position pos-before)
+      ;; Do not widen buffer if in indirect buffer
+      (save-excursion
+        (goto-char (point-min))
+        (widen)
+        (when (or (and indirect
+                       narrowed)
+                  keep-restriction)
+          (org-narrow-to-subtree))
+        (unless indirect
+          (org-display-inline-images)))
+      (zp/org-fold (or keep-position
+                       (and arg
+                            (> arg 1))))
+      (when arg
+        (message "Showing overview.")
+        (run-hooks 'zp/org-after-view-change-hook))))
+
+  (defun zp/org-fold (&optional keep-position)
+    (let ((indirectp (not (buffer-file-name)))
+          (org-startup-folded 'overview))
+      ;; Fold drawers
+      (org-set-startup-visibility)
+      ;; Fold trees
+      (org-overview)
+      (unless keep-position
+        (goto-char (point-min)))
+      (recenter)
+      (save-excursion
+        (goto-char (point-min))
+        (org-show-entry)
+        (when (org-at-heading-p)
+          (org-show-children)))))
+
+  (defun zp/org-show-all (arg)
+    (interactive "p")
+    (let ((pos-before (point))
+          (indirect (not (buffer-file-name))))
+      (setq-local zp/org-narrow-previous-position pos-before)
+      ;; Do not widen buffer if in indirect buffer
+      (unless indirect
+        (widen)
+        (org-display-inline-images))
+      ;; Unfold everything
+      (org-show-all)
+      (unless (eq arg 4)
+        (goto-char (point-min)))
+      (recenter-top-bottom)
+      (when arg
+        (message "Showing everything.")
+        (run-hooks 'zp/org-after-view-change-hook))))
+
+  ;; org-narrow movements
+
+  (defun zp/org-narrow-to-subtree ()
+    "Move to the next subtree at same level, and narrow the buffer to it."
+    (interactive)
+    (org-narrow-to-subtree)
+    (zp/org-fold nil)
+    (when (called-interactively-p 'any)
+      (message "Narrowing to tree at point.")
+      (run-hooks 'zp/org-after-view-change-hook)))
+
+  (defun zp/org-widen ()
+    "Move to the next subtree at same level, and narrow the buffer to it."
+    (interactive)
+    (let ((pos-before (point)))
+      (setq-local zp/org-narrow-previous-position pos-before))
+    (widen)
+    (when (called-interactively-p 'any)
+      (message "Removing narrowing.")
+      (run-hooks 'zp/org-after-view-change-hook)))
+
+  (defun zp/org-narrow-forwards ()
+    "Move to the next subtree at same level, and narrow the buffer to it."
+    (interactive)
+    (widen)
+    (org-forward-heading-same-level 1)
+    (org-narrow-to-subtree)
+    (zp/org-fold nil)
+    (when (called-interactively-p 'any)
+      (message "Narrowing to next tree.")
+      (run-hooks 'zp/org-after-view-change-hook)))
+
+  (defun zp/org-narrow-backwards ()
+    "Move to the next subtree at same level, and narrow the buffer to it."
+    (interactive)
+    (widen)
+    (org-backward-heading-same-level 1)
+    (org-narrow-to-subtree)
+    (zp/org-fold nil)
+    (when (called-interactively-p 'any)
+      (message "Narrowing to previous tree.")
+      (run-hooks 'zp/org-after-view-change-hook)))
+
+  (defun zp/org-narrow-up-heading (&optional arg keep-position)
+    "Move to the upper subtree, and narrow the buffer to it."
+    (interactive "p")
+    (unless (buffer-narrowed-p)
+      (user-error "No narrowing"))
+    (let ((pos-before (point)))
+      (setq-local zp/org-narrow-previous-position pos-before)
+      (widen)
+      (org-reveal)
+      (outline-up-heading 1)
+      (org-narrow-to-subtree)
+      (when (or (eq arg 4)
+                keep-position)
+        (goto-char pos-before)
+        (recenter-top-bottom))
+      (zp/org-fold (or (eq arg 4)
+                       keep-position))
+      (when arg
+        (message "Narrowing to tree above.")
+        (run-hooks 'zp/org-after-view-change-hook))))
+
+  (defun zp/org-narrow-up-heading-dwim (arg)
+    "Narrow to the upper subtree, and narrow the buffer to it.
+
+If the buffer is already narrowed to level-1 heading, overview
+the entire buffer."
+    (interactive "p")
+    (if (save-excursion
+          ;; Narrowed to a level-1 heading?
+          (goto-char (point-min))
+          (and (buffer-narrowed-p)
+               (equal (org-outline-level) 1)))
+        (zp/org-overview arg)
+      (zp/org-narrow-up-heading arg)))
+
+  (defun zp/org-narrow-previous-heading (arg)
+    "Move to the previously narrowed tree, and narrow the buffer to it."
+    (interactive "p")
+    (if (bound-and-true-p zp/org-narrow-previous-position)
+        (let ((pos-before zp/org-narrow-previous-position))
+          (goto-char zp/org-narrow-previous-position)
+          (org-reveal)
+          (org-cycle)
+          (org-narrow-to-subtree)
+          (setq zp/org-narrow-previous-position nil)
+          (message "Narrowing to previously narrowed tree."))
+      (message "Couldn’t find a previous position.")))
+
+  ;; Toggle fontifications
+  (defun zp/org-toggle-emphasis-markers (&optional arg)
+    "Toggle emphasis markers."
+    (interactive "p")
+    (let ((markers org-hide-emphasis-markers))
+      (if markers
+          (setq-local org-hide-emphasis-markers nil)
+        (setq-local org-hide-emphasis-markers t))
+      (when arg
+        (font-lock-fontify-buffer))))
+
+  (defun zp/org-toggle-link-display (&optional arg)
+    "Toggle the literal or descriptive display of links in the current buffer."
+    (interactive "p")
+    (if org-link-descriptive (remove-from-invisibility-spec '(org-link))
+      (add-to-invisibility-spec '(org-link)))
+    (setq-local org-link-descriptive (not org-link-descriptive))
+    (when arg
+      (font-lock-fontify-buffer)))
+
+  (defun zp/org-toggle-fontifications (&optional arg)
+    "Toggle emphasis markers or the link display.
+
+Without a C-u argument, toggle the emphasis markers.
+
+With a C-u argument, toggle the link display."
+    (interactive "P")
+    (let ((markers org-hide-emphasis-markers)
+          (links org-link-descriptive))
+      (if arg
+          (zp/org-toggle-link-display)
+        (zp/org-toggle-emphasis-markers))
+      (font-lock-fontify-buffer)))
+
+  (defun zp/org-mode-config ()
+    "Modify keymaps used by `org-mode'."
+    (local-set-key (kbd "C-c i") #'org-indent-mode)
+    ;; (local-set-key (kbd "C-c C-,") 'org-priority)
+    (local-set-key (kbd "C-c [") nil)
+    (local-set-key (kbd "C-c ]") nil)
+    (local-set-key (kbd "C-c C-q") #'counsel-org-tag)
+    (local-set-key (kbd "C-c C-.") #'org-time-stamp)
+    (local-set-key (kbd "C-c C-x r") #'zp/org-set-appt-warntime)
+    (local-set-key (kbd "C-c C-x l") #'zp/org-set-location)
+    (local-set-key (kbd "C-c C-x d") #'org-delete-property)
+    (local-set-key (kbd "C-c C-x D") #'org-insert-drawer)
+    (local-set-key (kbd "C-c C-x b") #'zp/org-tree-to-indirect-buffer-folded)
+    (local-set-key (kbd "S-<backspace>") #'zp/org-kill-spawned-ibuf)
+    (local-set-key (kbd "C-x n o") #'zp/org-overview)
+    (local-set-key (kbd "C-x n a") #'zp/org-show-all)
+    (local-set-key (kbd "C-x n u") #'zp/org-narrow-up-heading-dwim)
+    (local-set-key (kbd "C-x n y") #'zp/org-narrow-previous-heading)
+    (local-set-key (kbd "C-x n s") #'zp/org-narrow-to-subtree)
+    (local-set-key (kbd "C-x n f") #'zp/org-narrow-forwards)
+    (local-set-key (kbd "C-x n b") #'zp/org-narrow-backwards)
+    (local-set-key (kbd "C-x n w") #'zp/org-widen)
+    (local-set-key (kbd "C-c ,") #'zp/hydra-org-priority/body)
+    (local-set-key (kbd "M-p") #'org-metaup)
+    (local-set-key (kbd "M-n") #'org-metadown)
+    (local-set-key (kbd "M-[") #'org-metaleft)
+    (local-set-key (kbd "M-]") #'org-metaright)
+    (local-set-key (kbd "M-{") #'org-shiftmetaleft)
+    (local-set-key (kbd "M-}") #'org-shiftmetaright)
+    (local-set-key (kbd "C-a") #'org-beginning-of-line)
+    (local-set-key (kbd "C-e") #'org-end-of-line)
+    (local-set-key (kbd "M-I") #'org-indent-mode)
+    (local-set-key (kbd "M-*") #'zp/org-toggle-fontifications)
+    (local-set-key (kbd "C-c C-j") #'zp/org-jump-dwim)
+    (local-set-key (kbd "C-c C-x C-l") #'zp/org-latex-preview-dwim))
+
+  (add-hook #'org-mode-hook #'zp/org-mode-config))
 
 (use-package org-footnote
   :config
@@ -1680,453 +2062,65 @@ return `nil'."
 
 (use-package org-agenda
   :config
-  (setq org-agenda-hide-tags-regexp "recurring\\|waiting\\|standby"))
+  (setq org-agenda-hide-tags-regexp "recurring\\|waiting\\|standby"
+        org-agenda-tags-column -94)
+
+  (defun zp/org-agenda-redo-all ()
+    "Redo all the agenda views."
+    (interactive)
+    (let ((inhibit-message t))
+      (dolist (buffer (buffer-list))
+        (with-current-buffer buffer
+          (when (derived-mode-p 'org-agenda-mode)
+            (org-agenda-maybe-redo))))))
+
+  ;; Idle timer for rebuilding all the agenda views
+  ;; Disabled for review
+  ;; (run-with-idle-timer 300 t #'zp/org-agenda-redo-all)
+
+  (define-key mode-specific-map (kbd "a") 'org-agenda))
 
 (use-package org-clock
   :config
   (setq org-clock-into-drawer "LOGBOOK-CLOCK"
         org-clock-sound t))
 
-;; Options
-
-;; Ensure that images can be resized with deferred #+ATTR_ORG:
-(setq org-image-actual-width nil)
-
-;; Prevent auto insertion of blank-lines before heading but not for lists
-(setq org-blank-before-new-entry (quote ((heading)
-                                         (plain-list-item . auto))))
-
-;; Prevent blank-lines from being displayed between headings in folded state
-(setq org-cycle-separator-lines 0)
-
-;; Add curly quotes to list of pre- and post-matches for emphasis markers
-(setq org-emphasis-regexp-components '("-       ('‘\"“’{" "-    .,:!?;'’\"”)}\\[" "     
-" "." 1))
-
-;; Enable resetting checks plain-list when marking a repeated tasks DONE
-;; Set the RESET_CHECK_BOXES property to t for the heading
-(require 'org-checklist)
-
-;; Length of the habit graph
-(setq org-habit-graph-column 50)
+;; Enable resetting plain-list checks when marking a repeated tasks DONE
+;; To enable that behaviour, set the ‘RESET_CHECK_BOXES’ property to t for the
+;; parent
+(use-package org-checklist)
 
 ;; Set the default apps to use when opening org-links
 (add-to-list 'org-file-apps
              '("\\.pdf\\'" . (lambda (file link)
                                (org-pdfview-open link))))
 
-;; Define TODO keywords
-(setq org-todo-keywords
-      '(;; Default
-        (sequence "TODO(t)" "NEXT(n)" "STRT(S!)" "|" "DONE(d)")
-        ;; Extra
-        (sequence "STBY(s)" "|" "CXLD(x@/!)")
-        (sequence "WAIT(w!)" "|" "CXLD(x@/!)")))
+(use-package org-faces
+  :config
+  ;; Assign faces to priorities
+  (setq org-priority-faces '((?A . (:inherit org-priority-face-a))
+                             (?B . (:inherit org-priority-face-b))
+                             (?C . (:inherit org-priority-face-c))
+                             (?D . (:inherit org-priority-face-d))
+                             (?E . (:inherit org-priority-face-e))))
 
-(setq org-todo-keyword-faces
-      '(("TODO" :inherit org-todo-todo)
-        ("NEXT" :inherit org-todo-next)
-        ("STRT" :inherit org-todo-strt)
-        ("DONE" :inherit org-todo-done)
+  ;; Assign faces for TODO keywords
+  (setq org-todo-keyword-faces
+        '(("TODO" :inherit org-todo-todo)
+          ("NEXT" :inherit org-todo-next)
+          ("STRT" :inherit org-todo-strt)
+          ("DONE" :inherit org-todo-done)
 
-        ("STBY" :inherit org-todo-stby)
-        ("WAIT" :inherit org-todo-wait)
-        ("CXLD" :inherit org-todo-cxld)))
-
-;; Priorities
-(setq org-highest-priority ?A
-      org-default-priority ?D
-      org-lowest-priority  ?E)
-
-;; Priority theme
-(setq org-priority-faces '((?A . (:inherit org-priority-face-a))
-                           (?B . (:inherit org-priority-face-b))
-                           (?C . (:inherit org-priority-face-c))
-                           (?D . (:inherit org-priority-face-d))
-                           (?E . (:inherit org-priority-face-e))))
-
-;; Tag columns
-(setq org-tags-column -77)
-(setq org-agenda-tags-column -94)
-
-;; State triggers
-(setq org-todo-state-tags-triggers
-      '(("CXLD" ("cancelled" . t) ("standby") ("waiting"))
-        ("STBY" ("standby"   . t) ("cancelled") ("waiting"))
-        ("WAIT" ("waiting"   . t) ("cancelled") ("standby"))
-        ("TODO" ("cancelled") ("standby") ("waiting"))
-        ("NEXT" ("cancelled") ("standby") ("waiting"))
-        ("STRT" ("cancelled") ("standby") ("waiting"))
-        ("WAIT" ("cancelled") ("standby") ("waiting"))
-        ("DONE" ("cancelled") ("standby") ("waiting"))
-        (""     ("cancelled") ("standby") ("waiting")))
-      ;; Custom faces for specific tags
-      org-tag-faces
-      '(("@home"        . org-tag-location)
-        ("@work"        . org-tag-location)
-        ("@town"        . org-tag-location)
-        ("standby"      . org-tag-todo)
-        ("routine"      . org-tag-todo)
-        ("cxld"         . org-tag-todo)
-        ("waiting"      . org-tag-todo)
-        ("recurring"    . org-tag-todo)
-        ("assignment"   . org-tag-important)
-        ("exam"         . org-tag-important)
-        ("important"    . org-tag-important)
-        ("curios"       . org-tag-curios)
-        ("french"       . org-tag-french)))
-
-
-
-;; Default settings for ‘org-columns’
-(setq org-columns-default-format "%55ITEM(Task) %TODO(State) %Effort(Effort){:} %CLOCKSUM")
-
-;; Global values for properties
-(setq org-global-properties (quote (("Effort_ALL" . "0:05 0:10 0:15 0:30 0:45 1:00 1:30 2:00 2:30 3:00 3:30 4:00 4:30 5:00 5:30 6:00 0:00")
-                                    ("STYLE_ALL" . "habit")
-                                    ("APPT_WARNTIME_ALL" . "0 5 10 15 20 25 30 35 40 45 50 55 60 none")
-                                    ("SESSION_DURATION_ALL" . "0:45 0:15 0:20 0:30 1:00")
-                                    )))
-
-;; Archiving location
-(setq org-archive-location "%s.archive::")
-
-;; Keep hierarchy when archiving
-;; Source: https://fuco1.github.io/2017-04-20-Archive-subtrees-under-the-same-hierarchy-as-original-in-the-archive-files.html
-(defadvice org-archive-subtree (around fix-hierarchy activate)
-  (let* ((fix-archive-p (and (not current-prefix-arg)
-                             (not (use-region-p))))
-         (location (org-archive--compute-location
-			(or (org-entry-get nil "ARCHIVE" 'inherit)
-			    org-archive-location)))
-         (afile (car location))
-         (buffer (or (find-buffer-visiting afile) (find-file-noselect afile))))
-    ad-do-it
-    (when fix-archive-p
-      (with-current-buffer buffer
-        (goto-char (point-max))
-        (while (org-up-heading-safe))
-        (let* ((olpath (org-entry-get (point) "ARCHIVE_OLPATH"))
-               (path (and olpath (split-string olpath "/")))
-               (level 1)
-               tree-text)
-          (when olpath
-            (org-mark-subtree)
-            (setq tree-text (buffer-substring (region-beginning) (region-end)))
-            (let (this-command) (org-cut-subtree))
-            (goto-char (point-min))
-            (save-restriction
-              (widen)
-              (-each path
-                (lambda (heading)
-                  (if (re-search-forward
-                       (rx-to-string
-                        `(: bol (repeat ,level "*") (1+ " ") ,heading)) nil t)
-                      (org-narrow-to-subtree)
-                    (goto-char (point-max))
-                    (unless (looking-at "^")
-                      (insert "\n"))
-                    (insert (make-string level ?*)
-                            " "
-                            heading
-                            "\n"))
-                  (cl-incf level)))
-              (widen)
-              (org-end-of-subtree t t)
-              (org-paste-subtree level tree-text))))))))
+          ("STBY" :inherit org-todo-stby)
+          ("WAIT" :inherit org-todo-wait)
+          ("CXLD" :inherit org-todo-cxld))))
 
 ;; Babel
-(require 'ob-async)
-(add-hook 'ob-async-pre-execute-src-block-hook
-          '(lambda ()
-            (setq org-ditaa-jar-path "/usr/share/java/ditaa/ditaa-0.11.jar")))
-
-;; LaTeX export
-(defvar zp/org-format-latex-default-scale 3.0
-  "Initial value for the scale of LaTeX previews.")
-
-;; Formatting options for LaTeX preview-blocks
-(setq org-format-latex-options
-      '(:foreground default
-        :background default
-        :scale zp/org-format-latex-default-scale
-        :html-foreground "Black"
-        :html-background "Transparent"
-        :html-scale 1.0
-        :matchers ("begin" "$1" "$" "$$" "\\(" "\\[")))
-
-(defun zp/org-latex-preview-dwim (arg)
-  "Run org-latex-preview after updating the scale."
-  (interactive "P")
-  (let* ((default-scale 3)
-         (scale-amount (or (and (boundp 'text-scale-mode-amount)
-                                text-scale-mode-amount)
-                           0))
-         (new-scale (+ default-scale scale-amount)))
-    (setq-local org-format-latex-options
-                (plist-put org-format-latex-options :scale new-scale))
-    (org-latex-preview arg)))
-
-;; Load languages with Babel
-(org-babel-do-load-languages 'org-babel-load-languages
-                             '((R . t)
-                               (python . t)
-                               (latex . t)
-                               (ledger . t)))
-
-(add-hook #'org-babel-after-execute-hook #'org-display-inline-images 'append)
-
-;; Load library required for PlantUML
-(setq org-ditaa-jar-path "/usr/share/java/ditaa/ditaa-0.11.jar")
-
-;; Mak some commands safe to use as local-variables
-;; (add-to-list 'safe-local-variable-values
-;;              '(after-save-hook . org-html-export-to-html))
-;; (add-to-list 'safe-local-variable-values
-;;              '(org-confirm-babel-evaluate . nil))
-;; (add-to-list 'safe-local-variable-values
-;;              '( . nil))
-
-(defun zp/org-overview (&optional arg keep-position keep-restriction)
-  "Switch to overview mode, showing only top-level headlines.
-
-With a ‘C-u’ prefix, do not move point.
-
-When KEEP-RESTRICTION is non-nil, do not widen the buffer."
-  (interactive "p")
-  (let ((pos-before (point))
-        (indirect (not (buffer-file-name)))
-        (narrowed (buffer-narrowed-p)))
-    (setq-local zp/org-narrow-previous-position pos-before)
-    ;; Do not widen buffer if in indirect buffer
-    (save-excursion
-      (goto-char (point-min))
-      (widen)
-      (when (or (and indirect
-                     narrowed)
-                keep-restriction)
-        (org-narrow-to-subtree))
-      (unless indirect
-        (org-display-inline-images)))
-    (zp/org-fold (or keep-position
-                     (and arg
-                          (> arg 1))))
-    (when arg
-      (message "Showing overview.")
-      (run-hooks 'zp/org-after-view-change-hook))))
-
-(defun zp/org-fold (&optional keep-position)
-  (let ((indirectp (not (buffer-file-name)))
-        (org-startup-folded 'overview))
-    ;; Fold drawers
-    (org-set-startup-visibility)
-    ;; Fold trees
-    (org-overview)
-    (unless keep-position
-      (goto-char (point-min)))
-    (recenter)
-    (save-excursion
-      (goto-char (point-min))
-      (org-show-entry)
-      (when (org-at-heading-p)
-        (org-show-children)))))
-
-(defun zp/org-show-all (arg)
-  (interactive "p")
-  (let ((pos-before (point))
-        (indirect (not (buffer-file-name))))
-    (setq-local zp/org-narrow-previous-position pos-before)
-    ;; Do not widen buffer if in indirect buffer
-    (unless indirect
-      (widen)
-      (org-display-inline-images))
-    ;; Unfold everything
-    (org-show-all)
-    (unless (eq arg 4)
-      (goto-char (point-min)))
-    (recenter-top-bottom)
-    (when arg
-      (message "Showing everything.")
-      (run-hooks 'zp/org-after-view-change-hook))))
-
-;; org-narrow movements
-
-(defun zp/org-narrow-to-subtree ()
-  "Move to the next subtree at same level, and narrow the buffer to it."
-  (interactive)
-  (org-narrow-to-subtree)
-  (zp/org-fold nil)
-  (when (called-interactively-p 'any)
-    (message "Narrowing to tree at point.")
-    (run-hooks 'zp/org-after-view-change-hook)))
-
-(defun zp/org-widen ()
-  "Move to the next subtree at same level, and narrow the buffer to it."
-  (interactive)
-  (let ((pos-before (point)))
-    (setq-local zp/org-narrow-previous-position pos-before))
-  (widen)
-  (when (called-interactively-p 'any)
-    (message "Removing narrowing.")
-    (run-hooks 'zp/org-after-view-change-hook)))
-
-(defun zp/org-narrow-forwards ()
-  "Move to the next subtree at same level, and narrow the buffer to it."
-  (interactive)
-  (widen)
-  (org-forward-heading-same-level 1)
-  (org-narrow-to-subtree)
-  (zp/org-fold nil)
-  (when (called-interactively-p 'any)
-    (message "Narrowing to next tree.")
-    (run-hooks 'zp/org-after-view-change-hook)))
-
-(defun zp/org-narrow-backwards ()
-  "Move to the next subtree at same level, and narrow the buffer to it."
-  (interactive)
-  (widen)
-  (org-backward-heading-same-level 1)
-  (org-narrow-to-subtree)
-  (zp/org-fold nil)
-  (when (called-interactively-p 'any)
-    (message "Narrowing to previous tree.")
-    (run-hooks 'zp/org-after-view-change-hook)))
-
-(defun zp/org-narrow-up-heading (&optional arg keep-position)
-  "Move to the upper subtree, and narrow the buffer to it."
-  (interactive "p")
-  (unless (buffer-narrowed-p)
-    (user-error "No narrowing"))
-  (let ((pos-before (point)))
-    (setq-local zp/org-narrow-previous-position pos-before)
-    (widen)
-    (org-reveal)
-    (outline-up-heading 1)
-    (org-narrow-to-subtree)
-    (when (or (eq arg 4)
-              keep-position)
-      (goto-char pos-before)
-      (recenter-top-bottom))
-    (zp/org-fold (or (eq arg 4)
-                     keep-position))
-    (when arg
-      (message "Narrowing to tree above.")
-      (run-hooks 'zp/org-after-view-change-hook))))
-
-(defun zp/org-narrow-up-heading-dwim (arg)
-  "Narrow to the upper subtree, and narrow the buffer to it.
-
-If the buffer is already narrowed to level-1 heading, overview
-the entire buffer."
-  (interactive "p")
-  (if (save-excursion
-        ;; Narrowed to a level-1 heading?
-        (goto-char (point-min))
-        (and (buffer-narrowed-p)
-             (equal (org-outline-level) 1)))
-      (zp/org-overview arg)
-    (zp/org-narrow-up-heading arg)))
-
-(defun zp/org-narrow-previous-heading (arg)
-  "Move to the previously narrowed tree, and narrow the buffer to it."
-  (interactive "p")
-  (if (bound-and-true-p zp/org-narrow-previous-position)
-      (let ((pos-before zp/org-narrow-previous-position))
-        (goto-char zp/org-narrow-previous-position)
-        (org-reveal)
-        (org-cycle)
-        (org-narrow-to-subtree)
-        (setq zp/org-narrow-previous-position nil)
-        (message "Narrowing to previously narrowed tree."))
-    (message "Couldn’t find a previous position.")))
-
-;; Toggle fontifications
-(defun zp/org-toggle-emphasis-markers (&optional arg)
-  "Toggle emphasis markers."
-  (interactive "p")
-  (let ((markers org-hide-emphasis-markers))
-    (if markers
-        (setq-local org-hide-emphasis-markers nil)
-      (setq-local org-hide-emphasis-markers t))
-    (when arg
-      (font-lock-fontify-buffer))))
-
-(defun zp/org-toggle-link-display (&optional arg)
-  "Toggle the literal or descriptive display of links in the current buffer."
-  (interactive "p")
-  (if org-link-descriptive (remove-from-invisibility-spec '(org-link))
-    (add-to-invisibility-spec '(org-link)))
-  (setq-local org-link-descriptive (not org-link-descriptive))
-  (when arg
-    (font-lock-fontify-buffer)))
-
-(defun zp/org-toggle-fontifications (&optional arg)
-  "Toggle emphasis markers or the link display.
-
-Without a C-u argument, toggle the emphasis markers.
-
-With a C-u argument, toggle the link display."
-  (interactive "P")
-  (let ((markers org-hide-emphasis-markers)
-        (links org-link-descriptive))
-    (if arg
-        (zp/org-toggle-link-display)
-      (zp/org-toggle-emphasis-markers))
-    (font-lock-fontify-buffer)))
-
-;; Hook
-(defun org-mode-config ()
-  "Modify keymaps used by `org-mode'."
-  (local-set-key (kbd "C-c i") 'org-indent-mode)
-  ;; (local-set-key (kbd "C-c C-,") 'org-priority)
-  (local-set-key (kbd "C-c [") 'nil)
-  (local-set-key (kbd "C-c ]") 'nil)
-  (local-set-key (kbd "C-c C-q") 'counsel-org-tag)
-  (local-set-key (kbd "C-c C-.") 'org-time-stamp)
-  (local-set-key (kbd "C-c C-x r") 'zp/org-set-appt-warntime)
-  (local-set-key (kbd "C-c C-x l") 'zp/org-set-location)
-  (local-set-key (kbd "C-c C-x d") 'org-delete-property)
-  (local-set-key (kbd "C-c C-x D") 'org-insert-drawer)
-  (local-set-key (kbd "C-c C-x b") 'zp/org-tree-to-indirect-buffer-folded)
-  (local-set-key (kbd "S-<backspace>") 'zp/org-kill-spawned-ibuf)
-  (local-set-key (kbd "C-x n o") 'zp/org-overview)
-  (local-set-key (kbd "C-x n a") 'zp/org-show-all)
-  (local-set-key (kbd "C-x n u") 'zp/org-narrow-up-heading-dwim)
-  (local-set-key (kbd "C-x n y") 'zp/org-narrow-previous-heading)
-  (local-set-key (kbd "C-x n s") 'zp/org-narrow-to-subtree)
-  (local-set-key (kbd "C-x n f") 'zp/org-narrow-forwards)
-  (local-set-key (kbd "C-x n b") 'zp/org-narrow-backwards)
-  (local-set-key (kbd "C-x n w") 'zp/org-widen)
-  (local-set-key (kbd "C-c ,") 'zp/hydra-org-priority/body)
-  (local-set-key (kbd "M-p") 'org-metaup)
-  (local-set-key (kbd "M-n") 'org-metadown)
-  (local-set-key (kbd "M-[") 'org-metaleft)
-  (local-set-key (kbd "M-]") 'org-metaright)
-  (local-set-key (kbd "M-{") 'org-shiftmetaleft)
-  (local-set-key (kbd "M-}") 'org-shiftmetaright)
-  (local-set-key (kbd "C-a") 'org-beginning-of-line)
-  (local-set-key (kbd "C-e") 'org-end-of-line)
-  (local-set-key (kbd "M-I") 'org-indent-mode)
-  (local-set-key (kbd "M-*") 'zp/org-toggle-fontifications)
-  (local-set-key (kbd "C-c C-j") 'zp/org-jump-dwim)
-  (local-set-key (kbd "C-c C-x C-l") #'zp/org-latex-preview-dwim))
-
-(setq org-mode-hook 'org-mode-config)
-
-(define-key mode-specific-map (kbd "a") 'org-agenda)
-
-(defun zp/org-agenda-redo-all ()
-  "Redo all the agenda views."
-  (interactive)
-  (let ((inhibit-message t))
-    (dolist (buffer (buffer-list))
-      (with-current-buffer buffer
-        (when (derived-mode-p 'org-agenda-mode)
-          (org-agenda-maybe-redo))))))
-
-;; Idle timer for rebuilding all the agenda views
-;; Disabled for review
-;; (run-with-idle-timer 300 t #'zp/org-agenda-redo-all)
+(use-package ob-async
+  :config
+  (add-hook #'ob-async-pre-execute-src-block-hook
+            (lambda ()
+              (setq org-ditaa-jar-path "/usr/share/java/ditaa/ditaa-0.11.jar"))))
 
 
 
