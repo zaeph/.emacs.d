@@ -1130,10 +1130,6 @@ based on ‘zp/message-mode-ispell-alist’."
          (setq pdf-view-continuous nil)
          (message "Page scrolling: Constrained"))))
 
-;; Sublimity
-;; (sublimity-mode 0)
-;; (require 'sublimity-scroll)
-
 ;; Only hl-line from end of line
 
 ;; (defun my-hl-line-range-function ()
