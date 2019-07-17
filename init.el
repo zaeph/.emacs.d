@@ -2715,6 +2715,89 @@ afterwards."
           (zp/org-cmp-created (if reverse b a)
                               (if reverse a b)))))
 
+  ;;---------
+  ;; Headers
+  ;;---------
+
+  (defun zp/org-agenda-format-header-align (header)
+    (let ((tags-column org-agenda-tags-column))
+      (format
+       (concat
+        "%"
+        (number-to-string
+         (/ (+ (- tags-column) (length header)) 2))
+        "s")
+       header)))
+
+  (defun zp/org-agenda-format-word-list (word-list)
+    (let ((word-list-linked (s-join ";" word-list)))
+      (if (not (eq word-list nil))
+          (concat " " "(" word-list-linked ")"))))
+
+  (defun zp/org-agenda-format-header-main (header)
+    "Format the main header block in org-agenda."
+    (let* ((tags-column org-agenda-tags-column)
+           (flanking-symbol "~")
+           (header-formatted
+            (zp/org-agenda-format-header-align
+             (concat flanking-symbol " " header " " flanking-symbol)))
+           (word-list ()))
+      (unless org-agenda-include-deadlines
+        (add-to-list 'word-list "-deadlines" t))
+      (unless org-habit-show-habits
+        (add-to-list 'word-list "-habits" t))
+      (unless zp/org-agenda-include-category-icons
+        (add-to-list 'word-list "-icons" t))
+      (unless zp/org-agenda-include-scheduled
+        (add-to-list 'word-list "-scheduled" t))
+      (let ((word-list-formatted (s-join ";" word-list)))
+        (if (not (eq word-list nil))
+            (setq word-list-formatted (concat " " "(" word-list-formatted ")")))
+        (concat
+         header-formatted word-list-formatted "\n"))))
+
+  (defun zp/org-agenda-format-header-block (header)
+    "Format header blocks in org-agenda."
+    (let* ((tags-column org-agenda-tags-column)
+           (header-formatted (zp/org-agenda-format-header-align header)))
+      (concat
+       header-formatted "\n")))
+
+  (defun zp/org-agenda-format-header-block-with-settings (header)
+    "Format header blocks in org-agenda, and display important
+agenda settings after them."
+    (let ((word-list ()))
+      (when zp/org-agenda-sorting-strategy-special-first
+        (add-to-list 'word-list "+S↓" t))
+      ;; (if (eq org-agenda-dim-blocked-tasks nil)
+      ;;     (add-to-list 'word-list "-dimmed" t))
+      (when zp/org-agenda-todo-ignore-future
+        (add-to-list 'word-list "-future" t))
+      (when zp/org-agenda-sort-by-rev-fifo
+        (add-to-list 'word-list "+rev-fifo" t))
+      (when zp/org-agenda-split-subtasks
+        (add-to-list 'word-list "+split" t))
+      (unless zp/org-agenda-include-waiting
+        (add-to-list 'word-list "-waiting" t))
+      (let ((header-formatted (zp/org-agenda-format-header-align header))
+            (word-list-formatted (zp/org-agenda-format-word-list word-list)))
+        (concat header-formatted word-list-formatted))))
+
+  ;; Special blocks
+  (defun zp/org-agenda-format-header-projects ()
+    "Format header blocks in org-agenda, and display important
+agenda settings after them."
+    (let* ((tags-column org-agenda-tags-column)
+           (header "Projects")
+           (word-list ()))
+      (when zp/org-agenda-sorting-strategy-special-first
+        (add-to-list 'word-list "+S↓" t))
+      (when (eq zp/org-agenda-include-waiting nil)
+        (add-to-list 'word-list "-waiting" t))
+      (let ((header-formatted (zp/org-agenda-format-header-align header))
+            (word-list-formatted (zp/org-agenda-format-word-list word-list)))
+        (concat header-formatted word-list-formatted))))
+
   ;;------
   ;; Rest
   ;;------
@@ -2729,95 +2812,6 @@ afterwards."
   (setq zp/org-agenda-skip-functions-debug nil)
 
   (define-key mode-specific-map (kbd "a") 'org-agenda))
-
-
-
-;; ========================================
-;; =============== SORTING ================
-;; ========================================
-
-;; ========================================
-;; =============== HEADERS ================
-;; ========================================
-
-(defun zp/org-agenda-format-header-align (header)
-  (let ((tags-column org-agenda-tags-column))
-    (format
-     (concat
-      "%"
-      (number-to-string
-       (/ (+ (- tags-column) (length header)) 2))
-      "s")
-     header)))
-
-(defun zp/org-agenda-format-word-list (word-list)
-  (let ((word-list-linked (s-join ";" word-list)))
-    (if (not (eq word-list nil))
-        (concat " " "(" word-list-linked ")"))))
-
-(defun zp/org-agenda-format-header-main (header)
-  "Format the main header block in org-agenda."
-  (let* ((tags-column org-agenda-tags-column)
-         (flanking-symbol "~")
-         (header-formatted
-          (zp/org-agenda-format-header-align
-           (concat flanking-symbol " " header " " flanking-symbol)))
-         (word-list ()))
-    (unless org-agenda-include-deadlines
-        (add-to-list 'word-list "-deadlines" t))
-    (unless org-habit-show-habits
-        (add-to-list 'word-list "-habits" t))
-    (unless zp/org-agenda-include-category-icons
-        (add-to-list 'word-list "-icons" t))
-    (unless zp/org-agenda-include-scheduled
-        (add-to-list 'word-list "-scheduled" t))
-    (let ((word-list-formatted (s-join ";" word-list)))
-      (if (not (eq word-list nil))
-          (setq word-list-formatted (concat " " "(" word-list-formatted ")")))
-      (concat
-       header-formatted word-list-formatted "\n"))))
-
-(defun zp/org-agenda-format-header-block (header)
-  "Format header blocks in org-agenda."
-  (let* ((tags-column org-agenda-tags-column)
-         (header-formatted (zp/org-agenda-format-header-align header)))
-    (concat
-     header-formatted "\n")))
-
-(defun zp/org-agenda-format-header-block-with-settings (header)
-  "Format header blocks in org-agenda, and display important
-agenda settings after them."
-  (let ((word-list ()))
-    (when zp/org-agenda-sorting-strategy-special-first
-      (add-to-list 'word-list "+S↓" t))
-    ;; (if (eq org-agenda-dim-blocked-tasks nil)
-    ;;     (add-to-list 'word-list "-dimmed" t))
-    (when zp/org-agenda-todo-ignore-future
-      (add-to-list 'word-list "-future" t))
-    (when zp/org-agenda-sort-by-rev-fifo
-      (add-to-list 'word-list "+rev-fifo" t))
-    (when zp/org-agenda-split-subtasks
-      (add-to-list 'word-list "+split" t))
-    (unless zp/org-agenda-include-waiting
-      (add-to-list 'word-list "-waiting" t))
-    (let ((header-formatted (zp/org-agenda-format-header-align header))
-          (word-list-formatted (zp/org-agenda-format-word-list word-list)))
-      (concat header-formatted word-list-formatted))))
-
-;; Special blocks
-(defun zp/org-agenda-format-header-projects ()
-  "Format header blocks in org-agenda, and display important
-agenda settings after them."
-  (let* ((tags-column org-agenda-tags-column)
-         (header "Projects")
-         (word-list ()))
-    (when zp/org-agenda-sorting-strategy-special-first
-      (add-to-list 'word-list "+S↓" t))
-    (when (eq zp/org-agenda-include-waiting nil)
-      (add-to-list 'word-list "-waiting" t))
-    (let ((header-formatted (zp/org-agenda-format-header-align header))
-          (word-list-formatted (zp/org-agenda-format-word-list word-list)))
-      (concat header-formatted word-list-formatted))))
 
 
 
