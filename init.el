@@ -2929,7 +2929,9 @@ agenda settings after them."
      :and (:tag "waiting"
            :scheduled nil))
     (:name "Appointments"
-     :timestamp today)
+           :timestamp today)
+    (:name "Due soon"
+           :deadline t)
     (:name "Scheduled"
      :scheduled today)
     (:name "Subtasks"
