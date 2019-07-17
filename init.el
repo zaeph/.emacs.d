@@ -1130,18 +1130,6 @@ based on ‘zp/message-mode-ispell-alist’."
          (setq pdf-view-continuous nil)
          (message "Page scrolling: Constrained"))))
 
-;; Only hl-line from end of line
-
-;; (defun my-hl-line-range-function ()
-;;   (cons (line-end-position) (line-beginning-position 2)))
-;; (setq hl-line-range-function #'my-hl-line-range-function)
-
-;; (when window-system
-;;   (require 'hl-line)
-;;   (set-face-attribute 'hl-line nil :inherit nil :background "#111111")
-;;   (setq global-hl-line-sticky-flag t)
-;;   (global-hl-line-mode 1))
-
 ;; Way to enable minor modes based on filenames
 ;; Added with the package `auto-minor-mode-alist'
 ;; ...but can also add them with file-variables
