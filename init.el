@@ -287,29 +287,27 @@
   :config
   (setq free-keys-modifiers '("" "C" "M" "C-M" "H")))
 
+(use-package flycheck
+  :config
+  (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc))
+  (setq flycheck-emacs-lisp-load-path 'inherit
+        flycheck-display-errors-delay 0.5)
 
+  ;; Enable flycheck everywhere
+  ;; Disabled because of slow-downs in large files
+  ;; (add-hook #'after-init-hook #'global-flycheck-mode)
 
-;; ========================================
-;; =============== FLYCHECK ===============
-;; ========================================
+  ;; Enable flycheck for some major-modes
+  (add-hook #'sh-mode-hook #'flycheck-mode)
+  (add-hook #'cperl-mode-hook #'flycheck-mode)
+  (add-hook #'elisp-mode-hook #'flycheck-mode))
 
-(require 'flycheck)
-(setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc))
-(setq flycheck-emacs-lisp-load-path 'inherit
-      flycheck-display-errors-delay 0.5)
-
-;; Enable flycheck everywhere
-;; Disabled because of slow-downs in large files
-;; (add-hook 'after-init-hook #'global-flycheck-mode)
-
-;; Enable flycheck for some major-modes
-(add-hook #'sh-mode-hook #'flycheck-mode)
-(add-hook #'cperl-mode-hook #'flycheck-mode)
-(add-hook #'elisp-mode-hook #'flycheck-mode)
-
-;; (require 'flycheck-pos-tip)
-;; (flycheck-pos-tip-mode)
-
+;; Minor-mode to show Flycheck error messages in a popup
+(use-package fly-check-pos-tip
+  :disabled
+  :requires flycheck
+  :config
+  (flycheck-pos-tip-mode))
 
 
 ;; ========================================
