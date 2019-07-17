@@ -1101,6 +1101,15 @@ based on ‘zp/message-mode-ispell-alist’."
   ;; I prefer to explicitly turn pages
   (setq pdf-view-continuous nil)
 
+  (defun zp/pdf-view-continuous-toggle ()
+    (interactive)
+    (cond ((not pdf-view-continuous)
+           (setq pdf-view-continuous t)
+           (message "Page scrolling: Continous"))
+          (t
+           (setq pdf-view-continuous nil)
+           (message "Page scrolling: Constrained"))))
+
   (define-key pdf-view-mode-map (kbd "m") 'pdf-view-midnight-minor-mode)
   (define-key pdf-view-mode-map (kbd "s") 'zp/toggle-pdf-view-auto-slice-minor-mode)
   (define-key pdf-view-mode-map (kbd "M") 'pdf-view-set-slice-using-mouse)
@@ -1120,15 +1129,19 @@ based on ‘zp/message-mode-ispell-alist’."
   :config
   (define-key pdf-links-minor-mode-map (kbd "f") 'pdf-view-fit-page-to-window))
 
-
-(defun zp/pdf-view-continuous-toggle ()
+;; TODO: Consider deleting this semi-useless minor-mode
+(defun zp/save-buffers-kill-terminal-silently ()
   (interactive)
-  (cond ((not pdf-view-continuous)
-         (setq pdf-view-continuous t)
-         (message "Page scrolling: Continous"))
-        (t
-         (setq pdf-view-continuous nil)
-         (message "Page scrolling: Constrained"))))
+  (save-buffers-kill-terminal t))
+
+(define-minor-mode save-silently-mode
+  "Save buffers silently when exiting."
+  :lighter " SS"
+  :keymap (let ((map (make-sparse-keymap)))
+            (define-key map (kbd "C-x C-c") 'zp/save-buffers-kill-terminal-silently)
+            (define-key map (kbd "C-c C-k") 'zp/kanji-add-furigana)
+            (define-key map (kbd "M-n") 'zp/kanji-add-furigana)
+            map))
 
 ;; Way to enable minor modes based on filenames
 ;; Added with the package ‘auto-minor-mode-alist’
@@ -1157,19 +1170,6 @@ If text is selected, adds furigana to the selected kanji instead."
         (call-interactively 'set-mark-command)
         (call-interactively 'forward-char)))
   (yas-expand-snippet (yas-lookup-snippet "anki-ruby")))
-
-(defun zp/save-buffers-kill-terminal-silently ()
-  (interactive)
-  (save-buffers-kill-terminal t))
-
-(define-minor-mode save-silently-mode
-  "Save buffers silently when exiting."
-  :lighter " SS"
-  :keymap (let ((map (make-sparse-keymap)))
-            (define-key map (kbd "C-x C-c") 'zp/save-buffers-kill-terminal-silently)
-            (define-key map (kbd "C-c C-k") 'zp/kanji-add-furigana)
-            (define-key map (kbd "M-n") 'zp/kanji-add-furigana)
-            map))
 
 ;; Recentf
 (setq recentf-max-menu-items 100)
