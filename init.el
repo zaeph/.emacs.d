@@ -108,6 +108,9 @@
 ;; Disable final newline insertion
 (setq-default require-final-newline nil)
 
+;; Enforce French spacing when filling paragraphs
+(add-to-list 'fill-nobreak-predicate 'fill-french-nobreak-p)
+
 ;; Disable mouse focus
 (setq focus-follows-mouse nil)
 (setq mouse-autoselect-window nil)
@@ -1713,9 +1716,6 @@ return `nil'."
 (add-to-list 'org-file-apps
              '("\\.pdf\\'" . (lambda (file link)
                                (org-pdfview-open link))))
-
-;; Enforce French spacing when filling paragraphs
-(add-to-list 'fill-nobreak-predicate 'fill-french-nobreak-p)
 
 ;; Define TODO keywords
 (setq org-todo-keywords
