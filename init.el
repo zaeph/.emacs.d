@@ -844,14 +844,9 @@ based on ‘zp/message-mode-ispell-alist’."
 
   (add-hook 'notmuch-show-mode-hook #'zp/notmuch-show-mode-config))
 
-
-
-;; ========================================
-;; ============== MODE-LINE ===============
-;; ========================================
-
-;; Spaceline
-(require 'spaceline-config)
+;; Required for ‘mode-line-buffer-id-inactive’ (face)
+;; TODO: Disable once I’ve defined the face internally
+(use-package spaceling-config)
 
 
 
