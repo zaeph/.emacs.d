@@ -197,12 +197,12 @@
   (add-hook #'prog-mode-hook #'ws-butler-mode)
   (add-hook #'prog-mode-hook #'zp/whitespace-mode-lines-tail))
 
-;; info+
-(require 'info+)
-(define-key Info-mode-map (kbd "<mouse-4>") 'mwheel-scroll)
-(define-key Info-mode-map (kbd "<mouse-5>") 'mwheel-scroll)
-(define-key Info-mode-map (kbd "j") 'next-line)
-(define-key Info-mode-map (kbd "k") 'previous-line)
+(use-package info+
+  :config
+  (define-key Info-mode-map (kbd "<mouse-4>") 'mwheel-scroll)
+  (define-key Info-mode-map (kbd "<mouse-5>") 'mwheel-scroll)
+  (define-key Info-mode-map (kbd "j") 'next-line)
+  (define-key Info-mode-map (kbd "k") 'previous-line))
 
 ;; dired-x
 (add-hook 'dired-load-hook
