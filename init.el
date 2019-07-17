@@ -1131,8 +1131,9 @@ based on ‘zp/message-mode-ispell-alist’."
          (message "Page scrolling: Constrained"))))
 
 ;; Way to enable minor modes based on filenames
-;; Added with the package `auto-minor-mode-alist'
-;; ...but can also add them with file-variables
+;; Added with the package ‘auto-minor-mode-alist’
+;; But they can also be added via file-fariables or minor-modes
+;; TODO: Adapt this block
 (add-to-list 'auto-minor-mode-alist '("\\journal.*\\'" . visual-line-mode))
 (add-to-list 'auto-minor-mode-alist '("\\journal.*\\'" . olivetti-mode))
 (add-to-list 'auto-minor-mode-alist '("\\journal.*\\'" . flyspell-mode))
@@ -1146,7 +1147,6 @@ based on ‘zp/message-mode-ispell-alist’."
 ;; (add-to-list 'auto-minor-mode-alist '("edit-in-emacs.html" . olivetti-mode))
 ;; (add-to-list 'auto-minor-mode-alist '("edit-in-emacs.html" . flyspell-mode))
 (add-to-list 'auto-minor-mode-alist '("edit-in-emacs.html" . save-silently-mode))
-;; (setq auto-minor-mode-alist nil)
 
 (defun zp/kanji-add-furigana ()
   "Adds furigana to the kanji at point.
