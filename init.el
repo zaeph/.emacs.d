@@ -181,7 +181,7 @@
 ;; Use ‘fish-mode’ with .fish files
 (add-to-list 'auto-mode-alist '("\\.*.fish\\'" . fish-mode))
 
-;; fcitx
+;; fcitx (IME for CJK)
 ;; Disabled because of slow-downs in combination with visual-line-mode
 ;; (fcitx-aggressive-setup)
 
