@@ -174,13 +174,6 @@
   :config
   (define-key isearch-mode-map (kbd "<backspace>") 'isearch-del-char))
 
-;; Use ‘shell-script-mode’ with prezto’s zshrc
-(add-to-list 'auto-mode-alist '("\\zshrc\\'" . shell-script-mode))
-(add-to-list 'auto-mode-alist '("\\prompt_.*_setup\\'" . shell-script-mode))
-
-;; Use ‘fish-mode’ with .fish files
-(add-to-list 'auto-mode-alist '("\\.*.fish\\'" . fish-mode))
-
 ;; fcitx (IME for CJK)
 ;; Disabled because of slow-downs in combination with visual-line-mode
 ;; (fcitx-aggressive-setup)
@@ -290,6 +283,19 @@
 (require 'so-long)
 (global-so-long-mode 1)
 (add-hook #'debugger-mode-hook #'so-long-minor-mode)
+
+
+
+;;----------------------------------------------------------------------------
+;; File to major-mode associations
+;;----------------------------------------------------------------------------
+
+;; Use ‘shell-script-mode’ with prezto’s zshrc
+(add-to-list 'auto-mode-alist '("\\zshrc\\'" . shell-script-mode))
+(add-to-list 'auto-mode-alist '("\\prompt_.*_setup\\'" . shell-script-mode))
+
+;; Use ‘fish-mode’ with .fish files
+(add-to-list 'auto-mode-alist '("\\.*.fish\\'" . fish-mode))
 
 
 
