@@ -155,7 +155,10 @@
 (add-to-list 'load-path "~/.emacs.d/lisp/")
 
 ;; Change indent-function to handle plists
-(setq lisp-indent-function 'common-lisp-indent-function)
+;; Reverted to default because I can’t remember the context in which it
+;; was necessary
+;; (setq lisp-indent-function 'common-lisp-indent-function)
+;; (setq lisp-indent-function 'lisp-indent-function) ;Default
 
 ;; Evil
 (require 'evil)
