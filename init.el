@@ -235,9 +235,9 @@
 
 (use-package el-patch)
 
-;; org-mind-map
-(require 'ox-org)
-(require 'org-mind-map)
+(use-package ox-org)
+
+(use-package org-mind-map)
 
 ;; EXWM
 ;; (require 'exwm)
