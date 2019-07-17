@@ -2330,7 +2330,8 @@ With a C-u argument, toggle the link display."
   (global-set-key (kbd "<f6>") 'ivy-resume)
 
   ;; Commented because I use Helm for those commands
-  ;; (global-set-key (kbd "C-x C-b") 'ivy-switch-buffer))
+  ;; (global-set-key (kbd "C-x C-b") 'ivy-switch-buffer)
+  )
 
 (use-package swiper
   :config
