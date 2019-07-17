@@ -4496,9 +4496,10 @@ that date.  Leave point on the first amount."
 ;; ================ MAGIT =================
 ;; ========================================
 
-(require 'magit)
-(setq magit-diff-refine-hunk 'all)
-(magit-wip-mode)
+(use-package magit
+  (setq magit-diff-refine-hunk 'all)
+  (magit-wip-mode))
+
 
 
 
