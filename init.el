@@ -2815,102 +2815,102 @@ agenda settings after them."
 
 
 
-;; ========================================
-;; =========== ORG-SUPER-AGENDA ===========
-;; ========================================
+;;----------------------------------------------------------------------------
+;; org-super-agenda
+;;----------------------------------------------------------------------------
 
-(load-file "~/projects/forks/org-super-agenda/org-super-agenda.el")
-(require 'org-super-agenda)
-(setq org-super-agenda-header-separator "")
-(defun zp/org-super-agenda-update-face ()
-  (let ((ul-color (internal-get-lisp-face-attribute
-                   'font-lock-comment-face :foreground)))
-    (set-face-attribute 'org-super-agenda-header nil
-                        :slant 'italic
-                        :underline `(:color ,ul-color))))
+(use-package org-super-agenda
+  :load-path "~/projects/forks/org-super-agenda/"
+  :requires org-agenda
+  :config
+  (setq org-super-agenda-header-separator "")
+  (defun zp/org-super-agenda-update-face ()
+    (let ((ul-color (internal-get-lisp-face-attribute
+                     'font-lock-comment-face :foreground)))
+      (set-face-attribute 'org-super-agenda-header nil
+                          :slant 'italic
+                          :underline `(:color ,ul-color))))
 
-(defun zp/org-super-agenda-item-in-agenda-groups-p (item groups)
-  "Check if ITEM is in agenda GROUPS."
-  (let ((marker (or (get-text-property 0 'org-marker item)
-                    (get-text-property 0 'org-hd-marker item))))
-    (zp/org-task-in-agenda-groups-p groups nil marker)))
+  (defun zp/org-super-agenda-item-in-agenda-groups-p (item groups)
+    "Check if ITEM is in agenda GROUPS."
+    (let ((marker (or (get-text-property 0 'org-marker item)
+                      (get-text-property 0 'org-hd-marker item))))
+      (zp/org-task-in-agenda-groups-p groups nil marker)))
 
-(defun zp/org-super-agenda-groups (header groups)
-  "Create org-super-agenda section for GROUPS with HEADER."
-  `(:name ,header
-          :pred (lambda (item)
-                  (zp/org-super-agenda-item-in-agenda-groups-p item ',groups))))
+  (defun zp/org-super-agenda-groups (header groups)
+    "Create org-super-agenda section for GROUPS with HEADER."
+    `(:name ,header
+            :pred (lambda (item)
+                    (zp/org-super-agenda-item-in-agenda-groups-p item ',groups))))
 
-(defun zp/org-super-agenda-groups-all ()
-  `(,(zp/org-super-agenda-groups "Inbox" '("inbox"))
-     ,(zp/org-super-agenda-groups "Life" '("life"))
-     ,(zp/org-super-agenda-groups "Maintenance" '("mx"))
-     ,(zp/org-super-agenda-groups "Professional" '("pro"))
-     ,(zp/org-super-agenda-groups "Research" '("research"))
-     ,(zp/org-super-agenda-groups "Activism" '("act"))
-     ,(zp/org-super-agenda-groups "Hacking" '("hack"))
-     ,(zp/org-super-agenda-groups "Curiosities" '("curios"))
-     ,(zp/org-super-agenda-groups "Media" '("media"))))
+  (defun zp/org-super-agenda-groups-all ()
+    `(,(zp/org-super-agenda-groups "Inbox" '("inbox"))
+      ,(zp/org-super-agenda-groups "Life" '("life"))
+      ,(zp/org-super-agenda-groups "Maintenance" '("mx"))
+      ,(zp/org-super-agenda-groups "Professional" '("pro"))
+      ,(zp/org-super-agenda-groups "Research" '("research"))
+      ,(zp/org-super-agenda-groups "Activism" '("act"))
+      ,(zp/org-super-agenda-groups "Hacking" '("hack"))
+      ,(zp/org-super-agenda-groups "Curiosities" '("curios"))
+      ,(zp/org-super-agenda-groups "Media" '("media"))))
 
-(defun zp/org-super-agenda-subtask-p (item)
-  (let ((marker (or (get-text-property 0 'org-marker item)
-                    (get-text-property 0 'org-hd-marker item))))
-    (org-with-point-at marker
-      (zp/is-subtask-p))))
+  (defun zp/org-super-agenda-subtask-p (item)
+    (let ((marker (or (get-text-property 0 'org-marker item)
+                      (get-text-property 0 'org-hd-marker item))))
+      (org-with-point-at marker
+        (zp/is-subtask-p))))
 
-(defun zp/org-super-agenda-scheduled ()
-  '((:name "Past appointments"
-     :face (:foreground "red")
-     :timestamp past)
-    (:name "Overdue"
-     :face (:foreground "red")
-     :scheduled past)
-    (:name "Waiting"
-     :and (:tag "waiting"
-           :scheduled nil))
-    (:name "Appointments"
-           :timestamp today)
-    (:name "Due soon"
-           :deadline t)
-    (:name "Scheduled"
-     :scheduled today)
-    (:name "Subtasks"
-     :and (:scheduled nil
-           :timestamp nil
-           :pred (lambda (item)
-                   (when zp/org-agenda-split-subtasks
-                     (zp/org-super-agenda-subtask-p item)))))
-    (:name "Current"
-     :and (:not (:scheduled t :timestamp t)
-           :not (:tag "waiting")))
-    (:name "Later"
-     :anything)))
-
-(defun zp/org-super-agenda-group-heads (item)
-  (let ((marker (or (get-text-property 0 'org-marker item)
-                    (get-text-property 0 'org-hd-marker item))))
-    (org-entry-get marker "AGENDA_GROUP" nil)))
-
-(defun zp/org-super-agenda-stuck-project-p (item)
-  (let ((marker (or (get-text-property 0 'org-marker item)
-                    (get-text-property 0 'org-hd-marker item))))
-    (org-with-point-at marker
-      (zp/org-project-stuck-p))))
-
-(defun zp/org-super-agenda-projects ()
-    '((:name "Group heads"
-       :pred (lambda (item)
-               (zp/org-super-agenda-group-heads item)))
-      (:name "Stuck"
-       :face (:foreground "red")
-       :pred (lambda (item)
-               (zp/org-super-agenda-stuck-project-p item)))
+  (defun zp/org-super-agenda-scheduled ()
+    '((:name "Past appointments"
+             :face (:foreground "red")
+             :timestamp past)
+      (:name "Overdue"
+             :face (:foreground "red")
+             :scheduled past)
       (:name "Waiting"
-       :tag "waiting")
+             :and (:tag "waiting"
+                        :scheduled nil))
+      (:name "Appointments"
+             :timestamp today)
+      (:name "Due soon"
+             :deadline t)
+      (:name "Scheduled"
+             :scheduled today)
+      (:name "Subtasks"
+             :and (:scheduled nil
+                              :timestamp nil
+                              :pred (lambda (item)
+                                      (when zp/org-agenda-split-subtasks
+                                        (zp/org-super-agenda-subtask-p item)))))
       (:name "Current"
-       :anything)))
+             :and (:not (:scheduled t :timestamp t)
+                        :not (:tag "waiting")))
+      (:name "Later"
+             :anything)))
 
+  (defun zp/org-super-agenda-group-heads (item)
+    (let ((marker (or (get-text-property 0 'org-marker item)
+                      (get-text-property 0 'org-hd-marker item))))
+      (org-entry-get marker "AGENDA_GROUP" nil)))
 
+  (defun zp/org-super-agenda-stuck-project-p (item)
+    (let ((marker (or (get-text-property 0 'org-marker item)
+                      (get-text-property 0 'org-hd-marker item))))
+      (org-with-point-at marker
+        (zp/org-project-stuck-p))))
+
+  (defun zp/org-super-agenda-projects ()
+    '((:name "Group heads"
+             :pred (lambda (item)
+                     (zp/org-super-agenda-group-heads item)))
+      (:name "Stuck"
+             :face (:foreground "red")
+             :pred (lambda (item)
+                     (zp/org-super-agenda-stuck-project-p item)))
+      (:name "Waiting"
+             :tag "waiting")
+      (:name "Current"
+             :anything))))
 
 ;; ========================================
 ;; ================ BLOCKS ================
