@@ -227,11 +227,11 @@
 
 (use-package lilypond-mode)
 
-;; Nov
-(add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode))
-(add-to-list 'auto-mode-alist '("\\.mobi\\'" . nov-mode))
-
-(add-hook #'nov-mode-hook #'olivetti-mode)
+(use-package nov
+  :config
+  (add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode))
+  (add-to-list 'auto-mode-alist '("\\.mobi\\'" . nov-mode))
+  (add-hook #'nov-mode-hook #'olivetti-mode))
 
 ;; Anki-Editor
 ;; (require 'anki-editor)
