@@ -160,9 +160,9 @@
 ;; (setq lisp-indent-function 'common-lisp-indent-function)
 ;; (setq lisp-indent-function 'lisp-indent-function) ;Default
 
-;; Evil
-(require 'evil)
-(evil-mode 0)
+(use-package evil
+  :config
+  (evil-mode 0))
 
 ;; EasyPG (for encryption)
 (require 'epa-file)
