@@ -289,13 +289,6 @@ end-of-buffer signals; pass the rest to the default handler."
   ;; (add-to-list 'load-path "<path where use-package is installed>")
   (require 'use-package))
 
-;; Load extra files, and search subdirs
-(let ((default-directory  "~/.emacs.d/lisp/"))
-  (normal-top-level-add-subdirs-to-load-path))
-
-;; Not sure if this is redundant with above
-(add-to-list 'load-path "~/.emacs.d/lisp/")
-
 ;; Change indent-function to handle plists
 ;; Reverted to default because I can’t remember the context in which it
 ;; was necessary
