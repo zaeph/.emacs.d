@@ -283,15 +283,9 @@
   ;; Force fringe indicators in ‘prog-mode’
   (add-hook #'prog-mode-hook #'zp/enable-visual-line-fringe-indicators))
 
-
-
-;; ========================================
-;; =============== FREE_KEYS ==============
-;; ========================================
-
-(require 'free-keys)
-
-(setq free-keys-modifiers '("" "C" "M" "C-M" "H"))
+(use-package free-keys
+  :config
+  (setq free-keys-modifiers '("" "C" "M" "C-M" "H")))
 
 
 
