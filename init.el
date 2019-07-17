@@ -384,9 +384,10 @@ time is displayed."
   :config
   (volatile-highlights-mode))
 
-;; Removed because of conflict with ‘use-hard-newlines’
-;; (require 'clean-aindent-mode)
-;; (add-hook 'prog-mode-hook #'clean-aindent-mode)
+;; ;; Removed because of conflict with ‘use-hard-newlines’
+;; (use-package clean-aindent-mode
+;;   :config
+;;   (add-hook 'prog-mode-hook #'clean-aindent-mode))
 
 (use-package ws-butler
   :config
@@ -762,6 +763,13 @@ LANGUAGE should be the name of an Ispell dictionary."
 ;; notmuch
 ;;----------------------------------------------------------------------------
 
+(use-package epg-config
+  :config
+  (setq mml2015-use 'epg
+        epg-user-id (zp/get-string-from-file "~/org/pp/gpg/gpg-key-id")
+        mml-secure-openpgp-sign-with-sender t
+        mml-secure-openpgp-encrypt-to-self t))
+
 (use-package notmuch
   :config
   (setq message-signature
@@ -1039,12 +1047,6 @@ of lines before the signature intact."
           (:name "sent" :query "tag:sent" :key "S")
           (:name "archive" :query "*" :key "A")
           (:name "trash" :query "tag:deleted" :key "t")))
-
-  (require 'epg-config)
-  (setq mml2015-use 'epg
-        epg-user-id (zp/get-string-from-file "~/org/pp/gpg/gpg-key-id")
-        mml-secure-openpgp-sign-with-sender t
-        mml-secure-openpgp-encrypt-to-self t)
 
   (defvar zp/message-ispell-alist nil
     "Alist of emails and the language they typically use.
@@ -1492,11 +1494,6 @@ If text is selected, adds furigana to the selected kanji instead."
   (add-hook 'LaTeX-mode-hook #'turn-on-reftex)
   (add-hook 'LaTeX-mode-hook #'orgtbl-mode)
 
-  (eval-after-load "org"
-    '(require 'ox-beamer nil t)
-    )
-  (require 'ox-latex)
-
   (setq org-latex-logfiles-extensions '("aux" "bcf" "blg" "fdb_latexmk" "fls" "figlist" "idx" "nav" "out" "ptc" "run.xml" "snm" "toc" "vrb" "xdv")
         org-export-async-debug nil)
 
@@ -1719,11 +1716,16 @@ return `nil'."
 
 
 ;;----------------------------------------------------------------------------
-;; org → tex export
+;; org → html/tex export
 ;;----------------------------------------------------------------------------
 
+(use-package ox-html
+  :after (org ox)
+  :config
+  (setq org-html-postamble nil))
+
 (use-package ox-latex
-  :after ox
+  :after (org ox)
   :config
   (setq org-latex-default-class "koma-article")
   (setq org-latex-compiler "xelatex")
@@ -1787,6 +1789,8 @@ return `nil'."
   :config
   (setq bibtex-autokey-year-length '4))
 
+(use-package ox-beamer
+  :after (org beamer))
 
 (use-package org-src
   :config
@@ -4726,8 +4730,8 @@ buffer, thereby propagating the indirectness."
 ;; ============= HTML EXPORT ==============
 ;; ========================================
 
-(setq org-html-postamble nil)
-;; (setq html-validation-link nil)
+
+
 
 
 
