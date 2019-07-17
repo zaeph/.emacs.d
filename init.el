@@ -213,7 +213,9 @@
   (diff-hl-flydiff-mode)
   (add-hook #'dired-mode-hook #'diff-hl-dired-mode))
 
-(add-hook #'dired-mode-hook #'turn-on-gnus-dired-mode)
+(use-package dired
+  :config
+  (add-hook #'dired-mode-hook #'turn-on-gnus-dired-mode))
 
 ;; eyebrowse
 (require 'eyebrowse)
