@@ -271,12 +271,15 @@
 ;; File to major-mode associations
 ;;----------------------------------------------------------------------------
 
-;; Use ‘shell-script-mode’ with prezto’s zshrc
-(add-to-list 'auto-mode-alist '("\\zshrc\\'" . shell-script-mode))
-(add-to-list 'auto-mode-alist '("\\prompt_.*_setup\\'" . shell-script-mode))
+(use-package sh-script
+  :config
+  (add-to-list 'auto-mode-alist '("\\zshrc\\'" . shell-script-mode))
+  (add-to-list 'auto-mode-alist '("\\prompt_.*_setup\\'" . shell-script-mode)))
 
-;; Use ‘fish-mode’ with .fish files
-(add-to-list 'auto-mode-alist '("\\.*.fish\\'" . fish-mode))
+
+(use-package fish-mode
+  :config
+  (add-to-list 'auto-mode-alist '("\\.*.fish\\'" . fish-mode)))
 
 
 
