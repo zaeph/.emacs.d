@@ -805,7 +805,7 @@ If REGEX is non-nil, creates a regex to match the email alias."
       (notmuch-show-tag (list "+deleted" "-inbox" "-draft"))
       (notmuch-show-next-thread-show)))
 
-  ;; -----------------------------------------------------------------------------
+
   ;; Movements for message-mode
 
   (defun zp/message-goto-bottom-1 ()
@@ -960,7 +960,6 @@ of lines before the signature intact."
       (when newline
         (insert "\n")
         (forward-char -1))))
-  ;; -----------------------------------------------------------------------------
 
   (define-key notmuch-search-mode-map "y" #'notmuch-search-refine)
   (define-key notmuch-hello-mode-map "q" #'zp/notmuch-hello-quit)
