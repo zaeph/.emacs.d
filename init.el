@@ -118,6 +118,18 @@
 ;; Enable visual bell
 (setq visible-bell 1)
 
+;; Suppress bells for reaching beginning and end of buffer
+;; Source: https://emacs.stackexchange.com/questions/10932/how-do-you-disable-the-buffer-end-beginning-warnings-in-the-minibuffer/20039
+(defun zp/command-error-function (data context caller)
+  "Ignore the buffer-read-only, beginning-of-buffer,
+end-of-buffer signals; pass the rest to the default handler."
+  (when (not (memq (car data) '(buffer-read-only
+                                beginning-of-buffer
+                                end-of-buffer)))
+    (command-error-default-function data context caller)))
+
+(setq command-error-function #'zp/command-error-function)
+
 ;; Maximise the frame
 (toggle-frame-maximized)
 
@@ -1121,19 +1133,6 @@ based on ‘zp/message-mode-ispell-alist’."
 ;; Sublimity
 ;; (sublimity-mode 0)
 ;; (require 'sublimity-scroll)
-
-
-;; Suppress bells for reaching beginning and end of buffer
-(defun my-command-error-function (data context caller)
-  "Ignore the buffer-read-only, beginning-of-buffer,
-end-of-buffer signals; pass the rest to the default handler."
-  (when (not (memq (car data) '(buffer-read-only
-                                beginning-of-buffer
-                                end-of-buffer)))
-    (command-error-default-function data context caller)))
-
-(setq command-error-function #'my-command-error-function)
-
 
 ;; Only hl-line from end of line
 
