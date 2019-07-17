@@ -2482,7 +2482,6 @@ variables."
          zp/org-agenda-include-scheduled t
          org-agenda-entry-types '(:deadline :scheduled :timestamp :sexp)
          zp/org-agenda-include-category-icons t
-         ;; org-agenda-category-icon-alist zp/org-agenda-category-icon-alist
          zp/org-agenda-sorting-strategy-special-first nil
          zp/org-agenda-split-subtasks nil
          zp/org-agenda-include-waiting t
