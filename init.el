@@ -2578,7 +2578,7 @@ With a prefix argument, do so in all agenda buffers."
 ;; =============== SORTING ================
 ;; ========================================
 
-(defun org-cmp-test-todo (todo a b)
+(defun zp/org-cmp-test-todo (todo a b)
   "Compare the todo states of strings A and B."
   (let* ((ma (or (get-text-property 1 'org-marker a)
                  (get-text-property 1 'org-hd-marker a)))
@@ -2600,12 +2600,12 @@ With a prefix argument, do so in all agenda buffers."
 
 (defun zp/org-cmp-todo-special (a b)
   (when zp/org-agenda-sorting-strategy-special-first
-      (or (org-cmp-test-todo "STRT" a b)
-          (org-cmp-test-todo "NEXT" a b))))
+      (or (zp/org-cmp-test-todo "STRT" a b)
+          (zp/org-cmp-test-todo "NEXT" a b))))
 
 (defun zp/org-agenda-sort-wait (a b)
   (cond
-    ((org-cmp-test-todo "WAIT|STBY" a b))))
+    ((zp/org-cmp-test-todo "WAIT|STBY" a b))))
 
 (defvar zp/org-cmp-time-debug nil
   "When non-nil, print debug messages when running
