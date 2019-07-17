@@ -4517,6 +4517,7 @@ that date.  Leave point on the first amount."
 ;; ========================================
 
 (use-package magit
+  :config
   (setq magit-diff-refine-hunk 'all)
   (magit-wip-mode))
 
