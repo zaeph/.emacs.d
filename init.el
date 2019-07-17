@@ -274,12 +274,6 @@
   :config
   (add-to-list 'auto-mode-alist '("\\.*.fish\\'" . fish-mode)))
 
-
-
-;;----------------------------------------------------------------------------
-;; Extra configuration for prog-mode
-;;----------------------------------------------------------------------------
-
 (use-package prog-mode
   :config
   (defun zp/enable-visual-line-fringe-indicators ()
