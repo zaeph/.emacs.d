@@ -7791,8 +7791,7 @@ the beginning of the line."
 (add-hook 'buffer-list-update-hook 'ml-update-all)
 
 (defface mode-line-buffer-id-inactive
-  '((t :inherit modeline-buffer-id
-       :foreground "green"))
+  '((t :inherit modeline-buffer-id))
   "Face used for inactive buffer identification parts of the mode line.")
 
 (defun zp/propertized-buffer-identification (fmt)
