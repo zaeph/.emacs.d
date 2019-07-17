@@ -1191,268 +1191,264 @@ Modifies ‘diff-command’ and ‘diff-switches’ to use ‘git diff’."
 
   (define-key racket-mode-map (kbd "M-RET") 'zp/racket-eval-buffer))
 
+;;----------------------------------------------------------------------------
+;; AUCTeX
+;;----------------------------------------------------------------------------
 
+(use-package latex
+  :config
+  ;; Set default library
+  (setq-default TeX-engine 'luatex
+                TeX-save-query nil
+                TeX-parse-self t
+                TeX-auto-save t
+                LaTeX-includegraphics-read-file 'LaTeX-includegraphics-read-file-relative)
+  (setq reftex-default-bibliography '("~/org/bib/monty-python.bib"))
+  ;; (setq reftex-default-bibliography nil)
+  (setq warning-suppress-types nil)
+  (add-to-list 'warning-suppress-types '(yasnippet backquote-change))
 
-;; ========================================
-;; =============== AUCTEX =================
-;; ========================================
+  ;; Used to prevent radio tables from having trailing $
+  (setq LaTeX-verbatim-environments '("verbatim" "verbatim*" "comment"))
 
-(require 'latex)
+  (setq LaTeX-csquotes-close-quote "}"
+        LaTeX-csquotes-open-quote "\\enquote{")
+  (setq TeX-open-quote "\\enquote{"
+        TeX-close-quote "}")
 
-;; Set default library
-(setq-default TeX-engine 'luatex
-              TeX-save-query nil
-              TeX-parse-self t
-              TeX-auto-save t
-              LaTeX-includegraphics-read-file 'LaTeX-includegraphics-read-file-relative)
-(setq reftex-default-bibliography '("~/org/bib/monty-python.bib"))
-;; (setq reftex-default-bibliography nil)
-(setq warning-suppress-types nil)
-(add-to-list 'warning-suppress-types '(yasnippet backquote-change))
+  (setq font-latex-fontify-script nil)
+  (setq font-latex-fontify-sectioning 'color)
 
-;; Used to prevent radio tables from having trailing $
-(setq LaTeX-verbatim-environments '("verbatim" "verbatim*" "comment"))
+  (set-default 'preview-scale-function 3)
 
-(setq LaTeX-csquotes-close-quote "}"
-      LaTeX-csquotes-open-quote "\\enquote{")
-(setq TeX-open-quote "\\enquote{"
-      TeX-close-quote "}")
+  ;; Enable LaTeX modes for Orgmode
+  (add-hook 'LaTeX-mode-hook #'turn-on-reftex)
+  (add-hook 'LaTeX-mode-hook #'orgtbl-mode)
 
-(setq font-latex-fontify-script nil)
-(setq font-latex-fontify-sectioning 'color)
+  (eval-after-load "org"
+    '(require 'ox-beamer nil t)
+    )
+  (require 'ox-latex)
 
-(set-default 'preview-scale-function 3)
+  (setq org-latex-logfiles-extensions '("aux" "bcf" "blg" "fdb_latexmk" "fls" "figlist" "idx" "nav" "out" "ptc" "run.xml" "snm" "toc" "vrb" "xdv")
+        org-export-async-debug nil)
 
-;; Enable LaTeX modes for Orgmode
-(add-hook 'LaTeX-mode-hook #'turn-on-reftex)
-(add-hook 'LaTeX-mode-hook #'orgtbl-mode)
+  (setq reftex-plug-into-AUCTeX t)
 
-(eval-after-load "org"
-  '(require 'ox-beamer nil t)
-  )
-(require 'ox-latex)
+  (setq LaTeX-font-list '((1 #1="" #1# "\\mathcal{" "}")
+                          (2 "\\textbf{" "}" "\\mathbf{" "}")
+                          (3 "\\textsc{" "}")
+                          (5 "\\emph{" "}")
+                          (6 "\\textsf{" "}" "\\mathsf{" "}")
+                          (9 "\\textit{" "}" "\\mathit{" "}")
+                          (? "\\underline{" "}")
+                          (13 "\\textmd{" "}")
+                          (14 "\\textnormal{" "}" "\\mathnormal{" "}")
+                          (18 "\\textrm{" "}" "\\mathrm{" "}")
+                          (19 "\\textsl{" "}" "\\mathbb{" "}")
+                          (20 "\\texttt{" "}" "\\mathtt{" "}")
+                          (21 "\\textup{" "}")
+                          (4 #1# #1# t)))
 
-(setq org-latex-logfiles-extensions '("aux" "bcf" "blg" "fdb_latexmk" "fls" "figlist" "idx" "nav" "out" "ptc" "run.xml" "snm" "toc" "vrb" "xdv")
-      org-export-async-debug nil)
+  ;; TeX view program
+  (defvar zp/tex-view-program nil)
 
-(setq reftex-plug-into-AUCTeX t)
+  ;; -----------------------------------------------------------------------------
+  ;; Patch submitted to mailing list
 
-(setq LaTeX-font-list '((1 #1="" #1# "\\mathcal{" "}")
-                        (2 "\\textbf{" "}" "\\mathbf{" "}")
-                        (3 "\\textsc{" "}")
-                        (5 "\\emph{" "}")
-                        (6 "\\textsf{" "}" "\\mathsf{" "}")
-                        (9 "\\textit{" "}" "\\mathit{" "}")
-                        (? "\\underline{" "}")
-                        (13 "\\textmd{" "}")
-                        (14 "\\textnormal{" "}" "\\mathnormal{" "}")
-                        (18 "\\textrm{" "}" "\\mathrm{" "}")
-                        (19 "\\textsl{" "}" "\\mathbb{" "}")
-                        (20 "\\texttt{" "}" "\\mathtt{" "}")
-                        (21 "\\textup{" "}")
-                        (4 #1# #1# t)))
-
-;; TeX view program
-(defvar zp/tex-view-program nil)
-
-;; -----------------------------------------------------------------------------
-;; Patch submitted to mailing list
-
-(defcustom TeX-view-pdf-tools-keep-focus nil
-  "Whether AUCTeX retains the focus when viewing PDF files with pdf-tools.
+  (defcustom TeX-view-pdf-tools-keep-focus nil
+    "Whether AUCTeX retains the focus when viewing PDF files with pdf-tools.
 
 When calling `TeX-pdf-tools-sync-view', the pdf-tools buffer
 normally captures the focus. If this option is set to non-nil,
 the AUCTeX buffer will retain the focus."
-  :group 'TeX-view
-  :type 'boolean)
+    :group 'TeX-view
+    :type 'boolean)
 
-(defun TeX-pdf-tools-sync-view ()
-  "Focus the focused page/paragraph in `pdf-view-mode'.
+  (defun TeX-pdf-tools-sync-view ()
+    "Focus the focused page/paragraph in `pdf-view-mode'.
 If `TeX-source-correlate-mode' is disabled, only find and pop to
 the output PDF file.  Used by default for the PDF Tools viewer
 entry in `TeX-view-program-list-builtin'."
-  ;; Make sure `pdf-tools' is at least in the `load-path', but the user must
-  ;; take care of properly loading and installing the package.  We used to test
-  ;; "(featurep 'pdf-tools)", but that doesn't play well with deferred loading.
-  (unless (fboundp 'pdf-tools-install)
-    (error "PDF Tools are not available"))
-  (unless TeX-PDF-mode
-    (error "PDF Tools only work with PDF output"))
-  (add-hook 'pdf-sync-backward-redirect-functions
-	    #'TeX-source-correlate-handle-TeX-region)
-  (if (and TeX-source-correlate-mode
-	   (fboundp 'pdf-sync-forward-search))
-      (with-current-buffer (or (when TeX-current-process-region-p
-			    	 (get-file-buffer (TeX-region-file t)))
-			       (current-buffer))
-	(pdf-sync-forward-search))
-    (let* ((pdf (concat file "." (TeX-output-extension)))
-           (buffer (or (find-buffer-visiting pdf)
-		       (find-file-noselect pdf))))
-      (if TeX-view-pdf-tools-keep-focus
-          (display-buffer buffer)
-        (pop-to-buffer buffer)))))
-;; -----------------------------------------------------------------------------
+    ;; Make sure `pdf-tools' is at least in the `load-path', but the user must
+    ;; take care of properly loading and installing the package.  We used to test
+    ;; "(featurep 'pdf-tools)", but that doesn't play well with deferred loading.
+    (unless (fboundp 'pdf-tools-install)
+      (error "PDF Tools are not available"))
+    (unless TeX-PDF-mode
+      (error "PDF Tools only work with PDF output"))
+    (add-hook 'pdf-sync-backward-redirect-functions
+              #'TeX-source-correlate-handle-TeX-region)
+    (if (and TeX-source-correlate-mode
+             (fboundp 'pdf-sync-forward-search))
+        (with-current-buffer (or (when TeX-current-process-region-p
+                                   (get-file-buffer (TeX-region-file t)))
+                                 (current-buffer))
+          (pdf-sync-forward-search))
+      (let* ((pdf (concat file "." (TeX-output-extension)))
+             (buffer (or (find-buffer-visiting pdf)
+                         (find-file-noselect pdf))))
+        (if TeX-view-pdf-tools-keep-focus
+            (display-buffer buffer)
+          (pop-to-buffer buffer)))))
+  ;; -----------------------------------------------------------------------------
 
-(setq TeX-view-pdf-tools-keep-focus t)
+  (setq TeX-view-pdf-tools-keep-focus t)
 
-(defun zp/tex-view-program-set-pdf-tools ()
-  (setq TeX-view-program-selection
-        '((output-pdf "PDF Tools"))
-        TeX-source-correlate-start-server t
-        zp/tex-view-program 'pdf-tools)
-  (add-hook #'TeX-after-compilation-finished-functions
-            #'TeX-revert-document-buffer))
+  (defun zp/tex-view-program-set-pdf-tools ()
+    (setq TeX-view-program-selection
+          '((output-pdf "PDF Tools"))
+          TeX-source-correlate-start-server t
+          zp/tex-view-program 'pdf-tools)
+    (add-hook #'TeX-after-compilation-finished-functions
+              #'TeX-revert-document-buffer))
 
-(defun zp/tex-view-program-set-evince ()
-  (setq TeX-view-program-selection
-        '(((output-dvi has-no-display-manager)
-           "dvi2tty")
-          ((output-dvi style-pstricks)
-           "dvips and gv")
-          (output-dvi "xdvi")
-          (output-pdf "Evince")
-          (output-html "xdg-open"))
-        TeX-source-correlate-start-server 'ask
-        zp/tex-view-program 'evince)
-  (remove-hook #'TeX-after-compilation-finished-functions
-               #'TeX-revert-document-buffer))
+  (defun zp/tex-view-program-set-evince ()
+    (setq TeX-view-program-selection
+          '(((output-dvi has-no-display-manager)
+             "dvi2tty")
+            ((output-dvi style-pstricks)
+             "dvips and gv")
+            (output-dvi "xdvi")
+            (output-pdf "Evince")
+            (output-html "xdg-open"))
+          TeX-source-correlate-start-server 'ask
+          zp/tex-view-program 'evince)
+    (remove-hook #'TeX-after-compilation-finished-functions
+                 #'TeX-revert-document-buffer))
 
-(defun zp/tex-view-program-switch ()
-  (interactive)
-  (cond ((eq zp/tex-view-program 'pdf-tools)
-         (zp/tex-view-program-set-evince)
-         (message "TeX view program: Evince"))
-        ((or (eq zp/tex-view-program 'evince)
-             (not (bound-and-true-p zp/tex-view-program)))
-         (zp/tex-view-program-set-pdf-tools)
-         (message "TeX view program: pdf-tools"))))
+  (defun zp/tex-view-program-switch ()
+    (interactive)
+    (cond ((eq zp/tex-view-program 'pdf-tools)
+           (zp/tex-view-program-set-evince)
+           (message "TeX view program: Evince"))
+          ((or (eq zp/tex-view-program 'evince)
+               (not (bound-and-true-p zp/tex-view-program)))
+           (zp/tex-view-program-set-pdf-tools)
+           (message "TeX view program: pdf-tools"))))
 
-(zp/tex-view-program-set-pdf-tools)
+  (zp/tex-view-program-set-pdf-tools)
 
-;; Update PDF buffers after successful LaTeX runs
+  ;; Update PDF buffers after successful LaTeX runs
 
-;; Smart quotes
-(setq org-export-default-language "en-gb"
-      org-export-with-smart-quotes t)
-(add-to-list 'org-export-smart-quotes-alist
-             '("en-gb"
-               (primary-opening   :utf-8 "‘" :html "&lsquo ;" :latex "\\enquote{"  :texinfo "`")
-               (primary-closing   :utf-8 "’" :html "&rsquo;" :latex "}"           :texinfo "'")
-               (secondary-opening :utf-8 "“" :html "&ldquo;" :latex "\\enquote*{" :texinfo "``")
-               (secondary-closing :utf-8 "”" :html "&rdquo;" :latex "}"           :texinfo "''")
-               (apostrophe        :utf-8 "’" :html "&rsquo;" :latex "'")))
+  ;; Smart quotes
+  (setq org-export-default-language "en-gb"
+        org-export-with-smart-quotes t)
+  (add-to-list 'org-export-smart-quotes-alist
+               '("en-gb"
+                 (primary-opening   :utf-8 "‘" :html "&lsquo ;" :latex "\\enquote{"  :texinfo "`")
+                 (primary-closing   :utf-8 "’" :html "&rsquo;" :latex "}"           :texinfo "'")
+                 (secondary-opening :utf-8 "“" :html "&ldquo;" :latex "\\enquote*{" :texinfo "``")
+                 (secondary-closing :utf-8 "”" :html "&rdquo;" :latex "}"           :texinfo "''")
+                 (apostrophe        :utf-8 "’" :html "&rsquo;" :latex "'")))
 
-(defun zp/LaTeX-remove-macro ()
-  "Remove current macro and return `t'.  If no macro at point,
+  (defun zp/LaTeX-remove-macro ()
+    "Remove current macro and return `t'.  If no macro at point,
 return `nil'."
-  (interactive)
-  (when (TeX-current-macro)
-    (let ((bounds (TeX-find-macro-boundaries))
-          (brace  (save-excursion
-                    (goto-char (1- (TeX-find-macro-end)))
-                    (TeX-find-opening-brace))))
-      (delete-region (1- (cdr bounds)) (cdr bounds))
-      (delete-region (car bounds) (1+ brace)))
-    t))
+    (interactive)
+    (when (TeX-current-macro)
+      (let ((bounds (TeX-find-macro-boundaries))
+            (brace  (save-excursion
+                      (goto-char (1- (TeX-find-macro-end)))
+                      (TeX-find-opening-brace))))
+        (delete-region (1- (cdr bounds)) (cdr bounds))
+        (delete-region (car bounds) (1+ brace)))
+      t))
 
-;; Source: https://www.reddit.com/r/emacs/comments/5f99nv/help_with_auctex_how_to_delete_an_environment/dailbtu/
-(defun zp/LaTeX-remove-environment ()
-  "Remove current environment and return `t'.  If no environment at point,
+  ;; Source: https://www.reddit.com/r/emacs/comments/5f99nv/help_with_auctex_how_to_delete_an_environment/dailbtu/
+  (defun zp/LaTeX-remove-environment ()
+    "Remove current environment and return `t'.  If no environment at point,
 return `nil'."
-  (interactive)
-  (when (LaTeX-current-environment)
-    (save-excursion
-      (let* ((begin-start (save-excursion
-                            (LaTeX-find-matching-begin)
-                            (point)))
-             (begin-end (save-excursion
-                          (goto-char begin-start)
-                          (search-forward-regexp "begin{.*?}")))
-             (end-end (save-excursion
-                        (LaTeX-find-matching-end)
-                        (point)))
-             (end-start (save-excursion
-                          (goto-char end-end)
-                          (1- (search-backward-regexp "\\end")))))
-        ;; delete end first since if we delete begin first it shifts the
-        ;; location of end
-        (delete-region end-start end-end)
-        (delete-region begin-start begin-end)))
-    t))
+    (interactive)
+    (when (LaTeX-current-environment)
+      (save-excursion
+        (let* ((begin-start (save-excursion
+                              (LaTeX-find-matching-begin)
+                              (point)))
+               (begin-end (save-excursion
+                            (goto-char begin-start)
+                            (search-forward-regexp "begin{.*?}")))
+               (end-end (save-excursion
+                          (LaTeX-find-matching-end)
+                          (point)))
+               (end-start (save-excursion
+                            (goto-char end-end)
+                            (1- (search-backward-regexp "\\end")))))
+          ;; delete end first since if we delete begin first it shifts the
+          ;; location of end
+          (delete-region end-start end-end)
+          (delete-region begin-start begin-end)))
+      t))
 
-;; Movements
+  ;; Movements
 
-(defvar zp/LaTeX-narrow-previous-positions nil)
+  (defvar zp/LaTeX-narrow-previous-positions nil)
 
-(defun zp/LaTeX-narrow-to-environment (&optional count)
-  (interactive "p")
-  (LaTeX-narrow-to-environment)
-  (LaTeX-mark-environment 1)
-  (TeX-pin-region (region-beginning) (region-end))
-  (deactivate-mark)
-  (move-end-of-line 1)
-  (message "Narrowing to enviroment"))
-
-(defun zp/LaTeX-widen ()
-  (interactive)
-  (widen)
-  (message "Removing narrowing"))
-
-(defun zp/LaTeX-narrow-forwards (&optional arg)
-  (interactive "P")
-  (widen)
-  (when (search-forward-regexp "^\\\\begin{frame}" nil t)
+  (defun zp/LaTeX-narrow-to-environment (&optional count)
+    (interactive "p")
     (LaTeX-narrow-to-environment)
-    (unless arg
-      (LaTeX-mark-environment 1)
-      (TeX-pin-region (region-beginning) (region-end))
-      (deactivate-mark)
-      (move-end-of-line 1))
-    (message "Narrowing to next frame")))
+    (LaTeX-mark-environment 1)
+    (TeX-pin-region (region-beginning) (region-end))
+    (deactivate-mark)
+    (move-end-of-line 1)
+    (message "Narrowing to enviroment"))
 
-(defun zp/LaTeX-narrow-backwards (&optional arg)
-  (interactive "P")
-  (widen)
-  (when (and (search-backward-regexp "^\\\\begin{frame}" nil t)
-             (search-backward-regexp "^\\\\begin{frame}" nil t))
-    (search-forward-regexp "^\\\\begin{frame}" nil t)
-    (LaTeX-narrow-to-environment)
-    (unless arg
-      (LaTeX-mark-environment 1)
-      (TeX-pin-region (region-beginning) (region-end))
-      (deactivate-mark)
-      (move-end-of-line 1))
-    (message "Narrowing to previous frame")))
+  (defun zp/LaTeX-widen ()
+    (interactive)
+    (widen)
+    (message "Removing narrowing"))
 
-(defun zp/LaTeX-narrow-up ()
-  (interactive)
-  (widen)
-  (LaTeX-mark-environment 2)
-  (narrow-to-region (region-beginning) (region-end))
-  (call-interactively #'narrow-to-region)
-  (deactivate-mark)
-  (move-end-of-line 1)
-  (message "Narrowing to parent environment"))
+  (defun zp/LaTeX-narrow-forwards (&optional arg)
+    (interactive "P")
+    (widen)
+    (when (search-forward-regexp "^\\\\begin{frame}" nil t)
+      (LaTeX-narrow-to-environment)
+      (unless arg
+        (LaTeX-mark-environment 1)
+        (TeX-pin-region (region-beginning) (region-end))
+        (deactivate-mark)
+        (move-end-of-line 1))
+      (message "Narrowing to next frame")))
 
-(define-key LaTeX-mode-map (kbd "C-x n e") #'zp/LaTeX-narrow-to-environment)
-(define-key LaTeX-mode-map (kbd "C-x n w") #'zp/LaTeX-widen)
-(define-key LaTeX-mode-map (kbd "C-x n f") #'zp/LaTeX-narrow-forwards)
-(define-key LaTeX-mode-map (kbd "C-x n b") #'zp/LaTeX-narrow-backwards)
-(define-key LaTeX-mode-map (kbd "C-x n u") #'zp/LaTeX-narrow-up)
+  (defun zp/LaTeX-narrow-backwards (&optional arg)
+    (interactive "P")
+    (widen)
+    (when (and (search-backward-regexp "^\\\\begin{frame}" nil t)
+               (search-backward-regexp "^\\\\begin{frame}" nil t))
+      (search-forward-regexp "^\\\\begin{frame}" nil t)
+      (LaTeX-narrow-to-environment)
+      (unless arg
+        (LaTeX-mark-environment 1)
+        (TeX-pin-region (region-beginning) (region-end))
+        (deactivate-mark)
+        (move-end-of-line 1))
+      (message "Narrowing to previous frame")))
 
-;; Hook
-(defun zp/LaTeX-mode-config ()
-  "Modify keymaps used by `latex-mode'."
-  (local-set-key (kbd "C-x n e") #'zp/LaTeX-narrow-to-environment)
-  (local-set-key (kbd "C-c DEL") 'zp/LaTeX-remove-macro)
-  (local-set-key (kbd "C-c <C-backspace>") 'zp/LaTeX-remove-macro)
-  (local-set-key (kbd "C-c <M-backspace>") 'zp/LaTeX-remove-environment)
-  (local-set-key (kbd "C-c C-t C-v") 'zp/tex-view-program-switch))
-(setq LaTeX-mode-hook '(zp/LaTeX-mode-config))
+  (defun zp/LaTeX-narrow-up ()
+    (interactive)
+    (widen)
+    (LaTeX-mark-environment 2)
+    (narrow-to-region (region-beginning) (region-end))
+    (call-interactively #'narrow-to-region)
+    (deactivate-mark)
+    (move-end-of-line 1)
+    (message "Narrowing to parent environment"))
 
+  (define-key LaTeX-mode-map (kbd "C-x n e") #'zp/LaTeX-narrow-to-environment)
+  (define-key LaTeX-mode-map (kbd "C-x n w") #'zp/LaTeX-widen)
+  (define-key LaTeX-mode-map (kbd "C-x n f") #'zp/LaTeX-narrow-forwards)
+  (define-key LaTeX-mode-map (kbd "C-x n b") #'zp/LaTeX-narrow-backwards)
+  (define-key LaTeX-mode-map (kbd "C-x n u") #'zp/LaTeX-narrow-up)
 
+  ;; Hook
+  (defun zp/LaTeX-mode-config ()
+    "Modify keymaps used by `latex-mode'."
+    (local-set-key (kbd "C-x n e") #'zp/LaTeX-narrow-to-environment)
+    (local-set-key (kbd "C-c DEL") 'zp/LaTeX-remove-macro)
+    (local-set-key (kbd "C-c <C-backspace>") 'zp/LaTeX-remove-macro)
+    (local-set-key (kbd "C-c <M-backspace>") 'zp/LaTeX-remove-environment)
+    (local-set-key (kbd "C-c C-t C-v") 'zp/tex-view-program-switch))
+  (setq LaTeX-mode-hook '(zp/LaTeX-mode-config)))
 
 ;; ========================================
 ;; ============== ORG-LATEX ===============
