@@ -2374,22 +2374,7 @@ indirect-buffers."
 (use-package olivetti
   :config
   (setq-default olivetti-body-width 0.6
-                olivetti-minimum-body-width 80)
-
-  ;; Hold code for hiding the modeline
-  ;; (defun zp/olivetti-toggle-hide-mode-line ()
-  ;;   (interactive)
-  ;;   (olivetti-toggle-hide-mode-line)
-  ;;   (toggle-frame-fullscreen)
-  ;;   ;; (mode-line-other-buffer)
-  ;;   ;; (mode-line-other-buffer)
-  ;;   )
-
-  ;; (define-key olivetti-mode-map (kbd "M-I") 'zp/olivetti-toggle-hide-mode-line)
-
-  ;; (add-hook 'olivetti-mode-hook #'electric-quote-local-mode)
-  ;; (setq olivetti-mode-hook nil))
-  )
+                olivetti-minimum-body-width 80))
 
 
 
