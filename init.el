@@ -3775,69 +3775,75 @@ Based on `org-agenda-set-property'."
 ;; ============= ORG-CAPTURE ==============
 ;; ========================================
 
-(require 'org-capture)
+(use-package org-capture
+  :config
+  (setq org-default-notes-file "~/org/life.org")
 
-(setq org-default-notes-file "~/org/life.org")
+  ;;------------------
+  ;; Helper functions
+  ;;------------------
 
-;;; Helper functions
+  (defun zp/convert-m-to-hm (min-str)
+    (let* ((min (string-to-number min-str))
+           (h (/ min 60))
+           (m (% min 60)))
+      (format "%1s:%02d" h m)))
 
-(defun zp/convert-m-to-hm (min-str)
-  (let* ((min (string-to-number min-str))
-         (h (/ min 60))
-         (m (% min 60)))
-    (format "%1s:%02d" h m)))
+  ;;----------------------------
+  ;; Template-related functions
+  ;;----------------------------
 
-(defvar zp/org-capture-web-action nil
-  "Action to be taken on the webpage captured by org-capture-web.sh.")
-(defvar zp/org-capture-web-title nil
-  "Title of the webpage captured by org-capture-web.sh.")
-(defvar zp/org-capture-web-url nil
-  "URL of the webpage captured by org-capture-web.sh.")
+  (defvar zp/org-capture-web-action nil
+    "Action to be taken on the webpage captured by org-capture-web.sh.")
+  (defvar zp/org-capture-web-title nil
+    "Title of the webpage captured by org-capture-web.sh.")
+  (defvar zp/org-capture-web-url nil
+    "URL of the webpage captured by org-capture-web.sh.")
 
-(defun zp/org-capture-web (action title url)
-  "Capture the website based on the info provided by org-capture-web.sh.
+  (defun zp/org-capture-web (action title url)
+    "Capture the website based on the info provided by org-capture-web.sh.
 
 TITLE and URL are those of the webpage.  TEMPLATE is the
 subtemplate to use."
-  (interactive)
-  (setq zp/org-capture-web-action action)
-  (setq zp/org-capture-web-title title)
-  (setq zp/org-capture-web-url url)
-  (org-capture nil (concat "Wa"))
-  (message (concat "Link added to template: \n" url)))
+    (interactive)
+    (setq zp/org-capture-web-action action)
+    (setq zp/org-capture-web-title title)
+    (setq zp/org-capture-web-url url)
+    (org-capture nil (concat "Wa"))
+    (message (concat "Link added to template: \n" url)))
 
-(defvar zp/org-capture-web-letterboxd-title nil
-  "Title of the film captured by org-capture-web.sh.")
-(defvar zp/org-capture-web-letterboxd-url nil
-  "Letterboxd URL of the film captured by org-capture-web.sh.")
-(defvar zp/org-capture-web-letterboxd-director nil
-  "Name of the director of the film captured by
+  (defvar zp/org-capture-web-letterboxd-title nil
+    "Title of the film captured by org-capture-web.sh.")
+  (defvar zp/org-capture-web-letterboxd-url nil
+    "Letterboxd URL of the film captured by org-capture-web.sh.")
+  (defvar zp/org-capture-web-letterboxd-director nil
+    "Name of the director of the film captured by
   org-capture-web.sh.")
-(defvar zp/org-capture-web-letterboxd-year nil
-  "Year of the film captured by org-capture-web.sh.")
-(defvar zp/org-capture-web-letterboxd-duration nil
-  "Duration of the film captured by org-capture-web.sh.")
-(defvar zp/org-capture-web-letterboxd-template nil
-  "Default template for capturing films from Letterboxd with org-capture.web.sh.")
+  (defvar zp/org-capture-web-letterboxd-year nil
+    "Year of the film captured by org-capture-web.sh.")
+  (defvar zp/org-capture-web-letterboxd-duration nil
+    "Duration of the film captured by org-capture-web.sh.")
+  (defvar zp/org-capture-web-letterboxd-template nil
+    "Default template for capturing films from Letterboxd with org-capture.web.sh.")
 
-(defun zp/org-capture-web-letterboxd (title url director year duration)
-  "Capture a film based on the info provided by org-capture-web.sh.
+  (defun zp/org-capture-web-letterboxd (title url director year duration)
+    "Capture a film based on the info provided by org-capture-web.sh.
 
 TITLE, DIRECTOR, YEAR and DURATION are related to the film.
 
 URL is the url to the Letterboxd page of the film."
-  (let ((duration-str (if (string= duration "")
-                          "???"
-                        (zp/convert-m-to-hm duration))))
-    (setq zp/org-capture-web-letterboxd-title title)
-    (setq zp/org-capture-web-letterboxd-url url)
-    (setq zp/org-capture-web-letterboxd-director director)
-    (setq zp/org-capture-web-letterboxd-year year)
-    (setq zp/org-capture-web-letterboxd-duration duration-str)
-    (org-capture nil "Wf")))
+    (let ((duration-str (if (string= duration "")
+                            "???"
+                          (zp/convert-m-to-hm duration))))
+      (setq zp/org-capture-web-letterboxd-title title)
+      (setq zp/org-capture-web-letterboxd-url url)
+      (setq zp/org-capture-web-letterboxd-director director)
+      (setq zp/org-capture-web-letterboxd-year year)
+      (setq zp/org-capture-web-letterboxd-duration duration-str)
+      (org-capture nil "Wf")))
 
-(setq zp/org-capture-web-letterboxd-template
-      "* %(print zp/org-capture-web-letterboxd-title)%?
+  (setq zp/org-capture-web-letterboxd-template
+        "* %(print zp/org-capture-web-letterboxd-title)%?
 :PROPERTIES:
 :MEDIA_LINK: [[%(print zp/org-capture-web-letterboxd-url)][Letterboxd]]
 :MEDIA_DIRECTOR: %(print zp/org-capture-web-letterboxd-director)
@@ -3845,120 +3851,122 @@ URL is the url to the Letterboxd page of the film."
 :MEDIA_DURATION: %(print zp/org-capture-web-letterboxd-duration)
 :END:")
 
-(defun zp/org-capture-web-kill-new (title url)
-  "Make website the latest kill in the kill ring.
+  (defun zp/org-capture-web-kill-new (title url)
+    "Make website the latest kill in the kill ring.
 
 Based on the info provided by org-capture-web.sh.
 
 TITLE and URL are those of the webpage."
-  (interactive)
-  (kill-new (concat "[["
-                    url
-                    "]["
-                    title
-                    "]]"))
-  (message (concat "Link added to kill-ring: \n" url)))
+    (interactive)
+    (kill-new (concat "[["
+                      url
+                      "]["
+                      title
+                      "]]"))
+    (message (concat "Link added to kill-ring: \n" url)))
 
-(setq org-capture-templates
-      `(("n" "Note" entry (file+headline "~/org/life.org" "Inbox")
-             "* %?" :add-created t)
-        ("f" "Todo" entry (file+headline "~/org/life.org" "Inbox")
-             "* TODO %?" :add-created t)
-        ("F" "Todo + Clock" entry (file+headline "~/org/life.org" "Inbox")
-             "* TODO %?\n" :add-created t :clock-in t)
-        ("r" "Todo with Context" entry (file+headline "~/org/life.org" "Inbox")
-             "* TODO %?\n%a" :add-created t)
-        ("R" "Todo with Context + Clock" entry (file+headline "~/org/life.org" "Inbox")
-             "* TODO %?\n%a" :add-created t :clock-in t)
-        ;; ("r" "Todo + Reminder" entry (file+headline "~/org/life.org" "Inbox")
-        ;;  "* TODO %?\nSCHEDULED: %^T\n:PROPERTIES:\n:APPT_WARNTIME:  %^{APPT_WARNTIME|5|15|30|60}\n:END:")
-        ;; ("T" "Todo (with keyword selection)" entry (file+headline "~/org/life.org" "Inbox")
-        ;;  "* %^{State|TODO|NEXT|STBY|WAIT} %?")
-        ;; ("e" "Todo + Creation time" entry (file+headline "~/org/life.org" "Inbox")
-        ;;  "* TODO %?\n:PROPERTIES:\n:CREATED:  %U\n:END:")
-        ;; ("C" "Todo + Clock" entry (file+headline "~/org/life.org" "Inbox")
-        ;;  "* TODO %^{Task}%?" :clock-in t)
-        ;; ("C" "Todo + Clock (with keyword selection)" entry (file+headline "~/org/life.org" "Inbox")
-        ;;  "* %^{State|TODO|NEXT} %?" :clock-in t)
-        ("d" "Date" entry (file+headline "~/org/life.org" "Calendar")
-             "* %?\n" :add-created t)
-        ("e" "Date + Context" entry (file+headline "~/org/life.org" "Calendar")
-             "* %?\n%a" :add-created t)
+  ;;-----------
+  ;; Templates
+  ;;-----------
 
-        ;; ("D" "Date + Reminder" entry (file+headline "~/org/life.org" "Calendar")
-        ;;  "* %?\n%^T\n\n%^{APPT_WARNTIME}p")
-        ;; ("R" "Reminder" entry (file+headline "~/org/life.org" "Inbox")
-        ;;  "* %?\n%^T%^{APPT_WARNTIME}p")
+  (setq org-capture-templates
+        `(("n" "Note" entry (file+headline "~/org/life.org" "Inbox")
+           "* %?" :add-created t)
+          ("f" "Todo" entry (file+headline "~/org/life.org" "Inbox")
+           "* TODO %?" :add-created t)
+          ("F" "Todo + Clock" entry (file+headline "~/org/life.org" "Inbox")
+           "* TODO %?\n" :add-created t :clock-in t)
+          ("r" "Todo with Context" entry (file+headline "~/org/life.org" "Inbox")
+           "* TODO %?\n%a" :add-created t)
+          ("R" "Todo with Context + Clock" entry (file+headline "~/org/life.org" "Inbox")
+           "* TODO %?\n%a" :add-created t :clock-in t)
+          ;; ("r" "Todo + Reminder" entry (file+headline "~/org/life.org" "Inbox")
+          ;;  "* TODO %?\nSCHEDULED: %^T\n:PROPERTIES:\n:APPT_WARNTIME:  %^{APPT_WARNTIME|5|15|30|60}\n:END:")
+          ;; ("T" "Todo (with keyword selection)" entry (file+headline "~/org/life.org" "Inbox")
+          ;;  "* %^{State|TODO|NEXT|STBY|WAIT} %?")
+          ;; ("e" "Todo + Creation time" entry (file+headline "~/org/life.org" "Inbox")
+          ;;  "* TODO %?\n:PROPERTIES:\n:CREATED:  %U\n:END:")
+          ;; ("C" "Todo + Clock" entry (file+headline "~/org/life.org" "Inbox")
+          ;;  "* TODO %^{Task}%?" :clock-in t)
+          ;; ("C" "Todo + Clock (with keyword selection)" entry (file+headline "~/org/life.org" "Inbox")
+          ;;  "* %^{State|TODO|NEXT} %?" :clock-in t)
+          ("d" "Date" entry (file+headline "~/org/life.org" "Calendar")
+           "* %?\n" :add-created t)
+          ("e" "Date + Context" entry (file+headline "~/org/life.org" "Calendar")
+           "* %?\n%a" :add-created t)
 
-        ("p" "Phone-call" entry (file+headline "~/org/life.org" "Inbox")
-             "* TODO Phone-call with %^{Interlocutor|Nicolas|Mum}%?\n:STATES:\n- State \"TODO\"       from              %U\n:END:" :clock-in t)
-        ("m" "Meeting" entry (file+headline "~/org/life.org" "Inbox")
-             "* TODO Meeting with %^{Meeting with}%?" :clock-in t)
+          ;; ("D" "Date + Reminder" entry (file+headline "~/org/life.org" "Calendar")
+          ;;  "* %?\n%^T\n\n%^{APPT_WARNTIME}p")
+          ;; ("R" "Reminder" entry (file+headline "~/org/life.org" "Inbox")
+          ;;  "* %?\n%^T%^{APPT_WARNTIME}p")
 
-        ("s" "Special")
-        ("ss" "Code Snippet" entry (file "~/org/projects/hacking/snippets.org.gpg")
-              ;; Prompt for tag and language
-              "* %?\t%^g\n#+BEGIN_SRC %^{language}\n\n#+END_SRC")
-        ;; ("sf" "Film recommendation" entry (file+olp "~/org/media.org.gpg" "Films" "List")
-        ;;  "* %(zp/org-capture-set-media-link-letterboxd)%?%^{MEDIA_DIRECTOR}p%^{MEDIA_YEAR}p%^{MEDIA_DURATION}p")
-        ;; ("sf" "Film recommendation" entry (file+olp "~/org/media.org.gpg" "Films" "List")
-        ;;  "* %(zp/letterboxd-set-link)%?%^{MEDIA_DIRECTOR}p%^{MEDIA_YEAR}p%(zp/letterboxd-set-duration)")
-        ("sf" "Film" entry (file+olp "~/org/media.org.gpg" "Films" "List")
-              "* %(zp/letterboxd-capture)")
-        ("sF" "Film (insert at top)" entry (file+olp "~/org/media.org.gpg" "Films" "List")
-              "* %(zp/letterboxd-capture)" :prepend t)
-        ("sw" "Swimming workout" entry (file+weektree+prompt "~/org/sports/swimming/swimming.org.gpg")
-              "* DONE Training%^{SWIM_DISTANCE}p%^{SWIM_DURATION}p\n%t%(print zp/swimming-workout-default)")
+          ("p" "Phone-call" entry (file+headline "~/org/life.org" "Inbox")
+           "* TODO Phone-call with %^{Interlocutor|Nicolas|Mum}%?\n:STATES:\n- State \"TODO\"       from              %U\n:END:" :clock-in t)
+          ("m" "Meeting" entry (file+headline "~/org/life.org" "Inbox")
+           "* TODO Meeting with %^{Meeting with}%?" :clock-in t)
 
-        ("j" "Journal")
-        ("jj" "Journal" entry (file+olp "~/org/journal.org" "Life")
-              "* %^{Title|Entry}\n%T\n\n%?" :full-frame t)
-        ("ja" "Awakening" entry (file+olp "~/org/journal.org" "Awakening")
-              "* %^{Title|Entry}\n%T\n\n%?" :full-frame t)
-        ("jp" "Psychotherapy" entry (file+olp "~/org/journal.org" "Psychotherapy")
-              "* %^{Title|Entry}\n%T\n\n%?" :full-frame t)
-        ("jw" "Writing" entry (file+olp "~/org/journal.org" "Writing")
-              "* %^{Title|Entry} %^g\n%T\n\n%?" :full-frame t)
-        ("jr" "Research" entry (file+olp "~/org/journal.org" "Research")
-              "* %^{Title|Entry}\n%T\n\n%?" :full-frame t)
-        ("ju" "University" entry (file+olp "~/org/journal.org" "University")
-              "* %^{Title|Entry}\n%T\n\n%?" :full-frame t)
-        ("jh" "Hacking" entry (file+olp "~/org/journal.org" "Hacking")
-              "* %^{Title|Entry}\n%T\n\n%?" :full-frame t)
-        ("jm" "Music" entry (file+olp "~/org/journal.org" "Music")
-              "* %^{Title|Entry}\n%T\n\n%?" :full-frame t)
-        ("js" "Swimming" entry (file+olp "~/org/journal.org" "Swimming")
-              "* %^{Title|Entry}\n%T\n\n%?" :full-frame t)
+          ("s" "Special")
+          ("ss" "Code Snippet" entry (file "~/org/projects/hacking/snippets.org.gpg")
+           ;; Prompt for tag and language
+           "* %?\t%^g\n#+BEGIN_SRC %^{language}\n\n#+END_SRC")
+          ;; ("sf" "Film recommendation" entry (file+olp "~/org/media.org.gpg" "Films" "List")
+          ;;  "* %(zp/org-capture-set-media-link-letterboxd)%?%^{MEDIA_DIRECTOR}p%^{MEDIA_YEAR}p%^{MEDIA_DURATION}p")
+          ;; ("sf" "Film recommendation" entry (file+olp "~/org/media.org.gpg" "Films" "List")
+          ;;  "* %(zp/letterboxd-set-link)%?%^{MEDIA_DIRECTOR}p%^{MEDIA_YEAR}p%(zp/letterboxd-set-duration)")
+          ("sf" "Film" entry (file+olp "~/org/media.org.gpg" "Films" "List")
+           "* %(zp/letterboxd-capture)")
+          ("sF" "Film (insert at top)" entry (file+olp "~/org/media.org.gpg" "Films" "List")
+           "* %(zp/letterboxd-capture)" :prepend t)
+          ("sw" "Swimming workout" entry (file+weektree+prompt "~/org/sports/swimming/swimming.org.gpg")
+           "* DONE Training%^{SWIM_DISTANCE}p%^{SWIM_DURATION}p\n%t%(print zp/swimming-workout-default)")
 
-        ;; Daily Record of Dysfunctional Thoughts
-        ("D" "Record Dysfunctional Thoughts" entry (file+headline "~/org/journal.org" "Psychotherapy")
-             "* Record of Dysfunctional Thoughts\n%T\n** Situation\n%?\n** Emotions\n** Thoughts")
+          ("j" "Journal")
+          ("jj" "Journal" entry (file+olp "~/org/journal.org" "Life")
+           "* %^{Title|Entry}\n%T\n\n%?" :full-frame t)
+          ("ja" "Awakening" entry (file+olp "~/org/journal.org" "Awakening")
+           "* %^{Title|Entry}\n%T\n\n%?" :full-frame t)
+          ("jp" "Psychotherapy" entry (file+olp "~/org/journal.org" "Psychotherapy")
+           "* %^{Title|Entry}\n%T\n\n%?" :full-frame t)
+          ("jw" "Writing" entry (file+olp "~/org/journal.org" "Writing")
+           "* %^{Title|Entry} %^g\n%T\n\n%?" :full-frame t)
+          ("jr" "Research" entry (file+olp "~/org/journal.org" "Research")
+           "* %^{Title|Entry}\n%T\n\n%?" :full-frame t)
+          ("ju" "University" entry (file+olp "~/org/journal.org" "University")
+           "* %^{Title|Entry}\n%T\n\n%?" :full-frame t)
+          ("jh" "Hacking" entry (file+olp "~/org/journal.org" "Hacking")
+           "* %^{Title|Entry}\n%T\n\n%?" :full-frame t)
+          ("jm" "Music" entry (file+olp "~/org/journal.org" "Music")
+           "* %^{Title|Entry}\n%T\n\n%?" :full-frame t)
+          ("js" "Swimming" entry (file+olp "~/org/journal.org" "Swimming")
+           "* %^{Title|Entry}\n%T\n\n%?" :full-frame t)
 
-        ;; Pain Diary
-        ("P" "Pain Diary" entry (file+olp "~/org/life.org" "Psychotherapy" "Pain Diary")
-             "* Entry: %U
+          ;; Daily Record of Dysfunctional Thoughts
+          ("D" "Record Dysfunctional Thoughts" entry (file+headline "~/org/journal.org" "Psychotherapy")
+           "* Record of Dysfunctional Thoughts\n%T\n** Situation\n%?\n** Emotions\n** Thoughts")
+
+          ;; Pain Diary
+          ("P" "Pain Diary" entry (file+olp "~/org/life.org" "Psychotherapy" "Pain Diary")
+           "* Entry: %U
 ** What were you doing or what happened?
 %?
 ** What did you start struggling with psychologically?
 ** What thoughts came up in association with that struggle?")
 
-        ("a" "Meditation session" entry (file+headline "~/org/projects/awakening/awakening.org.gpg" "Sessions")
-             "* DONE Session%^{SESSION_DURATION}p\n%t" :immediate-finish t)
+          ("a" "Meditation session" entry (file+headline "~/org/projects/awakening/awakening.org.gpg" "Sessions")
+           "* DONE Session%^{SESSION_DURATION}p\n%t" :immediate-finish t)
 
-        ("W" "Web")
-        ("Wa" "Automatic template" entry (file+headline "~/org/life.org" "Inbox")
-              "* TODO %(print zp/org-capture-web-action) [[%?%(print zp/org-capture-web-url)][%(print zp/org-capture-web-title)]] :curios:online:"
-              :add-created t)
-        ("Wf" "S: Film" entry (file+olp "~/org/life.org" "Film" "List")
-              ,zp/org-capture-web-letterboxd-template
-              :prepend t)))
+          ("W" "Web")
+          ("Wa" "Automatic template" entry (file+headline "~/org/life.org" "Inbox")
+           "* TODO %(print zp/org-capture-web-action) [[%?%(print zp/org-capture-web-url)][%(print zp/org-capture-web-title)]] :curios:online:"
+           :add-created t)
+          ("Wf" "S: Film" entry (file+olp "~/org/life.org" "Film" "List")
+           ,zp/org-capture-web-letterboxd-template
+           :prepend t)))
 
+  (defvar zp/swimming-workout-default nil
+    "Default swimming workout.")
 
-
-(zp/convert-m-to-hm "145")
-
-(defvar zp/swimming-workout-default nil)
-(setq zp/swimming-workout-default "
+  (setq zp/swimming-workout-default "
 |-----+-----------------------------------|
 | 500 | warmup crawl/fly                  |
 | 500 | 100 pull / 100 pull fast          |
@@ -3970,67 +3978,53 @@ TITLE and URL are those of the webpage."
 | 100 | warmdown                          |
 |-----+-----------------------------------|")
 
-(setq zp/org-agenda-capture-templates
-      '(("f" "Todo" entry (file+headline "~/org/life.org" "Inbox")
-         "* TODO %?\n%t")
-        ("r" "Todo (+time)" entry (file+headline "~/org/life.org" "Inbox")
-         "* TODO %?\n%^T")
+  ;;---------------------------------
+  ;; Templates for ‘org-agenda-mode’
+  ;;---------------------------------
 
-        ("d" "Date" entry (file+olp "~/org/life.org" "Life" "Calendar")
-         "* %?\n%t")
-        ("e" "Date (+time)" entry (file+olp "~/org/life.org" "Life" "Calendar")
-         "* %?\n%^T")
+  ;; Special set of templates to be used in ‘org-agenda-mode’
+  (setq zp/org-agenda-capture-templates
+        '(("f" "Todo" entry (file+headline "~/org/life.org" "Inbox")
+           "* TODO %?\n%t")
+          ("r" "Todo (+time)" entry (file+headline "~/org/life.org" "Inbox")
+           "* TODO %?\n%^T")
 
-        ("s" "Todo & Scheduled" entry (file+headline "~/org/life.org" "Inbox")
-         "* TODO %?\nSCHEDULED: %t")
-        ("w" "Todo & Scheduled (+time)" entry (file+headline "~/org/life.org" "Inbox")
-         "* TODO %?\nSCHEDULED: %^T")
+          ("d" "Date" entry (file+olp "~/org/life.org" "Life" "Calendar")
+           "* %?\n%t")
+          ("e" "Date (+time)" entry (file+olp "~/org/life.org" "Life" "Calendar")
+           "* %?\n%^T")
 
-        ("g" "Todo + Deadline" entry (file+headline "~/org/life.org" "Inbox")
-         "* TODO %?\nDEADLINE: %t")
-        ("t" "Todo & Deadline (+time)" entry (file+headline "~/org/life.org" "Inbox")
-         "* TODO %?\nDEADLINE: %^T")))
+          ("s" "Todo & Scheduled" entry (file+headline "~/org/life.org" "Inbox")
+           "* TODO %?\nSCHEDULED: %t")
+          ("w" "Todo & Scheduled (+time)" entry (file+headline "~/org/life.org" "Inbox")
+           "* TODO %?\nSCHEDULED: %^T")
 
-(defun zp/org-agenda-capture (&optional arg)
-  (interactive "P")
-  (let ((org-capture-templates zp/org-agenda-capture-templates))
-    (org-agenda-capture arg)))
+          ("g" "Todo + Deadline" entry (file+headline "~/org/life.org" "Inbox")
+           "* TODO %?\nDEADLINE: %t")
+          ("t" "Todo & Deadline (+time)" entry (file+headline "~/org/life.org" "Inbox")
+           "* TODO %?\nDEADLINE: %^T")))
+
+  (defun zp/org-agenda-capture (&optional arg)
+    (interactive "P")
+    (let ((org-capture-templates zp/org-agenda-capture-templates))
+      (org-agenda-capture arg)))
 
 
+  (defvar zp/org-capture-before-config nil
+    "Window configuration before `org-capture'.")
 
-        ;; ("v" "Vocabulary")
-        ;; ("ve" "EN" entry (file+olp "~/org/life.org" "Vocabulary")
-        ;;  "* EN: %?\n%U\n")
-        ;; ("vf" "FR" entry (file+olp "~/org/life.org" "Vocabulary")
-        ;;  "* FR: %?\n%U\n")
-        ;; ("vj" "JA" entry (file+olp "~/org/life.org" "Vocabulary")
-        ;;  "* JA: %?\n%U\n")
-        ;; ("vk" "KO" entry (file+olp "~/org/life.org" "Vocabulary")
-        ;;  "* KO: %?\n%U\n")))
+  (defadvice org-capture (before save-config activate)
+    "Save the window configuration before `org-capture'."
+    (setq zp/org-capture-before-config (current-window-configuration)))
 
-;; ;; Empty lines before and after
-;; (setq org-capture-templates
-;;       '(("t" "Todo" entry (file+headline "~/org/life.org" "Inbox")
-;;       "* TODO %?" :empty-lines-before 1 :empty-lines-after 1)
-;;      ("T" "Todo+" entry (file+headline "~/org/life.org" "Inbox")
-;;       "* TODO %?\n%U\n%a\n" :empty-lines-before 1 :empty-lines-after 1)
-;;      ("j" "Journal" entry (file+datetree "~/org/journal.org")
-;;       "* %?\n%U\n")))
+  (defun zp/org-capture-make-full-frame ()
+    "Maximise the org-capture frame if :full-frame is non-nil."
+    (let ((full-frame (plist-get org-capture-plist :full-frame)))
+      (if full-frame
+          (delete-other-windows))))
 
-(defvar zp/org-capture-before-config nil
-  "Window configuration before `org-capture'.")
+  (add-hook 'org-capture-mode-hook 'zp/org-capture-make-full-frame))
 
-(defadvice org-capture (before save-config activate)
-  "Save the window configuration before `org-capture'."
-  (setq zp/org-capture-before-config (current-window-configuration)))
-
-(defun zp/org-capture-make-full-frame ()
-  "Maximise the org-capture frame if :full-frame is non-nil."
-  (let ((full-frame (plist-get org-capture-plist :full-frame)))
-    (if full-frame
-        (delete-other-windows))))
-
-(add-hook 'org-capture-mode-hook 'zp/org-capture-make-full-frame)
 
 
 
