@@ -219,10 +219,11 @@
 
 (use-package eyebrowse)
 
-;; which-key
-(require 'which-key)
-(which-key-mode)
-(setq which-key-idle-delay 1)
+(use-package which-key
+  :config
+  (which-key-mode)
+  ;; (setq which-key-idle-delay 1) ;Default
+)
 
 ;; lilypond-mode
 (require 'lilypond-mode)
