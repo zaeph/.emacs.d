@@ -326,6 +326,7 @@
 (use-package spaceling-config)
 
 (use-package lispy
+  :load-path "~/projects/lispy"
   :config
   (defun lispy-mode-unbind-keys ()
     "Modify keymaps used by ‘lispy-mode’."
