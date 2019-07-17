@@ -1821,6 +1821,12 @@ return `nil'."
 
         org-tags-column -77)
 
+  ;; org-refile settings
+  (setq org-refile-targets '((nil :maxlevel . 9))
+        org-refile-use-cache nil
+        org-outline-path-complete-in-steps nil
+        org-refile-use-outline-path nil)
+
   ;; Ensure that images can be resized with deferred #+ATTR_ORG:
   (setq org-image-actual-width nil)
 
@@ -4034,13 +4040,10 @@ TITLE and URL are those of the webpage."
 
 (use-package hydra-org-refile
   :config
+  ;; Exclude separators in all org-refile commands
+  (setq org-refile-target-verify-function
+        'zp/org-refile-target-verify-exclude-separators)
 
-  ;; org-refile settings
-  (setq org-refile-targets '((nil :maxlevel . 9))
-      org-refile-use-cache nil
-      org-refile-target-verify-function 'zp/org-refile-target-verify-exclude-separators
-      org-outline-path-complete-in-steps nil
-      org-refile-use-outline-path nil)
 
   (zp/create-hydra-org-refile nil
       "
