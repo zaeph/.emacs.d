@@ -1171,15 +1171,17 @@ If text is selected, adds furigana to the selected kanji instead."
         (call-interactively 'forward-char)))
   (yas-expand-snippet (yas-lookup-snippet "anki-ruby")))
 
-;; Recentf
-(setq recentf-max-menu-items 100)
+(use-package recentf
+  :config
+  (setq recentf-max-menu-items 100))
 
-;; Tramp
-(setq tramp-default-method "ssh")
+(use-package tramp
+  :config
+  (setq tramp-default-method "ssh"))
 
-;; realGUD
-(require 'realgud)
-(setq realgud-safe-mode nil)
+(use-package realgud
+  :config
+  (setq realgud-safe-mode nil))
 
 
 
