@@ -2439,6 +2439,15 @@ With a prefix argument, do so in all agenda buffers."
 
   (zp/update-org-agenda-files)
 
+  (defun zp/org-agenda-redo-all ()
+    "Redo all the agenda views."
+    (interactive)
+    (let ((inhibit-message t))
+      (dolist (buffer (buffer-list))
+        (with-current-buffer buffer
+          (when (derived-mode-p 'org-agenda-mode)
+            (org-agenda-maybe-redo))))))
+
   (run-at-time "06:00" 86400 #'zp/org-agenda-redo-all)
 
   ;; Force habits to be shown if they’ve been disabled the previous day
@@ -2450,22 +2459,11 @@ With a prefix argument, do so in all agenda buffers."
 
   (setq zp/org-agenda-skip-functions-debug nil)
 
-  (defun zp/org-agenda-redo-all ()
-    "Redo all the agenda views."
-    (interactive)
-    (let ((inhibit-message t))
-      (dolist (buffer (buffer-list))
-        (with-current-buffer buffer
-          (when (derived-mode-p 'org-agenda-mode)
-            (org-agenda-maybe-redo))))))
-
   ;; Idle timer for rebuilding all the agenda views
   ;; Disabled for review
   ;; (run-with-idle-timer 300 t #'zp/org-agenda-redo-all)
 
   (define-key mode-specific-map (kbd "a") 'org-agenda))
-
-
 
 ;; Category icons
 (defvar zp/org-agenda-include-category-icons nil
