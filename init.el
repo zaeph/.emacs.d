@@ -207,11 +207,13 @@
 (use-package recentf-ext)
 
 ;; diff-hl
-(require 'diff-hl)
-(global-diff-hl-mode)
-(add-hook #'dired-mode-hook #'diff-hl-dired-mode)
+(use-package diff-hl
+  :config
+  (global-diff-hl-mode)
+  (diff-hl-flydiff-mode)
+  (add-hook #'dired-mode-hook #'diff-hl-dired-mode))
+
 (add-hook #'dired-mode-hook #'turn-on-gnus-dired-mode)
-(diff-hl-flydiff-mode)
 
 ;; eyebrowse
 (require 'eyebrowse)
