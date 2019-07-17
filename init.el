@@ -3475,39 +3475,6 @@ due today, and showing all of them."
   (define-key mode-specific-map (kbd "a") 'org-agenda))
 
 
-;; Toggles
-
-
-;; Dangerous, since it might hide important tasks to do.
-;; (defun zp/org-tags-match-list-sublevels ()
-;;   "Toggle the inclusion of sublevels TODO in the agenda.."
-;;   (interactive)
-;;   (cond ((bound-and-true-p org-tags-match-list-sublevels)
-;;          (setq org-tags-match-list-sublevels nil)
-;;       (org-agenda-redo)
-;;       (message "Subtasks: Hidden"))
-;;         (t
-;;          (setq org-tags-match-list-sublevels t)
-;;       (org-agenda-redo)
-;;       (message "Subtasks: Showing"))))
-
-;; (defun zp/toggle-org-agenda-dim-blocked-tasks ()
-;;   "Toggle a distraction-free environment for writing."
-;;   (interactive)
-;;   (cond ((eq org-agenda-dim-blocked-tasks 'invisible)
-;;          (setq org-agenda-dim-blocked-tasks nil)
-;;       (org-agenda-redo)
-;;       (message "Blocked tasks: Plain"))
-;;      ((eq org-agenda-dim-blocked-tasks nil)
-;;          (setq org-agenda-dim-blocked-tasks t)
-;;       (org-agenda-redo)
-;;       (message "Blocked tasks: Dimmed"))
-;;      ((eq org-agenda-dim-blocked-tasks t)
-;;       (setq org-agenda-dim-blocked-tasks 'invisible)
-;;       (org-agenda-redo)
-;;       (message "Blocked tasks: Invisible"))
-;;         ))
-
 (defun zp/org-agenda-set-property (property-function)
   "Set a property for the current headline in the agenda.
 Based on `org-agenda-set-property'."
