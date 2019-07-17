@@ -1769,7 +1769,13 @@ return `nil'."
 
 (use-package calendar
   :config
-  (setq diary-file "~/diary"))
+  (setq diary-file "~/diary")
+
+  ;; Geo-location
+  (setq calendar-week-start-day 1
+        calendar-latitude 48.11198
+        calendar-longitude -1.67429
+        calendar-location-name "Rennes, France"))
 
 ;; Load org-habit
 (use-package org-habit
@@ -2358,17 +2364,6 @@ indirect-buffers."
   ;; (global-set-key (kbd "C-x C-f") 'counsel-find-file)
   ;; (global-set-key (kbd "C-c j") 'counsel-git-grep)
   )
-
-
-
-;; ========================================
-;; =============== CALENDAR ===============
-;; ========================================
-
-(setq calendar-week-start-day 1
-      calendar-latitude 48.1119800
-      calendar-longitude -1.6742900
-      calendar-location-name "Rennes, France")
 
 
 
