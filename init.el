@@ -929,9 +929,11 @@ based on ‘zp/message-mode-ispell-alist’."
 ;; (setq focus-follows-mouse t)
 ;; (setq mouse-autoselect-window t)
 
-;; Linum parameters
-(require 'linum)
-(setq linum-format " %d ")              ;Add spaces before and after
+;; Disabled since Emacs now has a native package for line-numbers
+(use-package linum
+  :disabled
+  ;Add spaces before and after
+  (setq linum-format " %d "))
 
 ;; Mouse & Scrolling options
 (setq mouse-wheel-flip-direction 1
