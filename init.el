@@ -1963,6 +1963,10 @@ return `nil'."
   ;; Load library required for PlantUML
   (setq org-ditaa-jar-path "/usr/share/java/ditaa/ditaa-0.11.jar")
 
+  ;;------------------------
+  ;; Narrowing & Movements
+  ;;------------------------
+
   (defun zp/org-overview (&optional arg keep-position keep-restriction)
     "Switch to overview mode, showing only top-level headlines.
 
@@ -2149,6 +2153,10 @@ With a C-u argument, toggle the link display."
           (zp/org-toggle-link-display)
         (zp/org-toggle-emphasis-markers))
       (font-lock-fontify-buffer)))
+
+  ;;--------------
+  ;; Key bindings
+  ;;--------------
 
   (defun zp/org-mode-config ()
     "Modify keymaps used by `org-mode'."
