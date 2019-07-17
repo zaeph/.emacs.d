@@ -339,95 +339,90 @@
 
   (add-hook #'emacs-lisp-mode-hook #'lispy-mode))
 
+(use-package ispell
+  :config
+  ;; Use aspell as the backend
+  (setq-default ispell-program-name "aspell")
 
+  ;; Allow `’` to be part of a word
+  ;; Otherwise, apostrophes typed with ‘electric-quote-mode’ are not
+  ;; recognised as such
+  (setq ispell-local-dictionary-alist
+        `((nil "[[:alpha:]]" "[^[:alpha:]]" "['\x2019]" nil ("-B") nil utf-8)
+          ("english" "[[:alpha:]]" "[^[:alpha:]]" "['’]" t ("-d" "en_US") nil utf-8)
+          ("british" "[[:alpha:]]" "[^[:alpha:]]" "['’]" t ("-d" "en_GB") nil utf-8)
+          ("french" "[[:alpha:]]" "[^[:alpha:]]" "['’]" t ("-d" "fr_FR") nil utf-8)))
 
-;; ========================================
-;; ================ ASPELL ================
-;; ========================================
+  ;; Allow curvy quotes to be considered as regular apostrophe
+  (setq ispell-local-dictionary-alist
+        (quote
+         (("english" "[[:alpha:]]" "[^[:alpha:]]" "['’]" t ("-d" "en_US") nil utf-8)
+          ("british" "[[:alpha:]]" "[^[:alpha:]]" "['’]" t ("-d" "en_GB") nil utf-8)
+          ("french" "[[:alpha:]]" "[^[:alpha:]]" "['’]" t ("-d" "fr_FR") nil utf-8))))
 
-(require 'ispell)
-
-(setq-default ispell-program-name "aspell")
-
-;; Tell ispell.el that ’ can be part of a word.
-(setq ispell-local-dictionary-alist
-      `((nil "[[:alpha:]]" "[^[:alpha:]]" "['\x2019]" nil ("-B") nil utf-8)
-        ("english" "[[:alpha:]]" "[^[:alpha:]]" "['’]" t ("-d" "en_US") nil utf-8)
-        ("british" "[[:alpha:]]" "[^[:alpha:]]" "['’]" t ("-d" "en_GB") nil utf-8)
-        ("french" "[[:alpha:]]" "[^[:alpha:]]" "['’]" t ("-d" "fr_FR") nil utf-8)))
-
-;; Allow curvy quotes to be considered as regular apostrophe
-(setq ispell-local-dictionary-alist
- (quote
-  (("english" "[[:alpha:]]" "[^[:alpha:]]" "['’]" t ("-d" "en_US") nil utf-8)
-   ("british" "[[:alpha:]]" "[^[:alpha:]]" "['’]" t ("-d" "en_GB") nil utf-8)
-   ("french" "[[:alpha:]]" "[^[:alpha:]]" "['’]" t ("-d" "fr_FR") nil utf-8))))
-
-;; Don't send ’ to the subprocess.
-(defun endless/replace-apostrophe (args)
-  (cons (replace-regexp-in-string
-         "’" "'" (car args))
-        (cdr args)))
-(advice-add #'ispell-send-string :filter-args
-            #'endless/replace-apostrophe)
-
-;; Convert ' back to ’ from the subprocess.
-(defun endless/replace-quote (args)
-  (if (not (derived-mode-p 'org-mode))
-      args
+  ;; Don't send ’ to the subprocess.
+  (defun endless/replace-apostrophe (args)
     (cons (replace-regexp-in-string
-           "'" "’" (car args))
-          (cdr args))))
-(advice-add #'ispell-parse-output :filter-args
-            #'endless/replace-quote)
+           "’" "'" (car args))
+          (cdr args)))
+  (advice-add #'ispell-send-string :filter-args
+              #'endless/replace-apostrophe)
 
-;; Helm-Ispell
-(defvar zp/ispell-completion-data nil)
-(setq ispell-dictionary "british"
-      zp/ispell-completion-data '(("English" . "british")
-                                 ("French" . "french")))
+  ;; Convert ' back to ’ from the subprocess.
+  (defun endless/replace-quote (args)
+    (if (not (derived-mode-p 'org-mode))
+        args
+      (cons (replace-regexp-in-string
+             "'" "’" (car args))
+            (cdr args))))
+  (advice-add #'ispell-parse-output :filter-args
+              #'endless/replace-quote)
 
-(defun zp/ispell-switch-dictionary (language)
-  "Change the Ispell dictionary to LANGUAGE.
+  ;; Helm-Ispell
+  (defvar zp/ispell-completion-data nil)
+  (setq ispell-dictionary "british"
+        zp/ispell-completion-data '(("English" . "british")
+                                    ("French" . "french")))
+
+  (defun zp/ispell-switch-dictionary (language)
+    "Change the Ispell dictionary to LANGUAGE.
 
 LANGUAGE should be the name of an Ispell dictionary."
-  (interactive)
-  (let ((name (car (rassoc language zp/ispell-completion-data))))
-    (if (eq language ispell-local-dictionary)
-        (message "Dictionary is already loaded for this language")
-      (setq ispell-local-dictionary language)
-      (flyspell-mode)
-      (message (concat "Local Ispell dictionary set to " name)))
-    (when flyspell-mode
-      (flyspell-mode -1)
-      (flyspell-mode))))
+    (interactive)
+    (let ((name (car (rassoc language zp/ispell-completion-data))))
+      (if (eq language ispell-local-dictionary)
+          (message "Dictionary is already loaded for this language")
+        (setq ispell-local-dictionary language)
+        (flyspell-mode)
+        (message (concat "Local Ispell dictionary set to " name)))
+      (when flyspell-mode
+        (flyspell-mode -1)
+        (flyspell-mode))))
 
-(defun zp/ispell-query-dictionary ()
-  (if (not (y-or-n-p "Writing in English? "))
-      (ispell-change-dictionary "french")))
+  (defun zp/ispell-query-dictionary ()
+    (if (not (y-or-n-p "Writing in English? "))
+        (ispell-change-dictionary "french")))
 
-(defvar zp/helm-ispell-actions nil)
-(setq zp/helm-ispell-actions
-      '(("Change dictionary" . zp/ispell-switch-dictionary)))
+  (defvar zp/helm-ispell-actions nil)
+  (setq zp/helm-ispell-actions
+        '(("Change dictionary" . zp/ispell-switch-dictionary)))
 
-(defvar zp/helm-source-ispell nil)
-(setq zp/helm-source-ispell
-      '((name . "*HELM Ispell - Dictionary selection*")
-        (candidates . zp/ispell-completion-data)
-        (action . zp/helm-ispell-actions)))
+  (defvar zp/helm-source-ispell nil)
+  (setq zp/helm-source-ispell
+        '((name . "*HELM Ispell - Dictionary selection*")
+          (candidates . zp/ispell-completion-data)
+          (action . zp/helm-ispell-actions)))
 
-(defun zp/helm-ispell-preselect (&optional lang)
-  (interactive)
-  (let ((current ispell-local-dictionary))
-    (helm :sources '(zp/helm-source-ispell)
-          :preselect (if (or
-                          (eq lang "French")
-                          (eq current nil)
-                          (string-match-p current "british"))
-                         "French"
-                       "English"))))
-
-
+  (defun zp/helm-ispell-preselect (&optional lang)
+    (interactive)
+    (let ((current ispell-local-dictionary))
+      (helm :sources '(zp/helm-source-ispell)
+            :preselect (if (or
+                            (eq lang "French")
+                            (eq current nil)
+                            (string-match-p current "british"))
+                           "French"
+                         "English")))))
 
 ;; ========================================
 ;; =============== NOTMUCH ================
