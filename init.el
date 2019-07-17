@@ -185,8 +185,7 @@
 ;; Disabled because of slow-downs in combination with visual-line-mode
 ;; (fcitx-aggressive-setup)
 
-;; ox-hugo
-(require 'ox-hugo)
+(use-package ox-hugo)
 
 ;; duplicate-thing
 (require 'duplicate-thing)
