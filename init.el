@@ -197,13 +197,6 @@
   (add-hook #'prog-mode-hook #'ws-butler-mode)
   (add-hook #'prog-mode-hook #'zp/whitespace-mode-lines-tail))
 
-;; Force fringe indicators in ‘prog-mode’
-(defun zp/enable-visual-line-fringe-indicators ()
-  "Enable visual line fringe indicators."
-  (setq-local visual-line-fringe-indicators '(left-curly-arrow right-curly-arrow)))
-
-(add-hook 'prog-mode-hook #'zp/enable-visual-line-fringe-indicators)
-
 ;; info+
 (require 'info+)
 (define-key Info-mode-map (kbd "<mouse-4>") 'mwheel-scroll)
@@ -297,6 +290,21 @@
 
 ;; Use ‘fish-mode’ with .fish files
 (add-to-list 'auto-mode-alist '("\\.*.fish\\'" . fish-mode))
+
+
+
+;;----------------------------------------------------------------------------
+;; Extra configuration for prog-mode
+;;----------------------------------------------------------------------------
+
+(use-package prog-mode
+  :config
+  (defun zp/enable-visual-line-fringe-indicators ()
+    "Enable visual-line fringe-indicators."
+    (setq-local visual-line-fringe-indicators '(left-curly-arrow right-curly-arrow)))
+
+  ;; Force fringe indicators in ‘prog-mode’
+  (add-hook #'prog-mode-hook #'zp/enable-visual-line-fringe-indicators))
 
 
 
