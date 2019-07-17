@@ -7797,6 +7797,11 @@ the beginning of the line."
 
 (add-hook 'buffer-list-update-hook 'ml-update-all)
 
+(defface mode-line-buffer-id-inactive
+  '((t :inherit modeline-buffer-id
+       :foreground "green"))
+  "Face used for inactive buffer identification parts of the mode line.")
+
 (defun zp/propertized-buffer-identification (fmt)
   "Return a list suitable for `mode-line-buffer-identification'.
 FMT is a format specifier such as \"%12b\".  This function adds
