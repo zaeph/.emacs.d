@@ -1645,8 +1645,9 @@ return `nil'."
   (setq diary-file "~/diary"))
 
 ;; Load org-habit
-(require 'org-habit)
-(add-to-list 'org-modules 'org-habit)
+(use-package org-habit
+  :config
+  (add-to-list 'org-modules 'org-habit))
 
 ;; Options
 (setq org-agenda-inhibit-startup nil
