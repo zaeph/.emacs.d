@@ -170,8 +170,9 @@
   (epa-file-enable)
   (setq epg-gpg-program "gpg2"))
 
-;; Isearch
-(define-key isearch-mode-map (kbd "<backspace>") 'isearch-del-char)
+(use-package isearch
+  :config
+  (define-key isearch-mode-map (kbd "<backspace>") 'isearch-del-char))
 
 ;; zshrc
 (add-to-list 'auto-mode-alist '("\\zshrc\\'" . shell-script-mode))
