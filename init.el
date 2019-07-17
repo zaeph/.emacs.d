@@ -325,6 +325,34 @@ time is displayed."
 
 
 ;;----------------------------------------------------------------------------
+;; Editing commands
+;;----------------------------------------------------------------------------
+
+(defun zp/unfill-document ()
+  "fill individual paragraphs with large fill column"
+  (interactive)
+  (let ((fill-column 100000))
+    (fill-individual-paragraphs (point-min) (point-max))))
+
+(defun zp/unfill-paragraph ()
+  (interactive)
+  (let ((fill-column (point-max)))
+    (fill-paragraph nil)))
+
+(defun zp/unfill-region ()
+  (interactive)
+  (let ((fill-column (point-max)))
+    (fill-region (region-beginning) (region-end) nil)))
+
+(defun zp/unfill-context ()
+  (interactive)
+  (if (region-active-p)
+      (zp/unfill-region)
+    (zp/unfill-paragraph)))
+
+
+
+;;----------------------------------------------------------------------------
 ;; Packages
 ;;----------------------------------------------------------------------------
 
@@ -2462,8 +2490,22 @@ indirect-buffers."
 
 (use-package org-agenda
   :config
+  (defun zp/org-agenda-get-key ()
+    "Return the key of the current org-agenda view."
+    (unless (derived-mode-p 'org-agenda-mode)
+      (error "Not in an agenda"))
+    (let ((name (buffer-name))
+          (regex "\\*Org Agenda(\\(.*\\))\\*"))
+      (save-match-data
+        (string-match regex name)
+        (match-string 1 name))))
+
   (defvar zp/org-agenda-local-settings nil
     "List structure for org-agenda views local settings.")
+
+  (defvar zp/org-agenda-load-local-config-post-hook nil
+    "Hooks to run after the local org-agenda config has been
+  loaded.")
 
   (defun zp/org-agenda-local-config-init (alist)
     "Create the data structure for org-agenda local config.
@@ -3451,17 +3493,205 @@ due today, and showing all of them."
                     ((org-agenda-files zp/org-agenda-files-sports))))
            ((org-agenda-skip-timestamp-if-done nil)))))
 
+  ;;-----------------
+  ;; Prepare agendas
+  ;;-----------------
+
+  (defun zp/org-agenda-set-category-icons ()
+    "Set category icons.
+
+If ‘zp/org-agenda-include-category-icons’ is non-nil, the
+function populate ‘org-agenda-category-icon-alist’.
+
+Meant to be run with ‘org-agenda-mode-hook’."
+    (setq org-agenda-category-icon-alist
+          (when zp/org-agenda-include-category-icons
+            zp/org-agenda-category-icon-alist)))
+
+  (add-hook 'zp/org-agenda-load-local-config-post-hook
+            #'zp/org-agenda-set-category-icons)
+
+  (defun zp/org-agenda-load-local-config (&optional agenda)
+    "Load the org-agenda local config for the current view."
+    (let ((agenda (or agenda
+                      (zp/org-agenda-get-key))))
+      ;; Create local config if it doesn’t exist for current agenda
+      (unless (assoc agenda zp/org-agenda-local-config)
+        (setf (alist-get agenda
+                         zp/org-agenda-local-config
+                         nil nil 'equal)
+              ;; Copying the list is necessary to have different
+              ;; references to the same values.  Otherwise, we’d also
+              ;; modify the global config.
+              (list (copy-alist (car (alist-get 'default
+                                                zp/org-agenda-local-config))))))
+      ;; Load all settings
+      (mapcar (lambda (cons)
+                (let ((variable (car cons))
+                      (value (cdr cons)))
+                  (set variable value
+                       ;; (message "Setting ‘%s’ to ‘%s’." variable value)
+                       )))
+              ;; alist-get returns its match within a list, but we only
+              ;; need its car
+              (car (alist-get agenda
+                              zp/org-agenda-local-config
+                              nil nil 'equal)))
+      ;; Refresh mode-name based on modifications
+      (org-agenda-set-mode-name)
+      (run-hooks 'zp/org-agenda-load-local-config-post-hook)))
+
+  (add-hook 'org-agenda-mode-hook #'zp/org-agenda-load-local-config)
+
+  ;;--------------------------
+  ;; Prepare org-agenda files
+  ;;--------------------------
+
+  (defun zp/org-agenda-prepare-main-file ()
+    "Prepare the main file for creating an org-agenda view.
+
+Save the file it has been modified, and reveal everything in the
+file (trees, drawers, etc.)."
+    (let ((buffer (get-file-buffer "~/org/life.org")))
+      (when buffer
+        (with-current-buffer buffer
+          (when (buffer-modified-p (get-file-buffer "~/org/life.org"))
+            (save-buffer))
+          (org-show-all)))))
+
+  (add-hook 'org-agenda-mode-hook #'zp/org-agenda-prepare-main-file)
+
+  ;;-------------------------------
+  ;; Local variables in org-agenda
+  ;;-------------------------------
+
+  (defun zp/org-agenda-local-has-config-p (&optional agenda)
+    "Return t when the agenda has a local config."
+    (let ((agenda (or agenda
+                      (zp/org-agenda-get-key))))
+      (alist-get agenda zp/org-agenda-local-config nil nil 'equal)))
+
+  (defun zp/get-agenda-local (symbol &optional agenda)
+    "Get value of SYMBOL for the current org-agenda view.
+
+If AGENDA is an agenda key (as a string), set SYMBOL to VALUE in
+that agenda.
+
+If AGENDA is 'default, set SYMBOL to VALUE globally."
+    (let ((agenda (or agenda
+                      (zp/org-agenda-get-key))))
+      (unless (zp/org-agenda-local-has-config-p agenda)
+        (zp/org-agenda-load-local-config))
+      (alist-get symbol (car (alist-get agenda
+                                        zp/org-agenda-local-config
+                                        nil nil 'equal)))))
+
+  (defun zp/set-agenda-local (symbol value &optional agenda)
+    "Set SYMBOL to VALUE locally for the current org-agenda view.
+
+If AGENDA is an agenda key (as a string), set SYMBOL to VALUE in
+that agenda.
+
+If AGENDA is 'default, set SYMBOL to VALUE globally."
+    (let ((agenda (or agenda
+                      (zp/org-agenda-get-key))))
+      (unless (zp/org-agenda-local-has-config-p agenda)
+        (zp/org-agenda-load-local-config))
+      (setf (alist-get symbol
+                       (car (alist-get agenda
+                                       zp/org-agenda-local-config
+                                       nil nil 'equal)))
+            value)
+      value))
+
+  ;;--------------------
+  ;; Garbage collection
+  ;;--------------------
+
+  (defvar zp/org-agenda-default-agendas-list nil
+    "List of agendas to consider as defaults.
+
+Any agenda not in this list will be considered special, thereby
+marking it for deletion upon garbage collection.")
+
+  (setq zp/org-agenda-default-agendas-list '("n" "N" "l"))
+
+  (defun zp/org-agenda-kill-special-agendas ()
+    "Kill all special agendas.
+
+An agenda is considered special if its key isn’t listed in
+‘zp/org-agenda-default-agendas-list’."
+    (interactive)
+    (let ((kill-count 0))
+      (dolist (buffer (buffer-list))
+        (with-current-buffer buffer
+          (when (derived-mode-p 'org-agenda-mode)
+            (let ((agenda (zp/org-agenda-get-key)))
+              (unless (member agenda zp/org-agenda-default-agendas-list)
+                (kill-buffer)
+                (setq kill-count (1+ kill-count)))))))
+      kill-count))
+
+  (defun zp/org-agenda-garbage-collect (arg)
+    "Garbage collect all special agendas and open main view.
+
+With a ‘C-u’ prefix argument, also kill the main Org buffer."
+    (interactive "p")
+    (let ((kill-main (eq arg 4))
+          (kill-count (zp/org-agenda-kill-special-agendas)))
+      (zp/create-agenda-view nil)
+      (when kill-main
+        (when-let ((main (find-buffer-visiting "~/org/life.org")))
+          (with-current-buffer (find-buffer-visiting "~/org/life.org")
+            (when (buffer-modified-p)
+              (save-buffer))
+            (kill-buffer))))
+      (org-agenda-redo-all)
+      (with-selected-window (window-left (selected-window))
+        (org-agenda-redo-all))
+      (when arg
+        (message (concat "Garbage collection complete: "
+                         (when kill-main
+                           "Org buffer was killed, and ")
+                         (pcase kill-count
+                           (0 "no agenda-buffers were killed.")
+                           (1 "1 agenda-buffer was killed.")
+                           (_ (concat (number-to-string kill-count)
+                                      " agenda-buffers were killed."))))))))
+
   ;;------
   ;; Rest
   ;;------
+
+  (defun zp/org-agenda-set-property (property-function)
+    "Set a property for the current headline in the agenda.
+Based on `org-agenda-set-property'."
+    (interactive)
+    (org-agenda-check-no-diary)
+    (let* ((hdmarker (or (org-get-at-bol 'org-hd-marker)
+                         (org-agenda-error)))
+           (buffer (marker-buffer hdmarker))
+           (pos (marker-position hdmarker))
+           (inhibit-read-only t)
+           newhead)
+      (org-with-remote-undo buffer
+        (with-current-buffer buffer
+          (widen)
+          (goto-char pos)
+          (org-show-context 'agenda)
+          (call-interactively property-function)))))
+
+  (defun zp/org-agenda-delete-property ()
+    "Delete a property for the current headline in the agenda."
+    (interactive)
+    (zp/org-agenda-set-property 'org-delete-property))
 
   (defun zp/org-agenda-remove-mouse-face ()
     "Remove mouse-face from org-agenda."
     (remove-text-properties(point-min) (point-max) '(mouse-face t)))
 
-  (add-hook #'org-agenda-finalize-hook #'zp/org-agenda-hi-lock)
-  (add-hook #'org-agenda-finalize-hook #'zp/org-agenda-remove-mouse-face)
-
+  (add-hook 'org-agenda-finalize-hook #'zp/org-agenda-hi-lock)
+  (add-hook 'org-agenda-finalize-hook #'zp/org-agenda-remove-mouse-face)
 
   ;; Force habits to be shown if they’ve been disabled the previous day
   (run-at-time "06:00" 86400 #'zp/org-habit-show-habits-force)
@@ -3472,267 +3702,53 @@ due today, and showing all of them."
 
   (setq zp/org-agenda-skip-functions-debug nil)
 
-  (define-key mode-specific-map (kbd "a") 'org-agenda))
+  (define-key mode-specific-map (kbd "a") 'org-agenda)
 
+  ;;------
+  ;; Keys
+  ;;------
 
-(defun zp/org-agenda-set-property (property-function)
-  "Set a property for the current headline in the agenda.
-Based on `org-agenda-set-property'."
-  (interactive)
-  (org-agenda-check-no-diary)
-  (let* ((hdmarker (or (org-get-at-bol 'org-hd-marker)
-                       (org-agenda-error)))
-         (buffer (marker-buffer hdmarker))
-         (pos (marker-position hdmarker))
-         (inhibit-read-only t)
-         newhead)
-    (org-with-remote-undo buffer
-      (with-current-buffer buffer
-        (widen)
-        (goto-char pos)
-        (org-show-context 'agenda)
-        (call-interactively property-function)))))
+  (defun zp/org-agenda-mode-config ()
+    "For use with `org-agenda-mode'."
+    (local-set-key (kbd "M-n") 'org-agenda-next-date-line)
+    (local-set-key (kbd "M-p") 'org-agenda-previous-date-line)
+    (local-set-key (kbd "k") 'zp/org-agenda-capture)
+    (local-set-key (kbd "C-,") 'sunrise-sunset)
+    (local-set-key (kbd "C-c C-q") 'counsel-org-tag-agenda)
+    (local-set-key (kbd ":") 'counsel-org-tag-agenda)
+    (local-set-key (kbd ",") 'zp/hydra-org-priority/body)
+    (local-set-key (kbd "M-k") 'zp/toggle-org-habit-show-all-today)
+    (local-set-key (kbd "M-i") 'zp/toggle-org-agenda-category-icons)
+    (local-set-key (kbd "M-t") 'org-agenda-todo-yesterday)
+    (local-set-key (kbd "D") 'zp/toggle-org-agenda-include-deadlines)
+    (local-set-key (kbd "S") 'zp/toggle-org-agenda-include-scheduled)
+    (local-set-key (kbd "K") 'zp/toggle-org-agenda-include-habits)
+    (local-set-key (kbd "M-d") 'zp/toggle-org-deadline-warning-days-range)
+    (local-set-key (kbd "r") 'zp/org-agenda-benchmark)
+    (local-set-key (kbd "R") 'zp/org-agenda-garbage-collect)
+    (local-set-key (kbd "y") 'zp/toggle-org-agenda-split-subtasks)
+    (local-set-key (kbd "i") 'zp/toggle-org-agenda-sorting-strategy-special-first)
+    (local-set-key (kbd "o") 'zp/toggle-org-agenda-sort-by-rev-fifo)
+    ;; (local-set-key (kbd "H") 'zp/toggle-org-agenda-dim-blocked-tasks)
+    (local-set-key (kbd "h") 'zp/toggle-org-agenda-todo-ignore-future)
+    (local-set-key (kbd "W") 'zp/toggle-org-agenda-projects-include-waiting)
+    (local-set-key (kbd "C-c C-x r") 'zp/org-agenda-set-appt-warntime)
+    (local-set-key (kbd "C-c C-x l") 'zp/org-agenda-set-location)
+    (local-set-key (kbd "C-c C-x d") 'zp/org-agenda-delete-property)
+    (local-set-key (kbd ">") 'zp/org-agenda-date-prompt-and-update-appt)
+    (local-set-key (kbd "C-c C-s") 'zp/org-agenda-schedule-and-update-appt)
+    ;; (local-set-key (kbd "C-c C-w") 'zp/org-agenda-refile)
+    (local-set-key (kbd "C-c C-S-w") 'zp/org-agenda-refile-with-paths)
+    (local-set-key (kbd "Z") 'org-resolve-clocks)
+    (local-set-key (kbd "C-<return>") 'org-agenda-switch-to)
+    (local-set-key (kbd "<return>") 'zp/org-agenda-tree-to-indirect-buffer-without-grabbing-focus)
+    (local-set-key (kbd "S-<return>") 'zp/org-agenda-tree-to-indirect-buffer)
+    (local-set-key (kbd "M-<return>") 'zp/org-agenda-tree-to-indirect-buffer-maximise)
+    (local-set-key (kbd "<backspace>") 'zp/org-agenda-kill-other-buffer-and-window)
 
-(defun zp/org-agenda-delete-property ()
-  "Delete a property for the current headline in the agenda."
-  (interactive)
-  (zp/org-agenda-set-property 'org-delete-property))
+    (setq org-super-agenda-header-map org-agenda-mode-map))
 
-(defun zp/org-agenda-get-key ()
-  "Return the key of the current org-agenda view."
-  (unless (derived-mode-p 'org-agenda-mode)
-    (error "Not in an agenda"))
-  (let ((name (buffer-name))
-        (regex "\\*Org Agenda(\\(.*\\))\\*"))
-    (save-match-data
-      (string-match regex name)
-      (match-string 1 name))))
-
-(defvar zp/org-agenda-load-local-config-post-hook nil
-  "Hooks to run after the local org-agenda config has been
-  loaded.")
-
-(defun zp/org-agenda-set-category-icons ()
-  "Set category icons.
-
-If ‘zp/org-agenda-include-category-icons’ is non-nil, the
-function populate ‘org-agenda-category-icon-alist’.
-
-Meant to be run with ‘org-agenda-mode-hook’."
-  (setq org-agenda-category-icon-alist
-        (when zp/org-agenda-include-category-icons
-          zp/org-agenda-category-icon-alist)))
-
-(add-hook #'zp/org-agenda-load-local-config-post-hook
-          #'zp/org-agenda-set-category-icons)
-
-(defun zp/org-agenda-load-local-config (&optional agenda)
-  "Load the org-agenda local config for the current view."
-  (let ((agenda (or agenda
-                    (zp/org-agenda-get-key))))
-    ;; Create local config if it doesn’t exist for current agenda
-    (unless (assoc agenda zp/org-agenda-local-config)
-      (setf (alist-get agenda
-                       zp/org-agenda-local-config
-                       nil nil 'equal)
-            ;; Copying the list is necessary to have different
-            ;; references to the same values.  Otherwise, we’d also
-            ;; modify the global config.
-            (list (copy-alist (car (alist-get 'default
-                                              zp/org-agenda-local-config))))))
-    ;; Load all settings
-    (mapcar (lambda (cons)
-              (let ((variable (car cons))
-                    (value (cdr cons)))
-                (set variable value
-                     ;; (message "Setting ‘%s’ to ‘%s’." variable value)
-                     )))
-            ;; alist-get returns its match within a list, but we only
-            ;; need its car
-            (car (alist-get agenda
-                            zp/org-agenda-local-config
-                            nil nil 'equal)))
-    ;; Refresh mode-name based on modifications
-    (org-agenda-set-mode-name)
-    (run-hooks 'zp/org-agenda-load-local-config-post-hook)))
-
-(add-hook #'org-agenda-mode-hook #'zp/org-agenda-load-local-config)
-
-(defun zp/org-agenda-prepare-main-file ()
-  "Prepare the main file for creating an org-agenda view.
-
-Save the file it has been modified, and reveal everything in the
-file (trees, drawers, etc.)."
-  (let ((buffer (get-file-buffer "~/org/life.org")))
-    (when buffer
-      (with-current-buffer buffer
-        (when (buffer-modified-p (get-file-buffer "~/org/life.org"))
-          (save-buffer))
-        (org-show-all)))))
-
-(add-hook #'org-agenda-mode-hook #'zp/org-agenda-prepare-main-file)
-
-(defun zp/org-agenda-local-has-config-p (&optional agenda)
-  "Return t when the agenda has a local config."
-  (let ((agenda (or agenda
-                    (zp/org-agenda-get-key))))
-    (alist-get agenda zp/org-agenda-local-config nil nil 'equal)))
-
-(defun zp/get-agenda-local (symbol &optional agenda)
-  "Get value of SYMBOL for the current org-agenda view.
-
-If AGENDA is an agenda key (as a string), set SYMBOL to VALUE in
-that agenda.
-
-If AGENDA is 'default, set SYMBOL to VALUE globally."
-  (let ((agenda (or agenda
-                    (zp/org-agenda-get-key))))
-    (unless (zp/org-agenda-local-has-config-p agenda)
-      (zp/org-agenda-load-local-config))
-    (alist-get symbol (car (alist-get agenda
-                                      zp/org-agenda-local-config
-                                      nil nil 'equal)))))
-
-(defun zp/set-agenda-local (symbol value &optional agenda)
-  "Set SYMBOL to VALUE locally for the current org-agenda view.
-
-If AGENDA is an agenda key (as a string), set SYMBOL to VALUE in
-that agenda.
-
-If AGENDA is 'default, set SYMBOL to VALUE globally."
-  (let ((agenda (or agenda
-                    (zp/org-agenda-get-key))))
-    (unless (zp/org-agenda-local-has-config-p agenda)
-      (zp/org-agenda-load-local-config))
-    (setf (alist-get symbol
-                     (car (alist-get agenda
-                                     zp/org-agenda-local-config
-                                     nil nil 'equal)))
-          value)
-    value))
-
-(defun zp/testing (&optional agenda)
-  (bound-and-true-p agenda))
-
-(zp/testing nil)
-
-(defvar zp/org-agenda-default-agendas-list nil
-  "List of agendas to consider as defaults.
-
-Any agenda not in this list will be considered special, thereby
-marking it for deletion upon garbage collection.")
-
-(setq zp/org-agenda-default-agendas-list '("n" "N" "l"))
-
-(defun zp/org-agenda-kill-special-agendas ()
-  "Kill all special agendas.
-
-An agenda is considered special if its key isn’t listed in
-‘zp/org-agenda-default-agendas-list’."
-  (interactive)
-  (let ((kill-count 0))
-    (dolist (buffer (buffer-list))
-      (with-current-buffer buffer
-        (when (derived-mode-p 'org-agenda-mode)
-          (let ((agenda (zp/org-agenda-get-key)))
-            (unless (member agenda zp/org-agenda-default-agendas-list)
-              (kill-buffer)
-              (setq kill-count (1+ kill-count)))))))
-    kill-count))
-
-(defun zp/org-agenda-garbage-collect (arg)
-  "Garbage collect all special agendas and open main view.
-
-With a ‘C-u’ prefix argument, also kill the main Org buffer."
-  (interactive "p")
-  (let ((kill-main (eq arg 4))
-        (kill-count (zp/org-agenda-kill-special-agendas)))
-    (zp/create-agenda-view nil)
-    (when kill-main
-      (when-let ((main (find-buffer-visiting "~/org/life.org")))
-        (with-current-buffer (find-buffer-visiting "~/org/life.org")
-          (when (buffer-modified-p)
-            (save-buffer))
-          (kill-buffer))))
-    (org-agenda-redo-all)
-      (with-selected-window (window-left (selected-window))
-        (org-agenda-redo-all))
-    (when arg
-      (message (concat "Garbage collection complete: "
-                       (when kill-main
-                         "Org buffer was killed, and ")
-                       (pcase kill-count
-                         (0 "no agenda-buffers were killed.")
-                         (1 "1 agenda-buffer was killed.")
-                         (_ (concat (number-to-string kill-count)
-                                    " agenda-buffers were killed."))))))))
-
-
-(defun zp/org-agenda-mode-config ()
-  "For use with `org-agenda-mode'."
-  (local-set-key (kbd "M-n") 'org-agenda-next-date-line)
-  (local-set-key (kbd "M-p") 'org-agenda-previous-date-line)
-  (local-set-key (kbd "k") 'zp/org-agenda-capture)
-  (local-set-key (kbd "C-,") 'sunrise-sunset)
-  (local-set-key (kbd "C-c C-q") 'counsel-org-tag-agenda)
-  (local-set-key (kbd ":") 'counsel-org-tag-agenda)
-  (local-set-key (kbd ",") 'zp/hydra-org-priority/body)
-  (local-set-key (kbd "M-k") 'zp/toggle-org-habit-show-all-today)
-  (local-set-key (kbd "M-i") 'zp/toggle-org-agenda-category-icons)
-  (local-set-key (kbd "M-t") 'org-agenda-todo-yesterday)
-  (local-set-key (kbd "D") 'zp/toggle-org-agenda-include-deadlines)
-  (local-set-key (kbd "S") 'zp/toggle-org-agenda-include-scheduled)
-  (local-set-key (kbd "K") 'zp/toggle-org-agenda-include-habits)
-  (local-set-key (kbd "M-d") 'zp/toggle-org-deadline-warning-days-range)
-  (local-set-key (kbd "r") 'zp/org-agenda-benchmark)
-  (local-set-key (kbd "R") 'zp/org-agenda-garbage-collect)
-  (local-set-key (kbd "y") 'zp/toggle-org-agenda-split-subtasks)
-  (local-set-key (kbd "i") 'zp/toggle-org-agenda-sorting-strategy-special-first)
-  (local-set-key (kbd "o") 'zp/toggle-org-agenda-sort-by-rev-fifo)
-  ;; (local-set-key (kbd "H") 'zp/toggle-org-agenda-dim-blocked-tasks)
-  (local-set-key (kbd "h") 'zp/toggle-org-agenda-todo-ignore-future)
-  (local-set-key (kbd "W") 'zp/toggle-org-agenda-projects-include-waiting)
-  (local-set-key (kbd "C-c C-x r") 'zp/org-agenda-set-appt-warntime)
-  (local-set-key (kbd "C-c C-x l") 'zp/org-agenda-set-location)
-  (local-set-key (kbd "C-c C-x d") 'zp/org-agenda-delete-property)
-  (local-set-key (kbd ">") 'zp/org-agenda-date-prompt-and-update-appt)
-  (local-set-key (kbd "C-c C-s") 'zp/org-agenda-schedule-and-update-appt)
-  ;; (local-set-key (kbd "C-c C-w") 'zp/org-agenda-refile)
-  (local-set-key (kbd "C-c C-S-w") 'zp/org-agenda-refile-with-paths)
-  (local-set-key (kbd "Z") 'org-resolve-clocks)
-  (local-set-key (kbd "C-<return>") 'org-agenda-switch-to)
-  (local-set-key (kbd "<return>") 'zp/org-agenda-tree-to-indirect-buffer-without-grabbing-focus)
-  (local-set-key (kbd "S-<return>") 'zp/org-agenda-tree-to-indirect-buffer)
-  (local-set-key (kbd "M-<return>") 'zp/org-agenda-tree-to-indirect-buffer-maximise)
-  (local-set-key (kbd "<backspace>") 'zp/org-agenda-kill-other-buffer-and-window)
-
-  (setq org-super-agenda-header-map org-agenda-mode-map))
-
-(add-hook #'org-agenda-mode-hook #'zp/org-agenda-mode-config)
-
-
-
-(defun zp/unfill-document ()
-  "fill individual paragraphs with large fill column"
-  (interactive)
-  (let ((fill-column 100000))
-    (fill-individual-paragraphs (point-min) (point-max))))
-
-(defun zp/unfill-paragraph ()
-  (interactive)
-  (let ((fill-column (point-max)))
-    (fill-paragraph nil)))
-
-(defun zp/unfill-region ()
-  (interactive)
-  (let ((fill-column (point-max)))
-    (fill-region (region-beginning) (region-end) nil)))
-
-(defun zp/unfill-context ()
-  (interactive)
-  (if (region-active-p)
-      (zp/unfill-region)
-    (zp/unfill-paragraph)))
+  (add-hook 'org-agenda-mode-hook #'zp/org-agenda-mode-config))
 
 
 
