@@ -2241,62 +2241,54 @@ With a C-u argument, toggle the link display."
 
 
 
-;; ========================================
-;; ================= HELM =================
-;; ========================================
+;;----------------------------------------------------------------------------
+;; Helm
+;;----------------------------------------------------------------------------
 
-(require 'helm)
+(use-package helm
+  :config
+  ;; Increase truncation of buffer names
+  (setq helm-buffer-max-length 30       ;Default: 20
+        helm-M-x-fuzzy-match t
+        helm-buffers-fuzzy-matching t
+        helm-recentf-fuzzy-match t
+        helm-semantic-fuzzy-match t
+        helm-imenu-fuzzy-match t
+        helm-mode-fuzzy-match t
+        helm-completion-in-region-fuzzy-match t
+        helm-apropos-fuzzy-match t
+        helm-lisp-fuzzy-completion t)
 
-;; (helm-mode 1)
+  ;; Disable helm-mode for some functions
+  ;; Used to be necessary, but now it works just fine
+  ;; (add-to-list 'helm-completing-read-handlers-alist '(org-set-property)))
 
-;; Disable helm-mode for given functions
-;; Used to be necessary, but now it works just fine
-;; (add-to-list 'helm-completing-read-handlers-alist '(org-set-property))
+  (define-prefix-command 'zp/helm-map)
+  (define-key helm-map (kbd "C-S-o") #'helm-previous-source)
 
-(define-prefix-command 'zp/helm-map)
-(global-set-key (kbd "C-c h") 'zp/helm-map)
+  (global-set-key (kbd "C-c h") #'zp/helm-map)
+  (global-set-key (kbd "M-x") #'helm-M-x)
+  (global-set-key (kbd "<menu>") #'helm-M-x)
+  (global-set-key (kbd "M-y") #'helm-show-kill-ring)
+  (global-set-key (kbd "C-x b") #'helm-mini)
+  (global-set-key (kbd "C-x C-b") #'helm-mini)
+  (global-set-key (kbd "C-x C-f") #'helm-find-files)
+  (global-set-key (kbd "M-s M-s") #'helm-occur)
 
-;; Increase truncation of buffer names
-(setq helm-buffer-max-length 30)                  ;Default: 20
-
-(global-set-key (kbd "M-x") 'helm-M-x)
-(global-set-key (kbd "<menu>") 'helm-M-x)
-(global-set-key (kbd "M-y") 'helm-show-kill-ring)
-(global-set-key (kbd "C-x b") 'helm-mini)
-(global-set-key (kbd "C-x C-b") 'helm-mini)
-(global-set-key (kbd "C-x C-f") 'helm-find-files)
-(global-set-key (kbd "M-s M-s") 'helm-occur)
-(global-set-key (kbd "C-x r b") 'helm-bookmarks)
-
-(global-set-key (kbd "C-c h o") 'helm-occur)
-(global-set-key (kbd "C-c h f") 'helm-find-files)
-(global-set-key (kbd "C-c h r") 'helm-regexp)
-(global-set-key (kbd "C-c h x") 'helm-register)
-(global-set-key (kbd "C-c h b") 'helm-resume)
-(global-set-key (kbd "C-c h c") 'helm-colors)
-(global-set-key (kbd "C-c h M-:") 'helm-eval-expression-with-eldoc)
-(global-set-key (kbd "C-c h i") 'helm-semantic-or-imenu)
-(global-set-key (kbd "C-h C-SPC") 'helm-all-mark-rings)
-(global-set-key (kbd "C-c h a") 'helm-apropos)
-(global-set-key (kbd "C-c h /") 'helm-find)
-(global-set-key (kbd "C-c h <tab>") 'helm-lisp-completion-at-point)
-
-(setq helm-M-x-fuzzy-match t
-      helm-buffers-fuzzy-matching t
-      helm-recentf-fuzzy-match t
-      helm-semantic-fuzzy-match t
-      helm-imenu-fuzzy-match t
-      helm-mode-fuzzy-match t
-      helm-completion-in-region-fuzzy-match t
-      helm-apropos-fuzzy-match t
-      helm-lisp-fuzzy-completion t)
-
-(define-key helm-map (kbd "C-S-o") 'helm-previous-source)
-
-
-;; Helm Projectile
-
-(global-set-key (kbd "C-c h p") 'helm-projectile)
+  (global-set-key (kbd "C-x r b") #'helm-bookmarks)
+  (global-set-key (kbd "C-c h o") #'helm-occur)
+  (global-set-key (kbd "C-c h f") #'helm-find-files)
+  (global-set-key (kbd "C-c h r") #'helm-regexp)
+  (global-set-key (kbd "C-c h x") #'helm-register)
+  (global-set-key (kbd "C-c h b") #'helm-resume)
+  (global-set-key (kbd "C-c h c") #'helm-colors)
+  (global-set-key (kbd "C-c h M-:") #'helm-eval-expression-with-eldoc)
+  (global-set-key (kbd "C-c h i") #'helm-semantic-or-imenu)
+  (global-set-key (kbd "C-h C-SPC") #'helm-all-mark-rings)
+  (global-set-key (kbd "C-c h a") #'helm-apropos)
+  (global-set-key (kbd "C-c h /") #'helm-find)
+  (global-set-key (kbd "C-c h <tab>") #'helm-lisp-completion-at-point)
+  (global-set-key (kbd "C-c h p") #'helm-projectile))
 
 
 
