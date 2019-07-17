@@ -979,13 +979,6 @@ of lines before the signature intact."
           (:name "archive" :query "*" :key "A")
           (:name "trash" :query "tag:deleted" :key "t")))
 
-  ;; (require 'footnote)
-
-  ;; Format footnotes for message-mode
-  ;; Default value had a space at the end causing it to be reflowed when
-  ;; using f=f.
-  ;; (setq footnote-section-tag "Footnotes: ")
-
   (require 'epg-config)
   (setq mml2015-use 'epg
         epg-user-id (zp/get-string-from-file "~/org/pp/gpg/gpg-key-id")
@@ -1080,6 +1073,11 @@ based on ‘zp/message-mode-ispell-alist’."
 
 (use-package org-notmuch
   :after notmuch)
+
+;; Disabled because not used
+;; (use-package footnote
+;;   :config
+;;   (setq footnote-section-tag "Footnotes: "))
 
 
 
