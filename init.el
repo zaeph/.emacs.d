@@ -258,12 +258,6 @@
   (global-so-long-mode 1)
   (add-hook #'debugger-mode-hook #'so-long-minor-mode))
 
-
-
-;;----------------------------------------------------------------------------
-;; File to major-mode associations
-;;----------------------------------------------------------------------------
-
 (use-package sh-script
   :config
   (add-to-list 'auto-mode-alist '("\\zshrc\\'" . shell-script-mode))
