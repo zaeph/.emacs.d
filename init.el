@@ -1177,25 +1177,19 @@ Modifies ‘diff-command’ and ‘diff-switches’ to use ‘git diff’."
 
   (define-key python-mode-map (kbd "M-RET") 'zp/python-eval-buffer))
 
+(use-package racket-mode
+  :config
+  (defun zp/racket-eval-buffer (arg)
+    "Run current buffer as Perl code"
+    (interactive "P")
+    (let (max-mini-window-height)
+      (unless arg
+        (setq max-mini-window-height 999))
+      (let ((inhibit-message t))
+        (basic-save-buffer))
+      (shell-command (concat "racket " (buffer-file-name)))))
 
-
-;; ========================================
-;; =============== RACKET =================
-;; ========================================
-
-(require 'racket-mode)
-
-(defun zp/racket-eval-buffer (arg)
-  "Run current buffer as Perl code"
-  (interactive "P")
-  (let (max-mini-window-height)
-    (unless arg
-      (setq max-mini-window-height 999))
-    (let ((inhibit-message t))
-      (basic-save-buffer))
-    (shell-command (concat "racket " (buffer-file-name)))))
-
-(define-key racket-mode-map (kbd "M-RET") 'zp/racket-eval-buffer)
+  (define-key racket-mode-map (kbd "M-RET") 'zp/racket-eval-buffer))
 
 
 
