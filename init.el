@@ -921,10 +921,6 @@ based on ‘zp/message-mode-ispell-alist’."
   :config
   (desktop-save-mode 1))
 
-;; Focus follows mouse
-;; (setq focus-follows-mouse t)
-;; (setq mouse-autoselect-window t)
-
 ;; Disabled since Emacs now has a native package for line-numbers
 (use-package linum
   :disabled
