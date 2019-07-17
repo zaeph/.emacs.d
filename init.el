@@ -2975,7 +2975,7 @@ agenda settings after them."
 ;; =========== ORG-SUPER-AGENDA ===========
 ;; ========================================
 
-(load-file "~/projects/org-super-agenda/org-super-agenda.el")
+(load-file "~/projects/forks/org-super-agenda/org-super-agenda.el")
 (require 'org-super-agenda)
 (setq org-super-agenda-header-separator "")
 (defun zp/org-super-agenda-update-face ()
