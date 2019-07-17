@@ -1044,7 +1044,52 @@ based on ‘zp/message-mode-ispell-alist’."
 
 (use-package files
   :config
-  (setq-default require-final-newline nil))
+  (setq-default require-final-newline nil)
+
+  ;;---------
+  ;; Backups
+  ;;---------
+
+  ;; By default, Emacs only create a backup only once per editing session, right
+  ;; before the first save. In other words, it preserves the state of the file
+  ;; before Emacs touched it.
+
+  ;; Don’t clobber symlinks
+  (setq backup-by-copying t)
+
+  ;; Use versioned backups
+  (setq version-control t)
+
+  ;; Number of backups to keep
+  (setq kept-new-versions 10
+        kept-old versions 0
+        delete-old-versions t)
+
+  ;; Backup directories
+  (setq backup-directory-alist '(("." . "~/.saves"))))
+
+(use-package vc-hooks
+  :config
+  ;; Also backup versioned files
+  (setq vc-make-backup-files t))
+
+(use-package diff
+  :config
+  ;; Diff backend
+  (setq diff-command "diff")            ;Default
+
+  ;; Add ‘-u’ switch for diff
+  (setq diff-switches "-u"))
+
+(use-package backup-walker
+  :config
+  (defun zp/set-diff-backend-git-diff ()
+    "Set diff backend to ‘git diff’.
+Modifies ‘diff-command’ and ‘diff-switches’ to use ‘git diff’."
+    (setq-local diff-command "git --no-pager diff")
+    (setq-local diff-switches "--textconv"))
+
+  (add-hook #'backup-walker-mode-hook #'zp/set-diff-backend-git-diff))
 
 (use-package windmove
   :config
@@ -1182,45 +1227,6 @@ If text is selected, adds furigana to the selected kanji instead."
 (use-package realgud
   :config
   (setq realgud-safe-mode nil))
-
-
-
-;; ========================================
-;; ================ BACKUP ================
-;; ========================================
-
-;; By default, Emacs only create a backup only once per editing
-;; session right before the first save. In other words, it preserves
-;; the state of the file before Emacs touched it.
-
-(setq
- ;; Don't clobber symlinks.
- backup-by-copying t
-
- ;; Use versioned backups
- version-control t
-
- ;; Also backup versioned files
- vc-make-backup-files t
-
- ;; Number of backups to keep
- kept-new-versions 10
- kept-old-versions 0
- delete-old-versions t
-
- backup-directory-alist `(("." . "~/.saves")))
-
-;; Diff backend (default)
-(setq diff-command "diff"
-      diff-switches "-u")
-
-(defun zp/set-diff-backend-git-diff ()
-  "Set diff backend to ‘git diff’.
-Modifies ‘diff-command’ and ‘diff-switches’ to use ‘git diff’."
-  (setq-local diff-command "git --no-pager diff")
-  (setq-local diff-switches "--textconv"))
-
-(add-hook 'backup-walker-mode-hook #'zp/set-diff-backend-git-diff)
 
 
 
