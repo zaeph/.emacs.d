@@ -4658,40 +4658,24 @@ running."
 ;; ============== ORG-NOTER ===============
 ;; ========================================
 
-;; (load "~/.emacs.d/lisp/org-noter-patched.el")
-;; (load "~/.emacs.d/pkg/org-noter/org-noter.el")
-(require 'org-noter)
-(setq org-noter-hide-other t
-      org-noter-auto-save-last-location t
-      org-noter-doc-split-fraction '(0.59 0.41))
+(use-package org-noter
+  :config
+  (setq org-noter-hide-other t
+        org-noter-auto-save-last-location t
+        org-noter-doc-split-fraction '(0.59 0.41))
 
-(add-hook 'org-noter-notes-mode-hook #'visual-line-mode)
+  (add-hook 'org-noter-notes-mode-hook #'visual-line-mode)
 
-;;; Fix for hiding truncation
-(defun org-noter--set-notes-scroll (window &rest ignored)
-  nil)
+  ;; Fix for hiding truncation
+  (defun org-noter--set-notes-scroll (window &rest ignored)
+    nil)
 
-;; Fix for visual-line-mode with PDF files
-(defun org-noter--note-after-tipping-point (point note-property view)
-  nil)
+  ;; Fix for visual-line-mode with PDF files
+  (defun org-noter--note-after-tipping-point (point note-property view)
+    nil)
 
-(define-key org-noter-doc-mode-map (kbd "j") 'pdf-view-next-line-or-next-page)
-(define-key org-noter-doc-mode-map (kbd "k") 'pdf-view-previous-line-or-previous-page)
-
-;;; Default function in org-noter.el
-;; (defun org-noter--set-notes-scroll (window &rest ignored)
-;;   (when window
-;;     (with-selected-window window
-;;       (org-noter--with-valid-session
-;;        (let* ((level (org-noter--session-level session))
-;;               (goal (* (1- level) 2))
-;;               (current-scroll (window-hscroll)))
-;;          (when (and (bound-and-true-p org-indent-mode) (< current-scroll goal))
-;;            (scroll-right current-scroll)
-;;            (scroll-left goal t)))))))
-
-(defun zp/org-noter-indirect (arg)
-  "Ensure that org-noter starts in an indirect buffer.
+  (defun zp/org-noter-indirect (arg)
+    "Ensure that org-noter starts in an indirect buffer.
 
 Without this wrapper, org-noter creates a direct buffer
 restricted to the notes, but this causes problems with the refile
@@ -4700,35 +4684,41 @@ agenda-files buffer.
 
 This wrapper addresses it by having org-noter act on an indirect
 buffer, thereby propagating the indirectness."
-  (interactive "P")
-  (if (org-entry-get nil org-noter-property-doc-file)
-      (with-selected-window (zp/org-tree-to-indirect-buffer-folded nil t)
-        (org-noter arg)
-        (kill-buffer))
-    (org-noter arg)))
+    (interactive "P")
+    (if (org-entry-get nil org-noter-property-doc-file)
+        (with-selected-window (zp/org-tree-to-indirect-buffer-folded nil t)
+          (org-noter arg)
+          (kill-buffer))
+      (org-noter arg)))
 
-(defun zp/org-noter-dwim (arg)
-  "Run org-noter on the current tree, even if we’re in the agenda."
-  (interactive "P")
-  (let ((in-agenda (derived-mode-p 'org-agenda-mode))
-        (marker))
-    (cond (in-agenda
-           (setq marker (get-text-property (point) 'org-marker))
-           (with-current-buffer (marker-buffer marker)
-             (goto-char marker)
-             (unless (org-entry-get nil org-noter-property-doc-file)
-               (user-error "No org-noter info on this tree"))
-             (zp/org-noter-indirect arg)))
-          (t
-           (zp/org-noter-indirect arg)
-           (setq marker (point-marker))))
-    (org-with-point-at marker
-      (let ((tags (org-get-tags-at)))
-        (when (and (org-entry-get nil org-noter-property-doc-file)
-                   (not (member "noter" tags)))
-          (org-set-tags (push "noter" tags)))))
-    (unless in-agenda
-      (set-marker marker nil))))
+  (defun zp/org-noter-dwim (arg)
+    "Run org-noter on the current tree, even if we’re in the agenda."
+    (interactive "P")
+    (let ((in-agenda (derived-mode-p 'org-agenda-mode))
+          (marker))
+      (cond (in-agenda
+             (setq marker (get-text-property (point) 'org-marker))
+             (with-current-buffer (marker-buffer marker)
+               (goto-char marker)
+               (unless (org-entry-get nil org-noter-property-doc-file)
+                 (user-error "No org-noter info on this tree"))
+               (zp/org-noter-indirect arg)))
+            (t
+             (zp/org-noter-indirect arg)
+             (setq marker (point-marker))))
+      (org-with-point-at marker
+        (let ((tags (org-get-tags-at)))
+          (when (and (org-entry-get nil org-noter-property-doc-file)
+                     (not (member "noter" tags)))
+            (org-set-tags (push "noter" tags)))))
+      (unless in-agenda
+        (set-marker marker nil))))
+
+  (define-key org-noter-doc-mode-map (kbd "j") 'pdf-view-next-line-or-next-page)
+  (define-key org-noter-doc-mode-map (kbd "k") 'pdf-view-previous-line-or-previous-page))
+
+
+
 
 
 
