@@ -135,6 +135,9 @@
                           (org nil)
                           (org-plus-contrib nil)))
 
+;; org-elpa
+(add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") t)
+
 ;; Initialise packages
 (package-initialize)
 
@@ -143,9 +146,6 @@
   ;; Following line is not needed if use-package.el is in ~/.emacs.d
   ;; (add-to-list 'load-path "<path where use-package is installed>")
   (require 'use-package))
-
-;; org-elpa
-(add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") t)
 
 ;; Load extra files, and search subdirs
 (let ((default-directory  "/home/zaeph/.emacs.d/lisp/"))
