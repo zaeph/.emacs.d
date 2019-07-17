@@ -2359,6 +2359,25 @@ indirect-buffers."
 
 (use-package org-agenda
   :config
+  (defvar zp/org-agenda-local-settings nil
+    "List structure for org-agenda views local settings.")
+
+  (defun zp/org-agenda-local-config-init (alist)
+    "Create the data structure for org-agenda local config.
+
+This function takes every variables in
+‘zp/org-agenda-local-settings’ and store them with their value in
+a data structure, thus defining the global state of those
+variables."
+    (let ((settings))
+      (while (cdr alist)
+        (let ((var (pop alist)))
+          (push var settings)
+          (set var (eval (pop alist)))))
+      (list (cons 'default (list (mapcar (lambda (setting)
+                                           (cons setting (eval setting)))
+                                         settings))))))
+
   (setq org-agenda-show-future-repeats t
         org-agenda-skip-scheduled-if-done 1
         org-agenda-skip-timestamp-if-done 1
@@ -2419,25 +2438,6 @@ indirect-buffers."
                         :no-end-time-face nil
                         :long-face nil
                         :short-face nil))
-
-  (defvar zp/org-agenda-local-settings nil
-    "List structure for org-agenda views local settings.")
-
-  (defun zp/org-agenda-local-config-init (alist)
-    "Create the data structure for org-agenda local config.
-
-This function takes every variables in
-‘zp/org-agenda-local-settings’ and store them with their value in
-a data structure, thus defining the global state of those
-variables."
-    (let ((settings))
-      (while (cdr alist)
-        (let ((var (pop alist)))
-          (push var settings)
-          (set var (eval (pop alist)))))
-      (list (cons 'default (list (mapcar (lambda (setting)
-                                           (cons setting (eval setting)))
-                                         settings))))))
 
   ;;----------------
   ;; Category icons
