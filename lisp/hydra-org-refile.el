@@ -21,6 +21,9 @@
 
 ;;; Code:
 
+(defvar zp/hydra-org-refile-chain nil
+    "When non-nil, make zp/hydra-org-refile chain the commands.")
+
 (defun zp/hydra-org-refile-chain-toggle ()
   "Toggle zp/hydra-org-refile-chain."
   (interactive)
