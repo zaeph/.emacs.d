@@ -2361,12 +2361,6 @@ indirect-buffers."
 
 
 
-;; Shortcut for opening Keep (not yet implemented: can't find a good key for it)
-;; (global-set-key (kbd "C-<f1>")
-;;              (lambda () (interactive) (org-open-link-from-string "https://keep.google.com/")))
-
-
-
 ;; ========================================
 ;; =============== CALENDAR ===============
 ;; ========================================
