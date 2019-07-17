@@ -1071,36 +1071,43 @@ based on ‘zp/message-mode-ispell-alist’."
   (setq display-time-default-load-average nil)
   (display-time-mode 1))
 
+(use-package pdf-tools
+  :config
+  (pdf-tools-install))
 
-(defun zp/toggle-pdf-view-auto-slice-minor-mode ()
-  (interactive)
-  (call-interactively 'pdf-view-auto-slice-minor-mode)
-  (if (not pdf-view-auto-slice-minor-mode)
-      (progn
-        (pdf-view-reset-slice))))
+(use-package pdf-view
+  :config
+  (defun zp/toggle-pdf-view-auto-slice-minor-mode ()
+    "Toggle ‘pdf-view-auto-slice-minor-mode’ and reset slice."
+    (interactive)
+    (call-interactively 'pdf-view-auto-slice-minor-mode)
+    (if (not pdf-view-auto-slice-minor-mode)
+        (progn
+          (pdf-view-reset-slice))))
 
-;; pdf-tools
-(pdf-tools-install)
-(require 'pdf-view)
-(define-key pdf-view-mode-map (kbd "m") 'pdf-view-midnight-minor-mode)
-(define-key pdf-view-mode-map (kbd "s") 'zp/toggle-pdf-view-auto-slice-minor-mode)
-(define-key pdf-view-mode-map (kbd "M") 'pdf-view-set-slice-using-mouse)
-(define-key pdf-view-mode-map (kbd "c") 'zp/pdf-view-continuous-toggle)
-(define-key pdf-view-mode-map (kbd "w") 'pdf-view-fit-width-to-window)
+  ;; Disable continuous view in pdf-view
+  ;; I prefer to explicitly turn pages
+  (setq pdf-view-continuous nil)
 
-(define-prefix-command 'slice-map)
-(define-key pdf-view-mode-map (kbd "S") 'slice-map)
-(define-key pdf-view-mode-map (kbd "S b") 'pdf-view-set-slice-from-bounding-box)
-(define-key pdf-view-mode-map (kbd "S m") 'pdf-view-set-slice-using-mouse)
-(define-key pdf-view-mode-map (kbd "S r") 'pdf-view-reset-slice)
+  (define-key pdf-view-mode-map (kbd "m") 'pdf-view-midnight-minor-mode)
+  (define-key pdf-view-mode-map (kbd "s") 'zp/toggle-pdf-view-auto-slice-minor-mode)
+  (define-key pdf-view-mode-map (kbd "M") 'pdf-view-set-slice-using-mouse)
+  (define-key pdf-view-mode-map (kbd "c") 'zp/pdf-view-continuous-toggle)
+  (define-key pdf-view-mode-map (kbd "w") 'pdf-view-fit-width-to-window)
 
-(require 'pdf-links)
-(define-key pdf-links-minor-mode-map (kbd "f") 'pdf-view-fit-page-to-window)
+  (define-prefix-command 'slice-map)
+  (define-key pdf-view-mode-map (kbd "S") 'slice-map)
+  (define-key pdf-view-mode-map (kbd "S b") 'pdf-view-set-slice-from-bounding-box)
+  (define-key pdf-view-mode-map (kbd "S m") 'pdf-view-set-slice-using-mouse)
+  (define-key pdf-view-mode-map (kbd "S r") 'pdf-view-reset-slice)
 
-(add-hook #'pdf-view-mode-hook #'pdf-view-midnight-minor-mode)
-(add-hook #'pdf-view-mode-hook #'pdf-view-auto-slice-minor-mode)
+  (add-hook #'pdf-view-mode-hook #'pdf-view-midnight-minor-mode)
+  (add-hook #'pdf-view-mode-hook #'pdf-view-auto-slice-minor-mode))
 
-(setq pdf-view-continuous nil)
+(use-package pdf-links
+  :config
+  (define-key pdf-links-minor-mode-map (kbd "f") 'pdf-view-fit-page-to-window))
+
 
 (defun zp/pdf-view-continuous-toggle ()
   (interactive)
