@@ -102,6 +102,9 @@
 ;; Do not display continuation lines
 (set-default 'truncate-lines t)
 
+;; Enable line-restricted horizontal scrolling
+(setq auto-hscroll-mode 'current-line)
+
 ;; Disable final newline insertion
 (setq-default require-final-newline nil)
 
@@ -1035,11 +1038,12 @@ based on ‘zp/message-mode-ispell-alist’."
   (setq linum-format " %d "))
 
 ;; Mouse & Scrolling options
-(setq mouse-wheel-flip-direction 1
-      mouse-wheel-scroll-amount '(2 ((shift) . 1) ((control)))
-      mouse-wheel-progressive-speed nil
-      mouse-wheel-follow-mouse 't
-      auto-hscroll-mode 'current-line)
+(use-package mwheel
+  :config
+  (setq mouse-wheel-flip-direction 1
+        mouse-wheel-scroll-amount '(2 ((shift) . 1) ((control)))
+        mouse-wheel-progressive-speed nil
+        mouse-wheel-follow-mouse 't))
 
 ;; Disable side movements
 ;; (global-set-key (kbd "<mouse-6>") 'ignore)
