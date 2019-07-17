@@ -178,7 +178,7 @@
 (add-to-list 'auto-mode-alist '("\\zshrc\\'" . shell-script-mode))
 (add-to-list 'auto-mode-alist '("\\prompt_.*_setup\\'" . shell-script-mode))
 
-;; fish
+;; Use ‘fish-mode’ with .fish files
 (add-to-list 'auto-mode-alist '("\\.*.fish\\'" . fish-mode))
 
 ;; fcitx
