@@ -1114,38 +1114,39 @@ Modifies ‘diff-command’ and ‘diff-switches’ to use ‘git diff’."
 
 
 
-;; ========================================
-;; ================= PERL =================
-;; ========================================
+;;----------------------------------------------------------------------------
+;; Programming modes
+;;----------------------------------------------------------------------------
 
-;; Prefer cperl-mode to perl-mode
-(require 'cperl-mode)
-(defalias 'perl-mode 'cperl-mode)
+(use-package cperl-mode
+  :config
+  ;; Use ‘cperl-mode’ instead ‘perl-mode’
+  (defalias 'perl-mode 'cperl-mode)
 
-(defun zp/perl-eval-region ()
-  "Run selected region as Perl code"
-  (interactive)
-  (let ((max-mini-window-height nil))
-    (call-process (mark) (point) "perl")))
+  (defun zp/perl-eval-region ()
+    "Run selected region as Perl code"
+    (interactive)
+    (let ((max-mini-window-height nil))
+      (call-process (mark) (point) "perl")))
 
-(defun zp/perl-eval-buffer-in-terminator ()
-  "Run selected region as Perl code"
-  (interactive)
-  (call-process "terminator" (buffer-file-name) nil nil (concat "-x perl" ))
-  ;; (call-process (concat "terminator -x perl "
-  ;;                       (buffer-file-name)))
-  )
+  (defun zp/perl-eval-buffer-in-terminator ()
+    "Run selected region as Perl code"
+    (interactive)
+    (call-process "terminator" (buffer-file-name) nil nil (concat "-x perl"))
+    ;; (call-process (concat "terminator -x perl "
+    ;;                       (buffer-file-name)))
+    )
 
-(defun zp/perl-eval-buffer (arg)
-  "Run current buffer as Perl code"
-  (interactive "P")
-  (let (max-mini-window-height)
-    (unless arg
-      (setq max-mini-window-height 999))
-    (shell-command-on-region (point-min) (point-max) "perl")))
+  (defun zp/perl-eval-buffer (arg)
+    "Run current buffer as Perl code"
+    (interactive "P")
+    (let (max-mini-window-height)
+      (unless arg
+        (setq max-mini-window-height 999))
+      (shell-command-on-region (point-min) (point-max) "perl")))
 
-(define-key cperl-mode-map (kbd "M-RET") 'zp/perl-eval-buffer)
-(define-key cperl-mode-map (kbd "<C-return>") 'zp/perl-eval-region)
+  (define-key cperl-mode-map (kbd "M-RET") 'zp/perl-eval-buffer)
+  (define-key cperl-mode-map (kbd "<C-return>") 'zp/perl-eval-region))
 
 
 
