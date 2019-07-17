@@ -1011,8 +1011,6 @@ based on ‘zp/message-mode-ispell-alist’."
            (language (cdr (assoc sender zp/message-ispell-alist))))
       (zp/ispell-switch-dictionary language)))
 
-  (setq electric-quote-context-sensitive 1)
-
   (defun zp/message-sendmail-envelope-to ()
     "Return the envelope to."
     (save-excursion
@@ -1128,7 +1126,8 @@ based on ‘zp/message-mode-ispell-alist’."
 
 (use-package electric
   :config
-  (electric-quote-mode 1))
+  (electric-quote-mode 1)
+  (setq electric-quote-context-sensitive 1))
 
 ;; (use-package dumb-jump
 ;;   :config
