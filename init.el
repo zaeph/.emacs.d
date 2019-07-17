@@ -4507,119 +4507,133 @@ that date.  Leave point on the first amount."
 ;; =============== CHRONOS ================
 ;; ========================================
 
-(require 'chronos)
-(require 'helm-chronos)  ;; Doesn't support creating new timers from helm
+(use-package chronos
+  :config
+  (setq helm-chronos-recent-timers-limit 100
+        helm-chronos-standard-timers
+        '(
+          "Green Tea              3/Green Tea: Remove tea bag"
+          "Black Tea              4/Black Tea: Remove tea bag"
+          "Herbal Tea             10/Herbal Tea: Remove tea bag"
+          "Timebox                25/Finish and Reflect + 5/Back to it"
+          "Break                  30/Back to it"
+          "Charge Phone           30/Unplug Phone"
+          "Charge Tablet          30/Unplug Tablet"
+          ))
 
-(setq chronos-expiry-functions '(chronos-notify))
+  ;;---------------------
+  ;; Notification system
+  ;;---------------------
 
-(defun chronos-notify (c)
-  "Notify expiration of timer C using custom script."
-  (chronos--shell-command "Chronos notification"
-                          "chronos-notify"
-                          (list (chronos--time-string c)
-                                (chronos--message c))))
+  (defun chronos-notify (c)
+    "Notify expiration of timer C using custom script."
+    (chronos--shell-command "Chronos notification"
+                            "chronos-notify"
+                            (list (chronos--time-string c)
+                                  (chronos--message c))))
 
-;; Fix for adding new timers
-(defvar helm-chronos--fallback-source
-  (helm-build-dummy-source "Enter <expiry time spec>/<message>"
-    :filtered-candidate-transformer
-    (lambda (_candidates _source)
-      (list (or (and (not (string= helm-pattern ""))
-                     helm-pattern)
-                "Enter a timer to start")))
-    :action '(("Add timer" . (lambda (candidate)
-                               (if (string= helm-pattern "")
-                                   (message "No timer")
-                                 (helm-chronos--parse-string-and-add-timer helm-pattern)))))))
+  (setq chronos-expiry-functions '(chronos-notify))
 
-(setq helm-chronos-recent-timers-limit 100
-      helm-chronos-standard-timers
-      '(
-        "Green Tea              3/Green Tea: Remove tea bag"
-        "Black Tea              4/Black Tea: Remove tea bag"
-        "Herbal Tea             10/Herbal Tea: Remove tea bag"
-        "Timebox                25/Finish and Reflect + 5/Back to it"
-        "Break                  30/Back to it"
-        "Charge Phone           30/Unplug Phone"
-        "Charge Tablet          30/Unplug Tablet"
-        ))
+  ;;-------------
+  ;; Quick edits
+  ;;-------------
 
-(defun zp/chronos-edit-selected-line-time (time prefix)
-  (interactive)
-  (interactive "sTime: \nP")
-  (let ((c chronos--selected-timer))
-    (when (chronos--running-or-paused-p c)
-      (let ((ftime (chronos--parse-timestring time
-                                              (if prefix
-                                                  nil
-                                                (chronos--expiry-time c)))))
-            ;; (msg (read-from-minibuffer "Message: " (chronos--message c))))
-        (chronos--set-expiry-time c ftime)
-        ;; (chronos--set-message c msg)
-        (chronos--set-action c (not (chronos--expiredp c)))
-        (chronos--update-display)))))
+  (defun zp/chronos-edit-selected-line-time (time prefix)
+    (interactive)
+    (interactive "sTime: \nP")
+    (let ((c chronos--selected-timer))
+      (when (chronos--running-or-paused-p c)
+        (let ((ftime (chronos--parse-timestring time
+                                                (if prefix
+                                                    nil
+                                                  (chronos--expiry-time c)))))
+          ;; (msg (read-from-minibuffer "Message: " (chronos--message c))))
+          (chronos--set-expiry-time c ftime)
+          ;; (chronos--set-message c msg)
+          (chronos--set-action c (not (chronos--expiredp c)))
+          (chronos--update-display)))))
 
-(defun zp/chronos-edit-quick (time string)
-  (interactive)
-  (zp/chronos-edit-selected-line-time time nil)
-  (if (string-match-p "-" time)
-      (message (concat "Subtracted " string " from selected timer."))
-    (message (concat "Added " string " to selected timer."))))
+  (defun zp/chronos-edit-quick (time string)
+    (interactive)
+    (zp/chronos-edit-selected-line-time time nil)
+    (if (string-match-p "-" time)
+        (message (concat "Subtracted " string " from selected timer."))
+      (message (concat "Added " string " to selected timer."))))
 
-(defun zp/chronos-quit (&optional arg)
-  "Kill chronos window on quit when there are no more timers
+  (defun zp/chronos-quit (&optional arg)
+    "Kill chronos window on quit when there are no more timers
 running."
-  (interactive "P")
-  (let* ((timers chronos--timers-list)
-         (last-timer-is-now (not (nth 1(nth 0 (last timers)))))
-         (no-running-timer (if (> (length timers) 1)
-                               nil
-                             't)))
-    (if (or (and last-timer-is-now
-                 no-running-timer)
-            (eq arg '(4)))
-        (quit-window 1)
-      (quit-window))))
+    (interactive "P")
+    (let* ((timers chronos--timers-list)
+           (last-timer-is-now (not (nth 1(nth 0 (last timers)))))
+           (no-running-timer (if (> (length timers) 1)
+                                 nil
+                               't)))
+      (if (or (and last-timer-is-now
+                   no-running-timer)
+              (eq arg '(4)))
+          (quit-window 1)
+        (quit-window))))
 
-;; Hook
-(defun chronos-mode-config ()
-  "Modify keymaps used by `org-mode'."
-  (local-set-key (kbd "U") (lambda ()
-                             (interactive)
-                             (zp/chronos-edit-quick "-0:00:05" "5 s")))
-  (local-set-key (kbd "I") (lambda ()
-                             (interactive)
-                             (zp/chronos-edit-quick "+0:00:05" "5 s")))
-  (local-set-key (kbd "u") (lambda ()
-                             (interactive)
-                             (zp/chronos-edit-quick "-0:00:15" "15 s")))
-  (local-set-key (kbd "i") (lambda ()
-                             (interactive)
-                             (zp/chronos-edit-quick "+0:00:15" "15 s")))
-  (local-set-key (kbd "j") (lambda ()
-                             (interactive)
-                             (zp/chronos-edit-quick "-0:01:00" "1 min")))
-  (local-set-key (kbd "k") (lambda ()
-                             (interactive)
-                             (zp/chronos-edit-quick "+0:01:00" "1 min")))
-  (local-set-key (kbd "J") (lambda ()
-                             (interactive)
-                             (zp/chronos-edit-quick "-0:05:00" "5 min")))
-  (local-set-key (kbd "K") (lambda ()
-                             (interactive)
-                             (zp/chronos-edit-quick "+0:05:00" "5 min")))
-  (local-set-key (kbd "m") (lambda ()
-                             (interactive)
-                             (zp/chronos-edit-quick "-0:10:00" "10 min")))
-  (local-set-key (kbd ",") (lambda ()
-                             (interactive)
-                             (zp/chronos-edit-quick "+0:10:00" "10 min")))
-  (local-set-key (kbd "a") 'helm-chronos-add-timer)
-  (local-set-key (kbd "A") (lambda ()
-                             (interactive)
-                             (let ((zp/helm-chronos-add-relatively t))
-                               (helm-chronos-add-timer)))))
-(setq chronos-mode-hook 'chronos-mode-config)
+  ;;------
+  ;; Keys
+  ;;------
+
+  (defun zp/chronos-mode-config ()
+    "Modify keymaps used by `org-mode'."
+    (local-set-key (kbd "U") (lambda ()
+                               (interactive)
+                               (zp/chronos-edit-quick "-0:00:05" "5 s")))
+    (local-set-key (kbd "I") (lambda ()
+                               (interactive)
+                               (zp/chronos-edit-quick "+0:00:05" "5 s")))
+    (local-set-key (kbd "u") (lambda ()
+                               (interactive)
+                               (zp/chronos-edit-quick "-0:00:15" "15 s")))
+    (local-set-key (kbd "i") (lambda ()
+                               (interactive)
+                               (zp/chronos-edit-quick "+0:00:15" "15 s")))
+    (local-set-key (kbd "j") (lambda ()
+                               (interactive)
+                               (zp/chronos-edit-quick "-0:01:00" "1 min")))
+    (local-set-key (kbd "k") (lambda ()
+                               (interactive)
+                               (zp/chronos-edit-quick "+0:01:00" "1 min")))
+    (local-set-key (kbd "J") (lambda ()
+                               (interactive)
+                               (zp/chronos-edit-quick "-0:05:00" "5 min")))
+    (local-set-key (kbd "K") (lambda ()
+                               (interactive)
+                               (zp/chronos-edit-quick "+0:05:00" "5 min")))
+    (local-set-key (kbd "m") (lambda ()
+                               (interactive)
+                               (zp/chronos-edit-quick "-0:10:00" "10 min")))
+    (local-set-key (kbd ",") (lambda ()
+                               (interactive)
+                               (zp/chronos-edit-quick "+0:10:00" "10 min")))
+    (local-set-key (kbd "a") 'helm-chronos-add-timer)
+    (local-set-key (kbd "A") (lambda ()
+                               (interactive)
+                               (let ((zp/helm-chronos-add-relatively t))
+                                 (helm-chronos-add-timer)))))
+
+  (add-hook 'chronos-mode-hook #'zp/chronos-mode-config))
+
+(use-package helm-chronos
+  :requires chronos
+  :config
+  ;; Fix for adding new timers with helm-chronos
+  (defvar helm-chronos--fallback-source
+    (helm-build-dummy-source "Enter <expiry time spec>/<message>"
+      :filtered-candidate-transformer
+      (lambda (_candidates _source)
+        (list (or (and (not (string= helm-pattern ""))
+                       helm-pattern)
+                  "Enter a timer to start")))
+      :action '(("Add timer" . (lambda (candidate)
+                                 (if (string= helm-pattern "")
+                                     (message "No timer")
+                                   (helm-chronos--parse-string-and-add-timer helm-pattern))))))))
 
 
 
