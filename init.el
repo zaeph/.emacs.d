@@ -5005,7 +5005,6 @@ that date.  Leave point on the first amount."
 ;; ========================================
 
 (require 'chronos)
-(load "~/.emacs.d/lisp/helm-chronos-patched.el")
 (require 'helm-chronos)  ;; Doesn't support creating new timers from helm
 
 (setq chronos-expiry-functions '(chronos-notify))
