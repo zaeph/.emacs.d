@@ -331,10 +331,6 @@
   :config
   (flycheck-pos-tip-mode))
 
-;; Required for ‘mode-line-buffer-id-inactive’ (face)
-;; TODO: Disable once I’ve defined the face internally
-(use-package spaceling-config)
-
 (use-package lispy
   :load-path "~/projects/lispy"
   :config
