@@ -7012,8 +7012,11 @@ If in variable-pitch-mode, change the variable font-preset."
   (zp/switch-theme-auto))
 
 
+;;----------------------------------------------------------------------------
+;; Interaction with terminal emulators
+;;----------------------------------------------------------------------------
 
-(defun zp/terminology-dwim (&optional ARGUMENTS)
+(defun zp/terminology-dwim (&optional arguments)
   "Run terminology in the CWD.
 
 Trim unnecessary TRAMP information from the path (e.g. /sudo:…),
@@ -7035,7 +7038,7 @@ See ‘~/.bin/terminology-dwim’ for more info."
                  (if arg (concat " " arg))
                  " -d \"" path "\""))))))
 
-(defun zp/terminator-dwim (&optional ARGUMENTS)
+(defun zp/terminator-dwim (&optional arguments)
   "Run terminator in the CWD.
 
 Trim unnecessary TRAMP information from the path (e.g. /sudo:…),
