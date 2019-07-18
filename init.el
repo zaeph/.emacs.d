@@ -5916,11 +5916,6 @@ command reveals the other lines."
 
 ;; (global-set-key (kbd "C-x C-g") 'xah-open-in-external-app)
 
-;; Unset org-mode keys
-(eval-after-load "org"
-  '(progn
-    (define-key org-mode-map (kbd "C-,") nil)))
-
 ;; Toggle modes
 (define-prefix-command 'zp/toggle-map)
 (define-key ctl-x-map "t" 'zp/toggle-map)
