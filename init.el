@@ -6327,27 +6327,7 @@ mouse-1: Previous buffer\nmouse-3: Next buffer")
                     "  "
                     mode-line-end-spaces)))))
 
-;; Default
-;; (setq-default mode-line-format
-;;               '("%e"
-;;                 mode-line-front-space
-;;                 mode-line-mule-info
-;;                 mode-line-client
-;;                 mode-line-modified
-;;                 mode-line-remote
-;;                 mode-line-frame-identification
-;;                 mode-line-buffer-identification
-;;                 "   "
-;;                 mode-line-position
-;;                 (vc-mode vc-mode)
-;;                 "  "
-;;                 mode-line-modes
-;;                 mode-line-misc-info
-;;                 mode-line-end-spaces))
 
-;;   (set-face-attribute 'mode-line nil :background "#666358" :foreground "black"))
-
-;; END
 
 (defun zp/mode-line-theme (&optional arg)
   (cond ((string= arg "dark")
