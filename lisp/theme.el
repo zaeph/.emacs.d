@@ -9,7 +9,7 @@
 (defvar zp/emacs-theme nil
   "Theme currently used by Emacs.")
 
-(defun zp/dark-theme ()
+(defun zp/emacs-dark-theme ()
   (interactive)
   (setq zp/emacs-theme "dark")
   (load-theme 'base16-atelier-sulphurpool t)
@@ -68,10 +68,10 @@
 
   (zp/org-super-agenda-update-face)
 
-  (zp/mode-line-theme "dark")
+  (zp/mode-line-dark-theme)
   (zp/pdf-view-midnight-mode-theme))
 
-(defun zp/light-theme ()
+(defun zp/emacs-light-theme ()
   (interactive)
   (setq zp/emacs-theme "light")
   (load-theme 'base16-google-light t)
@@ -135,8 +135,47 @@
 
   (zp/org-super-agenda-update-face)
 
-  (zp/mode-line-theme "light")
+  (zp/mode-line-light-theme)
   (zp/pdf-view-midnight-mode-theme))
+
+;;----------------------------------------------------------------------------
+;; Mode-line definition
+;;----------------------------------------------------------------------------
+
+(defvar zp/mode-line-theme nil
+  "Theme currently used by the mode-line")
+
+(defun zp/mode-line-dark-theme ()
+  (set-face-attribute 'mode-line nil
+                      :background "#293233"
+                      :foreground "#bfe9bd"
+                      :weight 'bold)
+  (set-face-attribute 'mode-line-inactive nil
+                      :background "#1d1d1d"
+                      :foreground "#666"
+                      :weight 'bold)
+  (set-face-attribute 'mode-line-buffer-id nil
+                      :foreground "DarkGoldenrod2"
+                      :weight 'bold)
+  (set-face-attribute 'mode-line-buffer-id-inactive nil
+                      :foreground "#888"
+                      :weight 'bold))
+
+(defun zp/mode-line-light-theme ()
+  (set-face-attribute 'mode-line nil
+                      :background "#948e76"
+                      :foreground "#333"
+                      :weight 'bold)
+  (set-face-attribute 'mode-line-inactive nil
+                      :background "#c7bf9e"
+                      :foreground "#666"
+                      :weight 'bold)
+  (set-face-attribute 'mode-line-buffer-id nil
+                      :foreground "#d98e2d"
+                      :weight 'bold)
+  (set-face-attribute 'mode-line-buffer-id-inactive nil
+                      :foreground "#948e76"
+                      :weight 'bold))
 
 ;;----------------------------------------------------------------------------
 ;; Day/night cycle
@@ -237,13 +276,20 @@ See ‘zp/time-of-day-sections’ for more info."
 ;;----------------------------------------------------------------------------
 ;; Switching
 ;;----------------------------------------------------------------------------
-(defun zp/switch-theme ()
+(defun zp/switch-emacs-theme ()
   (interactive)
   (cond ((string= zp/emacs-theme "dark")
-         (zp/light-theme))
+         (zp/emacs-light-theme))
         ((string= zp/emacs-theme "light")
-         (zp/dark-theme)))
+         (zp/emacs-dark-theme)))
   (zp/pdf-view-update-midnight-mode))
+
+(defun zp/switch-mode-line-theme ()
+  (interactive)
+  (cond ((string= zp/mode-line-theme "dark")
+         (zp/mode-line-light-theme))
+        ((string= zp/mode-line-theme "light")
+         (zp/mode-line-dark-theme))))
 
 (defun zp/switch-theme-dwim (&optional print-message)
   "Switch theme based on time-of-day.
@@ -253,11 +299,11 @@ See ‘zp/time-of-day-sections’ and ‘zp/daytimep’ for more info."
     (cond ((and daytime
                 (or (string= zp/emacs-theme "dark")
                     (not zp/emacs-theme)))
-           (zp/light-theme))
+           (zp/emacs-light-theme))
           ((and (not daytime)
                 (or (string= zp/emacs-theme "light")
                     (not zp/emacs-theme)))
-           (zp/dark-theme))
+           (zp/emacs-dark-theme))
           (t
            (when print-message
              (message "Nothing to do."))))

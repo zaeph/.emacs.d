@@ -6277,9 +6277,12 @@ the beginning of the line."
 
 
 
-;; Modeline
+;;----------------------------------------------------------------------------
+;; Mode-line
+;;----------------------------------------------------------------------------
 
-(defvar ml-selected-window nil)
+(defvar ml-selected-window nil
+  "Current selected window.")
 
 (defun ml-record-selected-window ()
   (setq ml-selected-window (selected-window)))
@@ -6376,42 +6379,6 @@ mouse-1: Previous buffer\nmouse-3: Next buffer")
 
 
 
-(defun zp/mode-line-theme (&optional arg)
-  (cond ((string= arg "dark")
-         (progn
-           (set-face-attribute 'mode-line nil
-                               :background "#293233"
-                               :foreground "#bfe9bd"
-                               :weight 'bold)
-           (set-face-attribute 'mode-line-inactive nil
-                               :background "#1d1d1d"
-                               :foreground "#666"
-                               :weight 'bold)
-           (set-face-attribute 'mode-line-buffer-id nil
-                               :foreground "DarkGoldenrod2"
-                               :weight 'bold)
-           (set-face-attribute 'mode-line-buffer-id-inactive nil
-                               :foreground "#888"
-                               :weight 'bold)))
-        ((string= arg "light")
-         (progn
-           (set-face-attribute 'mode-line nil
-                               :background "#948e76"
-                               :foreground "#333"
-                               :weight 'bold)
-           (set-face-attribute 'mode-line-inactive nil
-                               :background "#c7bf9e"
-                               :foreground "#666"
-                               :weight 'bold)
-           (set-face-attribute 'mode-line-buffer-id nil
-                               :foreground "#d98e2d"
-                               :weight 'bold)
-           (set-face-attribute 'mode-line-buffer-id-inactive nil
-                               :foreground "#948e76"
-                               :weight 'bold)))))
-
-
-
 
 
 ;;----------------------------------------------------------------------------
@@ -6428,11 +6395,11 @@ mouse-1: Previous buffer\nmouse-3: Next buffer")
   (setq zp/time-of-day-sections '("06:00" "08:00" "16:00" "20:00" "00:00"))
   (zp/switch-theme-auto)
 
-  (define-key zp/toggle-map "t" #'zp/switch-theme)
+  (define-key zp/toggle-map "t" #'zp/switch-emacs-theme)
   (define-key zp/toggle-map "c" #'zp/helm-select-font-dwim)
 
   (global-set-key (kbd "C-c y") 'zp/variable-pitch-mode)
-  (global-set-key (kbd "C-c T") 'zp/switch-theme))
+  (global-set-key (kbd "C-c T") 'zp/switch-emacs-theme))
 
 
 ;;----------------------------------------------------------------------------
