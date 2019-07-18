@@ -1922,6 +1922,8 @@ return `nil'."
   :config
   (setq diary-file "~/diary")
 
+  (calendar-set-date-style 'iso)
+
   ;; Geo-location
   (setq calendar-week-start-day 1
         calendar-latitude 48.11198
@@ -6557,8 +6559,6 @@ mouse-1: Previous buffer\nmouse-3: Next buffer")
 ;; ========================================
 ;; ================ FONTS =================
 ;; ========================================
-
-(calendar-set-date-style 'iso)
 
 ;; Line spacing
 (setq-default line-spacing nil)
