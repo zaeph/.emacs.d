@@ -6206,16 +6206,6 @@ the beginning of the line."
 ;; ================ FACES =================
 ;; ========================================
 
-;;; Truncate long buffer names
-;; (require 'nadvice)
-;; (defun my-truncate-buffer-name (buf-name)
-;;   (let ((len (length buf-name)))
-;;     (cond ((> len 20)
-;;            (concat (substring buf-name 0 19)
-;;                    "…"))
-;;           (t buf-name))))
-;; (advice-add 'powerline-buffer-id :filter-return 'my-truncate-buffer-name)
-
 (defun zp/pdf-view-midnight-mode-theme ()
   (setq pdf-view-midnight-colors
         `(,(face-attribute 'default :foreground) .
