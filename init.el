@@ -2467,7 +2467,6 @@ along with effort estimates and total time."
 ;;----------------------------------------------------------------------------
 ;; Helm
 ;;----------------------------------------------------------------------------
-
 (define-prefix-command 'zp/helm-map)
 (global-set-key (kbd "C-c h") 'zp/helm-map)
 (use-package helm
@@ -2516,7 +2515,6 @@ along with effort estimates and total time."
 ;;----------------------------------------------------------------------------
 ;; Ivy
 ;;----------------------------------------------------------------------------
-
 (use-package ivy
   :config
   (ivy-mode 1)
@@ -2538,7 +2536,8 @@ along with effort estimates and total time."
   )
 
 (use-package counsel
-  :bind (("C-s" . zp/counsel-grep-or-swip)
+  :after swiper
+  :bind (("C-s" . zp/counsel-grep-or-swiper)
          ;; Commented because I use the Helm equivalents
          ;; ("M-x" . counsel-M-x)
          ;; ("<menu>" . counsel-M-x)
@@ -2576,7 +2575,6 @@ indirect-buffers."
 ;;----------------------------------------------------------------------------
 ;; Hydra
 ;;----------------------------------------------------------------------------
-
 (use-package hydra)
 
 (use-package hydra-org-priority
@@ -2587,10 +2585,9 @@ indirect-buffers."
 ;;----------------------------------------------------------------------------
 ;; org-super-agenda
 ;;----------------------------------------------------------------------------
-
 (use-package org-super-agenda
   :load-path "~/projects/forks/org-super-agenda/"
-  :requires org-agenda
+  :after org-agenda
   :config
   (org-super-agenda-mode)
 
@@ -2691,6 +2688,41 @@ indirect-buffers."
 ;;----------------------------------------------------------------------------
 
 (use-package org-agenda
+  :bind (("H-o" . zp/switch-to-agenda)
+         :map org-agenda-mode-map
+         (("M-n" . org-agenda-next-date-line)
+          ("M-p" . org-agenda-previous-date-line)
+          ("k" . zp/org-agenda-capture)
+          ("C-," . sunrise-sunset)
+          ("C-c C-q" . counsel-org-tag-agenda)
+          (":" . counsel-org-tag-agenda)
+          ("," . zp/hydra-org-priority/body)
+          ("M-k" . zp/toggle-org-habit-show-all-today)
+          ("M-i" . zp/toggle-org-agenda-category-icons)
+          ("M-t" . org-agenda-todo-yesterday)
+          ("D" . zp/toggle-org-agenda-include-deadlines)
+          ("S" . zp/toggle-org-agenda-include-scheduled)
+          ("K" . zp/toggle-org-agenda-include-habits)
+          ("M-d" . zp/toggle-org-deadline-warning-days-range)
+          ("r" . zp/org-agenda-benchmark)
+          ("R" . zp/org-agenda-garbage-collect)
+          ("y" . zp/toggle-org-agenda-split-subtasks)
+          ("i" . zp/toggle-org-agenda-sorting-strategy-special-first)
+          ("o" . zp/toggle-org-agenda-sort-by-rev-fifo)
+          ("h" . zp/toggle-org-agenda-todo-ignore-future)
+          ("W" . zp/toggle-org-agenda-projects-include-waiting)
+          ("C-c C-x r" . zp/org-agenda-set-appt-warntime)
+          ("C-c C-x l" . zp/org-agenda-set-location)
+          ("C-c C-x d" . zp/org-agenda-delete-property)
+          (">" . zp/org-agenda-date-prompt-and-update-appt)
+          ("C-c C-s" . zp/org-agenda-schedule-and-update-appt)
+          ("C-c C-S-w" . zp/org-agenda-refile-with-paths)
+          ("Z" . org-resolve-clocks)
+          ("C-<return>" . org-agenda-switch-to)
+          ("<return>" . zp/org-agenda-tree-to-indirect-buffer-without-grabbing-focus)
+          ("S-<return>" . zp/org-agenda-tree-to-indirect-buffer)
+          ("M-<return>" . zp/org-agenda-tree-to-indirect-buffer-maximise)
+          ("<backspace>" . zp/org-kill-spawned-ibuf-and-window)))
   :config
   (defun zp/org-agenda-get-key ()
     "Return the key of the current org-agenda view."
@@ -4577,56 +4609,7 @@ With a ‘C-u’ prefix, make a separate frame for this tree."
                         (prog1 (current-buffer)
                           (select-window (previous-window)))))))
       (with-current-buffer other
-        (zp/org-kill-spawned-ibuf))))
-
-  ;;------
-  ;; Keys
-  ;;------
-
-  (defun zp/org-agenda-mode-config ()
-    "For use with `org-agenda-mode'."
-    (local-set-key (kbd "M-n") 'org-agenda-next-date-line)
-    (local-set-key (kbd "M-p") 'org-agenda-previous-date-line)
-    (local-set-key (kbd "k") 'zp/org-agenda-capture)
-    (local-set-key (kbd "C-,") 'sunrise-sunset)
-    (local-set-key (kbd "C-c C-q") 'counsel-org-tag-agenda)
-    (local-set-key (kbd ":") 'counsel-org-tag-agenda)
-    (local-set-key (kbd ",") 'zp/hydra-org-priority/body)
-    (local-set-key (kbd "M-k") 'zp/toggle-org-habit-show-all-today)
-    (local-set-key (kbd "M-i") 'zp/toggle-org-agenda-category-icons)
-    (local-set-key (kbd "M-t") 'org-agenda-todo-yesterday)
-    (local-set-key (kbd "D") 'zp/toggle-org-agenda-include-deadlines)
-    (local-set-key (kbd "S") 'zp/toggle-org-agenda-include-scheduled)
-    (local-set-key (kbd "K") 'zp/toggle-org-agenda-include-habits)
-    (local-set-key (kbd "M-d") 'zp/toggle-org-deadline-warning-days-range)
-    (local-set-key (kbd "r") 'zp/org-agenda-benchmark)
-    (local-set-key (kbd "R") 'zp/org-agenda-garbage-collect)
-    (local-set-key (kbd "y") 'zp/toggle-org-agenda-split-subtasks)
-    (local-set-key (kbd "i") 'zp/toggle-org-agenda-sorting-strategy-special-first)
-    (local-set-key (kbd "o") 'zp/toggle-org-agenda-sort-by-rev-fifo)
-    ;; (local-set-key (kbd "H") 'zp/toggle-org-agenda-dim-blocked-tasks)
-    (local-set-key (kbd "h") 'zp/toggle-org-agenda-todo-ignore-future)
-    (local-set-key (kbd "W") 'zp/toggle-org-agenda-projects-include-waiting)
-    (local-set-key (kbd "C-c C-x r") 'zp/org-agenda-set-appt-warntime)
-    (local-set-key (kbd "C-c C-x l") 'zp/org-agenda-set-location)
-    (local-set-key (kbd "C-c C-x d") 'zp/org-agenda-delete-property)
-    (local-set-key (kbd ">") 'zp/org-agenda-date-prompt-and-update-appt)
-    (local-set-key (kbd "C-c C-s") 'zp/org-agenda-schedule-and-update-appt)
-    ;; (local-set-key (kbd "C-c C-w") 'zp/org-agenda-refile)
-    (local-set-key (kbd "C-c C-S-w") 'zp/org-agenda-refile-with-paths)
-    (local-set-key (kbd "Z") 'org-resolve-clocks)
-    (local-set-key (kbd "C-<return>") 'org-agenda-switch-to)
-    (local-set-key (kbd "<return>") 'zp/org-agenda-tree-to-indirect-buffer-without-grabbing-focus)
-    (local-set-key (kbd "S-<return>") 'zp/org-agenda-tree-to-indirect-buffer)
-    (local-set-key (kbd "M-<return>") 'zp/org-agenda-tree-to-indirect-buffer-maximise)
-    (local-set-key (kbd "<backspace>") 'zp/org-kill-spawned-ibuf-and-window)
-
-    ;; Update org-super-agenda-header-map
-    (setq org-super-agenda-header-map org-agenda-mode-map))
-
-  (add-hook 'org-agenda-mode-hook #'zp/org-agenda-mode-config)
-
-  (global-set-key (kbd "H-o") #'zp/switch-to-agenda))
+        (zp/org-kill-spawned-ibuf)))))
 
 
 
@@ -4635,6 +4618,8 @@ With a ‘C-u’ prefix, make a separate frame for this tree."
 ;;----------------------------------------------------------------------------
 
 (use-package org-capture
+  :bind ("C-c n" . org-capture)
+  :hook (org-capture-mode . zp/org-capture-make-full-frame)
   :config
   (setq org-default-notes-file "~/org/life.org")
 
@@ -4944,24 +4929,18 @@ If the function sets CREATED, it returns its value."
     "Maximise the org-capture frame if :full-frame is non-nil."
     (let ((full-frame (plist-get org-capture-plist :full-frame)))
       (if full-frame
-          (delete-other-windows))))
+          (delete-other-windows)))))
 
-  (add-hook 'org-capture-mode-hook 'zp/org-capture-make-full-frame)
-
-  ;;------
-  ;; Keys
-  ;;------
-
-  (global-set-key (kbd "C-c n") 'org-capture))
-
-
-
-
-;; ========================================
-;; ============== ORG-REFILE ==============
-;; ========================================
+;;----------------------------------------------------------------------------
+;; hydra-org-refile
+;;----------------------------------------------------------------------------
 
 (use-package hydra-org-refile
+  :bind (("C-c C-j" . zp/hydra-org-jump)
+         :map org-mode-map
+         ("C-c C-w" . zp/hydra-org-refile-dwim)
+         :map org-agenda-mode-map
+         ("C-c C-w" . zp/hydra-org-refile))
   :config
   ;; Exclude separators in all org-refile commands
   (setq org-refile-target-verify-function
@@ -5197,14 +5176,7 @@ If the function sets CREATED, it returns its value."
      ("j" "~/org/life.org" "Music" "List of jazz pieces")
      ("o" "~/org/life.org" "Music" "List of other genres"))
     nil
-    media)
-
-  ;; Add key bindings
-  (global-set-key (kbd "C-c C-w") 'zp/hydra-org-refile)
-  (global-set-key (kbd "C-c C-j") 'zp/hydra-org-jump)
-  (define-key org-capture-mode-map (kbd "C-c C-w") 'zp/hydra-org-refile)
-  (define-key org-mode-map (kbd "C-c C-w") 'zp/org-refile-dwim)
-  (define-key org-agenda-mode-map (kbd "C-c C-w") 'zp/hydra-org-refile/body))
+    media))
 
 
 
