@@ -2811,7 +2811,7 @@ With a prefix argument, do so in all agenda buffers."
             (setq ov (make-overlay (point-at-bol) (+ 2 (point-at-bol))))
             (org-overlay-display ov (concat org-agenda-bulk-mark-char " ")
                                  ;; (org-get-todo-face "TODO")
-                                 'org-todo ;Modification
+                                 'org-todo        ;Modification
                                  'evaporate)
             (overlay-put ov 'type 'org-marked-entry-overlay))
           (end-of-line 1)
@@ -4258,6 +4258,68 @@ With a ‘C-u’ prefix argument, also kill the main Org buffer."
                            (1 "1 agenda-buffer was killed.")
                            (_ (concat (number-to-string kill-count)
                                       " agenda-buffers were killed."))))))))
+
+  ;;----------------------------------------
+  ;; Creating & Toggling org-agenda windows
+  ;;----------------------------------------
+
+  ;; TODO: Improve
+
+  (defun zp/create-agenda-view (arg)
+    "Create the default agenda view."
+    (interactive "P")
+    (if (get-buffer "*Org Agenda(l)*")
+        (switch-to-buffer "*Org Agenda(l)*")
+      (org-agenda arg "l"))
+    (delete-other-windows)
+    (split-window-right)
+    (if (get-buffer "*Org Agenda(n)*")
+        (switch-to-buffer "*Org Agenda(n)*")
+      (org-agenda arg "n"))
+    (select-window (next-window))
+    (balance-windows))
+
+  (defun zp/switch-to-agenda (arg)
+    "Toggles a custom org-agenda context, or creates it if it doesn’t
+  exist.
+
+The layout of the org-agenda context is stored as a frame
+parameter, which implies that each frame can have its own
+independent org-agenda context.
+
+With a ‘C-u’ prefix argument, forces the re-creation of the
+org-agenda context."
+
+    (interactive "P")
+    (let* ((current-config (current-window-configuration))
+           (current-frame (window-configuration-frame current-config)))
+
+      (cond ((and
+              (frame-parameter current-frame
+                               'zp/org-agenda-session-p)
+              (not arg))
+             (set-frame-parameter current-frame
+                                  'zp/org-agenda-window-config
+                                  current-config)
+             (set-window-configuration
+              (frame-parameter current-frame
+                               'zp/org-agenda-window-config-before))
+             (set-frame-parameter current-frame
+                                  'zp/org-agenda-session-p nil))
+
+            (t
+             (set-frame-parameter current-frame
+                                  'zp/org-agenda-window-config-before
+                                  current-config)
+             (if (or arg
+                     (not (frame-parameter current-frame
+                                           'zp/org-agenda-window-config)))
+                 (zp/create-agenda-view arg)
+               (set-window-configuration
+                (frame-parameter current-frame
+                                 'zp/org-agenda-window-config)))
+             (set-frame-parameter current-frame
+                                  'zp/org-agenda-session-p t)))))
 
   ;;------
   ;; Rest
@@ -5802,61 +5864,6 @@ i.e. change right window to bottom, or change bottom window to right."
 ;;   (if (string-match ".*Org Agenda.*" (buffer-name))
 ;;       (mode-line-other-buffer)
 ;;     (switch-to-buffer "*Org Agenda(n)*")))
-
-(defun zp/create-agenda-view (arg)
-  (interactive "P")
-  (if (get-buffer "*Org Agenda(l)*")
-      (switch-to-buffer "*Org Agenda(l)*")
-    (org-agenda arg "l"))
-  (delete-other-windows)
-  (split-window-right)
-  (if (get-buffer "*Org Agenda(n)*")
-      (switch-to-buffer "*Org Agenda(n)*")
-    (org-agenda arg "n"))
-  (select-window (next-window))
-  (balance-windows))
-
-(defun zp/switch-to-agenda (arg)
-  "Toggles a custom org-agenda context, or creates it if it doesn’t
-  exist.
-
-The layout of the org-agenda context is stored as a frame
-parameter, which implies that each frame can have its own
-independent org-agenda context.
-
-With a ‘C-u’ prefix argument, forces the re-creation of the
-org-agenda context."
-
-  (interactive "P")
-  (let* ((current-config (current-window-configuration))
-         (current-frame (window-configuration-frame current-config)))
-
-    (cond ((and
-            (frame-parameter current-frame
-                             'zp/org-agenda-session-p)
-            (not arg))
-           (set-frame-parameter current-frame
-                                'zp/org-agenda-window-config
-                                current-config)
-           (set-window-configuration
-            (frame-parameter current-frame
-                             'zp/org-agenda-window-config-before))
-           (set-frame-parameter current-frame
-                                'zp/org-agenda-session-p nil))
-
-          (t
-           (set-frame-parameter current-frame
-                                'zp/org-agenda-window-config-before
-                                current-config)
-           (if (or arg
-                   (not (frame-parameter current-frame
-                                         'zp/org-agenda-window-config)))
-               (zp/create-agenda-view arg)
-             (set-window-configuration
-              (frame-parameter current-frame
-                               'zp/org-agenda-window-config)))
-           (set-frame-parameter current-frame
-                                'zp/org-agenda-session-p t)))))
 
 
 
