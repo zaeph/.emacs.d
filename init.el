@@ -160,6 +160,7 @@ end-of-buffer signals; pass the rest to the default handler."
 ;; Cosmetics
 ;;----------------------------------------------------------------------------
 (tool-bar-mode -1)
+(menu-bar-mode -1)
 (scroll-bar-mode -1)
 (blink-cursor-mode -1)
 (show-paren-mode 1)
@@ -230,6 +231,12 @@ end-of-buffer signals; pass the rest to the default handler."
 ;; Time
 (setq display-time-default-load-average nil)
 (display-time-mode 1)
+
+;; EPG
+(setq mml2015-use 'epg
+      epg-user-id (zp/get-string-from-file "~/org/pp/gpg/gpg-key-id")
+      mml-secure-openpgp-sign-with-sender t
+      mml-secure-openpgp-encrypt-to-self t)
 
 ;;----------------------------------------------------------------------------
 ;; Fringe bitmaps
@@ -688,6 +695,154 @@ time is displayed."
                              fountain-outline-hide-custom-level
                              olivetti-mode)))
 
+(use-package yasnippet
+  :config
+  (yas-global-mode 1)
+  (global-set-key (kbd "H-<backspace>") 'yas-prev-field))
+
+(use-package winner
+  :bind (("H-u" . winner-undo)
+         ("H-i" . winner-redo))
+  :config
+  (winner-mode 1))
+
+(use-package ace-window
+  :bind ("H-b" . ace-window)
+  :config
+  (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)
+        aw-scope 'frame))
+
+(use-package avy
+  :bind (;; ("H-n" . avy-goto-goto-word-1)
+         ;; ("H-n" . avy-goto-goto-char)
+         ("H-n" . avy-goto-char-timer)))
+
+(use-package ace-link
+  :config
+  (ace-link-setup-default))
+
+;; (use-package dumb-jump
+;;   :config
+;;   (dumb-jump-mode)
+;;   (global-visible-mark-mode 1))
+
+(use-package backup-walker
+  :hook (backup-walker-mode . zp/set-diff-backend-git-diff)
+  :config
+  (defun zp/set-diff-backend-git-diff ()
+    "Set diff backend to ‘git diff’.
+Modifies ‘diff-command’ and ‘diff-switches’ to use ‘git diff’."
+    (setq-local diff-command "git --no-pager diff")
+    (setq-local diff-switches "--textconv")))
+
+;; Disabled since Emacs now has a native package for showing
+;; line-numbers
+(use-package linum
+  :disabled
+  ;Add spaces before and after
+  (setq linum-format " %d "))
+
+(use-package pdf-tools
+  :magic ("%PDF" . pdf-view-mode)
+  :config
+  (pdf-tools-install :no-query))
+
+(use-package pdf-view
+  :config
+  (defun zp/toggle-pdf-view-auto-slice-minor-mode ()
+    "Toggle ‘pdf-view-auto-slice-minor-mode’ and reset slice."
+    (interactive)
+    (call-interactively 'pdf-view-auto-slice-minor-mode)
+    (if (not pdf-view-auto-slice-minor-mode)
+        (progn
+          (pdf-view-reset-slice))))
+
+  ;; Disable continuous view in pdf-view
+  ;; I prefer to explicitly turn pages
+  (setq pdf-view-continuous nil)
+
+  (defun zp/pdf-view-continuous-toggle ()
+    (interactive)
+    (cond ((not pdf-view-continuous)
+           (setq pdf-view-continuous t)
+           (message "Page scrolling: Continous"))
+          (t
+           (setq pdf-view-continuous nil)
+           (message "Page scrolling: Constrained"))))
+
+  (define-key pdf-view-mode-map (kbd "m") 'pdf-view-midnight-minor-mode)
+  (define-key pdf-view-mode-map (kbd "s") 'zp/toggle-pdf-view-auto-slice-minor-mode)
+  (define-key pdf-view-mode-map (kbd "M") 'pdf-view-set-slice-using-mouse)
+  (define-key pdf-view-mode-map (kbd "c") 'zp/pdf-view-continuous-toggle)
+  (define-key pdf-view-mode-map (kbd "w") 'pdf-view-fit-width-to-window)
+
+  (define-prefix-command 'slice-map)
+  (define-key pdf-view-mode-map (kbd "S") 'slice-map)
+  (define-key pdf-view-mode-map (kbd "S b") 'pdf-view-set-slice-from-bounding-box)
+  (define-key pdf-view-mode-map (kbd "S m") 'pdf-view-set-slice-using-mouse)
+  (define-key pdf-view-mode-map (kbd "S r") 'pdf-view-reset-slice)
+
+  (add-hook 'pdf-view-mode-hook #'pdf-view-midnight-minor-mode)
+  (add-hook 'pdf-view-mode-hook #'pdf-view-auto-slice-minor-mode))
+
+(use-package pdf-links
+  :config
+  (define-key pdf-links-minor-mode-map (kbd "f") 'pdf-view-fit-page-to-window))
+
+;; TODO: Consider deleting this semi-useless minor-mode
+(defun zp/save-buffers-kill-terminal-silently ()
+  (interactive)
+  (save-buffers-kill-terminal t))
+
+(define-minor-mode save-silently-mode
+  "Save buffers silently when exiting."
+  :lighter " SS"
+  :keymap (let ((map (make-sparse-keymap)))
+            (define-key map (kbd "C-x C-c") 'zp/save-buffers-kill-terminal-silently)
+            (define-key map (kbd "C-c C-k") 'zp/kanji-add-furigana)
+            (define-key map (kbd "M-n") 'zp/kanji-add-furigana)
+            map))
+
+;; Way to enable minor modes based on filenames
+;; Added with the package ‘auto-minor-mode-alist’
+;; But they can also be added via file-fariables or minor-modes
+;; TODO: Adapt this block
+(add-to-list 'auto-minor-mode-alist '("edit-in-emacs.txt" . visual-line-mode))
+(add-to-list 'auto-minor-mode-alist '("edit-in-emacs.txt" . olivetti-mode))
+(add-to-list 'auto-minor-mode-alist '("edit-in-emacs.txt" . flyspell-mode))
+(add-to-list 'auto-minor-mode-alist '("edit-in-emacs.txt" . save-silently-mode))
+
+;; (add-to-list 'auto-minor-mode-alist '("edit-in-emacs.html" . visual-line-mode))
+;; (add-to-list 'auto-minor-mode-alist '("edit-in-emacs.html" . olivetti-mode))
+;; (add-to-list 'auto-minor-mode-alist '("edit-in-emacs.html" . flyspell-mode))
+(add-to-list 'auto-minor-mode-alist '("edit-in-emacs.html" . save-silently-mode))
+
+(defun zp/kanji-add-furigana ()
+  "Adds furigana to the kanji at point.
+If text is selected, adds furigana to the selected kanji instead."
+  (interactive)
+  (if (not (region-active-p))
+      (progn
+        (call-interactively 'set-mark-command)
+        (call-interactively 'forward-char)))
+  (yas-expand-snippet (yas-lookup-snippet "anki-ruby")))
+
+(use-package recentf
+  :config
+  (setq recentf-max-menu-items 100))
+
+(use-package tramp
+  :config
+  (setq tramp-default-method "ssh"))
+
+(use-package realgud
+  :config
+  (setq realgud-safe-mode nil))
+
+(use-package picture
+  :config
+  (global-set-key (kbd "C-c \\") #'picture-mode))
+
 (use-package thingatpt
   :bind (("C-c C-=" . increment-integer-at-point)
          ("C-c C--" . decrement-integer-at-point))
@@ -965,140 +1120,9 @@ LANGUAGE should be the name of an Ispell dictionary."
   :hook (message-setup . flyspell-mode))
 
 ;;----------------------------------------------------------------------------
-;; notmuch
+;; Email
 ;;----------------------------------------------------------------------------
-(use-package epg-config
-  :config
-  (setq mml2015-use 'epg
-        epg-user-id (zp/get-string-from-file "~/org/pp/gpg/gpg-key-id")
-        mml-secure-openpgp-sign-with-sender t
-        mml-secure-openpgp-encrypt-to-self t))
-
-(use-package notmuch
-  :bind (("H-l" . zp/switch-to-notmuch)
-         :map notmuch-hello-mode-map
-         ("q" . zp/notmuch-hello-quit)
-         :map notmuch-search-mode-map
-         ("g" . notmuch-refresh-this-buffer)
-         :map notmuch-message-mode-map
-         (("C-c C-c" . zp/notmuch-confirm-before-sending)
-          ("C-c C-b" . zp/message-goto-body)
-          ("C-c C-." . zp/message-goto-body-end)
-          ("M-<" . zp/message-goto-top)
-          ("M->" . zp/message-goto-bottom)
-          ("C-c C-z" . zp/message-kill-to-signature))
-         :map notmuch-show-mode-map
-         (("C-c C-o" . goto-address-at-point)))
-  :config
-  (setq notmuch-always-prompt-for-sender t
-        notmuch-search-oldest-first nil)
-
-  (defvar zp/email-private (zp/get-string-from-file "~/org/pp/private/email")
-    "Email used for private communications.")
-
-  (defvar zp/email-work (zp/get-string-from-file "~/org/pp/work/email")
-    "Email used for work-related communications.")
-
-  (defun zp/get-email-with-alias (email alias &optional regex)
-    "Create email alias from EMAIL and ALIAS.
-
-If REGEX is non-nil, creates a regex to match the email alias."
-    (let* ((email (cond
-                   ((equal email "work")
-                    zp/email-work)
-                   ((equal email "private")
-                    zp/email-private)
-                   (t
-                    email)))
-           (email-alias (replace-regexp-in-string "@"
-                                                  (concat "+" alias "@")
-                                                  email)))
-      (if regex
-          (regexp-quote email-alias)
-        email-alias)))
-
-  (defvar zp/email-org (zp/get-email-with-alias "work" "org")
-    "Email alias used for the org-mode mailing list.")
-
-  (defvar zp/email-dev (zp/get-email-with-alias "work" "dev")
-    "Email alias used for general development work.")
-
-  (setq notmuch-fcc-dirs
-        `((,(regexp-quote zp/email-private) .
-           "private/sent -inbox +sent -unread")
-          (,(regexp-quote zp/email-work) .
-           "work/sent -inbox +sent -unread")
-          (,(regexp-quote zp/email-org) .
-           "work/sent -inbox +sent -unread +org")
-          (,(regexp-quote zp/email-dev) .
-           "work/sent -inbox +sent -unread +dev")))
-
-  (define-key notmuch-search-mode-map "d"
-    (lambda (&optional untrash beg end)
-      "mark thread as spam"
-      (interactive (cons current-prefix-arg (notmuch-interactive-region)))
-      (if untrash
-          (notmuch-search-tag (list "-deleted"))
-        (notmuch-search-tag (list "+deleted" "-inbox")) beg end)
-      (notmuch-search-next-thread)))
-
-  (define-key notmuch-show-mode-map "d"
-    (lambda (&optional beg end)
-      "mark thread as spam"
-      (interactive (notmuch-interactive-region))
-      (notmuch-show-tag (list "+deleted" "-inbox" "-draft"))
-      (notmuch-show-next-thread-show)))
-
-
-  (define-key notmuch-hello-mode-map "q" #'zp/notmuch-hello-quit)
-  (define-key notmuch-search-mode-map "g" #'notmuch-refresh-this-buffer)
-
-  (setq user-full-name "Leo Vivier"
-        mail-host-address "hidden")
-
-  (setq notmuch-saved-searches
-        '((:name "inbox" :query "tag:inbox" :key "i")
-          (:name "unread" :query "tag:unread" :key "u")
-          (:name "flagged" :query "tag:flagged" :key "f")
-          (:name "drafts" :query "tag:draft" :key "d")
-          (:name "sent (last week)" :query "tag:sent date:\"7d..today\"" :key "s")
-          (:name "archive (last week)" :query "* date:\"7d..today\"" :key "a")
-          (:name "sent" :query "tag:sent" :key "S")
-          (:name "archive" :query "*" :key "A")
-          (:name "trash" :query "tag:deleted" :key "t")))
-
-  (defvar zp/message-ispell-alist nil
-    "Alist of emails and the language they typically use.
-The language should be the name of a valid Ispell dictionary.")
-
-  (defun zp/notmuch-confirm-before-sending (&optional arg)
-    (interactive "P")
-    (if (y-or-n-p "Ready to send? ")
-        (notmuch-mua-send-and-exit arg)))
-
-  ;;----------------------
-  ;; Switching to notmuch
-  ;;----------------------
-
-  (defun zp/notmuch-hello-quit ()
-    (interactive)
-    (notmuch-bury-or-kill-this-buffer)
-    (start-process-shell-command "notmuch-new" nil "systemctl --user start check-mail.service")
-    (set-window-configuration zp/notmuch-before-config))
-
-  (defun zp/switch-to-notmuch ()
-    (interactive)
-    (cond ((string-match "\\*notmuch-hello\\*" (buffer-name))
-           (zp/notmuch-hello-quit))
-          ((string-match "\\*notmuch-.*\\*" (buffer-name))
-           (notmuch-bury-or-kill-this-buffer))
-          (t
-           (setq zp/notmuch-before-config (current-window-configuration))
-           (delete-other-windows)
-           (notmuch)))))
-
 (use-package message
-  :after notmuch
   :hook ((message-setup . zp/message-flyspell-auto)
          (message-setup . electric-quote-local-mode)
          ;; (message-mode-hook . footnote-mode)
@@ -1110,6 +1134,7 @@ The language should be the name of a valid Ispell dictionary.")
 
   ;; Enforce f=f in message-mode
   ;; Disabled because it’s bad practice according to the netiquette
+  ;; (setq mml-enable-flowed t)
   ;; (defun zp/message-mode-use-hard-newlines ()
   ;;   (use-hard-newlines t 'always))
   ;; (add-hook 'message-mode-hook #'zp/message-mode-use-hard-newlines)
@@ -1315,7 +1340,7 @@ based on ‘zp/message-mode-ispell-alist’."
       (zp/ispell-switch-dictionary language)))
 
   ;;-------------------
-  ;; Unusued functions
+  ;; Unused functions
   ;;-------------------
 
   ;; TODO: Consider usage
@@ -1364,10 +1389,128 @@ based on ‘zp/message-mode-ispell-alist’."
   :config
   (setq send-mail-function 'sendmail-send-it))
 
-(use-package mml
-  :after message
+(use-package notmuch
+  :bind (("H-l" . zp/switch-to-notmuch)
+         :map notmuch-hello-mode-map
+         ("q" . zp/notmuch-hello-quit)
+         :map notmuch-search-mode-map
+         ("g" . notmuch-refresh-this-buffer)
+         :map notmuch-message-mode-map
+         (("C-c C-c" . zp/notmuch-confirm-before-sending)
+          ("C-c C-b" . zp/message-goto-body)
+          ("C-c C-." . zp/message-goto-body-end)
+          ("M-<" . zp/message-goto-top)
+          ("M->" . zp/message-goto-bottom)
+          ("C-c C-z" . zp/message-kill-to-signature))
+         :map notmuch-show-mode-map
+         (("C-c C-o" . goto-address-at-point)))
   :config
-  (setq mml-enable-flowed t))
+  (setq notmuch-always-prompt-for-sender t
+        notmuch-search-oldest-first nil)
+
+  (defvar zp/email-private (zp/get-string-from-file "~/org/pp/private/email")
+    "Email used for private communications.")
+
+  (defvar zp/email-work (zp/get-string-from-file "~/org/pp/work/email")
+    "Email used for work-related communications.")
+
+  (defun zp/get-email-with-alias (email alias &optional regex)
+    "Create email alias from EMAIL and ALIAS.
+
+If REGEX is non-nil, creates a regex to match the email alias."
+    (let* ((email (cond
+                   ((equal email "work")
+                    zp/email-work)
+                   ((equal email "private")
+                    zp/email-private)
+                   (t
+                    email)))
+           (email-alias (replace-regexp-in-string "@"
+                                                  (concat "+" alias "@")
+                                                  email)))
+      (if regex
+          (regexp-quote email-alias)
+        email-alias)))
+
+  (defvar zp/email-org (zp/get-email-with-alias "work" "org")
+    "Email alias used for the org-mode mailing list.")
+
+  (defvar zp/email-dev (zp/get-email-with-alias "work" "dev")
+    "Email alias used for general development work.")
+
+  (setq notmuch-fcc-dirs
+        `((,(regexp-quote zp/email-private) .
+           "private/sent -inbox +sent -unread")
+          (,(regexp-quote zp/email-work) .
+           "work/sent -inbox +sent -unread")
+          (,(regexp-quote zp/email-org) .
+           "work/sent -inbox +sent -unread +org")
+          (,(regexp-quote zp/email-dev) .
+           "work/sent -inbox +sent -unread +dev")))
+
+  (define-key notmuch-search-mode-map "d"
+    (lambda (&optional untrash beg end)
+      "mark thread as spam"
+      (interactive (cons current-prefix-arg (notmuch-interactive-region)))
+      (if untrash
+          (notmuch-search-tag (list "-deleted"))
+        (notmuch-search-tag (list "+deleted" "-inbox")) beg end)
+      (notmuch-search-next-thread)))
+
+  (define-key notmuch-show-mode-map "d"
+    (lambda (&optional beg end)
+      "mark thread as spam"
+      (interactive (notmuch-interactive-region))
+      (notmuch-show-tag (list "+deleted" "-inbox" "-draft"))
+      (notmuch-show-next-thread-show)))
+
+
+  (define-key notmuch-hello-mode-map "q" #'zp/notmuch-hello-quit)
+  (define-key notmuch-search-mode-map "g" #'notmuch-refresh-this-buffer)
+
+  (setq user-full-name "Leo Vivier"
+        mail-host-address "hidden")
+
+  (setq notmuch-saved-searches
+        '((:name "inbox" :query "tag:inbox" :key "i")
+          (:name "unread" :query "tag:unread" :key "u")
+          (:name "flagged" :query "tag:flagged" :key "f")
+          (:name "drafts" :query "tag:draft" :key "d")
+          (:name "sent (last week)" :query "tag:sent date:\"7d..today\"" :key "s")
+          (:name "archive (last week)" :query "* date:\"7d..today\"" :key "a")
+          (:name "sent" :query "tag:sent" :key "S")
+          (:name "archive" :query "*" :key "A")
+          (:name "trash" :query "tag:deleted" :key "t")))
+
+  (defvar zp/message-ispell-alist nil
+    "Alist of emails and the language they typically use.
+The language should be the name of a valid Ispell dictionary.")
+
+  (defun zp/notmuch-confirm-before-sending (&optional arg)
+    (interactive "P")
+    (if (y-or-n-p "Ready to send? ")
+        (notmuch-mua-send-and-exit arg)))
+
+  ;;----------------------
+  ;; Switching to notmuch
+  ;;----------------------
+
+  (defun zp/notmuch-hello-quit ()
+    (interactive)
+    (notmuch-bury-or-kill-this-buffer)
+    (start-process-shell-command "notmuch-new" nil "systemctl --user start check-mail.service")
+    (set-window-configuration zp/notmuch-before-config))
+
+  (defun zp/switch-to-notmuch ()
+    (interactive)
+    (cond ((string-match "\\*notmuch-hello\\*" (buffer-name))
+           (zp/notmuch-hello-quit))
+          ((string-match "\\*notmuch-.*\\*" (buffer-name))
+           (notmuch-bury-or-kill-this-buffer))
+          (t
+           (setq zp/notmuch-before-config (current-window-configuration))
+           (delete-other-windows)
+           (notmuch)))))
 
 (use-package org-notmuch
   :after notmuch)
@@ -1381,174 +1524,9 @@ based on ‘zp/message-mode-ispell-alist’."
 ;;   :config
 ;;   (setq footnote-section-tag "Footnotes: "))
 
-
-
-;;----------------------------------------------------------------------------
-;; Cosmetic options
-;;----------------------------------------------------------------------------
-
-(use-package yasnippet
-  :config
-  (yas-global-mode 1)
-  (global-set-key (kbd "H-<backspace>") 'yas-prev-field))
-
-(use-package winner
-  :config
-  (winner-mode 1)
-
-  (global-set-key (kbd "H-u") 'winner-undo)
-  (global-set-key (kbd "H-i") 'winner-redo))
-
-(use-package ace-window
-  :config
-  (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)
-        aw-scope 'frame)
-
-  (global-set-key (kbd "H-b") #'ace-window))
-
-(use-package avy
-  :config
-  ;; (global-set-key (kbd "H-n") #'avy-goto-word-1)
-  ;; (global-set-key (kbd "H-n") #'avy-goto-char)
-  (global-set-key (kbd "H-n") #'avy-goto-char-timer))
-
-(use-package ace-link
-  :config
-  (ace-link-setup-default))
-
-;; (use-package dumb-jump
-;;   :config
-;;   (dumb-jump-mode)
-;;   (global-visible-mark-mode 1))
-
-(use-package backup-walker
-  :config
-  (defun zp/set-diff-backend-git-diff ()
-    "Set diff backend to ‘git diff’.
-Modifies ‘diff-command’ and ‘diff-switches’ to use ‘git diff’."
-    (setq-local diff-command "git --no-pager diff")
-    (setq-local diff-switches "--textconv"))
-
-  (add-hook 'backup-walker-mode-hook #'zp/set-diff-backend-git-diff))
-
-;; Disabled since Emacs now has a native package for showing
-;; line-numbers
-(use-package linum
-  :disabled
-  ;Add spaces before and after
-  (setq linum-format " %d "))
-
-(use-package pdf-tools
-  :magic ("%PDF" . pdf-view-mode)
-  :config
-  (pdf-tools-install :no-query))
-
-(use-package pdf-view
-  :config
-  (defun zp/toggle-pdf-view-auto-slice-minor-mode ()
-    "Toggle ‘pdf-view-auto-slice-minor-mode’ and reset slice."
-    (interactive)
-    (call-interactively 'pdf-view-auto-slice-minor-mode)
-    (if (not pdf-view-auto-slice-minor-mode)
-        (progn
-          (pdf-view-reset-slice))))
-
-  ;; Disable continuous view in pdf-view
-  ;; I prefer to explicitly turn pages
-  (setq pdf-view-continuous nil)
-
-  (defun zp/pdf-view-continuous-toggle ()
-    (interactive)
-    (cond ((not pdf-view-continuous)
-           (setq pdf-view-continuous t)
-           (message "Page scrolling: Continous"))
-          (t
-           (setq pdf-view-continuous nil)
-           (message "Page scrolling: Constrained"))))
-
-  (define-key pdf-view-mode-map (kbd "m") 'pdf-view-midnight-minor-mode)
-  (define-key pdf-view-mode-map (kbd "s") 'zp/toggle-pdf-view-auto-slice-minor-mode)
-  (define-key pdf-view-mode-map (kbd "M") 'pdf-view-set-slice-using-mouse)
-  (define-key pdf-view-mode-map (kbd "c") 'zp/pdf-view-continuous-toggle)
-  (define-key pdf-view-mode-map (kbd "w") 'pdf-view-fit-width-to-window)
-
-  (define-prefix-command 'slice-map)
-  (define-key pdf-view-mode-map (kbd "S") 'slice-map)
-  (define-key pdf-view-mode-map (kbd "S b") 'pdf-view-set-slice-from-bounding-box)
-  (define-key pdf-view-mode-map (kbd "S m") 'pdf-view-set-slice-using-mouse)
-  (define-key pdf-view-mode-map (kbd "S r") 'pdf-view-reset-slice)
-
-  (add-hook 'pdf-view-mode-hook #'pdf-view-midnight-minor-mode)
-  (add-hook 'pdf-view-mode-hook #'pdf-view-auto-slice-minor-mode))
-
-(use-package pdf-links
-  :config
-  (define-key pdf-links-minor-mode-map (kbd "f") 'pdf-view-fit-page-to-window))
-
-;; TODO: Consider deleting this semi-useless minor-mode
-(defun zp/save-buffers-kill-terminal-silently ()
-  (interactive)
-  (save-buffers-kill-terminal t))
-
-(define-minor-mode save-silently-mode
-  "Save buffers silently when exiting."
-  :lighter " SS"
-  :keymap (let ((map (make-sparse-keymap)))
-            (define-key map (kbd "C-x C-c") 'zp/save-buffers-kill-terminal-silently)
-            (define-key map (kbd "C-c C-k") 'zp/kanji-add-furigana)
-            (define-key map (kbd "M-n") 'zp/kanji-add-furigana)
-            map))
-
-;; Way to enable minor modes based on filenames
-;; Added with the package ‘auto-minor-mode-alist’
-;; But they can also be added via file-fariables or minor-modes
-;; TODO: Adapt this block
-(add-to-list 'auto-minor-mode-alist '("\\journal.*\\'" . visual-line-mode))
-(add-to-list 'auto-minor-mode-alist '("\\journal.*\\'" . olivetti-mode))
-(add-to-list 'auto-minor-mode-alist '("\\journal.*\\'" . flyspell-mode))
-
-(add-to-list 'auto-minor-mode-alist '("edit-in-emacs.txt" . visual-line-mode))
-(add-to-list 'auto-minor-mode-alist '("edit-in-emacs.txt" . olivetti-mode))
-(add-to-list 'auto-minor-mode-alist '("edit-in-emacs.txt" . flyspell-mode))
-(add-to-list 'auto-minor-mode-alist '("edit-in-emacs.txt" . save-silently-mode))
-
-;; (add-to-list 'auto-minor-mode-alist '("edit-in-emacs.html" . visual-line-mode))
-;; (add-to-list 'auto-minor-mode-alist '("edit-in-emacs.html" . olivetti-mode))
-;; (add-to-list 'auto-minor-mode-alist '("edit-in-emacs.html" . flyspell-mode))
-(add-to-list 'auto-minor-mode-alist '("edit-in-emacs.html" . save-silently-mode))
-
-(defun zp/kanji-add-furigana ()
-  "Adds furigana to the kanji at point.
-If text is selected, adds furigana to the selected kanji instead."
-  (interactive)
-  (if (not (region-active-p))
-      (progn
-        (call-interactively 'set-mark-command)
-        (call-interactively 'forward-char)))
-  (yas-expand-snippet (yas-lookup-snippet "anki-ruby")))
-
-(use-package recentf
-  :config
-  (setq recentf-max-menu-items 100))
-
-(use-package tramp
-  :config
-  (setq tramp-default-method "ssh"))
-
-(use-package realgud
-  :config
-  (setq realgud-safe-mode nil))
-
-(use-package picture
-  :config
-  (global-set-key (kbd "C-c \\") #'picture-mode))
-
-
-
 ;;----------------------------------------------------------------------------
 ;; Programming modes
 ;;----------------------------------------------------------------------------
-
 (use-package cperl-mode
   :config
   ;; Use ‘cperl-mode’ instead ‘perl-mode’
