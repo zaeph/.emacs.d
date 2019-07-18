@@ -2219,6 +2219,23 @@ With a C-u argument, toggle the link display."
         (zp/org-toggle-emphasis-markers))
       (font-lock-fontify-buffer)))
 
+  ;;--------------------------------
+  ;; Customise exported timestamps
+  ;;--------------------------------
+
+  (add-to-list 'org-export-filter-timestamp-functions
+               #'endless/filter-timestamp)
+  (defun endless/filter-timestamp (trans back _comm)
+    "Remove <> around time-stamps."
+    (pcase back
+      ((or `jekyll `html)
+       (replace-regexp-in-string "&[lg]t;" "" trans))
+      (`latex
+       (replace-regexp-in-string "[<>]" "" trans))))
+
+  (setq org-time-stamp-custom-formats
+        '("<%d %b %Y>" . "<%d/%m/%y %a %H:%M>"))
+
   ;;--------------
   ;; Key bindings
   ;;--------------
@@ -7037,22 +7054,6 @@ See ‘~/.bin/terminator-dwim’ for more info."
          (concat "terminator --working-dir \"" path "\""
                  (if arg (concat " " arg))))))))
 
-
-
-;; Prototype
-(add-to-list 'org-export-filter-timestamp-functions
-             #'endless/filter-timestamp)
-(defun endless/filter-timestamp (trans back _comm)
-  "Remove <> around time-stamps."
-  (pcase back
-    ((or `jekyll `html)
-     (replace-regexp-in-string "&[lg]t;" "" trans))
-    (`latex
-     (replace-regexp-in-string "[<>]" "" trans))))
-
-;; (setq-default org-display-custom-times t)
-(setq org-time-stamp-custom-formats
-      '("<%d %b %Y>" . "<%d/%m/%y %a %H:%M>"))
 
 
 ;; ========================================
