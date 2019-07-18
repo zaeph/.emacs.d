@@ -6070,27 +6070,6 @@ command reveals the other lines."
       aw-scope 'frame)
 (ace-link-setup-default)
 
-;; Usual shortcuts
-(defun zp/org-agenda-day (&optional arg)
-  (interactive "P")
-  (org-agenda arg "N"))
-(defun zp/org-agenda-tools (&optional arg)
-  (interactive "P")
-  (org-agenda arg "l"))
-(defun zp/org-agenda-media (&optional arg)
-  (interactive "P")
-  (org-agenda arg "b"))
-(defun zp/org-agenda-reading (&optional arg)
-  (interactive "P")
-  (org-agenda arg "r"))
-
-(define-prefix-command 'agenda-map)
-(global-set-key (kbd "<f9>") 'agenda-map)
-(global-set-key (kbd "<f9> <f9>")  'zp/org-agenda-day)
-(global-set-key (kbd "<f9> <f10>") 'zp/org-agenda-reading)
-(global-set-key (kbd "<f9> <f11>") 'zp/org-agenda-media)
-(global-set-key (kbd "<f9> <f12>") 'zp/org-agenda-tools)
-
 ;; Winner
 (global-set-key (kbd "H-u") 'winner-undo)
 (global-set-key (kbd "H-i") 'winner-redo)
