@@ -5537,10 +5537,9 @@ If switching to Chronos’s buffer, also add a timer."
 
 
 
-
-;; ========================================
-;; ============== ORG-NOTER ===============
-;; ========================================
+;;----------------------------------------------------------------------------
+;; org-noter
+;;----------------------------------------------------------------------------
 
 (use-package org-noter
   :config
@@ -5600,6 +5599,46 @@ buffer, thereby propagating the indirectness."
 
   (define-key org-noter-doc-mode-map (kbd "j") 'pdf-view-next-line-or-next-page)
   (define-key org-noter-doc-mode-map (kbd "k") 'pdf-view-previous-line-or-previous-page))
+
+
+
+;;----------------------------------------------------------------------------
+;; Psychotherapy
+;;----------------------------------------------------------------------------
+
+(use-package psychotherapy
+  :requires (org org-capture)
+  :config
+  ;; Setting variables
+  (setq zp/cognitive-distortions
+        '("All-or-nothing thinking"
+          "Over-generalisation"
+          "Mental filter"
+          "Disqualifying the positive"
+          "Mind-reading"
+          "Fortune-Teller error"
+          "Magnification or minimisation"
+          "Emotional reasoning"
+          "Should statements"
+          "Labelling and mislabelling"
+          "Personalisation")
+
+        zp/emotions
+        '("Anger"
+          "Anxiety"
+          "Boredom"
+          "Disgust"
+          "Dispirited"
+          "Fear"
+          "Guilt"
+          "Laziness"
+          "Loneliness"
+          "Sadness"
+          "Tiredness"))
+
+  ;; Load ‘zp/psychotherapy-mode’ with the org-capture-template ‘D’
+  (add-to-list 'zp/org-capture-extra-minor-modes-alist
+               '("D" . zp/psychotherapy-mode)))
 
 
 
@@ -5945,46 +5984,6 @@ i.e. change right window to bottom, or change bottom window to right."
                     (split-window-vertically)
                   (split-window-horizontally))
                 (set-window-buffer (windmove-find-other-window neighbour-dir) other-buf))))))))
-
-
-
-;; ========================================
-;; ============ PSYCHOTHERAPY =============
-;; ========================================
-
-(use-package psychotherapy
-  :requires (org org-capture)
-  :config
-  ;; Setting variables
-  (setq zp/cognitive-distortions
-        '("All-or-nothing thinking"
-          "Over-generalisation"
-          "Mental filter"
-          "Disqualifying the positive"
-          "Mind-reading"
-          "Fortune-Teller error"
-          "Magnification or minimisation"
-          "Emotional reasoning"
-          "Should statements"
-          "Labelling and mislabelling"
-          "Personalisation")
-
-        zp/emotions
-        '("Anger"
-          "Anxiety"
-          "Boredom"
-          "Disgust"
-          "Dispirited"
-          "Fear"
-          "Guilt"
-          "Laziness"
-          "Loneliness"
-          "Sadness"
-          "Tiredness"))
-
-  ;; Load ‘zp/psychotherapy-mode’ with the org-capture-template ‘D’
-  (add-to-list 'zp/org-capture-extra-minor-modes-alist
-               '("D" . zp/psychotherapy-mode)))
 
 
 
