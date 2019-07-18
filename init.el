@@ -5860,15 +5860,6 @@ i.e. change right window to bottom, or change bottom window to right."
 
 
 
-
-;; (defun zp/switch-to-agenda ()
-;;   (interactive)
-;;   (if (string-match ".*Org Agenda.*" (buffer-name))
-;;       (mode-line-other-buffer)
-;;     (switch-to-buffer "*Org Agenda(n)*")))
-
-
-
 (defun zp/switch-to-chronos (add)
   "Switch to and from Chronos’s buffer.
 
