@@ -5630,13 +5630,6 @@ commas and space."
 ;; Miscellaneous
 ;;----------------------------------------------------------------------------
 
-;; (require 'notifications)
-;; (notifications-notify :title "Achtung!"
-;;                       :body (format "You have an appointment in %d minutes" 10)
-;;                       :app-name "Emacs: Org"
-;;                    :urgency "critical"
-;;                       :sound-name "~/SFX/Misc/rimshot.mp3")
-
 ;; Source: https://gitlab.com/marcowahl/herald-the-mode-lined
 (defun herald-the-mode-line ()
   "Show the modeline in the minibuffer.
