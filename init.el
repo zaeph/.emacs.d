@@ -5801,6 +5801,16 @@ commas and space."
 
 
 ;;----------------------------------------------------------------------------
+;; Miscellaneous
+;;----------------------------------------------------------------------------
+
+(defun zp/echo-buffer-name ()
+  (interactive)
+  (message (concat "Current buffer: " (replace-regexp-in-string "%" "%%" (buffer-name)))))
+
+
+
+;;----------------------------------------------------------------------------
 ;; External
 ;;----------------------------------------------------------------------------
 
@@ -5906,10 +5916,6 @@ i.e. change right window to bottom, or change bottom window to right."
                     (split-window-vertically)
                   (split-window-horizontally))
                 (set-window-buffer (windmove-find-other-window neighbour-dir) other-buf))))))))
-
-(defun zp/echo-buffer-name ()
-  (interactive)
-  (message (concat "Current buffer: " (replace-regexp-in-string "%" "%%" (buffer-name)))))
 
 (defun zp/echo-clock-string ()
   "Echo the tasks being currently clocked in the minibuffer,
