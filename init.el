@@ -1374,7 +1374,27 @@ based on ‘zp/message-mode-ispell-alist’."
 
 (use-package winner
   :config
-  (winner-mode 1))
+  (winner-mode 1)
+
+  (global-set-key (kbd "H-u") 'winner-undo)
+  (global-set-key (kbd "H-i") 'winner-redo))
+
+(use-package ace-window
+  :config
+  (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)
+        aw-scope 'frame)
+
+  (global-set-key (kbd "H-b") #'ace-window))
+
+(use-package avy
+  :config
+  ;; (global-set-key (kbd "H-n") #'avy-goto-word-1)
+  ;; (global-set-key (kbd "H-n") #'avy-goto-char)
+  (global-set-key (kbd "H-n") #'avy-goto-char-timer))
+
+(use-package ace-link
+  :config
+  (ace-link-setup-default))
 
 (use-package electric
   :config
@@ -6056,23 +6076,9 @@ command reveals the other lines."
 (global-set-key (kbd "M-o") #'mode-line-other-buffer)
 (global-set-key (kbd "H-j") #'other-window-reverse)
 (global-set-key (kbd "H-k") #'other-window)
+(global-set-key (kbd "C-x 4 1") #'zp/kill-other-buffer-and-window)
 
-;; Movements
-;; (global-set-key (kbd "C-x t") 'window-toggle-split-direction)
-(global-set-key (kbd "C-x 4 1") 'zp/kill-other-buffer-and-window)
 
-;; ace
-(global-set-key (kbd "H-b") 'ace-window)
-;; (global-set-key (kbd "H-n") 'avy-goto-word-1)
-(global-set-key (kbd "H-n") 'avy-goto-char-timer)
-;; (global-set-key (kbd "H-m") 'avy-goto-char)
-(setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)
-      aw-scope 'frame)
-(ace-link-setup-default)
-
-;; Winner
-(global-set-key (kbd "H-u") 'winner-undo)
-(global-set-key (kbd "H-i") 'winner-redo)
 
 ;; EXPERIMENTAL
 ;; key-chord
