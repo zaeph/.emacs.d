@@ -5907,14 +5907,6 @@ i.e. change right window to bottom, or change bottom window to right."
                   (split-window-horizontally))
                 (set-window-buffer (windmove-find-other-window neighbour-dir) other-buf))))))))
 
-
-
-;; (defun zp/switch-to-magit (arg)
-;;   (interactive "P")
-;;   (if (string-match "magit: .*" (buffer-name))
-;;       (magit-mode-bury-buffer arg)
-;;     (magit-status arg)))
-
 (defun zp/echo-buffer-name ()
   (interactive)
   (message (concat "Current buffer: " (replace-regexp-in-string "%" "%%" (buffer-name)))))
