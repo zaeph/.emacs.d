@@ -8,8 +8,6 @@
 ;; ===============================  ~ Zaeph ~  ===============================
 ;; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-
-
 (setq default-directory "~")
 (setq inhibit-startup-screen 1)
 (setq initial-scratch-message ";; Emacs Scratch
@@ -17,7 +15,9 @@
 ")
 
 ;; Start server
-(server-start)
+(unless (server-running-p)
+  (message "Starting the server.")
+  (server-start))
 
 ;; (toggle-debug-on)
 ;; (toggle-debug-on-quit)
@@ -402,6 +402,8 @@ time is displayed."
 
 (use-package package
   :bind ("C-c P" . package-list-packages))
+
+;; (setq use-package-verbose t)
 
 ;;----------------------------------------------------------------------------
 ;; Packages
@@ -1889,6 +1891,7 @@ return `nil'."
               ("C-c C-x C-l" . zp/org-latex-preview-dwim)
               ("C-c R" . org-display-inline-images))
   :config
+
   (setq org-agenda-inhibit-startup nil
         org-log-into-drawer "LOGBOOK-NOTES"
         org-use-property-inheritance '("AGENDA_GROUP")
@@ -1929,6 +1932,11 @@ return `nil'."
   ;; Otherwise, curly quotes prevent fontification
   (setq org-emphasis-regexp-components '("-       ('‘\"“’{" "-    .,:!?;'’\"”)}\\[" "     
 " "." 1))
+
+  ;; Set the default apps to use when opening org-links
+  (add-to-list 'org-file-apps
+               '("\\.pdf\\'" . (lambda (file link)
+                                 (org-pdfview-open link))))
 
   ;; Define TODO keywords
   (setq org-todo-keywords
@@ -2319,7 +2327,27 @@ With a ‘C-u’ argument, dedicate the buffer instead."
     (interactive "P")
     (if dedicate
         (zp/org-ibuf-spawned-dedicate t)
-      (zp/org-kill-spawned-ibuf t))))
+      (zp/org-kill-spawned-ibuf t)))
+
+  (defvar-local zp/org-ibuf-spawned-also-kill-window nil
+    "When t, also kill the window when killing a spawned buffer.
+
+A spawned buffer is an indirect buffer created by
+‘org-tree-to-indirect-buffer’ which will be replaced by
+subsequent calls.")
+
+  (defvar zp/org-spawned-ibuf-mode-map
+    (let ((map (make-sparse-keymap)))
+      (define-key map (kbd "C-c C-k") #'zp/org-kill-spawned-ibuf-dwim)
+      map)
+    "Keymap for ‘zp/org-spawned-ibuf-mode’.")
+
+  (define-minor-mode zp/org-spawned-ibuf-mode
+    "Show when the current indirect buffer is a spawned buffer."
+    :lighter " Spawn"
+    :keymap zp/org-spawned-ibuf-mode-map
+    (setq header-line-format
+          "Spawned indirect buffer.  Kill with ‘C-c C-k’, dedicate with ‘C-u C-c C-k’.")))
 
 (use-package org-footnote
   :config
@@ -2375,11 +2403,6 @@ along with effort estimates and total time."
 ;; To enable that behaviour, set the ‘RESET_CHECK_BOXES’ property to t for the
 ;; parent
 (use-package org-checklist)
-
-;; Set the default apps to use when opening org-links
-(add-to-list 'org-file-apps
-             '("\\.pdf\\'" . (lambda (file link)
-                               (org-pdfview-open link))))
 
 (use-package org-faces
   :config
@@ -2686,7 +2709,6 @@ indirect-buffers."
 ;;----------------------------------------------------------------------------
 ;; org-agenda
 ;;----------------------------------------------------------------------------
-
 (use-package org-agenda
   :bind (("H-o" . zp/switch-to-agenda)
          :map org-agenda-mode-map
@@ -4616,11 +4638,13 @@ With a ‘C-u’ prefix, make a separate frame for this tree."
 ;;----------------------------------------------------------------------------
 ;; org-capture
 ;;----------------------------------------------------------------------------
-
 (use-package org-capture
-  :bind ("C-c n" . org-capture)
+  :commands zp/org-capture-web
+  :bind (("C-c n" . org-capture))
   :hook (org-capture-mode . zp/org-capture-make-full-frame)
   :config
+  ;; (require 'hydra-org-refile)
+
   (setq org-default-notes-file "~/org/life.org")
 
   ;;------------------
@@ -4934,21 +4958,24 @@ If the function sets CREATED, it returns its value."
 ;;----------------------------------------------------------------------------
 ;; hydra-org-refile
 ;;----------------------------------------------------------------------------
-
 (use-package hydra-org-refile
   :bind (("C-c C-j" . zp/hydra-org-jump)
          :map org-mode-map
-         ("C-c C-w" . zp/hydra-org-refile-dwim)
+         ("C-c C-w" . zp/org-refile-dwim)
          :map org-agenda-mode-map
+         ("C-c C-w" . zp/hydra-org-refile)
+         :map org-capture-mode-map
          ("C-c C-w" . zp/hydra-org-refile))
+  :after (:any org org-capture)
   :config
+  (message "Have I been loaded?")
   ;; Exclude separators in all org-refile commands
   (setq org-refile-target-verify-function
         'zp/org-refile-target-verify-exclude-separators)
 
 
   (zp/create-hydra-org-refile nil
-      "
+                              "
   ^Life^              ^Pages^^^
  ^^^^^^------------------------------------
   _i_: Inbox          _x_/_X_: Maintenance
@@ -4960,31 +4987,31 @@ If the function sets CREATED, it returns its value."
   _R_: Running
   _a_: Politics       _c_/_C_: Calendars
 "
-    (("i" "~/org/life.org" "Inbox")
-     ("o" "~/org/life.org" "Life")
-     ("k" "~/org/life.org" "Curiosities")
-     ("s" "~/org/life.org" "Social")
-     ("n" "~/org/life.org" "Social" "Nicolas")
-     ("S" "~/org/life.org" "Swimming")
-     ("R" "~/org/life.org" "Running")
-     ("a" "~/org/life.org" "Politics")
+                              (("i" "~/org/life.org" "Inbox")
+                               ("o" "~/org/life.org" "Life")
+                               ("k" "~/org/life.org" "Curiosities")
+                               ("s" "~/org/life.org" "Social")
+                               ("n" "~/org/life.org" "Social" "Nicolas")
+                               ("S" "~/org/life.org" "Swimming")
+                               ("R" "~/org/life.org" "Running")
+                               ("a" "~/org/life.org" "Politics")
 
-     ("X" "~/org/life.org" "Maintenance")
-     ("P" "~/org/life.org" "Professional")
-     ("R" "~/org/life.org" "Research")
-     ("M" "~/org/life.org" "Media")
-     ("H" "~/org/life.org" "Hacking")
+                               ("X" "~/org/life.org" "Maintenance")
+                               ("P" "~/org/life.org" "Professional")
+                               ("R" "~/org/life.org" "Research")
+                               ("M" "~/org/life.org" "Media")
+                               ("H" "~/org/life.org" "Hacking")
 
-     ("C" "~/org/life.org" "Life" "Calendar"))
-    (("x" mx)
-     ("p" pro)
-     ("r" research)
-     ("m" media)
-     ("h" hack)
-     ("c" calendars)))
+                               ("C" "~/org/life.org" "Life" "Calendar"))
+                              (("x" mx)
+                               ("p" pro)
+                               ("r" research)
+                               ("m" media)
+                               ("h" hack)
+                               ("c" calendars)))
 
   (zp/create-hydra-org-refile research
-      "
+                              "
   ^Research^
  ^^---------------------
   _._: Root
@@ -4995,28 +5022,28 @@ If the function sets CREATED, it returns its value."
   _h_: History
   _t_: Typography
 "
-    (("." "~/org/life.org" "Research")
-     ("c" "~/org/life.org" "Computer Science")
-     ("m" "~/org/life.org" "Mathematics")
-     ("p" "~/org/life.org" "Philosophy")
-     ("l" "~/org/life.org" "Linguistics")
-     ("h" "~/org/life.org" "History")
-     ("t" "~/org/life.org" "Typography")))
+                              (("." "~/org/life.org" "Research")
+                               ("c" "~/org/life.org" "Computer Science")
+                               ("m" "~/org/life.org" "Mathematics")
+                               ("p" "~/org/life.org" "Philosophy")
+                               ("l" "~/org/life.org" "Linguistics")
+                               ("h" "~/org/life.org" "History")
+                               ("t" "~/org/life.org" "Typography")))
 
   (zp/create-hydra-org-refile pro
-      "
+                              "
   ^Professional^
  ^^---------------
   _._: Root
   _s_: School
   _u_: University
 "
-    (("." "~/org/life.org" "Professional")
-     ("s" "~/org/life.org" "School")
-     ("u" "~/org/life.org" "University")))
+                              (("." "~/org/life.org" "Professional")
+                               ("s" "~/org/life.org" "School")
+                               ("u" "~/org/life.org" "University")))
 
   (zp/create-hydra-org-refile hack
-      "
+                              "
   ^Hacking^
  ^^----------
   _._: Root
@@ -5029,22 +5056,22 @@ If the function sets CREATED, it returns its value."
   _g_: Git
   _p_: Perl
 "
-    (("." "~/org/life.org" "Hacking")
-     ("e" "~/org/life.org" "Emacs")
-     ("i" "~/org/life.org" "Elisp")
-     ("o" "~/org/life.org" "Org")
-     ("t" "~/org/life.org" "LaTeX")
-     ("l" "~/org/life.org" "Linux")
-     ("n" "~/org/life.org" "NixOS")
-     ("g" "~/org/life.org" "Git")
-     ("p" "~/org/life.org" "Perl")
+                              (("." "~/org/life.org" "Hacking")
+                               ("e" "~/org/life.org" "Emacs")
+                               ("i" "~/org/life.org" "Elisp")
+                               ("o" "~/org/life.org" "Org")
+                               ("t" "~/org/life.org" "LaTeX")
+                               ("l" "~/org/life.org" "Linux")
+                               ("n" "~/org/life.org" "NixOS")
+                               ("g" "~/org/life.org" "Git")
+                               ("p" "~/org/life.org" "Perl")
 
-     ;; ("c" "~/org/life.org" "Contributing")
-     ;; ("b" "~/org/life.org" "Troubleshooting")
-     ))
+                               ;; ("c" "~/org/life.org" "Contributing")
+                               ;; ("b" "~/org/life.org" "Troubleshooting")
+                               ))
 
   (zp/create-hydra-org-refile calendars
-      "
+                              "
   ^Calendars^
  ^^------------------
   _o_: Life
@@ -5061,23 +5088,23 @@ If the function sets CREATED, it returns its value."
   _P_: Politics
   _m_: Media
 "
-    (("o" "~/org/life.org" "Life" "Calendar")
-     ("s" "~/org/life.org" "Social" "Calendar")
-     ("n" "~/org/life.org" "Social" "Nicolas" "Calendar")
-     ("x" "~/org/life.org" "Maintenance" "Calendar")
-     ("f" "~/org/life.org" "Finances" "Calendar")
-     ("a" "~/org/life.org" "Animals" "Calendar")
-     ("p" "~/org/life.org" "Professional" "Calendar")
-     ("s" "~/org/life.org" "School" "Calendar")
-     ("u" "~/org/life.org" "University" "Calendar")
-     ("r" "~/org/life.org" "Research" "Calendar")
-     ("h" "~/org/life.org" "Hacking" "Calendar")
-     ("P" "~/org/life.org" "Politics" "Calendar")
-     ("m" "~/org/life.org" "Media" "Calendar"))
-    nil)
+                              (("o" "~/org/life.org" "Life" "Calendar")
+                               ("s" "~/org/life.org" "Social" "Calendar")
+                               ("n" "~/org/life.org" "Social" "Nicolas" "Calendar")
+                               ("x" "~/org/life.org" "Maintenance" "Calendar")
+                               ("f" "~/org/life.org" "Finances" "Calendar")
+                               ("a" "~/org/life.org" "Animals" "Calendar")
+                               ("p" "~/org/life.org" "Professional" "Calendar")
+                               ("s" "~/org/life.org" "School" "Calendar")
+                               ("u" "~/org/life.org" "University" "Calendar")
+                               ("r" "~/org/life.org" "Research" "Calendar")
+                               ("h" "~/org/life.org" "Hacking" "Calendar")
+                               ("P" "~/org/life.org" "Politics" "Calendar")
+                               ("m" "~/org/life.org" "Media" "Calendar"))
+                              nil)
 
   (zp/create-hydra-org-refile mx
-      "
+                              "
   ^Maintenance^
  ^^-------------
   _._: Root
@@ -5090,18 +5117,18 @@ If the function sets CREATED, it returns its value."
   _g_: Grooming
   _h_: Health
 "
-    (("." "~/org/life.org" "Maintenance")
-     ("f" "~/org/life.org" "Finances")
-     ("a" "~/org/life.org" "Animals")
-     ("c" "~/org/life.org" "Cleaning")
-     ("p" "~/org/life.org" "Plants")
-     ("s" "~/org/life.org" "Supplies")
-     ("k" "~/org/life.org" "Cooking")
-     ("g" "~/org/life.org" "Grooming")
-     ("h" "~/org/life.org" "Health")))
+                              (("." "~/org/life.org" "Maintenance")
+                               ("f" "~/org/life.org" "Finances")
+                               ("a" "~/org/life.org" "Animals")
+                               ("c" "~/org/life.org" "Cleaning")
+                               ("p" "~/org/life.org" "Plants")
+                               ("s" "~/org/life.org" "Supplies")
+                               ("k" "~/org/life.org" "Cooking")
+                               ("g" "~/org/life.org" "Grooming")
+                               ("h" "~/org/life.org" "Health")))
 
   (zp/create-hydra-org-refile media
-      "
+                              "
   ^Media^      ^Pages^^^
  ^^^^^^------------------------
   _._: Root    _b_/_B_: Books
@@ -5109,61 +5136,61 @@ If the function sets CREATED, it returns its value."
              ^^_s_/_S_: Series
              ^^_m_/_M_: Music
 "
-    (("." "~/org/life.org" "Media")
-     ("B" "~/org/life.org" "Books")
-     ("n" "~/org/life.org" "News")
-     ("M" "~/org/life.org" "Music")
-     ("F" "~/org/life.org" "Film")
-     ("S" "~/org/life.org" "Series"))
-    (("b" books)
-     ("f" film)
-     ("s" series)
-     ("m" music)))
+                              (("." "~/org/life.org" "Media")
+                               ("B" "~/org/life.org" "Books")
+                               ("n" "~/org/life.org" "News")
+                               ("M" "~/org/life.org" "Music")
+                               ("F" "~/org/life.org" "Film")
+                               ("S" "~/org/life.org" "Series"))
+                              (("b" books)
+                               ("f" film)
+                               ("s" series)
+                               ("m" music)))
 
   (zp/create-hydra-org-refile books
-      "
+                              "
   ^Books^
  ^^---------
   _._: Root
   _l_: List
   _d_: Read
 "
-    (("." "~/org/life.org" "Books")
-     ("l" "~/org/life.org" "Books" "List")
-     ("d" "~/org/life.org" "Books" "Read"))
-    nil
-    media)
+                              (("." "~/org/life.org" "Books")
+                               ("l" "~/org/life.org" "Books" "List")
+                               ("d" "~/org/life.org" "Books" "Read"))
+                              nil
+                              media)
 
   (zp/create-hydra-org-refile film
-      "
+                              "
   ^Film^
  ^^------------
   _._: Root
   _l_: List
   _d_: Watched
 "
-    (("." "~/org/life.org" "Film")
-     ("l" "~/org/life.org" "Film" "List")
-     ("d" "~/org/life.org" "Film" "Watched"))
-    nil
-    media)
+                              (("." "~/org/life.org" "Film")
+                               ("l" "~/org/life.org" "Film" "List")
+                               ("d" "~/org/life.org" "Film" "Watched"))
+                              nil
+                              media)
 
   (zp/create-hydra-org-refile series
-      "
+                              "
   ^Series^
  ^^------------
   _._: Root
   _l_: List
   _d_: Watched
 "
-    (("." "~/org/life.org" "Series")
-     ("l" "~/org/life.org" "Series" "List")
-     ("d" "~/org/life.org" "Series" "Watched"))
-    nil
-    media)
+                              (("." "~/org/life.org" "Series")
+                               ("l" "~/org/life.org" "Series" "List")
+                               ("d" "~/org/life.org" "Series" "Watched"))
+                              nil
+                              media)
 
   (zp/create-hydra-org-refile music
-      "
+                              "
   ^Music^
  ^^-----------------
   _._: Root
@@ -5171,19 +5198,16 @@ If the function sets CREATED, it returns its value."
   _j_: Jazz
   _o_: Other genres
 "
-    (("." "~/org/life.org" "Music")
-     ("c" "~/org/life.org" "Music" "List of classical pieces")
-     ("j" "~/org/life.org" "Music" "List of jazz pieces")
-     ("o" "~/org/life.org" "Music" "List of other genres"))
-    nil
-    media))
-
-
+                              (("." "~/org/life.org" "Music")
+                               ("c" "~/org/life.org" "Music" "List of classical pieces")
+                               ("j" "~/org/life.org" "Music" "List of jazz pieces")
+                               ("o" "~/org/life.org" "Music" "List of other genres"))
+                              nil
+                              media))
 
 ;;----------------------------------------------------------------------------
 ;; org-ref
 ;;----------------------------------------------------------------------------
-
 (use-package org-ref
   :requires org
   :config
@@ -5192,12 +5216,9 @@ If the function sets CREATED, it returns its value."
         org-ref-default-bibliography '("~/org/bib/monty-python.bib")
         org-ref-pdf-directory "~/org/bib/pdf"))
 
-
-
 ;;----------------------------------------------------------------------------
 ;; org-brain
 ;;----------------------------------------------------------------------------
-
 ;; Disabled because I don’t use it
 (use-package org-brain
   :disabled
@@ -5209,12 +5230,9 @@ If the function sets CREATED, it returns its value."
   ;; (setq org-id-locations-file "~/.emacs.d/.org-id-locations")
   )
 
-
-
 ;; ========================================
 ;; ================= APPT =================
 ;; ========================================
-
 (use-package appt
   :config
   (appt-activate t)
@@ -5354,13 +5372,12 @@ Check their respective dosctrings for more info."
    after
    zp/org-set-appt-warntime-if-timestamp))
 
-
-
 ;;----------------------------------------------------------------------------
-;; ledger-mode
+;; ledger
 ;;----------------------------------------------------------------------------
-
 (use-package ledger-mode
+  :bind (:map ledger-mode-map
+              ("C-c C-d" . ledger-kill-current-transaction))
   :config
   (add-to-list 'auto-mode-alist '("\\.ledger$" . ledger-mode))
 
@@ -5418,32 +5435,60 @@ that date.  Leave point on the first amount."
     "Delete the transaction surrounging POS."
     (interactive "d")
     (let ((bounds (ledger-navigate-find-xact-extents pos)))
-      (kill-region (car bounds) (cadr bounds))))
+      (kill-region (car bounds) (cadr bounds)))))
 
-  (define-key ledger-mode-map (kbd "C-c C-d") #'ledger-kill-current-transaction))
-
-
-
-
-;; ========================================
-;; ================ MAGIT =================
-;; ========================================
-
+;;----------------------------------------------------------------------------
+;; magit
+;;----------------------------------------------------------------------------
 (use-package magit
+  :demand
+  :bind ("H-m" . magit-status)
   :config
   (setq magit-diff-refine-hunk 'all)
-  (magit-wip-mode)
+  (magit-wip-mode))
 
-  (global-set-key (kbd "H-m") #'magit-status))
-
-
-
-
-;; ========================================
-;; =============== CHRONOS ================
-;; ========================================
-
+;;----------------------------------------------------------------------------
+;; chronos
+;;----------------------------------------------------------------------------
 (use-package chronos
+  :bind (:map chronos-mode-map
+              (("a" . 'helm-chronos-add-timer)
+               ("A" . (lambda ()
+                        (interactive)
+                        (let ((zp/helm-chronos-add-relatively t))
+                          (helm-chronos-add-timer))))
+
+               ;; Quick keys
+               ("U" . (lambda ()
+                        (interactive)
+                        (zp/chronos-edit-quick "-0:00:05" "5 s")))
+               ("I" . (lambda ()
+                        (interactive)
+                        (zp/chronos-edit-quick "+0:00:05" "5 s")))
+               ("u" . (lambda ()
+                        (interactive)
+                        (zp/chronos-edit-quick "-0:00:15" "15 s")))
+               ("i" . (lambda ()
+                        (interactive)
+                        (zp/chronos-edit-quick "+0:00:15" "15 s")))
+               ("j" . (lambda ()
+                        (interactive)
+                        (zp/chronos-edit-quick "-0:01:00" "1 min")))
+               ("k" . (lambda ()
+                        (interactive)
+                        (zp/chronos-edit-quick "+0:01:00" "1 min")))
+               ("J" . (lambda ()
+                        (interactive)
+                        (zp/chronos-edit-quick "-0:05:00" "5 min")))
+               ("K" . (lambda ()
+                        (interactive)
+                        (zp/chronos-edit-quick "+0:05:00" "5 min")))
+               ("m" . (lambda ()
+                        (interactive)
+                        (zp/chronos-edit-quick "-0:10:00" "10 min")))
+               ("," . (lambda ()
+                        (interactive)
+                        (zp/chronos-edit-quick "+0:10:00" "10 min")))))
   :config
   (setq helm-chronos-recent-timers-limit 100
         helm-chronos-standard-timers
@@ -5509,56 +5554,15 @@ running."
                    no-running-timer)
               (eq arg '(4)))
           (quit-window 1)
-        (quit-window))))
-
-  ;;------
-  ;; Keys
-  ;;------
-
-  (defun zp/chronos-mode-config ()
-    "Modify keymaps used by `org-mode'."
-    (local-set-key (kbd "U") (lambda ()
-                               (interactive)
-                               (zp/chronos-edit-quick "-0:00:05" "5 s")))
-    (local-set-key (kbd "I") (lambda ()
-                               (interactive)
-                               (zp/chronos-edit-quick "+0:00:05" "5 s")))
-    (local-set-key (kbd "u") (lambda ()
-                               (interactive)
-                               (zp/chronos-edit-quick "-0:00:15" "15 s")))
-    (local-set-key (kbd "i") (lambda ()
-                               (interactive)
-                               (zp/chronos-edit-quick "+0:00:15" "15 s")))
-    (local-set-key (kbd "j") (lambda ()
-                               (interactive)
-                               (zp/chronos-edit-quick "-0:01:00" "1 min")))
-    (local-set-key (kbd "k") (lambda ()
-                               (interactive)
-                               (zp/chronos-edit-quick "+0:01:00" "1 min")))
-    (local-set-key (kbd "J") (lambda ()
-                               (interactive)
-                               (zp/chronos-edit-quick "-0:05:00" "5 min")))
-    (local-set-key (kbd "K") (lambda ()
-                               (interactive)
-                               (zp/chronos-edit-quick "+0:05:00" "5 min")))
-    (local-set-key (kbd "m") (lambda ()
-                               (interactive)
-                               (zp/chronos-edit-quick "-0:10:00" "10 min")))
-    (local-set-key (kbd ",") (lambda ()
-                               (interactive)
-                               (zp/chronos-edit-quick "+0:10:00" "10 min")))
-    (local-set-key (kbd "a") 'helm-chronos-add-timer)
-    (local-set-key (kbd "A") (lambda ()
-                               (interactive)
-                               (let ((zp/helm-chronos-add-relatively t))
-                                 (helm-chronos-add-timer)))))
-
-  (add-hook 'chronos-mode-hook #'zp/chronos-mode-config))
+        (quit-window)))))
 
 (use-package helm-chronos-patched
+  :bind (("H-;" . zp/switch-to-chronos)
+         ("H-M-;" . zp/switch-to-chronos-and-add))
   :requires chronos
   :config
   ;; Fix for adding new timers with helm-chronos
+  ;; TODO: Check if still necessary with ‘helm-chronos-patched’
   (defvar helm-chronos--fallback-source
     (helm-build-dummy-source "Enter <expiry time spec>/<message>"
       :filtered-candidate-transformer
@@ -5590,21 +5594,11 @@ If ADD is non-nil, prompt for a new timer upon switching."
 
 If switching to Chronos’s buffer, also add a timer."
     (interactive)
-    (zp/switch-to-chronos t))
-
-  ;;------
-  ;; Keys
-  ;;------
-
-  (global-set-key (kbd "H-;") #'zp/switch-to-chronos)
-  (global-set-key (kbd "H-M-;") #'zp/switch-to-chronos-and-add))
-
-
+    (zp/switch-to-chronos t)))
 
 ;;----------------------------------------------------------------------------
 ;; org-noter
 ;;----------------------------------------------------------------------------
-
 (use-package org-noter
   :config
   (setq org-noter-hide-other t
@@ -5667,12 +5661,9 @@ buffer, thereby propagating the indirectness."
   ;; TODO: Use ‘org-agenda-keymap’ instead of setting it globally
   (global-set-key (kbd "C-c N") 'zp/org-noter-dwim))
 
-
-
 ;;----------------------------------------------------------------------------
 ;; Psychotherapy
 ;;----------------------------------------------------------------------------
-
 (use-package psychotherapy
   :requires (org org-capture)
   :config
@@ -5707,12 +5698,9 @@ buffer, thereby propagating the indirectness."
   (add-to-list 'zp/org-capture-extra-minor-modes-alist
                '("D" . zp/psychotherapy-mode)))
 
-
-
 ;;----------------------------------------------------------------------------
 ;; Feedback sounds
 ;;----------------------------------------------------------------------------
-
 (use-package feedback-sounds
   :requires org
   :config
@@ -5732,6 +5720,9 @@ buffer, thereby propagating the indirectness."
 ;;----------------------------------------------------------------------------
 
 (use-package helm-bibtex
+  :bind (("H-y" . zp/helm-bibtex-with-local-bibliograph)
+         ("H-M-y" . zp/helm-bibtex-select-bib)
+         ("C-c D" . zp/bibtex-completion-message-key-last))
   :config
   ;; TODO: Modernise
   ;; A lot of this code is baby Elisp.
@@ -5931,32 +5922,18 @@ commas and space."
       (helm-attrset 'action new-action helm-source-bibtex)
       (helm-bibtex)
       ;; Wrapping with (progn (foo) nil) suppress the output
-      (progn (helm-attrset 'action previous-actions helm-source-bibtex) nil)))
-
-  ;;------
-  ;; Keys
-  ;;------
-
-  (global-set-key (kbd "H-y") #'zp/helm-bibtex-with-local-bibliography)
-  (global-set-key (kbd "H-M-y") #'zp/helm-bibtex-select-bib)
-  (global-set-key (kbd "C-c D") #'zp/bibtex-completion-message-key-last))
-
-
+      (progn (helm-attrset 'action previous-actions helm-source-bibtex) nil))))
 
 ;;----------------------------------------------------------------------------
 ;; Miscellaneous
 ;;----------------------------------------------------------------------------
-
 (defun zp/echo-buffer-name ()
   (interactive)
   (message (concat "Current buffer: " (replace-regexp-in-string "%" "%%" (buffer-name)))))
 
-
-
 ;;----------------------------------------------------------------------------
 ;; External
 ;;----------------------------------------------------------------------------
-
 ;; Source: https://gitlab.com/marcowahl/herald-the-mode-lined
 (defun herald-the-mode-line ()
   "Show the modeline in the minibuffer.
@@ -5987,8 +5964,9 @@ the beginning of the line."
 (global-set-key [remap move-beginning-of-line]
                 'move-beginning-of-line-dwim)
 
-
-
+;;----------------------------------------------------------------------------
+;; Mode-line
+;;----------------------------------------------------------------------------
 (use-package minions
   :config
   (minions-mode 1))
@@ -6002,15 +5980,6 @@ the beginning of the line."
 
   (moody-replace-mode-line-buffer-identification)
   (moody-replace-vc-mode))
-
-
-
-
-
-
-;;----------------------------------------------------------------------------
-;; Mode-line
-;;----------------------------------------------------------------------------
 
 (defvar ml-selected-window nil
   "Current selected window.")
@@ -6107,10 +6076,6 @@ mouse-1: Previous buffer\nmouse-3: Next buffer")
                     mode-line-misc-info
                     "  "
                     mode-line-end-spaces)))))
-
-
-
-
 
 ;;----------------------------------------------------------------------------
 ;; Theme

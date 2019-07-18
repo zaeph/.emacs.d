@@ -176,26 +176,6 @@ If JUMP is non-nil, jump instead."
     (org-reveal)
     (org-beginning-of-line)))
 
-(defvar-local zp/org-ibuf-spawned-also-kill-window nil
-  "When t, also kill the window when killing a spawned buffer.
-
-A spawned buffer is an indirect buffer created by
-‘org-tree-to-indirect-buffer’ which will be replaced by
-subsequent calls.")
-
-(defvar zp/org-spawned-ibuf-mode-map
-  (let ((map (make-sparse-keymap)))
-        (define-key map (kbd "C-c C-k") #'zp/org-kill-spawned-ibuf-dwim)
-        map)
-  "Keymap for ‘zp/org-spawned-ibuf-mode’.")
-
-(define-minor-mode zp/org-spawned-ibuf-mode
-    "Show when the current indirect buffer is a spawned buffer."
-  :lighter " Spawn"
-  :keymap zp/org-spawned-ibuf-mode-map
-  (setq header-line-format
-        "Spawned indirect buffer.  Kill with ‘C-c C-k’, dedicate with ‘C-u C-c C-k’."))
-
 (defun zp/org-tree-to-indirect-buffer-folded (arg &optional dedicated bury)
   "Clone tree to indirect buffer in a folded state.
 
