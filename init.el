@@ -300,6 +300,10 @@ end-of-buffer signals; pass the rest to the default handler."
 ;; (setq lisp-indent-function 'common-lisp-indent-function)
 ;; (setq lisp-indent-function 'lisp-indent-function) ;Default
 
+(use-package package
+  :config
+  (global-set-key (kbd "C-c P") #'package-list-packages))
+
 
 
 ;;----------------------------------------------------------------------------
@@ -386,6 +390,15 @@ time is displayed."
       (zp/unfill-region)
     (zp/unfill-paragraph)))
 
+(defun zp/kill-other-buffer-and-window ()
+  "Kill the other buffer and window if there is more than one window."
+  (interactive)
+  (if (not (one-window-p))
+      (progn
+        (select-window (next-window))
+        (kill-buffer-and-window))
+    (user-error "There is only one window in the frame")))
+
 
 
 ;;----------------------------------------------------------------------------
@@ -444,7 +457,8 @@ time is displayed."
 
   (add-hook 'prog-mode-hook #'zp/whitespace-mode-lines-tail)
 
-  (global-set-key (kbd "C-c w") 'zp/whitespace-mode-lines-tail))
+  (global-set-key (kbd "C-c w") #'zp/whitespace-mode-lines-tail)
+  (global-set-key (kbd "C-c W") #'whitespace-mode))
 
 (use-package info+
   :config
@@ -483,6 +497,10 @@ time is displayed."
   (add-hook 'nov-mode-hook #'olivetti-mode))
 
 (use-package el-patch)
+
+(use-package ol
+  :config
+  (global-set-key (kbd "C-c L") #'org-store-link))
 
 (use-package ox
   :config
@@ -550,7 +568,9 @@ time is displayed."
   ;; Enable flycheck for some major-modes
   (add-hook 'sh-mode-hook #'flycheck-mode)
   (add-hook 'cperl-mode-hook #'flycheck-mode)
-  (add-hook 'elisp-mode-hook #'flycheck-mode))
+  (add-hook 'elisp-mode-hook #'flycheck-mode)
+
+  (define-key zp/toggle-map "F" #'flycheck-mode))
 
 ;; Minor-mode to show Flycheck error messages in a popup
 (use-package fly-check-pos-tip
@@ -581,7 +601,9 @@ time is displayed."
 (use-package olivetti
   :config
   (setq-default olivetti-body-width 0.6
-                olivetti-minimum-body-width 80))
+                olivetti-minimum-body-width 80)
+
+  (global-set-key (kbd "M-O") #'olivetti-mode))
 
 (use-package thingatpt
   :config
@@ -644,7 +666,14 @@ With numeric prefix arg INC, increment the integer by INC amount."
 
 With numeric prefix arg DEC, decrement the integer by DEC amount."
     (interactive "p")
-    (increment-integer-at-point (- (or dec 1)))))
+    (increment-integer-at-point (- (or dec 1))))
+
+  ;;------
+  ;; Keys
+  ;;------
+
+  (global-set-key (kbd "C-c C-=") 'increment-integer-at-point)
+  (global-set-key (kbd "C-c C--") 'decrement-integer-at-point))
 
 
 
@@ -773,6 +802,8 @@ With numeric prefix arg DEC, decrement the integer by DEC amount."
 
 (use-package ispell
   :config
+  ;; TODO: Modernise
+
   ;; Use aspell as the backend
   (setq-default ispell-program-name "aspell")
 
@@ -854,7 +885,17 @@ LANGUAGE should be the name of an Ispell dictionary."
                             (eq current nil)
                             (string-match-p current "british"))
                            "French"
-                         "English")))))
+                         "English"))))
+
+  ;;------
+  ;; Keys
+  ;;------
+
+  (global-set-key (kbd "C-c d") 'zp/helm-ispell-preselect))
+
+(use-package flyspell
+  :config
+  (global-set-key (kbd "C-c f") #'flyspell-mode))
 
 
 
@@ -1259,7 +1300,9 @@ based on ‘zp/message-mode-ispell-alist’."
     "Modify keymaps used by ‘notmuch-show-mode’."
     (local-set-key (kbd "C-c C-o") #'goto-address-at-point))
 
-  (add-hook 'notmuch-show-mode-hook #'zp/notmuch-show-mode-config))
+  (add-hook 'notmuch-show-mode-hook #'zp/notmuch-show-mode-config)
+
+  (global-set-key (kbd "H-l") 'zp/switch-to-notmuch))
 
 (use-package org-notmuch
   :after notmuch)
@@ -1277,7 +1320,10 @@ based on ‘zp/message-mode-ispell-alist’."
 
 (use-package menu-bar
   :config
-  (menu-bar-mode -1))
+  (menu-bar-mode -1)
+
+  (define-key zp/toggle-map "d" #'toggle-debug-on-error)
+  (define-key zp/toggle-map "Q" #'toggle-debug-on-quit))
 
 (use-package tool-bar
   :config
@@ -1285,7 +1331,17 @@ based on ‘zp/message-mode-ispell-alist’."
 
 (use-package scroll-bar
   :config
-  (scroll-bar-mode 0))
+  (scroll-bar-mode 0)
+
+  (global-set-key (kbd "C-c s") #'scroll-bar-mode))
+
+(use-package hl-line
+  :config
+  (global-set-key (kbd "C-c H") #'global-hl-line-mode))
+
+(use-package display-line-numbers
+  :config
+  (global-set-key (kbd "C-c g") #'display-line-numbers-mode))
 
 (use-package fringe
   :config
@@ -1297,12 +1353,20 @@ based on ‘zp/message-mode-ispell-alist’."
 
 (use-package yasnippet
   :config
-  (yas-global-mode 1))
+  (yas-global-mode 1)
+  (global-set-key (kbd "H-<backspace>") 'yas-prev-field))
 
 (use-package simple
   :config
   (column-number-mode 1)
-  (setq next-line-add-newlines nil))
+  (setq next-line-add-newlines nil)
+
+  (define-key zp/toggle-map "l" #'toggle-truncate-lines)
+  (define-key zp/toggle-map "f" #'auto-fill-mode)
+
+  (global-set-key (kbd "C-c u") #'visual-line-mode)
+  (global-set-key (kbd "M-U") #'visual-line-mode)
+  (global-set-key (kbd "C-c i") #'toggle-truncate-lines))
 
 (use-package frame
   :config
@@ -1315,7 +1379,9 @@ based on ‘zp/message-mode-ispell-alist’."
 (use-package electric
   :config
   (electric-quote-mode 1)
-  (setq electric-quote-context-sensitive 1))
+  (setq electric-quote-context-sensitive 1)
+
+  (define-key zp/toggle-map "q" #'electric-quote-local-mode))
 
 ;; (use-package dumb-jump
 ;;   :config
@@ -1346,7 +1412,18 @@ based on ‘zp/message-mode-ispell-alist’."
         delete-old-versions t)
 
   ;; Backup directories
-  (setq backup-directory-alist '(("." . "~/.saves"))))
+  (setq backup-directory-alist '(("." . "~/.saves")))
+
+  ;;------
+  ;; Keys
+  ;;------
+
+  ;; Exit Emacs with ‘C-x r q’, and kill the current frame with ‘C-x C-c’
+  (global-set-key (kbd "C-x r q") 'save-buffers-kill-terminal)
+  (global-set-key (kbd "C-x C-c") 'delete-frame)
+
+
+  )
 
 (use-package vc-hooks
   :config
@@ -1507,6 +1584,10 @@ If text is selected, adds furigana to the selected kanji instead."
 (use-package realgud
   :config
   (setq realgud-safe-mode nil))
+
+(use-package picture
+  :config
+  (global-set-key (kbd "C-c \\") #'picture-mode))
 
 
 
@@ -1938,7 +2019,9 @@ return `nil'."
   (setq calendar-week-start-day 1
         calendar-latitude 48.11198
         calendar-longitude -1.67429
-        calendar-location-name "Rennes, France"))
+        calendar-location-name "Rennes, France")
+
+  (global-set-key (kbd "C-c c") 'calendar))
 
 ;; Load org-habit
 (use-package org-habit
@@ -2377,7 +2460,8 @@ With a C-u argument, toggle the link display."
     (local-set-key (kbd "M-I") #'org-indent-mode)
     (local-set-key (kbd "M-*") #'zp/org-toggle-fontifications)
     (local-set-key (kbd "C-c C-j") #'zp/org-jump-dwim)
-    (local-set-key (kbd "C-c C-x C-l") #'zp/org-latex-preview-dwim))
+    (local-set-key (kbd "C-c C-x C-l") #'zp/org-latex-preview-dwim)
+    (local-set-key (kbd "C-c R") #'org-display-inline-images))
 
   (add-hook 'org-mode-hook #'zp/org-mode-config))
 
@@ -2391,33 +2475,45 @@ With a C-u argument, toggle the link display."
         org-clock-sound t)
 
   (defun zp/echo-clock-string ()
-  "Echo the tasks being currently clocked in the minibuffer,
+    "Echo the tasks being currently clocked in the minibuffer,
 along with effort estimates and total time."
-  (interactive)
-  (if (org-clocking-p)
-      (let ((header "Current clock")
-            (clocked-time (org-clock-get-clocked-time))
-            (org-clock-heading-formatted (replace-regexp-in-string "%" "%%"org-clock-heading)))
-        (if org-clock-effort
-            (let* ((effort-in-minutes (org-duration-to-minutes org-clock-effort))
-                   (work-done-str
-                    (propertize (org-duration-from-minutes clocked-time)
-                                'face
-                                (if (and org-clock-task-overrun
-                                         (not org-clock-task-overrun-text))
-                                    'org-mode-line-clock-overrun
-                                  'org-meta-line)))
-                   (effort-str (org-duration-from-minutes effort-in-minutes)))
-              (message (concat
-                        header ": "
-                        (format (propertize "[%s/%s] (%s)" 'face 'org-meta-line)
-                                work-done-str effort-str org-clock-heading-formatted))))
-          (message (concat
-                    header ": "
-                    (format (propertize "[%s] (%s)" 'face 'org-meta-line)
-                           (org-duration-from-minutes clocked-time)
-                           org-clock-heading-formatted)))))
-    (error "Not currently clocking any task."))))
+    (interactive)
+    (if (org-clocking-p)
+        (let ((header "Current clock")
+              (clocked-time (org-clock-get-clocked-time))
+              (org-clock-heading-formatted (replace-regexp-in-string "%" "%%"org-clock-heading)))
+          (if org-clock-effort
+              (let* ((effort-in-minutes (org-duration-to-minutes org-clock-effort))
+                     (work-done-str
+                      (propertize (org-duration-from-minutes clocked-time)
+                                  'face
+                                  (if (and org-clock-task-overrun
+                                           (not org-clock-task-overrun-text))
+                                      'org-mode-line-clock-overrun
+                                    'org-meta-line)))
+                     (effort-str (org-duration-from-minutes effort-in-minutes)))
+                (message (concat
+                          header ": "
+                          (format (propertize "[%s/%s] (%s)" 'face 'org-meta-line)
+                                  work-done-str effort-str org-clock-heading-formatted))))
+            (message (concat
+                      header ": "
+                      (format (propertize "[%s] (%s)" 'face 'org-meta-line)
+                              (org-duration-from-minutes clocked-time)
+                              org-clock-heading-formatted)))))
+      (error "Not currently clocking any task.")))
+
+  ;;------
+  ;; Keys
+  ;;------
+
+  ;; Clocking commands
+  (global-set-key (kbd "C-c C-x C-j") #'org-clock-goto)
+  (global-set-key (kbd "C-c C-x C-i") #'org-clock-in)
+  (global-set-key (kbd "C-c C-x C-o") #'org-clock-out)
+  (global-set-key (kbd "C-c C-x C-z") #'org-resolve-clocks)
+
+  (global-set-key (kbd "H-/") 'zp/echo-clock-string))
 
 ;; Enable resetting plain-list checks when marking a repeated tasks DONE
 ;; To enable that behaviour, set the ‘RESET_CHECK_BOXES’ property to t for the
@@ -4561,13 +4657,15 @@ Based on `org-agenda-set-property'."
     ;; Update org-super-agenda-header-map
     (setq org-super-agenda-header-map org-agenda-mode-map))
 
-  (add-hook 'org-agenda-mode-hook #'zp/org-agenda-mode-config))
+  (add-hook 'org-agenda-mode-hook #'zp/org-agenda-mode-config)
+
+  (global-set-key (kbd "H-o") #'zp/switch-to-agenda))
 
 
 
-;; ========================================
-;; ============= ORG-CAPTURE ==============
-;; ========================================
+;;----------------------------------------------------------------------------
+;; org-capture
+;;----------------------------------------------------------------------------
 
 (use-package org-capture
   :config
@@ -4881,7 +4979,13 @@ If the function sets CREATED, it returns its value."
       (if full-frame
           (delete-other-windows))))
 
-  (add-hook 'org-capture-mode-hook 'zp/org-capture-make-full-frame))
+  (add-hook 'org-capture-mode-hook 'zp/org-capture-make-full-frame)
+
+  ;;------
+  ;; Keys
+  ;;------
+
+  (global-set-key (kbd "C-c n") 'org-capture))
 
 
 
@@ -5377,7 +5481,7 @@ that date.  Leave point on the first amount."
     (let ((bounds (ledger-navigate-find-xact-extents pos)))
       (kill-region (car bounds) (cadr bounds))))
 
-  (define-key ledger-mode-map (kbd "C-c C-d") 'ledger-kill-current-transaction))
+  (define-key ledger-mode-map (kbd "C-c C-d") #'ledger-kill-current-transaction))
 
 
 
@@ -5389,7 +5493,9 @@ that date.  Leave point on the first amount."
 (use-package magit
   :config
   (setq magit-diff-refine-hunk 'all)
-  (magit-wip-mode))
+  (magit-wip-mode)
+
+  (global-set-key (kbd "H-m") #'magit-status))
 
 
 
@@ -5545,7 +5651,14 @@ If ADD is non-nil, prompt for a new timer upon switching."
 
 If switching to Chronos’s buffer, also add a timer."
     (interactive)
-    (zp/switch-to-chronos t)))
+    (zp/switch-to-chronos t))
+
+  ;;------
+  ;; Keys
+  ;;------
+
+  (global-set-key (kbd "H-;") #'zp/switch-to-chronos)
+  (global-set-key (kbd "H-M-;") #'zp/switch-to-chronos-and-add))
 
 
 
@@ -5610,7 +5723,10 @@ buffer, thereby propagating the indirectness."
         (set-marker marker nil))))
 
   (define-key org-noter-doc-mode-map (kbd "j") 'pdf-view-next-line-or-next-page)
-  (define-key org-noter-doc-mode-map (kbd "k") 'pdf-view-previous-line-or-previous-page))
+  (define-key org-noter-doc-mode-map (kbd "k") 'pdf-view-previous-line-or-previous-page)
+
+  ;; TODO: Use ‘org-agenda-keymap’ instead of setting it globally
+  (global-set-key (kbd "C-c N") 'zp/org-noter-dwim))
 
 
 
@@ -5876,7 +5992,15 @@ commas and space."
       (helm-attrset 'action new-action helm-source-bibtex)
       (helm-bibtex)
       ;; Wrapping with (progn (foo) nil) suppress the output
-      (progn (helm-attrset 'action previous-actions helm-source-bibtex) nil))))
+      (progn (helm-attrset 'action previous-actions helm-source-bibtex) nil)))
+
+  ;;------
+  ;; Keys
+  ;;------
+
+  (global-set-key (kbd "H-y") #'zp/helm-bibtex-with-local-bibliography)
+  (global-set-key (kbd "H-M-y") #'zp/helm-bibtex-select-bib)
+  (global-set-key (kbd "C-c D") #'zp/bibtex-completion-message-key-last))
 
 
 
@@ -5906,6 +6030,8 @@ command reveals the other lines."
     (or mode-line-format
         hide-mode-line))))
 
+(global-set-key (kbd "H-M-.") 'herald-the-mode-line)
+
 
 
 ;; ========================================
@@ -5914,97 +6040,24 @@ command reveals the other lines."
 
 (global-set-key [M-kanji] 'ignore)
 
-;; (global-set-key (kbd "C-x C-g") 'xah-open-in-external-app)
-
-;; Toggle modes
+;; Define keymap for minor mode toggles
 (define-prefix-command 'zp/toggle-map)
 (define-key ctl-x-map "t" 'zp/toggle-map)
-(define-key zp/toggle-map "d" #'toggle-debug-on-error)
-(define-key zp/toggle-map "e" #'toggle-debug-on-error)
-(define-key zp/toggle-map "f" #'auto-fill-mode)
-(define-key zp/toggle-map "F" #'flycheck-mode)
-(define-key zp/toggle-map "l" #'toggle-truncate-lines)
-(define-key zp/toggle-map "q" #'electric-quote-local-mode)
-(define-key zp/toggle-map "Q" #'toggle-debug-on-quit)
-(define-key zp/toggle-map "t" #'zp/switch-theme)
-(define-key zp/toggle-map "c" #'zp/helm-select-font-dwim)
-
-(global-set-key (kbd "C-c \\") 'picture-mode)
-(global-set-key (kbd "C-c u") 'visual-line-mode)
-(global-set-key (kbd "C-c s") 'scroll-bar-mode)
-(global-set-key (kbd "C-c H") 'global-hl-line-mode)
-(global-set-key (kbd "C-c g") 'display-line-numbers-mode)
-(global-set-key (kbd "C-c L") 'org-store-link)
-;; (global-set-key (kbd "C-c f") 'switch-main-font)
-(global-set-key (kbd "C-c i") 'toggle-truncate-lines)
-(global-set-key (kbd "C-c f") 'flyspell-mode)
-(global-set-key (kbd "M-U")   'visual-line-mode)
-(global-set-key (kbd "M-O")   'olivetti-mode)
-(global-set-key (kbd "M-W")   'writeroom-mode)
-(global-set-key (kbd "C-c W") 'whitespace-mode)
-
-;; Prototype
-;; Doesn't toggle, just turns on
-;; (global-set-key (kbd "C-c h") (lambda () (interactive)
-;;                              (global-hl-line-mode)
-;;                              (global-linum-mode)))
-
 
 ;; Other toggles
 
 ;; Actions
-(global-set-key (kbd "M-SPC") 'delete-horizontal-space)
-(global-set-key (kbd "M-S-SPC") 'just-one-space)
-(global-set-key (kbd "M-J") 'duplicate-thing)
-(global-set-key (kbd "C-x r q") 'save-buffers-kill-terminal) ;magnar
-(global-set-key (kbd "C-x C-c") 'delete-frame)               ;magnars
-(global-set-key (kbd "C-c c") 'calendar)
-(global-set-key (kbd "C-c n") 'org-capture)
-(global-set-key (kbd "C-c N") 'zp/org-noter-dwim)
-(global-set-key (kbd "C-c C-=") 'increment-integer-at-point)
-(global-set-key (kbd "C-c C--") 'decrement-integer-at-point)
-(global-set-key (kbd "C-c d") 'zp/helm-ispell-preselect)
-(global-set-key (kbd "C-c y") 'zp/variable-pitch-mode)
-(global-set-key (kbd "C-c R") 'org-display-inline-images)
-(global-set-key (kbd "C-c P") 'package-list-packages)
-(global-set-key (kbd "H-h") 'er/expand-region)
-(global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
-(global-set-key (kbd "C->") 'mc/mark-next-like-this)
-(global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
-(global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
-(global-set-key (kbd "C-c T") 'zp/switch-theme)
-(global-set-key (kbd "H-.") 'zp/echo-buffer-name)
-(global-set-key (kbd "H-M-.") 'herald-the-mode-line)
-(global-set-key (kbd "H-/") 'zp/echo-clock-string)
-(global-set-key (kbd "H-y") 'zp/helm-bibtex-with-local-bibliography)
-(global-set-key (kbd "H-M-y") 'zp/helm-bibtex-select-bib)
-(global-set-key (kbd "C-x F") 'zp/unfill-document)
-(global-set-key (kbd "M-Q") 'zp/unfill-context)
-(global-set-key (kbd "C-c D") 'zp/bibtex-completion-message-key-last)
-(global-set-key (kbd "H-<backspace>") 'yas-prev-field)
-(global-set-key (kbd "C-c x") 'zp/toggle-org-latex-pdf-process)
-;; (global-set-key (kbd "H-g") 'keyboard-quit)
-;; (global-set-key (kbd "H-l") 'zp/switch-to-mu4e)
-(global-set-key (kbd "H-l") 'zp/switch-to-notmuch)
-(global-set-key (kbd "H-M-l") 'mu4e-compose-new)
-;; (global-set-key (kbd "H-m") 'zp/switch-to-magit)
-(global-set-key (kbd "H-m") 'magit-status)
-(global-set-key (kbd "C-x B") 'rename-buffer)
-
-;; Clocking commands
-(global-set-key (kbd "C-c C-x C-j") 'org-clock-goto)
-(global-set-key (kbd "C-c C-x C-i") 'org-clock-in)
-(global-set-key (kbd "C-c C-x C-o") 'org-clock-out)
-(global-set-key (kbd "C-c C-x C-z") 'org-resolve-clocks)
+(global-set-key (kbd "M-SPC") #'delete-horizontal-space)
+(global-set-key (kbd "M-S-SPC") #'just-one-space)
+(global-set-key (kbd "H-.") #'zp/echo-buffer-name)
+(global-set-key (kbd "C-x F") #'zp/unfill-document)
+(global-set-key (kbd "M-Q") #'zp/unfill-context)
+(global-set-key (kbd "C-x B") #'rename-buffer)
+(global-set-key (kbd "M-o") #'mode-line-other-buffer)
+(global-set-key (kbd "H-j") #'other-window-reverse)
+(global-set-key (kbd "H-k") #'other-window)
 
 ;; Movements
-(global-set-key (kbd "H-o") 'zp/switch-to-agenda)
-(global-set-key (kbd "H-M-;") 'helm-chronos-add-timer)
-(global-set-key (kbd "H-;") 'zp/switch-to-chronos)
-(global-set-key (kbd "H-M-;") 'zp/switch-to-chronos-and-add)
-(global-set-key (kbd "M-o") 'mode-line-other-buffer)
-(global-set-key (kbd "H-j") 'other-window-reverse)
-(global-set-key (kbd "H-k") 'other-window)
 ;; (global-set-key (kbd "C-x t") 'window-toggle-split-direction)
 (global-set-key (kbd "C-x 4 1") 'zp/kill-other-buffer-and-window)
 
@@ -6052,15 +6105,6 @@ command reveals the other lines."
 ;; without being able to go back with winner-redo.
 ;; Better to use C-x z
 ;; (make-command-repeatable 'winner-undo)
-
-(defun zp/kill-other-buffer-and-window ()
-  "Kill the other buffer and window if there is more than one window."
-  (interactive)
-  (if (not (one-window-p))
-      (progn
-        (select-window (next-window))
-        (kill-buffer-and-window))
-    (user-error "There is only one window in the frame.")))
 
 (defun zp/org-kill-spawned-ibuf (&optional arg)
   "Kill the current buffer if it is an indirect buffer."
@@ -6474,7 +6518,13 @@ mouse-1: Previous buffer\nmouse-3: Next buffer")
 
   ;; Day/night cycle
   (setq zp/time-of-day-sections '("06:00" "08:00" "16:00" "20:00" "00:00"))
-  (zp/switch-theme-auto))
+  (zp/switch-theme-auto)
+
+  (define-key zp/toggle-map "t" #'zp/switch-theme)
+  (define-key zp/toggle-map "c" #'zp/helm-select-font-dwim)
+
+  (global-set-key (kbd "C-c y") 'zp/variable-pitch-mode)
+  (global-set-key (kbd "C-c T") 'zp/switch-theme))
 
 
 ;;----------------------------------------------------------------------------
@@ -6510,7 +6560,20 @@ See ‘~/.bin/terminator-dwim’ for more info."
 
 ;; Magnars's codes
 ;; expand-region causes weird flicker with repeated tasks if it's at the top
-(require 'expand-region)
+(use-package expand-region
+  :config
+  (global-set-key (kbd "H-h") 'er/expand-region))
+
+(use-package mc-edit-lines
+  :config
+  (global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines))
+
+(use-package mc-mark-more
+  :config
+  (global-set-key (kbd "C->") 'mc/mark-next-like-this)
+  (global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
+  (global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this))
+
 (require 'multiple-cursors)
 
 ;; Diminish
