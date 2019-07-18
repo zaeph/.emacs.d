@@ -4621,6 +4621,28 @@ If the function sets CREATED, it returns its value."
 
   (add-hook 'org-capture-prepare-finalize-hook #'zp/org-set-created-property)
 
+  ;;------------------------------------------
+  ;; Load extra minor modes based on template
+  ;;------------------------------------------
+
+  ;; Loading extra minor-modes with org-capture
+  (defvar zp/org-capture-extra-minor-modes-alist nil
+    "Alist of minors modes to load with specific org-capture templates.")
+
+  (setq zp/org-capture-extra-minor-modes-alist nil)
+
+  (defun zp/org-capture-load-extra-minor-mode ()
+    "Load minor-mode based on based on key."
+    (interactive)
+    (let* ((key (plist-get org-capture-plist :key))
+           (minor-mode (cdr (assoc key zp/org-capture-extra-minor-modes-alist))))
+      (when (and key
+                 minor-mode)
+        (if minor-mode
+            (funcall minor-mode)))))
+
+  (add-hook 'org-capture-mode-hook #'zp/org-capture-load-extra-minor-mode)
+
   ;;------
   ;; Rest
   ;;------
@@ -6398,36 +6420,39 @@ Version 2017-08-25"
 ;; ============ PSYCHOTHERAPY =============
 ;; ========================================
 
+(use-package psychotherapy
+  :requires (org org-capture)
+  :config
+  ;; Setting variables
+  (setq zp/cognitive-distortions
+        '("All-or-nothing thinking"
+          "Over-generalisation"
+          "Mental filter"
+          "Disqualifying the positive"
+          "Mind-reading"
+          "Fortune-Teller error"
+          "Magnification or minimisation"
+          "Emotional reasoning"
+          "Should statements"
+          "Labelling and mislabelling"
+          "Personalisation")
 
+        zp/emotions
+        '("Anger"
+          "Anxiety"
+          "Boredom"
+          "Disgust"
+          "Dispirited"
+          "Fear"
+          "Guilt"
+          "Laziness"
+          "Loneliness"
+          "Sadness"
+          "Tiredness"))
 
-
-
-;; Setting variables
-(setq zp/cognitive-distortions
-      '("All-or-nothing thinking"
-        "Over-generalisation"
-        "Mental filter"
-        "Disqualifying the positive"
-        "Mind-reading"
-        "Fortune-Teller error"
-        "Magnification or minimisation"
-        "Emotional reasoning"
-        "Should statements"
-        "Labelling and mislabelling"
-        "Personalisation")
-
-      zp/emotions
-      '("Anger"
-        "Anxiety"
-        "Boredom"
-        "Disgust"
-        "Dispirited"
-        "Fear"
-        "Guilt"
-        "Laziness"
-        "Loneliness"
-        "Sadness"
-        "Tiredness"))
+  ;; Load ‘zp/psychotherapy-mode’ with the org-capture-template ‘D’
+  (add-to-list 'zp/org-capture-extra-minor-modes-alist
+               '("D" . zp/psychotherapy-mode)))
 
 
 

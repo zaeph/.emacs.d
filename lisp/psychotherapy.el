@@ -139,6 +139,7 @@ Every ELEM in LIST is formatted as follows:
 ;; DWIM components
 ;;----------------------------------------------------------------------------
 ;; Instructions
+;; This is very imperative, and would benefit from abstraction
 (setq zp/psychotherapy-headings-alist
       '(("Situation" .
          (lambda (arg)
@@ -218,26 +219,6 @@ Every ELEM in LIST is formatted as follows:
   "Provide bindings for filling psychotherapy forms."
   :lighter " Psy"
   :keymap zp/psychotherapy-mode-map)
-
-;; Loading extra minor-modes with org-capture
-(defvar zp/org-capture-extra-minor-modes-alist nil
-  "Alist of minors modes to load with specific org-capture templates.")
-
-(setq zp/org-capture-extra-minor-modes-alist
-      '(("D" . zp/psychotherapy-mode)))
-
-;;----------------------------------------------------------------------------
-;; Hook to org-capture
-;;----------------------------------------------------------------------------
-(defun zp/org-capture-load-extra-minor-mode ()
-  "Load minor-mode based on based on key."
-  (interactive)
-  (let* ((key (plist-get org-capture-plist :key))
-         (minor-mode (cdr (assoc key zp/org-capture-extra-minor-modes-alist))))
-    (if minor-mode
-        (funcall minor-mode))))
-
-(add-hook 'org-capture-mode-hook #'zp/org-capture-load-extra-minor-mode)
 
 (provide 'psychotherapy)
 ;;; psychotherapy.el ends here
