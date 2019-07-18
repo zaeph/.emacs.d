@@ -7012,46 +7012,6 @@ If in variable-pitch-mode, change the variable font-preset."
   (zp/switch-theme-auto))
 
 
-;; Old stuff
-;; Mark 1
-;; (load-theme 'base16-atelier-sulphurpool t)
-
-;; SML (Modeline)
-;; (setq sml/no-confirm-load-theme t)
-;; (setq sml/theme 'dark)
-;; (setq sml/name-width '20)
-;; (sml/setup)
-
-;; Old theme switch
-;; (setq dark-theme 'base16-ateliersulphurpool-dark
-;;       light-theme 'base16-solarized-light)
-;; (setq theme-mode 'dark-theme)
-
-;; (defun switch-theme-mode ()
-;;   "Switch the theme between dark and light mode."
-;;   (interactive)
-;;   (if (not (eq theme-mode 'dark))
-;;       (progn
-;;      (load-theme dark-theme t)
-;;      (set-face-attribute 'org-done nil :foreground "spring green")
-;;      (set-face-attribute 'org-hide nil :foreground "#202746")
-;;      (set-face-attribute 'helm-selection nil :background "RoyalBlue4")
-;;      (set-face-attribute 'region nil :background "RoyalBlue4")
-;;      (set-face-attribute 'org-agenda-dimmed-todo-face nil :foreground "SkyBlue4")
-;;      (set-face-attribute 'org-agenda-clocking nil :background "RoyalBlue4")
-;;      (setq theme-mode 'dark))
-;;     (progn
-;;       (load-theme light-theme t)
-;;       (set-face-attribute 'org-hide nil :foreground "#fdf6e3")
-;;       (set-face-attribute 'helm-selection nil :background "RoyalBlue4")
-;;       (set-face-attribute 'region nil :background "RoyalBlue4")
-;;       (set-face-attribute 'org-agenda-dimmed-todo-face nil :foreground "LightSteelBlue3")
-;;       (set-face-attribute 'org-agenda-clocking nil :background "RoyalBlue4")
-;;       (setq theme-mode 'light))))
-
-;; (switch-theme-mode)
-
-
 
 (defun zp/terminology-dwim (&optional ARGUMENTS)
   "Run terminology in the CWD.
