@@ -2376,7 +2376,36 @@ With a C-u argument, toggle the link display."
 (use-package org-clock
   :config
   (setq org-clock-into-drawer "LOGBOOK-CLOCK"
-        org-clock-sound t))
+        org-clock-sound t)
+
+  (defun zp/echo-clock-string ()
+  "Echo the tasks being currently clocked in the minibuffer,
+along with effort estimates and total time."
+  (interactive)
+  (if (org-clocking-p)
+      (let ((header "Current clock")
+            (clocked-time (org-clock-get-clocked-time))
+            (org-clock-heading-formatted (replace-regexp-in-string "%" "%%"org-clock-heading)))
+        (if org-clock-effort
+            (let* ((effort-in-minutes (org-duration-to-minutes org-clock-effort))
+                   (work-done-str
+                    (propertize (org-duration-from-minutes clocked-time)
+                                'face
+                                (if (and org-clock-task-overrun
+                                         (not org-clock-task-overrun-text))
+                                    'org-mode-line-clock-overrun
+                                  'org-meta-line)))
+                   (effort-str (org-duration-from-minutes effort-in-minutes)))
+              (message (concat
+                        header ": "
+                        (format (propertize "[%s/%s] (%s)" 'face 'org-meta-line)
+                                work-done-str effort-str org-clock-heading-formatted))))
+          (message (concat
+                    header ": "
+                    (format (propertize "[%s] (%s)" 'face 'org-meta-line)
+                           (org-duration-from-minutes clocked-time)
+                           org-clock-heading-formatted)))))
+    (error "Not currently clocking any task."))))
 
 ;; Enable resetting plain-list checks when marking a repeated tasks DONE
 ;; To enable that behaviour, set the ‘RESET_CHECK_BOXES’ property to t for the
@@ -5916,35 +5945,6 @@ i.e. change right window to bottom, or change bottom window to right."
                     (split-window-vertically)
                   (split-window-horizontally))
                 (set-window-buffer (windmove-find-other-window neighbour-dir) other-buf))))))))
-
-(defun zp/echo-clock-string ()
-  "Echo the tasks being currently clocked in the minibuffer,
-along with effort estimates and total time."
-  (interactive)
-  (if (org-clocking-p)
-      (let ((header "Current clock")
-            (clocked-time (org-clock-get-clocked-time))
-            (org-clock-heading-formatted (replace-regexp-in-string "%" "%%"org-clock-heading)))
-        (if org-clock-effort
-            (let* ((effort-in-minutes (org-duration-to-minutes org-clock-effort))
-                   (work-done-str
-                    (propertize (org-duration-from-minutes clocked-time)
-                                'face
-                                (if (and org-clock-task-overrun
-                                         (not org-clock-task-overrun-text))
-                                    'org-mode-line-clock-overrun
-                                  'org-meta-line)))
-                   (effort-str (org-duration-from-minutes effort-in-minutes)))
-              (message (concat
-                        header ": "
-                        (format (propertize "[%s/%s] (%s)" 'face 'org-meta-line)
-                                work-done-str effort-str org-clock-heading-formatted))))
-          (message (concat
-                    header ": "
-                    (format (propertize "[%s] (%s)" 'face 'org-meta-line)
-                           (org-duration-from-minutes clocked-time)
-                           org-clock-heading-formatted)))))
-    (error "Not currently clocking any task.")))
 
 
 
