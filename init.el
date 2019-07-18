@@ -8,6 +8,8 @@
 ;; ===============================  ~ Zaeph ~  ===============================
 ;; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+
+
 (setq default-directory "~")
 (setq inhibit-startup-screen 1)
 (setq initial-scratch-message ";; Emacs Scratch
@@ -157,191 +159,6 @@ end-of-buffer signals; pass the rest to the default handler."
 (setq next-line-add-newlines nil)
 
 ;;----------------------------------------------------------------------------
-;; Cosmetics
-;;----------------------------------------------------------------------------
-(tool-bar-mode -1)
-(menu-bar-mode -1)
-(scroll-bar-mode -1)
-(blink-cursor-mode -1)
-(show-paren-mode 1)
-(global-hl-line-mode 1)
-(column-number-mode 1)
-
-;; Set fringe sizes
-(fringe-mode 20)
-
-;;----------------------------------------------------------------------------
-;; Electric
-;;----------------------------------------------------------------------------
-(electric-quote-mode 1)
-(setq electric-quote-context-sensitive 1)
-
-;;----------------------------------------------------------------------------
-;; Backups
-;;----------------------------------------------------------------------------
-;; Don’t clobber symlinks
-(setq backup-by-copying t)
-
-;; Use versioned backups
-(setq version-control t)
-
-;; Number of backups to keep
-(setq kept-new-versions 10
-      kept-old-versions 0
-      delete-old-versions t)
-
-;; Backup directories
-(setq backup-directory-alist '(("." . "~/.saves")))
-
-;; Also backup versioned files
-(setq vc-make-backup-files t)
-
-;;----------------------------------------------------------------------------
-;; diff
-;;----------------------------------------------------------------------------
-;; Diff backend
-(setq diff-command "diff")            ;Default
-
-;; Add ‘-u’ switch for diff
-(setq diff-switches "-u")
-
-;;----------------------------------------------------------------------------
-;; Miscellaneous
-;;----------------------------------------------------------------------------
-
-;; windmove
-(windmove-default-keybindings 'super)
-(setq windmove-wrap-around t)
-
-;; desktop
-(desktop-save-mode 0)
-
-;; mwheel
-(setq mouse-wheel-flip-direction 1
-      mouse-wheel-scroll-amount '(2 ((shift) . 1) ((control)))
-      mouse-wheel-progressive-speed nil
-      mouse-wheel-follow-mouse 't)
-
-;; Disable side movements
-;; (global-set-key (kbd "<mouse-6>") 'ignore)
-;; (global-set-key (kbd "<mouse-7>") 'ignore)
-;; (global-set-key (kbd "<triple-mouse-7>") 'ignore)
-;; (global-set-key (kbd "<triple-mouse-6>") 'ignore)
-
-;; Time
-(setq display-time-default-load-average nil)
-(display-time-mode 1)
-
-;; EPG
-(setq mml2015-use 'epg
-      epg-user-id (zp/get-string-from-file "~/org/pp/gpg/gpg-key-id")
-      mml-secure-openpgp-sign-with-sender t
-      mml-secure-openpgp-encrypt-to-self t)
-
-;;----------------------------------------------------------------------------
-;; Fringe bitmaps
-;;----------------------------------------------------------------------------
-(define-fringe-bitmap 'left-curly-arrow
-  (vector #b0011111110000000
-          #b0011111110000000
-          #b0011111110000000
-          #b0011100000000000
-          #b0011100000000000
-          #b0011100000000000
-          #b0011100000000000
-          #b0011100001000000
-          #b0011100001100000
-          #b0011100001110000
-          #b0011111111111000
-          #b0011111111111100
-          #b0011111111111000
-          #b0000000001110000
-          #b0000000001100000
-          #b0000000001000000
-          )
-  16 16)
-
-(define-fringe-bitmap 'right-curly-arrow
-    (vector #b0000000111111100
-            #b0000000111111100
-            #b0000000111111100
-            #b0000000000011100
-            #b0000000000011100
-            #b0000000000011100
-            #b0000000000011100
-            #b0000001000011100
-            #b0000011000011100
-            #b0000111000011100
-            #b0001111111111100
-            #b0011111111111100
-            #b0001111111111100
-            #b0000111000000000
-            #b0000011000000000
-            #b0000001000000000
-            )
-  16 16)
-
-(define-fringe-bitmap 'left-arrow
-    (vector #b0000000001000000
-            #b0000000011000000
-            #b0000000111000000
-            #b0000001111000000
-            #b0000011110000000
-            #b0000111100000000
-            #b0001111111111100
-            #b0011111111111100
-            #b0011111111111100
-            #b0001111111111100
-            #b0000111100000000
-            #b0000011110000000
-            #b0000001111000000
-            #b0000000111000000
-            #b0000000011000000
-            #b0000000001000000
-            )
-  16 16)
-
-(define-fringe-bitmap 'right-arrow
-    (vector #b0000001000000000
-            #b0000001100000000
-            #b0000001110000000
-            #b0000001111000000
-            #b0000000111100000
-            #b0000000011110000
-            #b0011111111111000
-            #b0011111111111100
-            #b0011111111111100
-            #b0011111111111000
-            #b0000000011110000
-            #b0000000111100000
-            #b0000001111000000
-            #b0000001110000000
-            #b0000001100000000
-            #b0000001000000000
-            )
-  16 16)
-
-(define-fringe-bitmap 'right-triangle
-    (vector #b0000000000000000
-            #b0000000000000000
-            #b0011000000000000
-            #b0011110000000000
-            #b0011111100000000
-            #b0011111111000000
-            #b0011111111110000
-            #b0011111111111100
-            #b0011111111111100
-            #b0011111111110000
-            #b0011111111000000
-            #b0011111100000000
-            #b0011110000000000
-            #b0011000000000000
-            #b0000000000000000
-            #b0000000000000000
-            )
-  16 16)
-
-;;----------------------------------------------------------------------------
 ;; Helper functions & macros
 ;;----------------------------------------------------------------------------
 (defun zp/get-string-from-file (file-path)
@@ -463,6 +280,88 @@ time is displayed."
 
 ;; Ignore Kanji key in IME
 (global-set-key [M-kanji] 'ignore)
+
+;;----------------------------------------------------------------------------
+;; Cosmetics
+;;----------------------------------------------------------------------------
+(tool-bar-mode -1)
+(menu-bar-mode -1)
+(scroll-bar-mode -1)
+(blink-cursor-mode -1)
+(show-paren-mode 1)
+(global-hl-line-mode 1)
+(column-number-mode 1)
+
+;; Set fringe sizes
+(fringe-mode 20)
+
+;;----------------------------------------------------------------------------
+;; Electric
+;;----------------------------------------------------------------------------
+(electric-quote-mode 1)
+(setq electric-quote-context-sensitive 1)
+
+;;----------------------------------------------------------------------------
+;; Backups
+;;----------------------------------------------------------------------------
+;; Don’t clobber symlinks
+(setq backup-by-copying t)
+
+;; Use versioned backups
+(setq version-control t)
+
+;; Number of backups to keep
+(setq kept-new-versions 10
+      kept-old-versions 0
+      delete-old-versions t)
+
+;; Backup directories
+(setq backup-directory-alist '(("." . "~/.saves")))
+
+;; Also backup versioned files
+(setq vc-make-backup-files t)
+
+;;----------------------------------------------------------------------------
+;; diff
+;;----------------------------------------------------------------------------
+;; Diff backend
+(setq diff-command "diff")            ;Default
+
+;; Add ‘-u’ switch for diff
+(setq diff-switches "-u")
+
+;;----------------------------------------------------------------------------
+;; Miscellaneous
+;;----------------------------------------------------------------------------
+
+;; windmove
+(windmove-default-keybindings 'super)
+(setq windmove-wrap-around t)
+
+;; desktop
+(desktop-save-mode 0)
+
+;; mwheel
+(setq mouse-wheel-flip-direction 1
+      mouse-wheel-scroll-amount '(2 ((shift) . 1) ((control)))
+      mouse-wheel-progressive-speed nil
+      mouse-wheel-follow-mouse 't)
+
+;; Disable side movements
+;; (global-set-key (kbd "<mouse-6>") 'ignore)
+;; (global-set-key (kbd "<mouse-7>") 'ignore)
+;; (global-set-key (kbd "<triple-mouse-7>") 'ignore)
+;; (global-set-key (kbd "<triple-mouse-6>") 'ignore)
+
+;; Time
+(setq display-time-default-load-average nil)
+(display-time-mode 1)
+
+;; EPG
+(setq mml2015-use 'epg
+      epg-user-id (zp/get-string-from-file "~/org/pp/gpg/gpg-key-id")
+      mml-secure-openpgp-sign-with-sender t
+      mml-secure-openpgp-encrypt-to-self t)
 
 ;;----------------------------------------------------------------------------
 ;; Setup package repositories
@@ -842,6 +741,9 @@ If text is selected, adds furigana to the selected kanji instead."
 (use-package picture
   :config
   (global-set-key (kbd "C-c \\") #'picture-mode))
+
+(use-package hidpi-fringe-bitmaps
+  :demand)
 
 (use-package thingatpt
   :bind (("C-c C-=" . increment-integer-at-point)
@@ -1603,7 +1505,6 @@ The language should be the name of a valid Ispell dictionary.")
 ;;----------------------------------------------------------------------------
 ;; AUCTeX
 ;;----------------------------------------------------------------------------
-
 (use-package latex
   :config
   ;; Set default library
@@ -1853,12 +1754,9 @@ return `nil'."
     (local-set-key (kbd "C-c C-t C-v") 'zp/tex-view-program-switch))
   (setq LaTeX-mode-hook '(zp/LaTeX-mode-config)))
 
-
-
 ;;----------------------------------------------------------------------------
 ;; org → html/tex export
 ;;----------------------------------------------------------------------------
-
 (use-package ox-html
   :after (org ox)
   :config
@@ -1936,11 +1834,9 @@ return `nil'."
   :config
   (setq org-src-preserve-indentation t))
 
-
 ;;----------------------------------------------------------------------------
 ;; org-mode
 ;;----------------------------------------------------------------------------
-
 (use-package calendar
   :config
   (setq diary-file "~/diary")
@@ -1964,6 +1860,40 @@ return `nil'."
   (setq org-habit-graph-column 50))
 
 (use-package org
+  :bind (:map org-mode-map
+              ("C-c i" . org-indent-mode)
+              ("C-c [" . nil)
+              ("C-c ]" . nil)
+              ("C-c C-q" . counsel-org-tag)
+              ("C-c C-." . org-time-stamp)
+              ("C-c C-x r" . zp/org-set-appt-warntime)
+              ("C-c C-x l" . zp/org-set-location)
+              ("C-c C-x d" . org-delete-property)
+              ("C-c C-x D" . org-insert-drawer)
+              ("C-c C-x b" . zp/org-tree-to-indirect-buffer-folded)
+              ("S-<backspace>" . zp/org-kill-spawned-ibuf)
+              ("C-x n o" . zp/org-overview)
+              ("C-x n a" . zp/org-show-all)
+              ("C-x n u" . zp/org-narrow-up-heading-dwim)
+              ("C-x n y" . zp/org-narrow-previous-heading)
+              ("C-x n s" . zp/org-narrow-to-subtree)
+              ("C-x n f" . zp/org-narrow-forwards)
+              ("C-x n b" . zp/org-narrow-backwards)
+              ("C-x n w" . zp/org-widen)
+              ("C-c ," . zp/hydra-org-priority/body)
+              ("M-p" . org-metaup)
+              ("M-n" . org-metadown)
+              ("M-[" . org-metaleft)
+              ("M-]" . org-metaright)
+              ("M-{" . org-shiftmetaleft)
+              ("M-}" . org-shiftmetaright)
+              ("C-a" . org-beginning-of-line)
+              ("C-e" . org-end-of-line)
+              ("M-I" . org-indent-mode)
+              ("M-*" . zp/org-toggle-fontifications)
+              ("C-c C-j" . zp/org-jump-dwim)
+              ("C-c C-x C-l" . zp/org-latex-preview-dwim)
+              ("C-c R" . org-display-inline-images))
   :config
   (setq org-agenda-inhibit-startup nil
         org-log-into-drawer "LOGBOOK-NOTES"
@@ -2395,50 +2325,7 @@ With a ‘C-u’ argument, dedicate the buffer instead."
     (interactive "P")
     (if dedicate
         (zp/org-ibuf-spawned-dedicate t)
-      (zp/org-kill-spawned-ibuf t)))
-
-  ;;--------------
-  ;; Key bindings
-  ;;--------------
-
-  (defun zp/org-mode-config ()
-    "Modify keymaps used by `org-mode'."
-    (local-set-key (kbd "C-c i") #'org-indent-mode)
-    ;; (local-set-key (kbd "C-c C-,") 'org-priority)
-    (local-set-key (kbd "C-c [") nil)
-    (local-set-key (kbd "C-c ]") nil)
-    (local-set-key (kbd "C-c C-q") #'counsel-org-tag)
-    (local-set-key (kbd "C-c C-.") #'org-time-stamp)
-    (local-set-key (kbd "C-c C-x r") #'zp/org-set-appt-warntime)
-    (local-set-key (kbd "C-c C-x l") #'zp/org-set-location)
-    (local-set-key (kbd "C-c C-x d") #'org-delete-property)
-    (local-set-key (kbd "C-c C-x D") #'org-insert-drawer)
-    (local-set-key (kbd "C-c C-x b") #'zp/org-tree-to-indirect-buffer-folded)
-    (local-set-key (kbd "S-<backspace>") #'zp/org-kill-spawned-ibuf)
-    (local-set-key (kbd "C-x n o") #'zp/org-overview)
-    (local-set-key (kbd "C-x n a") #'zp/org-show-all)
-    (local-set-key (kbd "C-x n u") #'zp/org-narrow-up-heading-dwim)
-    (local-set-key (kbd "C-x n y") #'zp/org-narrow-previous-heading)
-    (local-set-key (kbd "C-x n s") #'zp/org-narrow-to-subtree)
-    (local-set-key (kbd "C-x n f") #'zp/org-narrow-forwards)
-    (local-set-key (kbd "C-x n b") #'zp/org-narrow-backwards)
-    (local-set-key (kbd "C-x n w") #'zp/org-widen)
-    (local-set-key (kbd "C-c ,") #'zp/hydra-org-priority/body)
-    (local-set-key (kbd "M-p") #'org-metaup)
-    (local-set-key (kbd "M-n") #'org-metadown)
-    (local-set-key (kbd "M-[") #'org-metaleft)
-    (local-set-key (kbd "M-]") #'org-metaright)
-    (local-set-key (kbd "M-{") #'org-shiftmetaleft)
-    (local-set-key (kbd "M-}") #'org-shiftmetaright)
-    (local-set-key (kbd "C-a") #'org-beginning-of-line)
-    (local-set-key (kbd "C-e") #'org-end-of-line)
-    (local-set-key (kbd "M-I") #'org-indent-mode)
-    (local-set-key (kbd "M-*") #'zp/org-toggle-fontifications)
-    (local-set-key (kbd "C-c C-j") #'zp/org-jump-dwim)
-    (local-set-key (kbd "C-c C-x C-l") #'zp/org-latex-preview-dwim)
-    (local-set-key (kbd "C-c R") #'org-display-inline-images))
-
-  (add-hook 'org-mode-hook #'zp/org-mode-config))
+      (zp/org-kill-spawned-ibuf t))))
 
 (use-package org-footnote
   :config
