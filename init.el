@@ -153,12 +153,9 @@ end-of-buffer signals; pass the rest to the default handler."
 (global-set-key (kbd "M-U") 'universal-argument)
 (define-key universal-argument-map "\M-U" 'universal-argument-more)
 
-
-
 ;;----------------------------------------------------------------------------
 ;; Fringe bitmaps
 ;;----------------------------------------------------------------------------
-
 (define-fringe-bitmap 'left-curly-arrow
   (vector #b0011111110000000
           #b0011111110000000
@@ -259,12 +256,9 @@ end-of-buffer signals; pass the rest to the default handler."
             )
   16 16)
 
-
-
 ;;----------------------------------------------------------------------------
 ;; Setup package repositories
 ;;----------------------------------------------------------------------------
-
 ;; MELPA
 (require 'package)
 (let* ((no-ssl (and (memq system-type '(windows-nt ms-dos))
@@ -301,15 +295,11 @@ end-of-buffer signals; pass the rest to the default handler."
 ;; (setq lisp-indent-function 'lisp-indent-function) ;Default
 
 (use-package package
-  :config
-  (global-set-key (kbd "C-c P") #'package-list-packages))
-
-
+  :bind ("C-c P" . package-list-packages))
 
 ;;----------------------------------------------------------------------------
 ;; Helper functions & macros
 ;;----------------------------------------------------------------------------
-
 (defun zp/get-string-from-file (file-path)
   "Read file content from path."
   (with-temp-buffer
@@ -361,13 +351,9 @@ time is displayed."
   (interactive)
   (select-window (previous-window)))
 
-
-
-
 ;;----------------------------------------------------------------------------
 ;; Editing commands
 ;;----------------------------------------------------------------------------
-
 (defun zp/unfill-document ()
   "fill individual paragraphs with large fill column"
   (interactive)
@@ -399,12 +385,9 @@ time is displayed."
         (kill-buffer-and-window))
     (user-error "There is only one window in the frame")))
 
-
-
 ;;----------------------------------------------------------------------------
 ;; Keys
 ;;----------------------------------------------------------------------------
-
 ;; Define keymap for minor mode toggles
 (define-prefix-command 'zp/toggle-map)
 (define-key ctl-x-map "t" 'zp/toggle-map)
@@ -423,12 +406,9 @@ time is displayed."
 ;; Ignore Kanji key in IME
 (global-set-key [M-kanji] 'ignore)
 
-
-
 ;;----------------------------------------------------------------------------
 ;; Packages
 ;;----------------------------------------------------------------------------
-
 (use-package evil
   :config
   (evil-mode 0))
@@ -440,8 +420,8 @@ time is displayed."
   (setq epg-gpg-program "gpg2"))
 
 (use-package isearch
-  :config
-  (define-key isearch-mode-map (kbd "<backspace>") 'isearch-del-char))
+  :bind (:map isearch-mode-map
+              ("<backspace>" . 'isearch-del-char)))
 
 ;; fcitx (IME for CJK)
 ;; Disabled because of slow-downs in combination with visual-line-mode
@@ -450,8 +430,7 @@ time is displayed."
 (use-package ox-hugo)
 
 (use-package duplicate-thing
-  :config
-  (global-set-key (kbd "M-J") 'duplicate-thing))
+  :bind ("M-J" . duplicate-thing))
 
 (use-package volatile-highlights
   :config
@@ -463,10 +442,12 @@ time is displayed."
 ;;   (add-hook 'prog-mode-hook #'clean-aindent-mode))
 
 (use-package ws-butler
-  :config
-  (add-hook 'prog-mode-hook #'ws-butler-mode))
+  :hook (prog-mode . ws-butler-mode))
 
 (use-package whitespace
+  :bind (("C-c w" . zp/whitespace-mode-lines-tail)
+         ("C-c W" . whitespace-mode))
+  :hook (prog-mode . zp/whitespace-mode-lines-tail)
   :config
   (defun zp/whitespace-mode-lines-tail ()
     (interactive)
@@ -477,32 +458,26 @@ time is displayed."
       (let ((whitespace-style '(face trailing lines-tail))
             (whitespace-line-column 80))
         (whitespace-mode t)
-        (message "Whitespace mode enabled in current buffer"))))
-
-  (add-hook 'prog-mode-hook #'zp/whitespace-mode-lines-tail)
-
-  (global-set-key (kbd "C-c w") #'zp/whitespace-mode-lines-tail)
-  (global-set-key (kbd "C-c W") #'whitespace-mode))
+        (message "Whitespace mode enabled in current buffer")))))
 
 (use-package info+
-  :config
-  (define-key Info-mode-map (kbd "<mouse-4>") 'mwheel-scroll)
-  (define-key Info-mode-map (kbd "<mouse-5>") 'mwheel-scroll)
-  (define-key Info-mode-map (kbd "j") 'next-line)
-  (define-key Info-mode-map (kbd "k") 'previous-line))
+  :bind (:map Info-mode-map
+              ("<mouse-4>" . mwheel-scroll)
+              ("<mouse-5>" . mwheel-scroll)
+              ("j" . next-line)
+              ("k" . previous-line)))
 
 (use-package recentf-ext)
 
-;; diff-hl
+(use-package dired
+  :hook (dired-mode . turn-on-gnus-dired-mode))
+
 (use-package diff-hl
+  :hook (dired-mode . diff-hl-dired-mode)
+  :demand
   :config
   (global-diff-hl-mode)
-  (diff-hl-flydiff-mode)
-  (add-hook 'dired-mode-hook #'diff-hl-dired-mode))
-
-(use-package dired
-  :config
-  (add-hook 'dired-mode-hook #'turn-on-gnus-dired-mode))
+  (diff-hl-flydiff-mode))
 
 (use-package eyebrowse)
 
@@ -513,12 +488,6 @@ time is displayed."
 )
 
 (use-package lilypond-mode)
-
-(use-package nov
-  :config
-  (add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode))
-  (add-to-list 'auto-mode-alist '("\\.mobi\\'" . nov-mode))
-  (add-hook 'nov-mode-hook #'olivetti-mode))
 
 (use-package el-patch)
 
@@ -543,58 +512,46 @@ time is displayed."
   :config
   (exwm-config-default))
 
-(use-package fountain-mode
-  :config
-  (setq fountain-export-font "Courier Prime")
-  (setq fountain-mode-hook '(turn-on-visual-line-mode
-                             fountain-outline-hide-custom-level
-                             olivetti-mode)))
-
 ;; so-long
 (use-package so-long
+  :hook (debugger-mode . so-long-minor-mode)
   :config
-  (global-so-long-mode 1)
-  (add-hook 'debugger-mode-hook #'so-long-minor-mode))
+  (global-so-long-mode 1))
 
 (use-package sh-script
-  :config
-  (add-to-list 'auto-mode-alist '("\\zshrc\\'" . shell-script-mode))
-  (add-to-list 'auto-mode-alist '("\\prompt_.*_setup\\'" . shell-script-mode)))
+  :mode (("\\zshrc\\'" . shell-script-mode)
+         ("\\prompt_.*_setup\\'" . shell-script-mode)))
 
 
 (use-package fish-mode
-  :config
-  (add-to-list 'auto-mode-alist '("\\.*.fish\\'" . fish-mode)))
+  :mode "\\.fish\\'")
 
 (use-package prog-mode
+  ;; Force fringe indicators
+  :hook (prog-mode . zp/enable-visual-line-fringe-indicators)
   :config
   (defun zp/enable-visual-line-fringe-indicators ()
-    "Enable visual-line fringe-indicators."
-    (setq-local visual-line-fringe-indicators '(left-curly-arrow right-curly-arrow)))
-
-  ;; Force fringe indicators in ‘prog-mode’
-  (add-hook 'prog-mode-hook #'zp/enable-visual-line-fringe-indicators))
+    "Enablle visual-line fringe-indicators."
+    (setq-local visual-line-fringe-indicators '(left-curly-arrow right-curly-arrow))) )
 
 (use-package free-keys
   :config
   (setq free-keys-modifiers '("" "C" "M" "C-M" "H")))
 
 (use-package flycheck
+  :hook ((sh-mode . flycheck-mode)
+         (cperl-mode . flycheck-mode)
+         (elisp-mode . flycheck-mode)
+         ;; Enable flycheck everywhere
+         ;; Disabled because of slow-downs in large files
+         ;; (after-init . global-flycheck-mode)
+         )
+  :bind (:map zp/toggle-map
+              ("F" . flycheck-mode))
   :config
   (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc))
   (setq flycheck-emacs-lisp-load-path 'inherit
-        flycheck-display-errors-delay 0.5)
-
-  ;; Enable flycheck everywhere
-  ;; Disabled because of slow-downs in large files
-  ;; (add-hook 'after-init-hook #'global-flycheck-mode)
-
-  ;; Enable flycheck for some major-modes
-  (add-hook 'sh-mode-hook #'flycheck-mode)
-  (add-hook 'cperl-mode-hook #'flycheck-mode)
-  (add-hook 'elisp-mode-hook #'flycheck-mode)
-
-  (define-key zp/toggle-map "F" #'flycheck-mode))
+        flycheck-display-errors-delay 0.5))
 
 ;; Minor-mode to show Flycheck error messages in a popup
 (use-package fly-check-pos-tip
@@ -622,14 +579,26 @@ time is displayed."
 
   (add-hook 'emacs-lisp-mode-hook #'lispy-mode))
 
+(use-package nov
+  :mode "\\.\\(epub\\|mobi\\)\\'")
+
 (use-package olivetti
+  :hook (nov-mode . olivetti-mode)
+  :bind ("M-O" . olivetti-mode)
   :config
   (setq-default olivetti-body-width 0.6
-                olivetti-minimum-body-width 80)
+                olivetti-minimum-body-width 80))
 
-  (global-set-key (kbd "M-O") #'olivetti-mode))
+(use-package fountain-mode
+  :config
+  (setq fountain-export-font "Courier Prime")
+  (setq fountain-mode-hook '(turn-on-visual-line-mode
+                             fountain-outline-hide-custom-level
+                             olivetti-mode)))
 
 (use-package thingatpt
+  :bind (("C-c C-=" . increment-integer-at-point)
+         ("C-c C--" . decrement-integer-at-point))
   :config
   (defun thing-at-point-goto-end-of-integer ()
     "Go to end of integer at point."
@@ -690,21 +659,11 @@ With numeric prefix arg INC, increment the integer by INC amount."
 
 With numeric prefix arg DEC, decrement the integer by DEC amount."
     (interactive "p")
-    (increment-integer-at-point (- (or dec 1))))
-
-  ;;------
-  ;; Keys
-  ;;------
-
-  (global-set-key (kbd "C-c C-=") 'increment-integer-at-point)
-  (global-set-key (kbd "C-c C--") 'decrement-integer-at-point))
-
-
+    (increment-integer-at-point (- (or dec 1)))))
 
 ;;----------------------------------------------------------------------------
 ;; Shortcuts
 ;;----------------------------------------------------------------------------
-
 ;; TODO: Consider optimising this section
 
 (define-prefix-command 'ledger-map)
@@ -818,13 +777,11 @@ With numeric prefix arg DEC, decrement the integer by DEC amount."
 (defun zp/set-shortcuts-all ()
   (zp/set-shortcuts zp/shortcuts-alist))
 
-
-
 ;;----------------------------------------------------------------------------
 ;; ispell
 ;;----------------------------------------------------------------------------
-
 (use-package ispell
+  :bind ("C-c d" . zp/helm-ispell-preselect)
   :config
   ;; TODO: Modernise
 
@@ -909,24 +866,15 @@ LANGUAGE should be the name of an Ispell dictionary."
                             (eq current nil)
                             (string-match-p current "british"))
                            "French"
-                         "English"))))
-
-  ;;------
-  ;; Keys
-  ;;------
-
-  (global-set-key (kbd "C-c d") 'zp/helm-ispell-preselect))
+                         "English")))))
 
 (use-package flyspell
-  :config
-  (global-set-key (kbd "C-c f") #'flyspell-mode))
-
-
+  :bind ("C-c f" . flyspell-mode)
+  :hook (message-setup . flyspell-mode))
 
 ;;----------------------------------------------------------------------------
 ;; notmuch
 ;;----------------------------------------------------------------------------
-
 (use-package epg-config
   :config
   (setq mml2015-use 'epg
@@ -935,42 +883,23 @@ LANGUAGE should be the name of an Ispell dictionary."
         mml-secure-openpgp-encrypt-to-self t))
 
 (use-package notmuch
+  :bind (("H-l" . zp/switch-to-notmuch)
+         :map notmuch-hello-mode-map
+         ("q" . zp/notmuch-hello-quit)
+         :map notmuch-search-mode-map
+         ("g" . notmuch-refresh-this-buffer)
+         :map notmuch-message-mode-map
+         (("C-c C-c" . zp/notmuch-confirm-before-sending)
+          ("C-c C-b" . zp/message-goto-body)
+          ("C-c C-." . zp/message-goto-body-end)
+          ("M-<" . zp/message-goto-top)
+          ("M->" . zp/message-goto-bottom)
+          ("C-c C-z" . zp/message-kill-to-signature))
+         :map notmuch-show-mode-map
+         (("C-c C-o" . goto-address-at-point)))
   :config
-  (setq message-signature
-        (lambda ()
-          (let* ((signature-override
-                  (concat (file-name-as-directory "~/org/sig")
-                          (message-sendmail-envelope-from)))
-                 (signature-file
-                  (if (file-readable-p signature-override)
-                      signature-override
-                    "~/.signature")))
-            (when (file-readable-p signature-file)
-              (with-temp-buffer
-                (insert-file-contents signature-file)
-                (buffer-string))))))
-
-
-  (setq message-sendmail-envelope-from 'header)
-  (setq notmuch-always-prompt-for-sender t)
-  (setq mml-enable-flowed t)
-  (setq message-kill-buffer-on-exit t)
-
-  ;; Enforce f=f in message-mode
-  ;; Disabled because it’s bad practice according to the netiquette
-  ;; (defun zp/message-mode-use-hard-newlines ()
-  ;;   (use-hard-newlines t 'always))
-  ;; (add-hook 'message-mode-hook #'zp/message-mode-use-hard-newlines)
-
-  ;; Set the marks for inserted text with message-mark-inserted-region
-  (setq message-mark-insert-begin
-        "--------------------------------[START]--------------------------------
-"
-        message-mark-insert-end
-        "
----------------------------------[END]---------------------------------")
-
-
+  (setq notmuch-always-prompt-for-sender t
+        notmuch-search-oldest-first nil)
 
   (defvar zp/email-private (zp/get-string-from-file "~/org/pp/private/email")
     "Email used for private communications.")
@@ -978,8 +907,9 @@ LANGUAGE should be the name of an Ispell dictionary."
   (defvar zp/email-work (zp/get-string-from-file "~/org/pp/work/email")
     "Email used for work-related communications.")
 
-  (defun zp/notmuch-get-email-with-alias (email alias &optional regex)
+  (defun zp/get-email-with-alias (email alias &optional regex)
     "Create email alias from EMAIL and ALIAS.
+
 If REGEX is non-nil, creates a regex to match the email alias."
     (let* ((email (cond
                    ((equal email "work")
@@ -995,13 +925,11 @@ If REGEX is non-nil, creates a regex to match the email alias."
           (regexp-quote email-alias)
         email-alias)))
 
-  (defvar zp/email-org (zp/notmuch-get-email-with-alias "work" "org")
+  (defvar zp/email-org (zp/get-email-with-alias "work" "org")
     "Email alias used for the org-mode mailing list.")
 
-  (defvar zp/email-dev (zp/notmuch-get-email-with-alias "work" "dev")
-    "Email alias used for general dev work.")
-
-  (defun zp/notmuch-fcc-email-format-regex (email))
+  (defvar zp/email-dev (zp/get-email-with-alias "work" "dev")
+    "Email alias used for general development work.")
 
   (setq notmuch-fcc-dirs
         `((,(regexp-quote zp/email-private) .
@@ -1012,15 +940,6 @@ If REGEX is non-nil, creates a regex to match the email alias."
            "work/sent -inbox +sent -unread +org")
           (,(regexp-quote zp/email-dev) .
            "work/sent -inbox +sent -unread +dev")))
-
-  (setq message-send-mail-function 'smtpmail-send-it
-        smtpmail-auth-credentials
-        (expand-file-name "~/.authinfo.gpg"))
-
-  (setq send-mail-function 'sendmail-send-it)
-  (setq message-send-mail-function 'message-send-mail-with-sendmail)
-
-  (setq notmuch-search-oldest-first nil)
 
   (define-key notmuch-search-mode-map "d"
     (lambda (&optional untrash beg end)
@@ -1039,7 +958,96 @@ If REGEX is non-nil, creates a regex to match the email alias."
       (notmuch-show-next-thread-show)))
 
 
-  ;; Movements for message-mode
+  (define-key notmuch-hello-mode-map "q" #'zp/notmuch-hello-quit)
+  (define-key notmuch-search-mode-map "g" #'notmuch-refresh-this-buffer)
+
+  (setq user-full-name "Leo Vivier"
+        mail-host-address "hidden")
+
+  (setq notmuch-saved-searches
+        '((:name "inbox" :query "tag:inbox" :key "i")
+          (:name "unread" :query "tag:unread" :key "u")
+          (:name "flagged" :query "tag:flagged" :key "f")
+          (:name "drafts" :query "tag:draft" :key "d")
+          (:name "sent (last week)" :query "tag:sent date:\"7d..today\"" :key "s")
+          (:name "archive (last week)" :query "* date:\"7d..today\"" :key "a")
+          (:name "sent" :query "tag:sent" :key "S")
+          (:name "archive" :query "*" :key "A")
+          (:name "trash" :query "tag:deleted" :key "t")))
+
+  (defvar zp/message-ispell-alist nil
+    "Alist of emails and the language they typically use.
+The language should be the name of a valid Ispell dictionary.")
+
+  (defun zp/notmuch-confirm-before-sending (&optional arg)
+    (interactive "P")
+    (if (y-or-n-p "Ready to send? ")
+        (notmuch-mua-send-and-exit arg)))
+
+  ;;----------------------
+  ;; Switching to notmuch
+  ;;----------------------
+
+  (defun zp/notmuch-hello-quit ()
+    (interactive)
+    (notmuch-bury-or-kill-this-buffer)
+    (start-process-shell-command "notmuch-new" nil "systemctl --user start check-mail.service")
+    (set-window-configuration zp/notmuch-before-config))
+
+  (defun zp/switch-to-notmuch ()
+    (interactive)
+    (cond ((string-match "\\*notmuch-hello\\*" (buffer-name))
+           (zp/notmuch-hello-quit))
+          ((string-match "\\*notmuch-.*\\*" (buffer-name))
+           (notmuch-bury-or-kill-this-buffer))
+          (t
+           (setq zp/notmuch-before-config (current-window-configuration))
+           (delete-other-windows)
+           (notmuch)))))
+
+(use-package message
+  :after notmuch
+  :hook ((message-setup . zp/message-flyspell-auto)
+         ;; (message-mode-hook . footnote-mode)
+         )
+  :config
+  (setq message-send-mail-function 'message-send-mail-with-sendmail
+        message-sendmail-envelope-from 'header
+        message-kill-buffer-on-exit t)
+
+  ;; Enforce f=f in message-mode
+  ;; Disabled because it’s bad practice according to the netiquette
+  ;; (defun zp/message-mode-use-hard-newlines ()
+  ;;   (use-hard-newlines t 'always))
+  ;; (add-hook 'message-mode-hook #'zp/message-mode-use-hard-newlines)
+
+  (defun zp/get-message-signature ()
+    (let* ((signature-override
+            (concat (file-name-as-directory "~/org/sig")
+                    (message-sendmail-envelope-from)))
+           (signature-file
+            (if (file-readable-p signature-override)
+                signature-override
+              "~/.signature")))
+      (when (file-readable-p signature-file)
+        (with-temp-buffer
+          (insert-file-contents signature-file)
+          (buffer-string)))))
+
+  (setq message-signature #'zp/get-message-signature
+        message-sendmail-envelope-from 'header)
+
+  ;; Set the marks for inserted text with message-mark-inserted-region
+  (setq message-mark-insert-begin
+        "--------------------------------[START]--------------------------------\n"
+        message-mark-insert-end
+        "\n---------------------------------[END]---------------------------------")
+
+  ;;--------------------
+  ;; Extended movements
+  ;;--------------------
+
+  ;; TODO: Improve
 
   (defun zp/message-goto-bottom-1 ()
     (let ((newline message-signature-insert-empty-line))
@@ -1194,27 +1202,9 @@ of lines before the signature intact."
         (insert "\n")
         (forward-char -1))))
 
-  (define-key notmuch-search-mode-map "y" #'notmuch-search-refine)
-  (define-key notmuch-hello-mode-map "q" #'zp/notmuch-hello-quit)
-  (define-key notmuch-search-mode-map "g" #'notmuch-refresh-this-buffer)
-
-  (setq user-full-name "Leo Vivier"
-        mail-host-address "hidden")
-
-  (setq notmuch-saved-searches
-        '((:name "inbox" :query "tag:inbox" :key "i")
-          (:name "unread" :query "tag:unread" :key "u")
-          (:name "flagged" :query "tag:flagged" :key "f")
-          (:name "drafts" :query "tag:draft" :key "d")
-          (:name "sent (last week)" :query "tag:sent date:\"7d..today\"" :key "s")
-          (:name "archive (last week)" :query "* date:\"7d..today\"" :key "a")
-          (:name "sent" :query "tag:sent" :key "S")
-          (:name "archive" :query "*" :key "A")
-          (:name "trash" :query "tag:deleted" :key "t")))
-
-  (defvar zp/message-ispell-alist nil
-    "Alist of emails and the language they typically use.
-The language should be the name of a valid Ispell dictionary.")
+  ;;------------------------------
+  ;; Automatic language detection
+  ;;------------------------------
 
   (setq zp/message-ispell-alist
         `((,zp/email-private . "french")
@@ -1230,6 +1220,12 @@ based on ‘zp/message-mode-ispell-alist’."
     (let* ((sender (message-sendmail-envelope-from))
            (language (cdr (assoc sender zp/message-ispell-alist))))
       (zp/ispell-switch-dictionary language)))
+
+  ;;-------------------
+  ;; Unusued functions
+  ;;-------------------
+
+  ;; TODO: Consider usage
 
   (defun zp/message-sendmail-envelope-to ()
     "Return the envelope to."
@@ -1268,68 +1264,24 @@ based on ‘zp/message-mode-ispell-alist’."
                                        bound)))
                   emails)
             (goto-char (1+ bound))))
-        (setq email-list emails))))
+        (setq email-list emails)))))
 
-  (defun zp/notmuch-confirm-before-sending (&optional arg)
-    (interactive "P")
-    (if (y-or-n-p "Ready to send? ")
-        (notmuch-mua-send-and-exit arg)))
+(use-package sendmail
+  :after message
+  :config
+  (setq send-mail-function 'sendmail-send-it))
 
-  ;;----------------------
-  ;; Switching to notmuch
-  ;;----------------------
-
-  (defun zp/notmuch-hello-quit ()
-    (interactive)
-    (notmuch-bury-or-kill-this-buffer)
-    (start-process-shell-command "notmuch-new" nil "systemctl --user start check-mail.service")
-    (set-window-configuration zp/notmuch-before-config))
-
-  (defun zp/switch-to-notmuch ()
-    (interactive)
-    (cond ((string-match "\\*notmuch-hello\\*" (buffer-name))
-           (zp/notmuch-hello-quit))
-          ((string-match "\\*notmuch-.*\\*" (buffer-name))
-           (notmuch-bury-or-kill-this-buffer))
-          (t
-           (setq zp/notmuch-before-config (current-window-configuration))
-           (delete-other-windows)
-           (notmuch))))
-
-  (advice-add #'mu4e-quit :after (lambda ()
-                                   (mu4e-update-mail-and-index t)))
-
-  ;;----------------------------------------------------------------------------
-  ;; Keys
-  ;;----------------------------------------------------------------------------
-
-  (defun zp/notmuch-message-mode-config ()
-    "Modify keymaps used by ‘notmuch-show-mode’."
-    (local-set-key (kbd "C-c C-c") #'zp/notmuch-confirm-before-sending)
-    (local-set-key (kbd "C-c C-b") #'zp/message-goto-body)
-    (local-set-key (kbd "C-c C-.") #'zp/message-goto-body-end)
-    (local-set-key (kbd "M-<") #'zp/message-goto-top)
-    (local-set-key (kbd "M->") #'zp/message-goto-bottom)
-    (local-set-key (kbd "C-c C-z") #'zp/message-kill-to-signature))
-
-  (require 'orgalist)
-  (add-hook 'message-setup-hook #'flyspell-mode)
-  (add-hook 'message-setup-hook #'orgalist-mode)
-  (add-hook 'message-setup-hook #'zp/message-flyspell-auto)
-  (add-hook 'message-setup-hook #'electric-quote-local-mode)
-  (add-hook 'message-setup-hook #'zp/notmuch-message-mode-config)
-  ;; (add-hook 'message-mode-hook #'footnote-mode)
-
-  (defun zp/notmuch-show-mode-config ()
-    "Modify keymaps used by ‘notmuch-show-mode’."
-    (local-set-key (kbd "C-c C-o") #'goto-address-at-point))
-
-  (add-hook 'notmuch-show-mode-hook #'zp/notmuch-show-mode-config)
-
-  (global-set-key (kbd "H-l") 'zp/switch-to-notmuch))
+(use-package mml
+  :after message
+  :config
+  (setq mml-enable-flowed t))
 
 (use-package org-notmuch
   :after notmuch)
+
+(use-package orgalist
+  :after message
+  :hook (message-setup . orgalist-mode))
 
 ;; Disabled because not used
 ;; (use-package footnote
@@ -1342,30 +1294,20 @@ based on ‘zp/message-mode-ispell-alist’."
 ;; Cosmetic options
 ;;----------------------------------------------------------------------------
 
-(use-package menu-bar
-  :config
-  (menu-bar-mode -1)
+(define-key zp/toggle-map (kbd "d") #'toggle-debug-on-error)
+(define-key zp/toggle-map (kbd "Q") #'toggle-debug-on-quit)
 
-  (define-key zp/toggle-map "d" #'toggle-debug-on-error)
-  (define-key zp/toggle-map "Q" #'toggle-debug-on-quit))
+;; Disable tool-bar
+(tool-bar-mode -1)
 
-(use-package tool-bar
-  :config
-  (tool-bar-mode -1))
+;; Disable scroll-bars
+(scroll-bar-mode 0)
+(global-set-key (kbd "C-c s") #'scroll-bar-mode)
 
-(use-package scroll-bar
-  :config
-  (scroll-bar-mode 0)
+(global-set-key (kbd "C-c H") #'global-hl-line-mode)
+(global-hl-line-mode 1)
 
-  (global-set-key (kbd "C-c s") #'scroll-bar-mode))
-
-(use-package hl-line
-  :config
-  (global-set-key (kbd "C-c H") #'global-hl-line-mode))
-
-(use-package display-line-numbers
-  :config
-  (global-set-key (kbd "C-c g") #'display-line-numbers-mode))
+(global-set-key (kbd "C-c g") #'display-line-numbers-mode)
 
 (use-package fringe
   :config
@@ -1421,11 +1363,13 @@ based on ‘zp/message-mode-ispell-alist’."
   (ace-link-setup-default))
 
 (use-package electric
+  :demand
+  :hook (message-setup . electric-quote-local-mode)
+  :bind (:map zp/toggle-map
+              ("q" . electric-quote-local-mode))
   :config
-  (electric-quote-mode 1)
-  (setq electric-quote-context-sensitive 1)
-
-  (define-key zp/toggle-map "q" #'electric-quote-local-mode))
+  (setq electric-quote-context-sensitive 1))
+(electric-quote-mode 1)
 
 ;; (use-package dumb-jump
 ;;   :config
@@ -5824,7 +5768,7 @@ running."
 
   (add-hook 'chronos-mode-hook #'zp/chronos-mode-config))
 
-(use-package helm-chronos
+(use-package helm-chronos-patched
   :requires chronos
   :config
   ;; Fix for adding new timers with helm-chronos
@@ -6386,6 +6330,7 @@ mouse-1: Previous buffer\nmouse-3: Next buffer")
 ;;----------------------------------------------------------------------------
 
 (use-package theme
+  ;; :after diff-hl
   :config
   ;; Fonts
   (zp/set-font "sarasa")
@@ -6416,7 +6361,7 @@ accepted by terminator (e.g. ‘-x command’).
 See ‘~/.bin/terminator-dwim’ for more info."
   (interactive)
   (let ((client-buffer (current-buffer))
-        (arg ARGUMENTS))
+        (arg arguments))
     (with-current-buffer (window-buffer (selected-window))
       (let* ((path-emacs default-directory)
              (tramp-regex "/sudo:root@.*?:")
