@@ -1200,6 +1200,34 @@ based on ‘zp/message-mode-ispell-alist’."
     (if (y-or-n-p "Ready to send? ")
         (notmuch-mua-send-and-exit arg)))
 
+  ;;----------------------
+  ;; Switching to notmuch
+  ;;----------------------
+
+  (defun zp/notmuch-hello-quit ()
+    (interactive)
+    (notmuch-bury-or-kill-this-buffer)
+    (start-process-shell-command "notmuch-new" nil "systemctl --user start check-mail.service")
+    (set-window-configuration zp/notmuch-before-config))
+
+  (defun zp/switch-to-notmuch ()
+    (interactive)
+    (cond ((string-match "\\*notmuch-hello\\*" (buffer-name))
+           (zp/notmuch-hello-quit))
+          ((string-match "\\*notmuch-.*\\*" (buffer-name))
+           (notmuch-bury-or-kill-this-buffer))
+          (t
+           (setq zp/notmuch-before-config (current-window-configuration))
+           (delete-other-windows)
+           (notmuch))))
+
+  (advice-add #'mu4e-quit :after (lambda ()
+                                   (mu4e-update-mail-and-index t)))
+
+  ;;----------------------------------------------------------------------------
+  ;; Keys
+  ;;----------------------------------------------------------------------------
+
   (defun zp/notmuch-message-mode-config ()
     "Modify keymaps used by ‘notmuch-show-mode’."
     (local-set-key (kbd "C-c C-c") #'zp/notmuch-confirm-before-sending)
@@ -5886,26 +5914,6 @@ i.e. change right window to bottom, or change bottom window to right."
 ;;   (if (string-match "magit: .*" (buffer-name))
 ;;       (magit-mode-bury-buffer arg)
 ;;     (magit-status arg)))
-
-(defun zp/notmuch-hello-quit ()
-  (interactive)
-  (notmuch-bury-or-kill-this-buffer)
-  (start-process-shell-command "notmuch-new" nil "systemctl --user start check-mail.service")
-  (set-window-configuration zp/notmuch-before-config))
-
-(defun zp/switch-to-notmuch ()
-  (interactive)
-  (cond ((string-match "\\*notmuch-hello\\*" (buffer-name))
-         (zp/notmuch-hello-quit))
-        ((string-match "\\*notmuch-.*\\*" (buffer-name))
-         (notmuch-bury-or-kill-this-buffer))
-        (t
-         (setq zp/notmuch-before-config (current-window-configuration))
-         (delete-other-windows)
-         (notmuch))))
-
-(advice-add #'mu4e-quit :after (lambda ()
-                                 (mu4e-update-mail-and-index t)))
 
 (defun zp/mu4e-view-message-with-message-id-save-window-config-before (old-function &rest arguments)
   (interactive)
