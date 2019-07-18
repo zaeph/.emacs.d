@@ -6211,12 +6211,21 @@ the beginning of the line."
         `(,(face-attribute 'default :foreground) .
           ,(face-attribute 'default :background))))
 
-(minions-mode 1)
-(require 'moody)
-(setq x-underline-at-descent-line t)
-(setq moody-mode-line-height 40)
-(moody-replace-mode-line-buffer-identification)
-(moody-replace-vc-mode)
+(use-package minions
+  :config
+  (minions-mode 1))
+
+(use-package moody
+  :config
+  (setq moody-mode-line-height 40)
+
+  ;; TODO: Check if really useful
+  (setq x-underline-at-descent-line t)
+
+  (moody-replace-mode-line-buffer-identification)
+  (moody-replace-vc-mode))
+
+
 
 
 
