@@ -6258,13 +6258,6 @@ the beginning of the line."
 
 
 
-
-
-(defun zp/pdf-view-midnight-mode-theme ()
-  (setq pdf-view-midnight-colors
-        `(,(face-attribute 'default :foreground) .
-          ,(face-attribute 'default :background))))
-
 (use-package minions
   :config
   (minions-mode 1))

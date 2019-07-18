@@ -138,21 +138,6 @@
   (zp/mode-line-theme "light")
   (zp/pdf-view-midnight-mode-theme))
 
-(defun zp/pdf-view-update-midnight ()
-  "Update pdf-view’s colour theme."
-  (dolist (buffer (buffer-list))
-    (with-current-buffer buffer
-      (when (derived-mode-p 'pdf-view-mode)
-        (pdf-view-midnight-minor-mode)))))
-
-(defun zp/switch-theme ()
-  (interactive)
-  (cond ((string= zp/emacs-theme "dark")
-         (zp/light-theme))
-        ((string= zp/emacs-theme "light")
-         (zp/dark-theme)))
-  (zp/pdf-view-update-midnight))
-
 ;;----------------------------------------------------------------------------
 ;; Day/night cycle
 ;;----------------------------------------------------------------------------
@@ -235,8 +220,31 @@ See ‘zp/time-of-day-sections’ for more info."
       nil)))
 
 ;;----------------------------------------------------------------------------
+;; pdf-view-midnight-mode
+;;----------------------------------------------------------------------------
+(defun zp/pdf-view-midnight-mode-theme ()
+  (setq pdf-view-midnight-colors
+        `(,(face-attribute 'default :foreground) .
+          ,(face-attribute 'default :background))))
+
+(defun zp/pdf-view-update-midnight-mode ()
+  "Update pdf-view’s colour theme."
+  (dolist (buffer (buffer-list))
+    (with-current-buffer buffer
+      (when (derived-mode-p 'pdf-view-mode)
+        (pdf-view-midnight-minor-mode)))))
+
+;;----------------------------------------------------------------------------
 ;; Switching
 ;;----------------------------------------------------------------------------
+(defun zp/switch-theme ()
+  (interactive)
+  (cond ((string= zp/emacs-theme "dark")
+         (zp/light-theme))
+        ((string= zp/emacs-theme "light")
+         (zp/dark-theme)))
+  (zp/pdf-view-update-midnight-mode))
+
 (defun zp/switch-theme-dwim (&optional print-message)
   "Switch theme based on time-of-day.
 See ‘zp/time-of-day-sections’ and ‘zp/daytimep’ for more info."
@@ -253,7 +261,7 @@ See ‘zp/time-of-day-sections’ and ‘zp/daytimep’ for more info."
           (t
            (when print-message
              (message "Nothing to do."))))
-    (zp/pdf-view-update-midnight)))
+    (zp/pdf-view-update-midnight-mode)))
 
 (defun zp/switch-theme-auto ()
   "Automatically switch theme based on time-of-day.
