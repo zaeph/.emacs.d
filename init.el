@@ -308,6 +308,7 @@ end-of-buffer signals; pass the rest to the default handler."
     (insert-file-contents file-path)
     (buffer-string)))
 
+;; TODO: Improve formatting & output in ‘eval’ context
 (defmacro with-timer (title &rest forms)
   "Run the given FORMS, counting the elapsed time.
 A message including the given TITLE and the corresponding elapsed
@@ -322,6 +323,7 @@ time is displayed."
                 (float-time (time-subtract (current-time) ,nowvar))))
            (message "%s...done (%.3fs)" ,title elapsed))))))
 
+;; TODO: Does it need to be macro?
 (defmacro zp/advise-commands (method commands where function)
   (let ((where-keyword (intern-soft (concat ":" (symbol-name where)))))
     `(progn
@@ -2805,8 +2807,11 @@ With a prefix argument, do so in all agenda buffers."
   ;; Skipping
   ;;----------
 
-  ;; Taken & Inspired from Bernst Hansen’s helper functions
+  ;; Taken from & Inspired by Bernst Hansen’s helper functions
   ;; Source: http://doc.norang.ca/org-mode.html
+
+  ;; Functions prefixed by bh are Bernst Hansen’s
+  ;; Functions prefixed by zp are my own
 
   (defun bh/is-project-p ()
     "Any task with a todo keyword subtask"
@@ -4581,12 +4586,54 @@ TITLE and URL are those of the webpage."
     (let ((org-capture-templates zp/org-agenda-capture-templates))
       (org-agenda-capture arg)))
 
+  ;;------
+  ;; Handling ‘CREATED’
+  ;;------
 
+  (defvar org-created-property-name "CREATED"
+    "The name of the org-mode property that stores the creation date of the entry")
+
+  ;; TODO: Find the source for this because I’ve improved something which
+  ;; already existed
+  (defun zp/org-set-created-property (&optional active NAME)
+    "Set a property on the entry giving the creation time.
+
+By default the property is called CREATED. If given, the ‘NAME’
+argument will be used instead. If the property already exists, it
+will not be modified.
+
+If the function sets CREATED, it returns its value."
+    (interactive)
+    (let* ((created (or NAME org-created-property-name))
+           (fmt (if active "<%s>" "[%s]"))
+           (now (format fmt (format-time-string "%Y-%m-%d %a %H:%M")))
+           (is-capturing (and (boundp 'org-capture-mode) org-capture-mode))
+           (add-created (plist-get org-capture-plist :add-created)))
+      (unless (or (and is-capturing
+                       (not add-created))
+                  (org-entry-get (point) created nil))
+        (when is-capturing
+          (unless (buffer-narrowed-p)
+            (error "Buffer is not narrowed"))
+          (goto-char (point-min)))
+        (org-set-property created now)
+        now)))
+
+  (add-hook 'org-capture-prepare-finalize-hook #'zp/org-set-created-property)
+
+  ;;------
+  ;; Rest
+  ;;------
+
+  ;; Align tags in templates before finalising
+  (add-hook 'org-capture-before-finalize-hook #'org-align-all-tags)
+
+  ;; Restore the previous window configuration after exiting
   (defvar zp/org-capture-before-config nil
-    "Window configuration before `org-capture'.")
+    "Window configuration before ‘org-capture’.")
 
   (defadvice org-capture (before save-config activate)
-    "Save the window configuration before `org-capture'."
+    "Save the window configuration before ‘org-capture’."
     (setq zp/org-capture-before-config (current-window-configuration)))
 
   (defun zp/org-capture-make-full-frame ()
@@ -4985,7 +5032,28 @@ Check their respective dosctrings for more info."
     (if (atom min-to-app)
         (start-process "zp/appt-notification-app" nil zp/appt-notification-app min-to-app msg)
       (dolist (i (number-sequence 0 (1- (length min-to-app))))
-        (start-process "zp/appt-notification-app" nil zp/appt-notification-app (nth i min-to-app) (nth i msg))))))
+        (start-process "zp/appt-notification-app" nil zp/appt-notification-app (nth i min-to-app) (nth i msg)))))
+
+  ;; Conditional APPT_WARNTIME
+  (defun zp/org-set-appt-warntime-if-timestamp (&rest args)
+    "Prompt for APPT_WARNTIME if the heading as a timestamp."
+    (let ((warntime (org-entry-get (point) "APPT_WARNTIME")))
+      (unless warntime
+        (save-excursion
+          (org-back-to-heading t)
+          (let ((end (save-excursion (outline-next-heading) (point))))
+            (when (re-search-forward org-stamp-time-of-day-regexp
+                                     end t)
+              (zp/org-set-appt-warntime)))))))
+
+  ;; Advise timestamp-related commands
+  (zp/advise-commands
+   add
+   (org-schedule
+    org-deadline
+    org-time-stamp)
+   after
+   zp/org-set-appt-warntime-if-timestamp))
 
 
 
@@ -6326,59 +6394,9 @@ Version 2017-08-25"
 
 
 
-;; Add ‘CREATED’ property to all captured items
 
-(defvar org-created-property-name "CREATED"
-  "The name of the org-mode property that stores the creation date of the entry")
 
-(defun zp/org-set-created-property (&optional active NAME)
-  "Set a property on the entry giving the creation time.
 
-By default the property is called CREATED. If given, the ‘NAME’
-argument will be used instead. If the property already exists, it
-will not be modified.
-
-If the function sets CREATED, it returns its value."
-  (interactive)
-  (let* ((created (or NAME org-created-property-name))
-         (fmt (if active "<%s>" "[%s]"))
-         (now (format fmt (format-time-string "%Y-%m-%d %a %H:%M")))
-         (is-capturing (and (boundp 'org-capture-mode) org-capture-mode))
-         (add-created (plist-get org-capture-plist :add-created)))
-    (unless (or (and is-capturing
-                     (not add-created))
-                (org-entry-get (point) created nil))
-      (when is-capturing
-        (unless (buffer-narrowed-p)
-          (error "Buffer is not narrowed"))
-        (goto-char (point-min)))
-      (org-set-property created now)
-      now)))
-
-(add-hook 'org-capture-prepare-finalize-hook #'zp/org-set-created-property)
-
-;; Align tags in templates before finalising
-(add-hook 'org-capture-before-finalize-hook #'org-align-all-tags)
-
-;; Conditional APPT_WARNTIME
-(defun zp/org-set-appt-warntime-if-timestamp (&rest args)
-  "Prompt for APPT_WARNTIME if the heading as a timestamp."
-  (let ((warntime (org-entry-get (point) "APPT_WARNTIME")))
-    (unless warntime
-      (save-excursion
-        (org-back-to-heading t)
-        (let ((end (save-excursion (outline-next-heading) (point))))
-          (when (re-search-forward org-stamp-time-of-day-regexp
-                                   end t)
-            (zp/org-set-appt-warntime)))))))
-
-(zp/advise-commands
- add
- (org-schedule
-  org-deadline
-  org-time-stamp)
- after
- zp/org-set-appt-warntime-if-timestamp)
 
 
 
