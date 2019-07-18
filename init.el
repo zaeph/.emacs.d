@@ -149,6 +149,10 @@ end-of-buffer signals; pass the rest to the default handler."
 ;; Necessary for for some Ivy/Helm commands
 (setq enable-recursive-minibuffers t)
 
+;; Make M-U equivalent to C-u
+(global-set-key (kbd "M-U") 'universal-argument)
+(define-key universal-argument-map "\M-U" 'universal-argument-more)
+
 
 
 ;;----------------------------------------------------------------------------
@@ -5909,10 +5913,6 @@ command reveals the other lines."
 ;; ========================================
 
 (global-set-key [M-kanji] 'ignore)
-
-;; Make M-U equivalent to C-u
-(global-set-key (kbd "M-U") 'universal-argument)
-(define-key universal-argument-map "\M-U" 'universal-argument-more)
 
 ;; (global-set-key (kbd "C-x C-g") 'xah-open-in-external-app)
 
