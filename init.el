@@ -2442,6 +2442,49 @@ With a C-u argument, toggle the link display."
   (setq org-time-stamp-custom-formats
         '("<%d %b %Y>" . "<%d/%m/%y %a %H:%M>"))
 
+  ;;--------------------------
+  ;; Spawned indirect buffers
+  ;;--------------------------
+
+  (defun zp/org-kill-spawned-ibuf (&optional arg)
+    "Kill the current buffer if it is an indirect buffer."
+    (interactive "p")
+    (let* ((other (not (one-window-p)))
+           (indirect (buffer-base-buffer))
+           (spawn zp/org-spawned-ibuf-mode)
+           (parent-window zp/org-ibuf-spawned-also-kill-window))
+      (unless (and indirect
+                   spawn)
+        (user-error "Not a spawned buffer"))
+      (if (and other
+               parent-window)
+          (progn (kill-buffer-and-window)
+                 ;; Select parent when called interactively
+                 (when arg
+                   (select-window parent-window)))
+        (kill-buffer))
+      (when arg
+        (message "Killed indirect buffer."))
+      (run-hooks 'zp/org-after-view-change-hook)))
+
+  (defun zp/org-ibuf-spawned-dedicate (&optional print-message)
+    (unless (and (boundp zp/org-spawned-ibuf-mode) zp/org-spawned-ibuf-mode)
+      (user-error "Not in a spawned buffer"))
+    (zp/org-spawned-ibuf-mode -1)
+    (setq org-last-indirect-buffer nil)
+    (setq header-line-format nil)
+    (when print-message
+      (message "Buffer is now dedicated.")))
+
+  (defun zp/org-kill-spawned-ibuf-dwim (&optional dedicate)
+    "Kill the current buffer if it is an indirect buffer.
+
+With a ‘C-u’ argument, dedicate the buffer instead."
+    (interactive "P")
+    (if dedicate
+        (zp/org-ibuf-spawned-dedicate t)
+      (zp/org-kill-spawned-ibuf t)))
+
   ;;--------------
   ;; Key bindings
   ;;--------------
@@ -4632,6 +4675,71 @@ Based on `org-agenda-set-property'."
 
   (define-key mode-specific-map (kbd "a") 'org-agenda)
 
+  ;;-------------------------
+  ;; Spawned indirect buffers
+  ;;-------------------------
+
+  (defun zp/org-agenda-tree-to-indirect-buffer (dedicated)
+    "Show the subtree corresponding to the current entry in an indirect buffer.
+
+With a ‘C-u’ prefix, make a separate frame for this tree."
+    (interactive "P")
+    (let* ((last-ibuf org-last-indirect-buffer)
+           (buffer (if dedicated
+                       (save-window-excursion
+                         (setq org-last-indirect-buffer nil)
+                         (org-agenda-tree-to-indirect-buffer nil)
+                         (select-window (previous-window))
+                         (current-buffer))
+                     (org-agenda-tree-to-indirect-buffer nil)))
+           (parent-window (selected-window))
+           subtask)
+      (with-selected-window (if dedicated
+                                (and (split-window-below)
+                                     (next-window))
+                              (next-window))
+        (cond (dedicated
+               (setq org-last-indirect-buffer last-ibuf)
+               (switch-to-buffer buffer))
+              (t
+               (zp/org-spawned-ibuf-mode t)
+               (setq zp/org-ibuf-spawned-also-kill-window parent-window)))
+        (when (setq subtask (zp/is-subtask-p))
+          (zp/org-narrow-up-heading nil t))
+        (zp/org-overview nil subtask t)
+        (when subtask
+          (org-show-entry))
+        (org-back-to-heading)
+        (org-beginning-of-line))
+      (balance-windows)
+      (select-window (next-window))
+      (message "Visiting tree in indirect buffer.")
+      (run-hooks 'zp/org-after-view-change-hook)))
+
+  (defun zp/org-agenda-tree-to-indirect-buffer-without-grabbing-focus (arg)
+    (interactive "P")
+    (zp/org-agenda-tree-to-indirect-buffer arg)
+    (select-window (previous-window)))
+
+  (defun zp/org-agenda-tree-to-indirect-buffer-maximise (arg)
+    (interactive "P")
+    (switch-to-buffer
+     (save-window-excursion
+       (zp/org-agenda-tree-to-indirect-buffer arg)
+       (prog1 (current-buffer)
+         (setq zp/org-ibuf-spawned-also-kill-window nil)))))
+
+  (defun zp/org-kill-spawned-ibuf-and-window ()
+    "Kill the other buffer and window if there is more than one window."
+    (interactive)
+    (let ((other (and (not (one-window-p))
+                      (save-excursion
+                        (select-window (next-window))
+                        (prog1 (current-buffer)
+                          (select-window (previous-window)))))))
+      (with-current-buffer other
+        (zp/org-kill-spawned-ibuf))))
+
   ;;------
   ;; Keys
   ;;------
@@ -4672,7 +4780,7 @@ Based on `org-agenda-set-property'."
     (local-set-key (kbd "<return>") 'zp/org-agenda-tree-to-indirect-buffer-without-grabbing-focus)
     (local-set-key (kbd "S-<return>") 'zp/org-agenda-tree-to-indirect-buffer)
     (local-set-key (kbd "M-<return>") 'zp/org-agenda-tree-to-indirect-buffer-maximise)
-    (local-set-key (kbd "<backspace>") 'zp/org-agenda-kill-other-buffer-and-window)
+    (local-set-key (kbd "<backspace>") 'zp/org-kill-spawned-ibuf-and-window)
 
     ;; Update org-super-agenda-header-map
     (setq org-super-agenda-header-map org-agenda-mode-map))
@@ -6052,6 +6160,22 @@ command reveals the other lines."
 
 (global-set-key (kbd "H-M-.") 'herald-the-mode-line)
 
+(defun move-beginning-of-line-dwim (arg)
+  "Move point back to indentation or beginning of line
+
+Move point to the first non-whitespace character on this line.
+If point is already there, move to the beginning of the line.
+Effectively toggle between the first non-whitespace character and
+the beginning of the line."
+  (interactive "^p")
+  (let ((old-point (point)))
+    (back-to-indentation)
+    (when (= old-point (point))
+      (move-beginning-of-line arg))))
+
+(global-set-key [remap move-beginning-of-line]
+                'move-beginning-of-line-dwim)
+
 
 
 ;; ========================================
@@ -6077,135 +6201,6 @@ command reveals the other lines."
 (global-set-key (kbd "H-j") #'other-window-reverse)
 (global-set-key (kbd "H-k") #'other-window)
 (global-set-key (kbd "C-x 4 1") #'zp/kill-other-buffer-and-window)
-
-
-
-;; EXPERIMENTAL
-;; key-chord
-;; (setq key-chord-two-keys-delay .020
-;;       key-chord-one-key-delay .050)
-;; (key-chord-define-global "df" 'avy-goto-char-2)
-
-;; Doesn't really work: Clears the previous windows configuration
-;; without being able to go back with winner-redo.
-;; Better to use C-x z
-;; (make-command-repeatable 'winner-undo)
-
-(defun zp/org-kill-spawned-ibuf (&optional arg)
-  "Kill the current buffer if it is an indirect buffer."
-  (interactive "p")
-  (let* ((other (not (one-window-p)))
-         (indirect (buffer-base-buffer))
-         (spawn zp/org-spawned-ibuf-mode)
-         (parent-window zp/org-ibuf-spawned-also-kill-window))
-    (unless (and indirect
-                 spawn)
-      (user-error "Not a spawned buffer"))
-    (if (and other
-             parent-window)
-        (progn (kill-buffer-and-window)
-               ;; Select parent when called interactively
-               (when arg
-                 (select-window parent-window)))
-      (kill-buffer))
-    (when arg
-      (message "Killed indirect buffer."))
-    (run-hooks 'zp/org-after-view-change-hook)))
-
-(defun zp/org-ibuf-spawned-dedicate (&optional print-message)
-  (unless (and (boundp zp/org-spawned-ibuf-mode) zp/org-spawned-ibuf-mode)
-    (user-error "Not in a spawned buffer"))
-  (zp/org-spawned-ibuf-mode -1)
-  (setq org-last-indirect-buffer nil)
-  (setq header-line-format nil)
-  (when print-message
-    (message "Buffer is now dedicated.")))
-
-(defun zp/org-kill-spawned-ibuf-dwim (&optional dedicate)
-  "Kill the current buffer if it is an indirect buffer.
-
-With a ‘C-u’ argument, dedicate the buffer instead."
-  (interactive "P")
-  (if dedicate
-      (zp/org-ibuf-spawned-dedicate t)
-    (zp/org-kill-spawned-ibuf t)))
-
-(defun zp/org-agenda-kill-other-buffer-and-window ()
-  "Kill the other buffer and window if there is more than one window."
-  (interactive)
-  (let ((other (and (not (one-window-p))
-                    (save-excursion
-                      (select-window (next-window))
-                      (prog1 (current-buffer)
-                        (select-window (previous-window)))))))
-    (with-current-buffer other
-      (zp/org-kill-spawned-ibuf))))
-
-(defun zp/org-agenda-tree-to-indirect-buffer (dedicated)
-  "Show the subtree corresponding to the current entry in an indirect buffer.
-
-With a ‘C-u’ prefix, make a separate frame for this tree."
-  (interactive "P")
-  (let* ((last-ibuf org-last-indirect-buffer)
-         (buffer (if dedicated
-                     (save-window-excursion
-                       (setq org-last-indirect-buffer nil)
-                       (org-agenda-tree-to-indirect-buffer nil)
-                       (select-window (previous-window))
-                       (current-buffer))
-                   (org-agenda-tree-to-indirect-buffer nil)))
-         (parent-window (selected-window))
-         subtask)
-    (with-selected-window (if dedicated
-                              (and (split-window-below)
-                                   (next-window))
-                            (next-window))
-      (cond (dedicated
-             (setq org-last-indirect-buffer last-ibuf)
-             (switch-to-buffer buffer))
-            (t
-             (zp/org-spawned-ibuf-mode t)
-             (setq zp/org-ibuf-spawned-also-kill-window parent-window)))
-      (when (setq subtask (zp/is-subtask-p))
-        (zp/org-narrow-up-heading nil t))
-      (zp/org-overview nil subtask t)
-      (when subtask
-        (org-show-entry))
-      (org-back-to-heading)
-      (org-beginning-of-line))
-    (balance-windows)
-    (select-window (next-window))
-    (message "Visiting tree in indirect buffer.")
-    (run-hooks 'zp/org-after-view-change-hook)))
-
-(defun zp/org-agenda-tree-to-indirect-buffer-without-grabbing-focus (arg)
-  (interactive "P")
-  (zp/org-agenda-tree-to-indirect-buffer arg)
-  (select-window (previous-window)))
-
-(defun zp/org-agenda-tree-to-indirect-buffer-maximise (arg)
-  (interactive "P")
-  (switch-to-buffer
-   (save-window-excursion
-     (zp/org-agenda-tree-to-indirect-buffer arg)
-     (prog1 (current-buffer)
-       (setq zp/org-ibuf-spawned-also-kill-window nil)))))
-
-(defun move-beginning-of-line-dwim (arg)
-  "Move point back to indentation or beginning of line
-
-Move point to the first non-whitespace character on this line.
-If point is already there, move to the beginning of the line.
-Effectively toggle between the first non-whitespace character and
-the beginning of the line."
-  (interactive "^p")
-  (let ((old-point (point)))
-    (back-to-indentation)
-    (when (= old-point (point))
-      (move-beginning-of-line arg))))
-
-(global-set-key [remap move-beginning-of-line]
-                'move-beginning-of-line-dwim)
 
 
 
