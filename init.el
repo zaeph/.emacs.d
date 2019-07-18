@@ -6532,15 +6532,21 @@ See ‘~/.bin/terminator-dwim’ for more info."
 
 
 
-;; ========================================
-;; ============= LATE MODES ===============
-;; ========================================
+;;----------------------------------------------------------------------------
+;; Late packages
+;;----------------------------------------------------------------------------
+
+;; Packages which are required to be loaded late
+;; TODO: See if I can handle that with use-package
 
 ;; Magnars's codes
 ;; expand-region causes weird flicker with repeated tasks if it's at the top
+;; TODO: Confirm if this is still the case
 (use-package expand-region
   :config
   (global-set-key (kbd "H-h") 'er/expand-region))
+
+(use-package multiple-cursors-core)
 
 (use-package mc-edit-lines
   :config
@@ -6552,23 +6558,20 @@ See ‘~/.bin/terminator-dwim’ for more info."
   (global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
   (global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this))
 
-(require 'multiple-cursors)
-
-;; Diminish
-;; Allow minor modes to not have modeline display
-(require 'diminish)
-
-(diminish 'ivy-mode)
-(diminish 'helm-mode)
-(diminish 'auto-revert-mode)
-(diminish 'anzu-mode)
-(diminish 'yas-minor-mode)
-(diminish 'which-key-mode)
-(diminish 'volatile-highlights-mode)
-(diminish 'undo-tree-mode)
-(diminish 'whitespace-mode)
-(diminish 'magit-wip-mode)
-(diminish 'ws-butler-mode)
+;; Disable lighters for some minor-modes
+(use-package diminish
+  :config
+  (diminish 'ivy-mode)
+  (diminish 'helm-mode)
+  (diminish 'auto-revert-mode)
+  (diminish 'anzu-mode)
+  (diminish 'yas-minor-mode)
+  (diminish 'which-key-mode)
+  (diminish 'volatile-highlights-mode)
+  (diminish 'undo-tree-mode)
+  (diminish 'whitespace-mode)
+  (diminish 'magit-wip-mode)
+  (diminish 'ws-butler-mode))
 
 
 
