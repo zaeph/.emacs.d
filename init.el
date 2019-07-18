@@ -4025,6 +4025,9 @@ due today, and showing all of them."
            (,(zp/org-agenda-block-agenda-week-appointments-only
               "Weekly Appointments (-routine)")))
 
+          ("A" "Active"
+           (,@(zp/org-agenda-blocks-create "Active" nil nil t)))
+
           ("I" "Inactive"
            (,@(zp/org-agenda-blocks-create "Inactive" nil "/STBY")))
 
@@ -4062,11 +4065,11 @@ due today, and showing all of them."
           ("w" "Waiting list"
            (,(zp/org-agenda-block-tasks-waiting)))
 
-          ("A" "Meditation records"
-           ((agenda ""
-                    ((org-agenda-files zp/org-agenda-files-awakening)
-                     (org-agenda-log-mode))))
-           ((org-agenda-skip-timestamp-if-done nil)))
+          ;; ("A" "Meditation records"
+          ;;  ((agenda ""
+          ;;           ((org-agenda-files zp/org-agenda-files-awakening)
+          ;;            (org-agenda-log-mode))))
+          ;;  ((org-agenda-skip-timestamp-if-done nil)))
 
           ("S" "Swimming records"
            ((agenda ""
@@ -4923,17 +4926,34 @@ If the function sets CREATED, it returns its value."
 
 
 
+;;----------------------------------------------------------------------------
+;; org-ref
+;;----------------------------------------------------------------------------
 
-;; ========================================
-;; ============== ORG-BRAIN ==============-
-;; ========================================
+(use-package org-ref
+  :requires org
+  :config
+  (setq org-ref-bibliography-notes "~/org/bib/notes.org"
+        reftex-default-bibliography '("~/org/bib/monty-python.bib")
+        org-ref-default-bibliography '("~/org/bib/monty-python.bib")
+        org-ref-pdf-directory "~/org/bib/pdf"))
 
-(require 'org-brain)
-(setq org-brain-path "~/org/brain")
 
-;; Commented because already the default
-;; (setq org-id-track-globally t)
-;; (setq org-id-locations-file "~/.emacs.d/.org-id-locations")
+
+;;----------------------------------------------------------------------------
+;; org-brain
+;;----------------------------------------------------------------------------
+
+;; Disabled because I don’t use it
+(use-package org-brain
+  :disabled
+  :config
+  (setq org-brain-path "~/org/brain")
+
+  ;; Commented because already the default
+  ;; (setq org-id-track-globally t)
+  ;; (setq org-id-locations-file "~/.emacs.d/.org-id-locations")
+  )
 
 
 
@@ -5378,19 +5398,6 @@ buffer, thereby propagating the indirectness."
   (add-hook 'org-capture-after-finalize-hook #'zp/play-sound-after-capture)
   (add-hook 'zp/org-after-view-change-hook #'zp/play-sound-turn-page)
   (add-hook 'zp/org-after-refile-hook #'zp/play-sound-turn-page))
-
-
-
-;; ========================================
-;; =============== ORG-REF ================
-;; ========================================
-
-(require 'org-ref)
-
-(setq org-ref-bibliography-notes "~/org/bib/notes.org"
-      reftex-default-bibliography '("~/org/bib/monty-python.bib")
-      org-ref-default-bibliography '("~/org/bib/monty-python.bib")
-      org-ref-pdf-directory "~/org/bib/pdf")
 
 
 
