@@ -8,10 +8,8 @@
 (defun zp/play-sound-clock-in ()
   (start-process-shell-command "play-sound" nil "notification-sound-org clock-in"))
 
-
 (defun zp/play-sound-clock-out ()
   (start-process-shell-command "play-sound" nil "notification-sound-org clock-out"))
-
 
 (defun zp/play-sound-reward ()
   (when (string-equal org-state "DONE")
