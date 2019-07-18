@@ -153,6 +153,84 @@ end-of-buffer signals; pass the rest to the default handler."
 (global-set-key (kbd "M-U") 'universal-argument)
 (define-key universal-argument-map "\M-U" 'universal-argument-more)
 
+;; Prevent newlines insertion when moving past the end of the file
+(setq next-line-add-newlines nil)
+
+;;----------------------------------------------------------------------------
+;; Cosmetics
+;;----------------------------------------------------------------------------
+(tool-bar-mode -1)
+(scroll-bar-mode -1)
+(blink-cursor-mode -1)
+(show-paren-mode 1)
+(global-hl-line-mode 1)
+(column-number-mode 1)
+
+;; Set fringe sizes
+(fringe-mode 20)
+
+;;----------------------------------------------------------------------------
+;; Electric
+;;----------------------------------------------------------------------------
+(electric-quote-mode 1)
+(setq electric-quote-context-sensitive 1)
+
+;;----------------------------------------------------------------------------
+;; Backups
+;;----------------------------------------------------------------------------
+;; Don’t clobber symlinks
+(setq backup-by-copying t)
+
+;; Use versioned backups
+(setq version-control t)
+
+;; Number of backups to keep
+(setq kept-new-versions 10
+      kept-old-versions 0
+      delete-old-versions t)
+
+;; Backup directories
+(setq backup-directory-alist '(("." . "~/.saves")))
+
+;; Also backup versioned files
+(setq vc-make-backup-files t)
+
+;;----------------------------------------------------------------------------
+;; diff
+;;----------------------------------------------------------------------------
+;; Diff backend
+(setq diff-command "diff")            ;Default
+
+;; Add ‘-u’ switch for diff
+(setq diff-switches "-u")
+
+;;----------------------------------------------------------------------------
+;; Miscellaneous
+;;----------------------------------------------------------------------------
+
+;; windmove
+(windmove-default-keybindings 'super)
+(setq windmove-wrap-around t)
+
+;; desktop
+(desktop-save-mode 0)
+
+;; mwheel
+(setq mouse-wheel-flip-direction 1
+      mouse-wheel-scroll-amount '(2 ((shift) . 1) ((control)))
+      mouse-wheel-progressive-speed nil
+      mouse-wheel-follow-mouse 't)
+
+;; Disable side movements
+;; (global-set-key (kbd "<mouse-6>") 'ignore)
+;; (global-set-key (kbd "<mouse-7>") 'ignore)
+;; (global-set-key (kbd "<triple-mouse-7>") 'ignore)
+;; (global-set-key (kbd "<triple-mouse-6>") 'ignore)
+
+;; Time
+(setq display-time-default-load-average nil)
+(display-time-mode 1)
+
 ;;----------------------------------------------------------------------------
 ;; Fringe bitmaps
 ;;----------------------------------------------------------------------------
@@ -257,47 +335,6 @@ end-of-buffer signals; pass the rest to the default handler."
   16 16)
 
 ;;----------------------------------------------------------------------------
-;; Setup package repositories
-;;----------------------------------------------------------------------------
-;; MELPA
-(require 'package)
-(let* ((no-ssl (and (memq system-type '(windows-nt ms-dos))
-                    (not (gnutls-available-p))))
-       (proto (if no-ssl "http" "https")))
-  ;; Comment/uncomment these two lines to enable/disable MELPA and MELPA Stable as desired
-  (add-to-list 'package-archives (cons "melpa" (concat proto "://melpa.org/packages/")) t)
-  ;;(add-to-list 'package-archives (cons "melpa-stable" (concat proto "://stable.melpa.org/packages/")) t)
-  (when (< emacs-major-version 24)
-    ;; For important compatibility libraries like cl-lib
-    (add-to-list 'package-archives '("gnu" . (concat proto "://elpa.gnu.org/packages/")))))
-
-;; Disable org’s ELPA packages
-(setq package-load-list '(all
-                          (org nil)
-                          (org-plus-contrib nil)))
-
-;; org-elpa
-(add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") t)
-
-;; Initialise packages
-(package-initialize)
-
-;; ‘use-package’ initialisation
-(eval-when-compile
-  ;; Following line is not needed if use-package.el is in ~/.emacs.d
-  ;; (add-to-list 'load-path "<path where use-package is installed>")
-  (require 'use-package))
-
-;; Change indent-function to handle plists
-;; Reverted to default because I can’t remember the context in which it
-;; was necessary
-;; (setq lisp-indent-function 'common-lisp-indent-function)
-;; (setq lisp-indent-function 'lisp-indent-function) ;Default
-
-(use-package package
-  :bind ("C-c P" . package-list-packages))
-
-;;----------------------------------------------------------------------------
 ;; Helper functions & macros
 ;;----------------------------------------------------------------------------
 (defun zp/get-string-from-file (file-path)
@@ -392,6 +429,20 @@ time is displayed."
 (define-prefix-command 'zp/toggle-map)
 (define-key ctl-x-map "t" 'zp/toggle-map)
 
+(define-key zp/toggle-map (kbd "d") #'toggle-debug-on-error)
+(define-key zp/toggle-map (kbd "Q") #'toggle-debug-on-quit)
+(define-key zp/toggle-map (kbd "q") #'electric-quote-local-mode)
+
+;; Modes
+(global-set-key (kbd "C-c s") #'scroll-bar-mode)
+(global-set-key (kbd "C-c H") #'global-hl-line-mode)
+(global-set-key (kbd "C-c g") #'display-line-numbers-mode)
+
+;; Exit Emacs with ‘C-x r q’, and kill the current frame with ‘C-x C-c’
+(global-set-key (kbd "C-x r q") #'save-buffers-kill-terminal)
+(global-set-key (kbd "C-x C-c") #'delete-frame)
+
+;; Actions
 (global-set-key (kbd "M-SPC") #'delete-horizontal-space)
 (global-set-key (kbd "M-S-SPC") #'just-one-space)
 (global-set-key (kbd "H-.") #'zp/echo-buffer-name)
@@ -405,6 +456,47 @@ time is displayed."
 
 ;; Ignore Kanji key in IME
 (global-set-key [M-kanji] 'ignore)
+
+;;----------------------------------------------------------------------------
+;; Setup package repositories
+;;----------------------------------------------------------------------------
+;; MELPA
+(require 'package)
+(let* ((no-ssl (and (memq system-type '(windows-nt ms-dos))
+                    (not (gnutls-available-p))))
+       (proto (if no-ssl "http" "https")))
+  ;; Comment/uncomment these two lines to enable/disable MELPA and MELPA Stable as desired
+  (add-to-list 'package-archives (cons "melpa" (concat proto "://melpa.org/packages/")) t)
+  ;;(add-to-list 'package-archives (cons "melpa-stable" (concat proto "://stable.melpa.org/packages/")) t)
+  (when (< emacs-major-version 24)
+    ;; For important compatibility libraries like cl-lib
+    (add-to-list 'package-archives '("gnu" . (concat proto "://elpa.gnu.org/packages/")))))
+
+;; Disable org’s ELPA packages
+(setq package-load-list '(all
+                          (org nil)
+                          (org-plus-contrib nil)))
+
+;; org-elpa
+(add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") t)
+
+;; Initialise packages
+(package-initialize)
+
+;; ‘use-package’ initialisation
+(eval-when-compile
+  ;; Following line is not needed if use-package.el is in ~/.emacs.d
+  ;; (add-to-list 'load-path "<path where use-package is installed>")
+  (require 'use-package))
+
+;; Change indent-function to handle plists
+;; Reverted to default because I can’t remember the context in which it
+;; was necessary
+;; (setq lisp-indent-function 'common-lisp-indent-function)
+;; (setq lisp-indent-function 'lisp-indent-function) ;Default
+
+(use-package package
+  :bind ("C-c P" . package-list-packages))
 
 ;;----------------------------------------------------------------------------
 ;; Packages
@@ -1008,6 +1100,7 @@ The language should be the name of a valid Ispell dictionary.")
 (use-package message
   :after notmuch
   :hook ((message-setup . zp/message-flyspell-auto)
+         (message-setup . electric-quote-local-mode)
          ;; (message-mode-hook . footnote-mode)
          )
   :config
@@ -1294,49 +1387,10 @@ based on ‘zp/message-mode-ispell-alist’."
 ;; Cosmetic options
 ;;----------------------------------------------------------------------------
 
-(define-key zp/toggle-map (kbd "d") #'toggle-debug-on-error)
-(define-key zp/toggle-map (kbd "Q") #'toggle-debug-on-quit)
-
-;; Disable tool-bar
-(tool-bar-mode -1)
-
-;; Disable scroll-bars
-(scroll-bar-mode 0)
-(global-set-key (kbd "C-c s") #'scroll-bar-mode)
-
-(global-set-key (kbd "C-c H") #'global-hl-line-mode)
-(global-hl-line-mode 1)
-
-(global-set-key (kbd "C-c g") #'display-line-numbers-mode)
-
-(use-package fringe
-  :config
-  (fringe-mode 20))
-
-(use-package paren
-  :config
-  (show-paren-mode 1))
-
 (use-package yasnippet
   :config
   (yas-global-mode 1)
   (global-set-key (kbd "H-<backspace>") 'yas-prev-field))
-
-(use-package simple
-  :config
-  (column-number-mode 1)
-  (setq next-line-add-newlines nil)
-
-  (define-key zp/toggle-map "l" #'toggle-truncate-lines)
-  (define-key zp/toggle-map "f" #'auto-fill-mode)
-
-  (global-set-key (kbd "C-c u") #'visual-line-mode)
-  (global-set-key (kbd "M-U") #'visual-line-mode)
-  (global-set-key (kbd "C-c i") #'toggle-truncate-lines))
-
-(use-package frame
-  :config
-  (blink-cursor-mode -1))
 
 (use-package winner
   :config
@@ -1362,69 +1416,10 @@ based on ‘zp/message-mode-ispell-alist’."
   :config
   (ace-link-setup-default))
 
-(use-package electric
-  :demand
-  :hook (message-setup . electric-quote-local-mode)
-  :bind (:map zp/toggle-map
-              ("q" . electric-quote-local-mode))
-  :config
-  (setq electric-quote-context-sensitive 1))
-(electric-quote-mode 1)
-
 ;; (use-package dumb-jump
 ;;   :config
 ;;   (dumb-jump-mode)
 ;;   (global-visible-mark-mode 1))
-
-(use-package files
-  :config
-  (setq-default require-final-newline nil)
-
-  ;;---------
-  ;; Backups
-  ;;---------
-
-  ;; By default, Emacs only create a backup only once per editing session, right
-  ;; before the first save. In other words, it preserves the state of the file
-  ;; before Emacs touched it.
-
-  ;; Don’t clobber symlinks
-  (setq backup-by-copying t)
-
-  ;; Use versioned backups
-  (setq version-control t)
-
-  ;; Number of backups to keep
-  (setq kept-new-versions 10
-        kept-old-versions 0
-        delete-old-versions t)
-
-  ;; Backup directories
-  (setq backup-directory-alist '(("." . "~/.saves")))
-
-  ;;------
-  ;; Keys
-  ;;------
-
-  ;; Exit Emacs with ‘C-x r q’, and kill the current frame with ‘C-x C-c’
-  (global-set-key (kbd "C-x r q") 'save-buffers-kill-terminal)
-  (global-set-key (kbd "C-x C-c") 'delete-frame)
-
-
-  )
-
-(use-package vc-hooks
-  :config
-  ;; Also backup versioned files
-  (setq vc-make-backup-files t))
-
-(use-package diff
-  :config
-  ;; Diff backend
-  (setq diff-command "diff")            ;Default
-
-  ;; Add ‘-u’ switch for diff
-  (setq diff-switches "-u"))
 
 (use-package backup-walker
   :config
@@ -1436,16 +1431,6 @@ Modifies ‘diff-command’ and ‘diff-switches’ to use ‘git diff’."
 
   (add-hook 'backup-walker-mode-hook #'zp/set-diff-backend-git-diff))
 
-(use-package windmove
-  :config
-  (windmove-default-keybindings 'super)
-  (setq windmove-wrap-around t))
-
-(use-package desktop
-  :disabled
-  :config
-  (desktop-save-mode 1))
-
 ;; Disabled since Emacs now has a native package for showing
 ;; line-numbers
 (use-package linum
@@ -1453,29 +1438,10 @@ Modifies ‘diff-command’ and ‘diff-switches’ to use ‘git diff’."
   ;Add spaces before and after
   (setq linum-format " %d "))
 
-;; Mouse & Scrolling options
-(use-package mwheel
-  :config
-  (setq mouse-wheel-flip-direction 1
-        mouse-wheel-scroll-amount '(2 ((shift) . 1) ((control)))
-        mouse-wheel-progressive-speed nil
-        mouse-wheel-follow-mouse 't))
-
-;; Disable side movements
-;; (global-set-key (kbd "<mouse-6>") 'ignore)
-;; (global-set-key (kbd "<mouse-7>") 'ignore)
-;; (global-set-key (kbd "<triple-mouse-7>") 'ignore)
-;; (global-set-key (kbd "<triple-mouse-6>") 'ignore)
-
-;; Time
-(use-package time
-  :config
-  (setq display-time-default-load-average nil)
-  (display-time-mode 1))
-
 (use-package pdf-tools
+  :magic ("%PDF" . pdf-view-mode)
   :config
-  (pdf-tools-install))
+  (pdf-tools-install :no-query))
 
 (use-package pdf-view
   :config
