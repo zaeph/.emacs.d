@@ -311,6 +311,10 @@ passing arguments. This does."
                 (zp/org-refile-internal file headline-or-olp arg))))
       (when kill-buffer (kill-buffer base)))))
 
+(defvar zp/org-after-refile-hook nil
+  "Hook run after a successful zp/org-refile.
+Also run after a jump.")
+
 (defun zp/org-refile-to (file headline-or-olp &optional print-message jump)
   "Refile current heading to specified destination.
 

@@ -2029,6 +2029,9 @@ return `nil'."
   ;; Narrowing & Movements
   ;;------------------------
 
+  (defvar zp/org-after-view-change-hook nil
+    "Hook run after a significant view change in org-mode.")
+
   (defun zp/org-overview (&optional arg keep-position keep-restriction)
     "Switch to overview mode, showing only top-level headlines.
 
@@ -5360,64 +5363,21 @@ buffer, thereby propagating the indirectness."
 
 
 
+;;----------------------------------------------------------------------------
+;; Feedback sounds
+;;----------------------------------------------------------------------------
 
-
-
-;; ========================================
-;; ============= HTML EXPORT ==============
-;; ========================================
-
-
-
-
-
-
-;; ========================================
-;; ================ SOUNDS ================
-;; ========================================
-
-;; TODO: Simplify, and use more meaningful names for functions
-
-(defun zp/play-sound-clock-in ()
-  (start-process-shell-command "play-sound" nil "notification-sound-org clock-in"))
-(add-hook 'org-clock-in-prepare-hook 'zp/play-sound-clock-in)
-
-(defun zp/play-sound-clock-out ()
-  (start-process-shell-command "play-sound" nil "notification-sound-org clock-out"))
-(add-hook 'org-clock-out-hook 'zp/play-sound-clock-out)
-
-(defun zp/play-sound-reward ()
-  (when (string-equal org-state "DONE")
-    (start-process-shell-command "play-sound" nil "notification-sound-org done")))
-(add-hook 'org-after-todo-state-change-hook 'zp/play-sound-reward)
-
-(defun zp/play-sound-start-capture ()
-  (start-process-shell-command "play-sound" nil "notification-sound-org open"))
-(add-hook 'org-capture-mode-hook 'zp/play-sound-start-capture)
-
-(defun zp/play-sound-after-capture ()
-  (start-process-shell-command "play-sound" nil "notification-sound-org close"))
-(add-hook 'org-capture-after-finalize-hook 'zp/play-sound-after-capture)
-
-(defun zp/play-sound-after-refile ()
-  (start-process-shell-command "play-sound" nil "notification-sound-org move"))
-
-(defun zp/play-sound-turn-page ()
-  (start-process-shell-command "play-sound" nil "notification-sound-org page"))
-
-(defun zp/movement--play-sound-turn-page ()
-  (zp/play-sound-turn-page))
-
-(defvar zp/org-after-view-change-hook nil
-  "Hook run after a significant view change in org-mode.")
-
-(defvar zp/org-after-refile-hook nil
-  "Hook run after a successful zp/org-refile.
-
-Also run after a jump.")
-
-(add-hook 'zp/org-after-view-change-hook #'zp/play-sound-turn-page)
-(add-hook 'zp/org-after-refile-hook #'zp/play-sound-turn-page)
+(use-package feedback-sounds
+  :requires (org org-refile)
+  :config
+  ;; Add feedback sounds to the following commands
+  (add-hook 'org-clock-in-prepare-hook #'zp/play-sound-clock-in)
+  (add-hook 'org-clock-out-hook #'zp/play-sound-clock-out)
+  (add-hook 'org-after-todo-state-change-hook #'zp/play-sound-reward)
+  (add-hook 'org-capture-mode-hook #'zp/play-sound-start-capture)
+  (add-hook 'org-capture-after-finalize-hook #'zp/play-sound-after-capture)
+  (add-hook 'zp/org-after-view-change-hook #'zp/play-sound-turn-page)
+  (add-hook 'zp/org-after-refile-hook #'zp/play-sound-turn-page))
 
 
 
