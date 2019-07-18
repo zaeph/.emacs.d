@@ -10,14 +10,7 @@
 
 (setq default-directory "~")
 (setq inhibit-startup-screen 1)
-(setq initial-scratch-message ";; Emacs Scratch
-
-")
-
-;; Start server
-(unless (server-running-p)
-  (message "Starting the server.")
-  (server-start))
+(setq initial-scratch-message ";; Emacs Scratch\n\n")
 
 ;; (toggle-debug-on)
 ;; (toggle-debug-on-quit)
@@ -256,6 +249,7 @@ time is displayed."
 (define-key zp/toggle-map (kbd "d") #'toggle-debug-on-error)
 (define-key zp/toggle-map (kbd "Q") #'toggle-debug-on-quit)
 (define-key zp/toggle-map (kbd "q") #'electric-quote-local-mode)
+(define-key zp/toggle-map (kbd "f") #'auto-fill-mode)
 
 ;; Modes
 (global-set-key (kbd "C-c s") #'scroll-bar-mode)
@@ -402,6 +396,17 @@ time is displayed."
 
 (use-package package
   :bind ("C-c P" . package-list-packages))
+
+;; Start server
+(use-package server
+  :demand
+  :config
+  ;; Start server or standalone
+  (if (server-running-p)
+      (setq initial-scratch-message
+            (concat initial-scratch-message
+                    ";; STANDALONE\n\n"))
+    (server-start)))
 
 ;; (setq use-package-verbose t)
 
@@ -1887,10 +1892,11 @@ return `nil'."
               ("C-e" . org-end-of-line)
               ("M-I" . org-indent-mode)
               ("M-*" . zp/org-toggle-fontifications)
-              ("C-c C-j" . zp/org-jump-dwim)
               ("C-c C-x C-l" . zp/org-latex-preview-dwim)
               ("C-c R" . org-display-inline-images))
   :config
+  ;; Require dependencies
+  (require 'hydra-org-refile nil t)
 
   (setq org-agenda-inhibit-startup nil
         org-log-into-drawer "LOGBOOK-NOTES"
@@ -4642,9 +4648,8 @@ With a ‘C-u’ prefix, make a separate frame for this tree."
   :commands zp/org-capture-web
   :bind (("C-c n" . org-capture))
   :hook (org-capture-mode . zp/org-capture-make-full-frame)
+  :after org
   :config
-  ;; (require 'hydra-org-refile)
-
   (setq org-default-notes-file "~/org/life.org")
 
   ;;------------------
@@ -4959,23 +4964,26 @@ If the function sets CREATED, it returns its value."
 ;; hydra-org-refile
 ;;----------------------------------------------------------------------------
 (use-package hydra-org-refile
-  :bind (("C-c C-j" . zp/hydra-org-jump)
-         :map org-mode-map
-         ("C-c C-w" . zp/org-refile-dwim)
-         :map org-agenda-mode-map
-         ("C-c C-w" . zp/hydra-org-refile)
-         :map org-capture-mode-map
-         ("C-c C-w" . zp/hydra-org-refile))
+  :bind ("C-c C-j" . zp/hydra-org-jump)
   :after (:any org org-capture)
   :config
-  (message "Have I been loaded?")
+  (with-eval-after-load "org"
+    (define-key org-mode-map (kbd "C-c C-j") #'zp/org-jump-dwim)
+    (define-key org-mode-map (kbd "C-c C-w") #'zp/org-refile-dwim))
+
+  (with-eval-after-load "org-agenda"
+    (define-key org-agenda-mode-map (kbd "C-c C-w") #'zp/hydra-org-refile))
+
+  (with-eval-after-load "org-capture"
+    (define-key org-capture-mode-map (kbd "C-c C-w") #'zp/hydra-org-refile))
+
   ;; Exclude separators in all org-refile commands
   (setq org-refile-target-verify-function
         'zp/org-refile-target-verify-exclude-separators)
 
 
   (zp/create-hydra-org-refile nil
-                              "
+      "
   ^Life^              ^Pages^^^
  ^^^^^^------------------------------------
   _i_: Inbox          _x_/_X_: Maintenance
@@ -4987,31 +4995,31 @@ If the function sets CREATED, it returns its value."
   _R_: Running
   _a_: Politics       _c_/_C_: Calendars
 "
-                              (("i" "~/org/life.org" "Inbox")
-                               ("o" "~/org/life.org" "Life")
-                               ("k" "~/org/life.org" "Curiosities")
-                               ("s" "~/org/life.org" "Social")
-                               ("n" "~/org/life.org" "Social" "Nicolas")
-                               ("S" "~/org/life.org" "Swimming")
-                               ("R" "~/org/life.org" "Running")
-                               ("a" "~/org/life.org" "Politics")
+    (("i" "~/org/life.org" "Inbox")
+     ("o" "~/org/life.org" "Life")
+     ("k" "~/org/life.org" "Curiosities")
+     ("s" "~/org/life.org" "Social")
+     ("n" "~/org/life.org" "Social" "Nicolas")
+     ("S" "~/org/life.org" "Swimming")
+     ("R" "~/org/life.org" "Running")
+     ("a" "~/org/life.org" "Politics")
 
-                               ("X" "~/org/life.org" "Maintenance")
-                               ("P" "~/org/life.org" "Professional")
-                               ("R" "~/org/life.org" "Research")
-                               ("M" "~/org/life.org" "Media")
-                               ("H" "~/org/life.org" "Hacking")
+     ("X" "~/org/life.org" "Maintenance")
+     ("P" "~/org/life.org" "Professional")
+     ("R" "~/org/life.org" "Research")
+     ("M" "~/org/life.org" "Media")
+     ("H" "~/org/life.org" "Hacking")
 
-                               ("C" "~/org/life.org" "Life" "Calendar"))
-                              (("x" mx)
-                               ("p" pro)
-                               ("r" research)
-                               ("m" media)
-                               ("h" hack)
-                               ("c" calendars)))
+     ("C" "~/org/life.org" "Life" "Calendar"))
+    (("x" mx)
+     ("p" pro)
+     ("r" research)
+     ("m" media)
+     ("h" hack)
+     ("c" calendars)))
 
   (zp/create-hydra-org-refile research
-                              "
+      "
   ^Research^
  ^^---------------------
   _._: Root
@@ -5022,28 +5030,28 @@ If the function sets CREATED, it returns its value."
   _h_: History
   _t_: Typography
 "
-                              (("." "~/org/life.org" "Research")
-                               ("c" "~/org/life.org" "Computer Science")
-                               ("m" "~/org/life.org" "Mathematics")
-                               ("p" "~/org/life.org" "Philosophy")
-                               ("l" "~/org/life.org" "Linguistics")
-                               ("h" "~/org/life.org" "History")
-                               ("t" "~/org/life.org" "Typography")))
+    (("." "~/org/life.org" "Research")
+     ("c" "~/org/life.org" "Computer Science")
+     ("m" "~/org/life.org" "Mathematics")
+     ("p" "~/org/life.org" "Philosophy")
+     ("l" "~/org/life.org" "Linguistics")
+     ("h" "~/org/life.org" "History")
+     ("t" "~/org/life.org" "Typography")))
 
   (zp/create-hydra-org-refile pro
-                              "
+      "
   ^Professional^
  ^^---------------
   _._: Root
   _s_: School
   _u_: University
 "
-                              (("." "~/org/life.org" "Professional")
-                               ("s" "~/org/life.org" "School")
-                               ("u" "~/org/life.org" "University")))
+    (("." "~/org/life.org" "Professional")
+     ("s" "~/org/life.org" "School")
+     ("u" "~/org/life.org" "University")))
 
   (zp/create-hydra-org-refile hack
-                              "
+      "
   ^Hacking^
  ^^----------
   _._: Root
@@ -5056,22 +5064,22 @@ If the function sets CREATED, it returns its value."
   _g_: Git
   _p_: Perl
 "
-                              (("." "~/org/life.org" "Hacking")
-                               ("e" "~/org/life.org" "Emacs")
-                               ("i" "~/org/life.org" "Elisp")
-                               ("o" "~/org/life.org" "Org")
-                               ("t" "~/org/life.org" "LaTeX")
-                               ("l" "~/org/life.org" "Linux")
-                               ("n" "~/org/life.org" "NixOS")
-                               ("g" "~/org/life.org" "Git")
-                               ("p" "~/org/life.org" "Perl")
+    (("." "~/org/life.org" "Hacking")
+     ("e" "~/org/life.org" "Emacs")
+     ("i" "~/org/life.org" "Elisp")
+     ("o" "~/org/life.org" "Org")
+     ("t" "~/org/life.org" "LaTeX")
+     ("l" "~/org/life.org" "Linux")
+     ("n" "~/org/life.org" "NixOS")
+     ("g" "~/org/life.org" "Git")
+     ("p" "~/org/life.org" "Perl")
 
-                               ;; ("c" "~/org/life.org" "Contributing")
-                               ;; ("b" "~/org/life.org" "Troubleshooting")
-                               ))
+     ;; ("c" "~/org/life.org" "Contributing")
+     ;; ("b" "~/org/life.org" "Troubleshooting")
+     ))
 
   (zp/create-hydra-org-refile calendars
-                              "
+      "
   ^Calendars^
  ^^------------------
   _o_: Life
@@ -5088,23 +5096,23 @@ If the function sets CREATED, it returns its value."
   _P_: Politics
   _m_: Media
 "
-                              (("o" "~/org/life.org" "Life" "Calendar")
-                               ("s" "~/org/life.org" "Social" "Calendar")
-                               ("n" "~/org/life.org" "Social" "Nicolas" "Calendar")
-                               ("x" "~/org/life.org" "Maintenance" "Calendar")
-                               ("f" "~/org/life.org" "Finances" "Calendar")
-                               ("a" "~/org/life.org" "Animals" "Calendar")
-                               ("p" "~/org/life.org" "Professional" "Calendar")
-                               ("s" "~/org/life.org" "School" "Calendar")
-                               ("u" "~/org/life.org" "University" "Calendar")
-                               ("r" "~/org/life.org" "Research" "Calendar")
-                               ("h" "~/org/life.org" "Hacking" "Calendar")
-                               ("P" "~/org/life.org" "Politics" "Calendar")
-                               ("m" "~/org/life.org" "Media" "Calendar"))
-                              nil)
+    (("o" "~/org/life.org" "Life" "Calendar")
+     ("s" "~/org/life.org" "Social" "Calendar")
+     ("n" "~/org/life.org" "Social" "Nicolas" "Calendar")
+     ("x" "~/org/life.org" "Maintenance" "Calendar")
+     ("f" "~/org/life.org" "Finances" "Calendar")
+     ("a" "~/org/life.org" "Animals" "Calendar")
+     ("p" "~/org/life.org" "Professional" "Calendar")
+     ("s" "~/org/life.org" "School" "Calendar")
+     ("u" "~/org/life.org" "University" "Calendar")
+     ("r" "~/org/life.org" "Research" "Calendar")
+     ("h" "~/org/life.org" "Hacking" "Calendar")
+     ("P" "~/org/life.org" "Politics" "Calendar")
+     ("m" "~/org/life.org" "Media" "Calendar"))
+    nil)
 
   (zp/create-hydra-org-refile mx
-                              "
+      "
   ^Maintenance^
  ^^-------------
   _._: Root
@@ -5117,18 +5125,18 @@ If the function sets CREATED, it returns its value."
   _g_: Grooming
   _h_: Health
 "
-                              (("." "~/org/life.org" "Maintenance")
-                               ("f" "~/org/life.org" "Finances")
-                               ("a" "~/org/life.org" "Animals")
-                               ("c" "~/org/life.org" "Cleaning")
-                               ("p" "~/org/life.org" "Plants")
-                               ("s" "~/org/life.org" "Supplies")
-                               ("k" "~/org/life.org" "Cooking")
-                               ("g" "~/org/life.org" "Grooming")
-                               ("h" "~/org/life.org" "Health")))
+    (("." "~/org/life.org" "Maintenance")
+     ("f" "~/org/life.org" "Finances")
+     ("a" "~/org/life.org" "Animals")
+     ("c" "~/org/life.org" "Cleaning")
+     ("p" "~/org/life.org" "Plants")
+     ("s" "~/org/life.org" "Supplies")
+     ("k" "~/org/life.org" "Cooking")
+     ("g" "~/org/life.org" "Grooming")
+     ("h" "~/org/life.org" "Health")))
 
   (zp/create-hydra-org-refile media
-                              "
+      "
   ^Media^      ^Pages^^^
  ^^^^^^------------------------
   _._: Root    _b_/_B_: Books
@@ -5136,61 +5144,61 @@ If the function sets CREATED, it returns its value."
              ^^_s_/_S_: Series
              ^^_m_/_M_: Music
 "
-                              (("." "~/org/life.org" "Media")
-                               ("B" "~/org/life.org" "Books")
-                               ("n" "~/org/life.org" "News")
-                               ("M" "~/org/life.org" "Music")
-                               ("F" "~/org/life.org" "Film")
-                               ("S" "~/org/life.org" "Series"))
-                              (("b" books)
-                               ("f" film)
-                               ("s" series)
-                               ("m" music)))
+    (("." "~/org/life.org" "Media")
+     ("B" "~/org/life.org" "Books")
+     ("n" "~/org/life.org" "News")
+     ("M" "~/org/life.org" "Music")
+     ("F" "~/org/life.org" "Film")
+     ("S" "~/org/life.org" "Series"))
+    (("b" books)
+     ("f" film)
+     ("s" series)
+     ("m" music)))
 
   (zp/create-hydra-org-refile books
-                              "
+      "
   ^Books^
  ^^---------
   _._: Root
   _l_: List
   _d_: Read
 "
-                              (("." "~/org/life.org" "Books")
-                               ("l" "~/org/life.org" "Books" "List")
-                               ("d" "~/org/life.org" "Books" "Read"))
-                              nil
-                              media)
+    (("." "~/org/life.org" "Books")
+     ("l" "~/org/life.org" "Books" "List")
+     ("d" "~/org/life.org" "Books" "Read"))
+    nil
+    media)
 
   (zp/create-hydra-org-refile film
-                              "
+      "
   ^Film^
  ^^------------
   _._: Root
   _l_: List
   _d_: Watched
 "
-                              (("." "~/org/life.org" "Film")
-                               ("l" "~/org/life.org" "Film" "List")
-                               ("d" "~/org/life.org" "Film" "Watched"))
-                              nil
-                              media)
+    (("." "~/org/life.org" "Film")
+     ("l" "~/org/life.org" "Film" "List")
+     ("d" "~/org/life.org" "Film" "Watched"))
+    nil
+    media)
 
   (zp/create-hydra-org-refile series
-                              "
+      "
   ^Series^
  ^^------------
   _._: Root
   _l_: List
   _d_: Watched
 "
-                              (("." "~/org/life.org" "Series")
-                               ("l" "~/org/life.org" "Series" "List")
-                               ("d" "~/org/life.org" "Series" "Watched"))
-                              nil
-                              media)
+    (("." "~/org/life.org" "Series")
+     ("l" "~/org/life.org" "Series" "List")
+     ("d" "~/org/life.org" "Series" "Watched"))
+    nil
+    media)
 
   (zp/create-hydra-org-refile music
-                              "
+      "
   ^Music^
  ^^-----------------
   _._: Root
@@ -5198,12 +5206,12 @@ If the function sets CREATED, it returns its value."
   _j_: Jazz
   _o_: Other genres
 "
-                              (("." "~/org/life.org" "Music")
-                               ("c" "~/org/life.org" "Music" "List of classical pieces")
-                               ("j" "~/org/life.org" "Music" "List of jazz pieces")
-                               ("o" "~/org/life.org" "Music" "List of other genres"))
-                              nil
-                              media))
+    (("." "~/org/life.org" "Music")
+     ("c" "~/org/life.org" "Music" "List of classical pieces")
+     ("j" "~/org/life.org" "Music" "List of jazz pieces")
+     ("o" "~/org/life.org" "Music" "List of other genres"))
+    nil
+    media))
 
 ;;----------------------------------------------------------------------------
 ;; org-ref
