@@ -7016,28 +7016,6 @@ If in variable-pitch-mode, change the variable font-preset."
 ;; Interaction with terminal emulators
 ;;----------------------------------------------------------------------------
 
-(defun zp/terminology-dwim (&optional arguments)
-  "Run terminology in the CWD.
-
-Trim unnecessary TRAMP information from the path (e.g. /sudo:…),
-and forward it to terminology. ARGUMENTS can be any argument
-accepted by terminology (e.g. ‘-x command’).
-
-See ‘~/.bin/terminology-dwim’ for more info."
-  (interactive)
-  (let ((client-buffer (current-buffer))
-        (arg ARGUMENTS))
-    (with-current-buffer (window-buffer (selected-window))
-      (let* ((path-emacs default-directory)
-             (tramp-regex "/sudo:root@.*?:")
-             (path (replace-regexp-in-string
-                    tramp-regex "" path-emacs)))
-        (set-buffer client-buffer)
-        (call-process-shell-command
-         (concat "terminology"
-                 (if arg (concat " " arg))
-                 " -d \"" path "\""))))))
-
 (defun zp/terminator-dwim (&optional arguments)
   "Run terminator in the CWD.
 
