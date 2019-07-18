@@ -402,6 +402,30 @@ time is displayed."
 
 
 ;;----------------------------------------------------------------------------
+;; Keys
+;;----------------------------------------------------------------------------
+
+;; Define keymap for minor mode toggles
+(define-prefix-command 'zp/toggle-map)
+(define-key ctl-x-map "t" 'zp/toggle-map)
+
+(global-set-key (kbd "M-SPC") #'delete-horizontal-space)
+(global-set-key (kbd "M-S-SPC") #'just-one-space)
+(global-set-key (kbd "H-.") #'zp/echo-buffer-name)
+(global-set-key (kbd "C-x F") #'zp/unfill-document)
+(global-set-key (kbd "M-Q") #'zp/unfill-context)
+(global-set-key (kbd "C-x B") #'rename-buffer)
+(global-set-key (kbd "M-o") #'mode-line-other-buffer)
+(global-set-key (kbd "H-j") #'other-window-reverse)
+(global-set-key (kbd "H-k") #'other-window)
+(global-set-key (kbd "C-x 4 1") #'zp/kill-other-buffer-and-window)
+
+;; Ignore Kanji key in IME
+(global-set-key [M-kanji] 'ignore)
+
+
+
+;;----------------------------------------------------------------------------
 ;; Packages
 ;;----------------------------------------------------------------------------
 
@@ -6175,32 +6199,6 @@ the beginning of the line."
 
 (global-set-key [remap move-beginning-of-line]
                 'move-beginning-of-line-dwim)
-
-
-
-;; ========================================
-;; ================= KEYS =================
-;; ========================================
-
-(global-set-key [M-kanji] 'ignore)
-
-;; Define keymap for minor mode toggles
-(define-prefix-command 'zp/toggle-map)
-(define-key ctl-x-map "t" 'zp/toggle-map)
-
-;; Other toggles
-
-;; Actions
-(global-set-key (kbd "M-SPC") #'delete-horizontal-space)
-(global-set-key (kbd "M-S-SPC") #'just-one-space)
-(global-set-key (kbd "H-.") #'zp/echo-buffer-name)
-(global-set-key (kbd "C-x F") #'zp/unfill-document)
-(global-set-key (kbd "M-Q") #'zp/unfill-context)
-(global-set-key (kbd "C-x B") #'rename-buffer)
-(global-set-key (kbd "M-o") #'mode-line-other-buffer)
-(global-set-key (kbd "H-j") #'other-window-reverse)
-(global-set-key (kbd "H-k") #'other-window)
-(global-set-key (kbd "C-x 4 1") #'zp/kill-other-buffer-and-window)
 
 
 
