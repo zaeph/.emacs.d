@@ -5915,13 +5915,6 @@ i.e. change right window to bottom, or change bottom window to right."
 ;;       (magit-mode-bury-buffer arg)
 ;;     (magit-status arg)))
 
-(defun zp/mu4e-view-message-with-message-id-save-window-config-before (old-function &rest arguments)
-  (interactive)
-  (setq zp/mu4e-before-config (current-window-configuration))
-  (apply old-function arguments))
-
-(advice-add #'mu4e-view-message-with-message-id :around #'zp/mu4e-view-message-with-message-id-save-window-config-before)
-
 (defun zp/echo-buffer-name ()
   (interactive)
   (message (concat "Current buffer: " (replace-regexp-in-string "%" "%%" (buffer-name)))))
