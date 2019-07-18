@@ -5655,7 +5655,7 @@ buffer, thereby propagating the indirectness."
 ;;----------------------------------------------------------------------------
 
 (use-package feedback-sounds
-  :requires (org org-refile)
+  :requires org
   :config
   ;; Add feedback sounds to the following commands
   (add-hook 'org-clock-in-prepare-hook #'zp/play-sound-clock-in)
