@@ -5911,8 +5911,6 @@ i.e. change right window to bottom, or change bottom window to right."
   (interactive)
   (message (concat "Current buffer: " (replace-regexp-in-string "%" "%%" (buffer-name)))))
 
-(require 'org-clock)
-
 (defun zp/echo-clock-string ()
   "Echo the tasks being currently clocked in the minibuffer,
 along with effort estimates and total time."
