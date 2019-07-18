@@ -333,7 +333,6 @@ time is displayed."
 ;;----------------------------------------------------------------------------
 ;; Miscellaneous
 ;;----------------------------------------------------------------------------
-
 ;; windmove
 (windmove-default-keybindings 'super)
 (setq windmove-wrap-around t)
@@ -1063,6 +1062,40 @@ LANGUAGE should be the name of an Ispell dictionary."
         message-mark-insert-end
         "\n---------------------------------[END]---------------------------------")
 
+  ;;------------
+  ;; Get emails
+  ;;------------
+
+  (defvar zp/email-private (zp/get-string-from-file "~/org/pp/private/email")
+    "Email used for private communications.")
+
+  (defvar zp/email-work (zp/get-string-from-file "~/org/pp/work/email")
+    "Email used for work-related communications.")
+
+  (defun zp/get-email-with-alias (email alias &optional regex)
+    "Create email alias from EMAIL and ALIAS.
+
+If REGEX is non-nil, creates a regex to match the email alias."
+    (let* ((email (cond
+                   ((equal email "work")
+                    zp/email-work)
+                   ((equal email "private")
+                    zp/email-private)
+                   (t
+                    email)))
+           (email-alias (replace-regexp-in-string "@"
+                                                  (concat "+" alias "@")
+                                                  email)))
+      (if regex
+          (regexp-quote email-alias)
+        email-alias)))
+
+  (defvar zp/email-org (zp/get-email-with-alias "work" "org")
+    "Email alias used for the org-mode mailing list.")
+
+  (defvar zp/email-dev (zp/get-email-with-alias "work" "dev")
+    "Email alias used for general development work.")
+
   ;;--------------------
   ;; Extended movements
   ;;--------------------
@@ -1310,36 +1343,6 @@ based on ‘zp/message-mode-ispell-alist’."
   (setq notmuch-always-prompt-for-sender t
         notmuch-search-oldest-first nil)
 
-  (defvar zp/email-private (zp/get-string-from-file "~/org/pp/private/email")
-    "Email used for private communications.")
-
-  (defvar zp/email-work (zp/get-string-from-file "~/org/pp/work/email")
-    "Email used for work-related communications.")
-
-  (defun zp/get-email-with-alias (email alias &optional regex)
-    "Create email alias from EMAIL and ALIAS.
-
-If REGEX is non-nil, creates a regex to match the email alias."
-    (let* ((email (cond
-                   ((equal email "work")
-                    zp/email-work)
-                   ((equal email "private")
-                    zp/email-private)
-                   (t
-                    email)))
-           (email-alias (replace-regexp-in-string "@"
-                                                  (concat "+" alias "@")
-                                                  email)))
-      (if regex
-          (regexp-quote email-alias)
-        email-alias)))
-
-  (defvar zp/email-org (zp/get-email-with-alias "work" "org")
-    "Email alias used for the org-mode mailing list.")
-
-  (defvar zp/email-dev (zp/get-email-with-alias "work" "dev")
-    "Email alias used for general development work.")
-
   (setq notmuch-fcc-dirs
         `((,(regexp-quote zp/email-private) .
            "private/sent -inbox +sent -unread")
@@ -1430,6 +1433,9 @@ The language should be the name of a valid Ispell dictionary.")
 ;; Programming modes
 ;;----------------------------------------------------------------------------
 (use-package cperl-mode
+  :bind (:map cperl-mode-map
+              ("M-RET" . zp/perl-eval-buffer)
+              ("<C-return>" . zp/perl-eval-region))
   :config
   ;; Use ‘cperl-mode’ instead ‘perl-mode’
   (defalias 'perl-mode 'cperl-mode)
@@ -1454,12 +1460,11 @@ The language should be the name of a valid Ispell dictionary.")
     (let (max-mini-window-height)
       (unless arg
         (setq max-mini-window-height 999))
-      (shell-command-on-region (point-min) (point-max) "perl")))
-
-  (define-key cperl-mode-map (kbd "M-RET") 'zp/perl-eval-buffer)
-  (define-key cperl-mode-map (kbd "<C-return>") 'zp/perl-eval-region))
+      (shell-command-on-region (point-min) (point-max) "perl"))))
 
 (use-package python
+  :bind (:map python-mode-map
+              ("M-RET" . zp/python-eval-buffer))
   :config
   (defun zp/inferior-python-mode-config ()
     "Modify keymaps for ‘inferior-python-mode’."
@@ -1485,10 +1490,11 @@ The language should be the name of a valid Ispell dictionary.")
   ;;   (recenter-top-bottom arg)
   ;;   (recenter-top-bottom arg)
   ;;   (scroll-up-line)))
-
-  (define-key python-mode-map (kbd "M-RET") 'zp/python-eval-buffer))
+  )
 
 (use-package racket-mode
+  :bind (:map racket-mode-map
+              ("M-RET" . zp/racket-eval-buffer))
   :config
   (defun zp/racket-eval-buffer (arg)
     "Run current buffer as Perl code"
@@ -1498,14 +1504,18 @@ The language should be the name of a valid Ispell dictionary.")
         (setq max-mini-window-height 999))
       (let ((inhibit-message t))
         (basic-save-buffer))
-      (shell-command (concat "racket " (buffer-file-name)))))
-
-  (define-key racket-mode-map (kbd "M-RET") 'zp/racket-eval-buffer))
+      (shell-command (concat "racket " (buffer-file-name))))))
 
 ;;----------------------------------------------------------------------------
 ;; AUCTeX
 ;;----------------------------------------------------------------------------
 (use-package latex
+  :bind (:map LaTeX-mode-map
+              (("C-x n e" . zp/LaTeX-narrow-to-environment)
+               ("C-c DEL" . zp/LaTeX-remove-macro)
+               ("C-c <C-backspace>" . zp/LaTeX-remove-macro)
+               ("C-c <M-backspace>" . zp/LaTeX-remove-environment)
+               ("C-c C-t C-v" . zp/tex-view-program-switch)))
   :config
   ;; Set default library
   (setq-default TeX-engine 'luatex
@@ -1737,22 +1747,7 @@ return `nil'."
     (call-interactively #'narrow-to-region)
     (deactivate-mark)
     (move-end-of-line 1)
-    (message "Narrowing to parent environment"))
-
-  (define-key LaTeX-mode-map (kbd "C-x n e") #'zp/LaTeX-narrow-to-environment)
-  (define-key LaTeX-mode-map (kbd "C-x n w") #'zp/LaTeX-widen)
-  (define-key LaTeX-mode-map (kbd "C-x n f") #'zp/LaTeX-narrow-forwards)
-  (define-key LaTeX-mode-map (kbd "C-x n b") #'zp/LaTeX-narrow-backwards)
-  (define-key LaTeX-mode-map (kbd "C-x n u") #'zp/LaTeX-narrow-up)
-
-  (defun zp/LaTeX-mode-config ()
-    "Modify keymaps used by `latex-mode'."
-    (local-set-key (kbd "C-x n e") #'zp/LaTeX-narrow-to-environment)
-    (local-set-key (kbd "C-c DEL") 'zp/LaTeX-remove-macro)
-    (local-set-key (kbd "C-c <C-backspace>") 'zp/LaTeX-remove-macro)
-    (local-set-key (kbd "C-c <M-backspace>") 'zp/LaTeX-remove-environment)
-    (local-set-key (kbd "C-c C-t C-v") 'zp/tex-view-program-switch))
-  (setq LaTeX-mode-hook '(zp/LaTeX-mode-config)))
+    (message "Narrowing to parent environment")))
 
 ;;----------------------------------------------------------------------------
 ;; org → html/tex export
@@ -1851,7 +1846,6 @@ return `nil'."
 
   (global-set-key (kbd "C-c c") 'calendar))
 
-;; Load org-habit
 (use-package org-habit
   :config
   (add-to-list 'org-modules 'org-habit)
@@ -2470,16 +2464,40 @@ along with effort estimates and total time."
             (lambda ()
               (setq org-ditaa-jar-path "/usr/share/java/ditaa/ditaa-0.11.jar"))))
 
-
-
 ;;----------------------------------------------------------------------------
 ;; Helm
 ;;----------------------------------------------------------------------------
 
+(define-prefix-command 'zp/helm-map)
+(global-set-key (kbd "C-c h") 'zp/helm-map)
 (use-package helm
+  :bind (("M-x" . helm-M-x)
+         ("<menu>" . helm-M-x)
+         ("M-y" . helm-show-kill-ring)
+         ("C-x b" . helm-mini)
+         ("C-x C-b" . helm-mini)
+         ("C-x C-f" . helm-find-files)
+         ("M-s M-s" . helm-occur)
+         ("C-x r b" . helm-bookmarks)
+         ("C-h C-SPC" . helm-all-mark-rings)
+         :map helm-map
+         ("C-S-o" . helm-previous-source)
+         :map zp/helm-map
+         (("o" . helm-occur)
+          ("f" . helm-find-files)
+          ("r" . helm-regexp)
+          ("x" . helm-register)
+          ("b" . helm-resume)
+          ("c" . helm-colors)
+          ("M-:" . helm-eval-expression-with-eldoc)
+          ("i" . helm-semantic-or-imenu)
+          ("a" . helm-apropos)
+          ("/" . helm-find)
+          ("<tab>" . helm-lisp-completion-at-point)
+          ("p" . helm-projectile)))
   :config
   ;; Increase truncation of buffer names
-  (setq helm-buffer-max-length 30       ;Default: 20
+  (setq helm-buffer-max-length 30                 ;Default: 20
         helm-M-x-fuzzy-match t
         helm-buffers-fuzzy-matching t
         helm-recentf-fuzzy-match t
@@ -2493,35 +2511,7 @@ along with effort estimates and total time."
   ;; Disable helm-mode for some functions
   ;; Used to be necessary, but now it works just fine
   ;; (add-to-list 'helm-completing-read-handlers-alist '(org-set-property)))
-
-  (define-prefix-command 'zp/helm-map)
-  (define-key helm-map (kbd "C-S-o") #'helm-previous-source)
-
-  (global-set-key (kbd "C-c h") #'zp/helm-map)
-  (global-set-key (kbd "M-x") #'helm-M-x)
-  (global-set-key (kbd "<menu>") #'helm-M-x)
-  (global-set-key (kbd "M-y") #'helm-show-kill-ring)
-  (global-set-key (kbd "C-x b") #'helm-mini)
-  (global-set-key (kbd "C-x C-b") #'helm-mini)
-  (global-set-key (kbd "C-x C-f") #'helm-find-files)
-  (global-set-key (kbd "M-s M-s") #'helm-occur)
-
-  (global-set-key (kbd "C-x r b") #'helm-bookmarks)
-  (global-set-key (kbd "C-c h o") #'helm-occur)
-  (global-set-key (kbd "C-c h f") #'helm-find-files)
-  (global-set-key (kbd "C-c h r") #'helm-regexp)
-  (global-set-key (kbd "C-c h x") #'helm-register)
-  (global-set-key (kbd "C-c h b") #'helm-resume)
-  (global-set-key (kbd "C-c h c") #'helm-colors)
-  (global-set-key (kbd "C-c h M-:") #'helm-eval-expression-with-eldoc)
-  (global-set-key (kbd "C-c h i") #'helm-semantic-or-imenu)
-  (global-set-key (kbd "C-h C-SPC") #'helm-all-mark-rings)
-  (global-set-key (kbd "C-c h a") #'helm-apropos)
-  (global-set-key (kbd "C-c h /") #'helm-find)
-  (global-set-key (kbd "C-c h <tab>") #'helm-lisp-completion-at-point)
-  (global-set-key (kbd "C-c h p") #'helm-projectile))
-
-
+  )
 
 ;;----------------------------------------------------------------------------
 ;; Ivy
@@ -2548,6 +2538,19 @@ along with effort estimates and total time."
   )
 
 (use-package counsel
+  :bind (("C-s" . zp/counsel-grep-or-swip)
+         ;; Commented because I use the Helm equivalents
+         ;; ("M-x" . counsel-M-x)
+         ;; ("<menu>" . counsel-M-x)
+         ;; ("C-x C-f" . counsel-find-file)
+         ;; ("C-c j" . counsel-git-grep)
+         ;; Commented because unused
+         ;; ("C-c g" . counsel-git)
+         ;; ("C-c k" . counsel-ag)
+         ;; ("C-x l" . counsel-locate)
+         ;; ("C-S-o" . counsel-rhythmbox)
+         :map minibuffer-local-map
+         ("C-r" . counsel-minibuffer-history))
   :requires swiper
   :config
   (setq counsel-find-file-at-point t)
@@ -2566,26 +2569,7 @@ indirect-buffers."
               (not file)                          ;Indirect buffer?
               (string= ext "gpg"))                ;Encrypted buffer?
           (swiper)
-        (counsel-grep-or-swiper))))
-
-  (global-set-key "\C-s" #'zp/counsel-grep-or-swiper)
-  (global-set-key (kbd "<f1> f") #'counsel-describe-function)
-  (global-set-key (kbd "<f1> v") #'counsel-describe-variable)
-  (global-set-key (kbd "<f1> l") #'counsel-find-library)
-  (global-set-key (kbd "<f2> i") #'counsel-info-lookup-symbol)
-  (global-set-key (kbd "<f2> u") #'counsel-unicode-char)
-  (global-set-key (kbd "C-c g") #'counsel-git)
-  (global-set-key (kbd "C-c k") #'counsel-ag)
-  (global-set-key (kbd "C-x l") #'counsel-locate)
-  (global-set-key (kbd "C-S-o") #'counsel-rhythmbox)
-  (define-key minibuffer-local-map (kbd "C-r") #'counsel-minibuffer-history)
-
-  ;; Commented because I use the Helm equivalent
-  ;; (global-set-key (kbd "M-x") 'counsel-M-x)
-  ;; (global-set-key (kbd "<menu>") 'counsel-M-x)
-  ;; (global-set-key (kbd "C-x C-f") 'counsel-find-file)
-  ;; (global-set-key (kbd "C-c j") 'counsel-git-grep)
-  )
+        (counsel-grep-or-swiper)))))
 
 
 
