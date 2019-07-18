@@ -5455,7 +5455,28 @@ running."
       :action '(("Add timer" . (lambda (candidate)
                                  (if (string= helm-pattern "")
                                      (message "No timer")
-                                   (helm-chronos--parse-string-and-add-timer helm-pattern))))))))
+                                   (helm-chronos--parse-string-and-add-timer helm-pattern)))))))
+
+  (defun zp/switch-to-chronos (add)
+    "Switch to and from Chronos’s buffer.
+
+If ADD is non-nil, prompt for a new timer upon switching."
+    (interactive "P")
+    (cond ((string-match "*chronos*" (buffer-name))
+           (zp/chronos-quit))
+          ((get-buffer "*chronos*")
+           (switch-to-buffer "*chronos*")
+           (when add
+             (helm-chronos-add-timer)))
+          (t
+           (chronos-initialize))))
+
+  (defun zp/switch-to-chronos-and-add ()
+    "Switch to and from Chronos’s buffer.
+
+If switching to Chronos’s buffer, also add a timer."
+    (interactive)
+    (zp/switch-to-chronos t)))
 
 
 
@@ -5859,27 +5880,6 @@ i.e. change right window to bottom, or change bottom window to right."
                 (set-window-buffer (windmove-find-other-window neighbour-dir) other-buf))))))))
 
 
-
-(defun zp/switch-to-chronos (add)
-  "Switch to and from Chronos’s buffer.
-
-If ADD is non-nil, prompt for a new timer upon switching."
-  (interactive "P")
-  (cond ((string-match "*chronos*" (buffer-name))
-         (zp/chronos-quit))
-        ((get-buffer "*chronos*")
-         (switch-to-buffer "*chronos*")
-         (when add
-           (helm-chronos-add-timer)))
-        (t
-         (chronos-initialize))))
-
-(defun zp/switch-to-chronos-and-add ()
-  "Switch to and from Chronos’s buffer.
-
-If switching to Chronos’s buffer, also add a timer."
-  (interactive)
-  (zp/switch-to-chronos t))
 
 ;; (defun zp/switch-to-magit (arg)
 ;;   (interactive "P")
