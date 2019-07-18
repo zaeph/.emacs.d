@@ -5946,34 +5946,6 @@ i.e. change right window to bottom, or change bottom window to right."
                   (split-window-horizontally))
                 (set-window-buffer (windmove-find-other-window neighbour-dir) other-buf))))))))
 
-(defun xah-copy-file-path (&optional @dir-path-only-p)
-  "Copy the current buffer's file path or dired path to `kill-ring'.
-Result is full path.
-If `universal-argument' is called first, copy only the dir path.
-
-If in dired, copy the file/dir cursor is on, or marked files.
-
-If a buffer is not file and not dired, copy value of `default-directory' (which is usually the “current” dir when that buffer was created)
-
-URL `http://ergoemacs.org/emacs/emacs_copy_file_path.html'
-Version 2017-08-25"
-  (interactive "P")
-  (let (($fpath
-         (if (equal major-mode 'dired-mode)
-             (progn
-               (mapconcat 'identity (dired-get-marked-files) "\n"))
-           (if (buffer-file-name)
-               (buffer-file-name)
-             (expand-file-name default-directory)))))
-    (kill-new
-     (if @dir-path-only-p
-         (progn
-           (message "Directory path copied: 「%s」" (file-name-directory $fpath))
-           (file-name-directory $fpath))
-       (progn
-         (message "File path copied: 「%s」" $fpath)
-         $fpath )))))
-
 
 
 ;; ========================================
