@@ -348,6 +348,12 @@ time is displayed."
                           `(remove-hook ',command  #',function))
                         commands))))))
 
+(defun other-window-reverse ()
+  "Select the previous window."
+  (interactive)
+  (select-window (previous-window)))
+
+
 
 
 ;;----------------------------------------------------------------------------
@@ -5914,10 +5920,6 @@ command reveals the other lines."
 (eval-after-load "org"
   '(progn
     (define-key org-mode-map (kbd "C-,") nil)))
-;; other-window with neg argument for global-set-key
-(defun other-window-reverse ()
-    (interactive)
-    (select-window (previous-window)))
 
 ;; Toggle modes
 (define-prefix-command 'zp/toggle-map)
