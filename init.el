@@ -2075,6 +2075,40 @@ return `nil'."
   ;; Load library required for PlantUML
   (setq org-ditaa-jar-path "/usr/share/java/ditaa/ditaa-0.11.jar")
 
+  ;;------
+  ;; Handling ‘CREATED’
+  ;;------
+
+  (defvar org-created-property-name "CREATED"
+    "The name of the org-mode property that stores the creation date of the entry")
+
+  ;; TODO: Find the source for this because I’ve improved something which
+  ;; already existed
+  (defun zp/org-set-created-property (&optional active NAME)
+    "Set a property on the entry giving the creation time.
+
+By default the property is called CREATED. If given, the ‘NAME’
+argument will be used instead. If the property already exists, it
+will not be modified.
+
+If the function sets CREATED, it returns its value."
+    (interactive)
+    (let* ((created (or NAME org-created-property-name))
+           (fmt (if active "<%s>" "[%s]"))
+           (now (format fmt (format-time-string "%Y-%m-%d %a %H:%M")))
+           (is-capturing (and (boundp 'org-capture-mode) org-capture-mode))
+           (add-created (and is-capturing
+                             (plist-get org-capture-plist :add-created))))
+      (unless (or (and is-capturing
+                       (not add-created))
+                  (org-entry-get (point) created nil))
+        (when is-capturing
+          (unless (buffer-narrowed-p)
+            (error "Buffer is not narrowed"))
+          (goto-char (point-min)))
+        (org-set-property created now)
+        now)))
+
   ;;------------------------
   ;; Narrowing & Movements
   ;;------------------------
@@ -4692,7 +4726,8 @@ With a ‘C-u’ prefix, make a separate frame for this tree."
 (use-package org-capture
   :commands zp/org-capture-web
   :bind (("C-c n" . org-capture))
-  :hook (org-capture-mode . zp/org-capture-make-full-frame)
+  :hook ((org-capture-mode . zp/org-capture-make-full-frame)
+         (org-capture-prepare-finalize . zp/org-set-created-property))
   :after org
   :config
   (setq org-default-notes-file "~/org/life.org")
@@ -4926,41 +4961,6 @@ TITLE and URL are those of the webpage."
     (interactive "P")
     (let ((org-capture-templates zp/org-agenda-capture-templates))
       (org-agenda-capture arg)))
-
-  ;;------
-  ;; Handling ‘CREATED’
-  ;;------
-
-  (defvar org-created-property-name "CREATED"
-    "The name of the org-mode property that stores the creation date of the entry")
-
-  ;; TODO: Find the source for this because I’ve improved something which
-  ;; already existed
-  (defun zp/org-set-created-property (&optional active NAME)
-    "Set a property on the entry giving the creation time.
-
-By default the property is called CREATED. If given, the ‘NAME’
-argument will be used instead. If the property already exists, it
-will not be modified.
-
-If the function sets CREATED, it returns its value."
-    (interactive)
-    (let* ((created (or NAME org-created-property-name))
-           (fmt (if active "<%s>" "[%s]"))
-           (now (format fmt (format-time-string "%Y-%m-%d %a %H:%M")))
-           (is-capturing (and (boundp 'org-capture-mode) org-capture-mode))
-           (add-created (plist-get org-capture-plist :add-created)))
-      (unless (or (and is-capturing
-                       (not add-created))
-                  (org-entry-get (point) created nil))
-        (when is-capturing
-          (unless (buffer-narrowed-p)
-            (error "Buffer is not narrowed"))
-          (goto-char (point-min)))
-        (org-set-property created now)
-        now)))
-
-  (add-hook 'org-capture-prepare-finalize-hook #'zp/org-set-created-property)
 
   ;;------------------------------------------
   ;; Load extra minor modes based on template
