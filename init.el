@@ -5021,15 +5021,18 @@ TITLE and URL are those of the webpage."
   ;; because they might have not been initialised.  Instead, we defer the
   ;; feature-related key-binding assignments until their corresponding feature
   ;; has been loaded.
-  (with-eval-after-load "org"
-    (define-key org-mode-map (kbd "C-c C-j") #'zp/org-jump-dwim)
-    (define-key org-mode-map (kbd "C-c C-w") #'zp/org-refile-dwim))
+  (use-package org
+    :bind (:map org-mode-map
+                ("C-c C-j" . zp/org-jump-dwim )
+                ("C-c C-w" . zp/org-refile-dwim )))
 
-  (with-eval-after-load "org-agenda"
-    (define-key org-agenda-mode-map (kbd "C-c C-w") #'zp/hydra-org-refile))
+  (use-package org-agenda
+    :bind (:map org-agenda-mode-map
+                ("C-c C-w" . zp/hydra-org-refile )))
 
-  (with-eval-after-load "org-capture"
-    (define-key org-capture-mode-map (kbd "C-c C-w") #'zp/hydra-org-refile))
+  (use-package org-capture
+    :bind (:map org-capture-mode-map
+                ("C-c C-w" . zp/hydra-org-refile )))
   :config
   ;; Exclude separators in all org-refile commands
   (setq org-refile-target-verify-function
