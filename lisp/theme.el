@@ -64,7 +64,8 @@
   (zp/org-format-face 'org-tag-curios   :weight 'bold :foreground "DeepPink")
   (zp/org-format-face 'org-tag-french    :weight 'bold :foreground "DodgerBlue1")
 
-  (zp/org-format-face 'magit-tag :foreground "SpringGreen4")
+  (with-eval-after-load "magit"
+    (zp/org-format-face 'magit-tag :foreground "SpringGreen4"))
 
   (zp/org-super-agenda-update-face)
 
@@ -99,10 +100,10 @@
   (set-face-attribute 'org-column nil :background "#F0E4BE")
   (set-face-attribute 'org-block nil :foreground nil :inherit 'default :background "#F0E6BE")
 
-
-  (set-face-attribute 'diff-hl-change nil :foreground "#3a81c3" :background "#afcce7")
-  (set-face-attribute 'diff-hl-insert nil :foreground "#7ccd7c" :background "#b3e2b3")
-  (set-face-attribute 'diff-hl-delete nil :foreground "#ee6363" :background "#f6a8a8")
+  (with-eval-after-load "diff-hl"
+    (set-face-attribute 'diff-hl-change nil :foreground "#3a81c3" :background "#afcce7")
+    (set-face-attribute 'diff-hl-insert nil :foreground "#7ccd7c" :background "#b3e2b3")
+    (set-face-attribute 'diff-hl-delete nil :foreground "#ee6363" :background "#f6a8a8"))
 
   (set-face-attribute 'zp/org-agenda-block-info-face nil
                       :foreground "violetred1"
@@ -131,7 +132,8 @@
   (zp/org-format-face 'org-tag-curios   :weight 'bold :foreground "DeepPink")
   (zp/org-format-face 'org-tag-french    :weight 'bold :foreground "DodgerBlue1")
 
-  (zp/org-format-face 'magit-tag :foreground "SpringGreen4")
+  (with-eval-after-load "magit"
+    (zp/org-format-face 'magit-tag :foreground "SpringGreen4"))
 
   (zp/org-super-agenda-update-face)
 

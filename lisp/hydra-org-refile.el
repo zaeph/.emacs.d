@@ -40,8 +40,6 @@
   (setq zp/hydra-org-refile-from
         (not zp/hydra-org-refile-from)))
 
-
-
 (defun zp/org-refile (&optional print-message jump)
   "Refile the current heading to another with completion.
 
@@ -175,67 +173,6 @@ If JUMP is non-nil, jump instead."
     (goto-char target)
     (org-reveal)
     (org-beginning-of-line)))
-
-(defvar-local zp/org-ibuf-spawned-also-kill-window nil
-  "When t, also kill the window when killing a spawned buffer.
-
-A spawned buffer is an indirect buffer created by
-‘org-tree-to-indirect-buffer’ which will be replaced by
-subsequent calls.")
-
-(defvar zp/org-spawned-ibuf-mode-map
-  (let ((map (make-sparse-keymap)))
-        (define-key map (kbd "C-c C-k") #'zp/org-kill-spawned-ibuf-dwim)
-        map)
-  "Keymap for ‘zp/org-spawned-ibuf-mode’.")
-
-(define-minor-mode zp/org-spawned-ibuf-mode
-    "Show when the current indirect buffer is a spawned buffer."
-  :lighter " Spawn"
-  :keymap zp/org-spawned-ibuf-mode-map
-  (setq header-line-format
-        "Spawned indirect buffer.  Kill with ‘C-c C-k’, dedicate with ‘C-u C-c C-k’."))
-
-(defun zp/org-tree-to-indirect-buffer-folded (arg &optional dedicated bury)
-  "Clone tree to indirect buffer in a folded state.
-
-When called with a ‘C-u’ prefix or when DEDICATED is non-nil,
-create a dedicated frame."
-  (interactive "p")
-  (let* ((in-new-window (and arg
-                             (one-window-p)))
-         (org-indirect-buffer-display (if in-new-window
-                                          'other-window
-                                        'current-window))
-         (last-ibuf org-last-indirect-buffer)
-         (parent (current-buffer))
-         (parent-window (selected-window))
-         (dedicated (or dedicated
-                        (eq arg 4))))
-    (when dedicated
-      (setq org-last-indirect-buffer nil))
-    (when (and arg
-               zp/org-spawned-ibuf-mode)
-      (zp/org-ibuf-spawned-dedicate))
-    (org-tree-to-indirect-buffer)
-    (when in-new-window
-      (select-window (next-window))
-      (setq zp/org-ibuf-spawned-also-kill-window parent-window))
-    (if dedicated
-        (setq org-last-indirect-buffer last-ibuf)
-      (zp/org-spawned-ibuf-mode t))
-    (when bury
-      (switch-to-buffer parent nil t)
-      (bury-buffer))
-    (let ((org-startup-folded nil))
-      (org-set-startup-visibility))
-    (org-overview)
-    (org-show-entry)
-    (org-show-children)
-    (prog1 (selected-window)
-      (when arg
-        (message "Cloned tree to indirect buffer.")
-        (run-hooks 'zp/org-after-view-change-hook)))))
 
 (defun zp/org-refile-to-other-buffer (&optional print-message)
   "Refile current heading to another within the other window’s buffer."
@@ -526,8 +463,6 @@ Ensures that the toggles are set to their default variable."
        ,name ,docstring ,targets ,heads ,back)
      (zp/create-hydra-org-refile-protocol jump t
        ,name ,docstring ,targets ,heads ,back)))
-
-
 
 (provide 'hydra-org-refile)
 ;;; test.el ends here

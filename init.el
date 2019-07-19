@@ -10,12 +10,7 @@
 
 (setq default-directory "~")
 (setq inhibit-startup-screen 1)
-(setq initial-scratch-message ";; Emacs Scratch
-
-")
-
-;; Start server
-(server-start)
+(setq initial-scratch-message ";; Emacs Scratch\n\n")
 
 ;; (toggle-debug-on)
 ;; (toggle-debug-on-quit)
@@ -153,163 +148,12 @@ end-of-buffer signals; pass the rest to the default handler."
 (global-set-key (kbd "M-U") 'universal-argument)
 (define-key universal-argument-map "\M-U" 'universal-argument-more)
 
-
-
-;;----------------------------------------------------------------------------
-;; Fringe bitmaps
-;;----------------------------------------------------------------------------
-
-(define-fringe-bitmap 'left-curly-arrow
-  (vector #b0011111110000000
-          #b0011111110000000
-          #b0011111110000000
-          #b0011100000000000
-          #b0011100000000000
-          #b0011100000000000
-          #b0011100000000000
-          #b0011100001000000
-          #b0011100001100000
-          #b0011100001110000
-          #b0011111111111000
-          #b0011111111111100
-          #b0011111111111000
-          #b0000000001110000
-          #b0000000001100000
-          #b0000000001000000
-          )
-  16 16)
-
-(define-fringe-bitmap 'right-curly-arrow
-    (vector #b0000000111111100
-            #b0000000111111100
-            #b0000000111111100
-            #b0000000000011100
-            #b0000000000011100
-            #b0000000000011100
-            #b0000000000011100
-            #b0000001000011100
-            #b0000011000011100
-            #b0000111000011100
-            #b0001111111111100
-            #b0011111111111100
-            #b0001111111111100
-            #b0000111000000000
-            #b0000011000000000
-            #b0000001000000000
-            )
-  16 16)
-
-(define-fringe-bitmap 'left-arrow
-    (vector #b0000000001000000
-            #b0000000011000000
-            #b0000000111000000
-            #b0000001111000000
-            #b0000011110000000
-            #b0000111100000000
-            #b0001111111111100
-            #b0011111111111100
-            #b0011111111111100
-            #b0001111111111100
-            #b0000111100000000
-            #b0000011110000000
-            #b0000001111000000
-            #b0000000111000000
-            #b0000000011000000
-            #b0000000001000000
-            )
-  16 16)
-
-(define-fringe-bitmap 'right-arrow
-    (vector #b0000001000000000
-            #b0000001100000000
-            #b0000001110000000
-            #b0000001111000000
-            #b0000000111100000
-            #b0000000011110000
-            #b0011111111111000
-            #b0011111111111100
-            #b0011111111111100
-            #b0011111111111000
-            #b0000000011110000
-            #b0000000111100000
-            #b0000001111000000
-            #b0000001110000000
-            #b0000001100000000
-            #b0000001000000000
-            )
-  16 16)
-
-(define-fringe-bitmap 'right-triangle
-    (vector #b0000000000000000
-            #b0000000000000000
-            #b0011000000000000
-            #b0011110000000000
-            #b0011111100000000
-            #b0011111111000000
-            #b0011111111110000
-            #b0011111111111100
-            #b0011111111111100
-            #b0011111111110000
-            #b0011111111000000
-            #b0011111100000000
-            #b0011110000000000
-            #b0011000000000000
-            #b0000000000000000
-            #b0000000000000000
-            )
-  16 16)
-
-
-
-;;----------------------------------------------------------------------------
-;; Setup package repositories
-;;----------------------------------------------------------------------------
-
-;; MELPA
-(require 'package)
-(let* ((no-ssl (and (memq system-type '(windows-nt ms-dos))
-                    (not (gnutls-available-p))))
-       (proto (if no-ssl "http" "https")))
-  ;; Comment/uncomment these two lines to enable/disable MELPA and MELPA Stable as desired
-  (add-to-list 'package-archives (cons "melpa" (concat proto "://melpa.org/packages/")) t)
-  ;;(add-to-list 'package-archives (cons "melpa-stable" (concat proto "://stable.melpa.org/packages/")) t)
-  (when (< emacs-major-version 24)
-    ;; For important compatibility libraries like cl-lib
-    (add-to-list 'package-archives '("gnu" . (concat proto "://elpa.gnu.org/packages/")))))
-
-;; Disable org’s ELPA packages
-(setq package-load-list '(all
-                          (org nil)
-                          (org-plus-contrib nil)))
-
-;; org-elpa
-(add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") t)
-
-;; Initialise packages
-(package-initialize)
-
-;; ‘use-package’ initialisation
-(eval-when-compile
-  ;; Following line is not needed if use-package.el is in ~/.emacs.d
-  ;; (add-to-list 'load-path "<path where use-package is installed>")
-  (require 'use-package))
-
-;; Change indent-function to handle plists
-;; Reverted to default because I can’t remember the context in which it
-;; was necessary
-;; (setq lisp-indent-function 'common-lisp-indent-function)
-;; (setq lisp-indent-function 'lisp-indent-function) ;Default
-
-(use-package package
-  :config
-  (global-set-key (kbd "C-c P") #'package-list-packages))
-
-
+;; Prevent newlines insertion when moving past the end of the file
+(setq next-line-add-newlines nil)
 
 ;;----------------------------------------------------------------------------
 ;; Helper functions & macros
 ;;----------------------------------------------------------------------------
-
 (defun zp/get-string-from-file (file-path)
   "Read file content from path."
   (with-temp-buffer
@@ -361,13 +205,9 @@ time is displayed."
   (interactive)
   (select-window (previous-window)))
 
-
-
-
 ;;----------------------------------------------------------------------------
 ;; Editing commands
 ;;----------------------------------------------------------------------------
-
 (defun zp/unfill-document ()
   "fill individual paragraphs with large fill column"
   (interactive)
@@ -399,16 +239,28 @@ time is displayed."
         (kill-buffer-and-window))
     (user-error "There is only one window in the frame")))
 
-
-
 ;;----------------------------------------------------------------------------
 ;; Keys
 ;;----------------------------------------------------------------------------
-
 ;; Define keymap for minor mode toggles
 (define-prefix-command 'zp/toggle-map)
 (define-key ctl-x-map "t" 'zp/toggle-map)
 
+(define-key zp/toggle-map (kbd "d") #'toggle-debug-on-error)
+(define-key zp/toggle-map (kbd "Q") #'toggle-debug-on-quit)
+(define-key zp/toggle-map (kbd "q") #'electric-quote-local-mode)
+(define-key zp/toggle-map (kbd "f") #'auto-fill-mode)
+
+;; Modes
+(global-set-key (kbd "C-c s") #'scroll-bar-mode)
+(global-set-key (kbd "C-c H") #'global-hl-line-mode)
+(global-set-key (kbd "C-c g") #'display-line-numbers-mode)
+
+;; Exit Emacs with ‘C-x r q’, and kill the current frame with ‘C-x C-c’
+(global-set-key (kbd "C-x r q") #'save-buffers-kill-terminal)
+(global-set-key (kbd "C-x C-c") #'delete-frame)
+
+;; Actions
 (global-set-key (kbd "M-SPC") #'delete-horizontal-space)
 (global-set-key (kbd "M-S-SPC") #'just-one-space)
 (global-set-key (kbd "H-.") #'zp/echo-buffer-name)
@@ -423,12 +275,143 @@ time is displayed."
 ;; Ignore Kanji key in IME
 (global-set-key [M-kanji] 'ignore)
 
+;;----------------------------------------------------------------------------
+;; Cosmetics
+;;----------------------------------------------------------------------------
+(tool-bar-mode -1)
+(menu-bar-mode -1)
+(scroll-bar-mode -1)
+(blink-cursor-mode -1)
+(show-paren-mode 1)
+(global-hl-line-mode 1)
+(column-number-mode 1)
 
+;; Set fringe sizes
+(fringe-mode 20)
+
+;;----------------------------------------------------------------------------
+;; Electric
+;;----------------------------------------------------------------------------
+(electric-quote-mode 1)
+(setq electric-quote-context-sensitive 1)
+
+;;----------------------------------------------------------------------------
+;; Backups
+;;----------------------------------------------------------------------------
+;; Don’t clobber symlinks
+(setq backup-by-copying t)
+
+;; Use versioned backups
+(setq version-control t)
+
+;; Number of backups to keep
+(setq kept-new-versions 10
+      kept-old-versions 0
+      delete-old-versions t)
+
+;; Backup directories
+(setq backup-directory-alist '(("." . "~/.saves")))
+
+;; Also backup versioned files
+(setq vc-make-backup-files t)
+
+;;----------------------------------------------------------------------------
+;; diff
+;;----------------------------------------------------------------------------
+;; Diff backend
+(setq diff-command "diff")            ;Default
+
+;; Add ‘-u’ switch for diff
+(setq diff-switches "-u")
+
+;;----------------------------------------------------------------------------
+;; Miscellaneous
+;;----------------------------------------------------------------------------
+;; windmove
+(windmove-default-keybindings 'super)
+(setq windmove-wrap-around t)
+
+;; desktop
+(desktop-save-mode 0)
+
+;; mwheel
+(setq mouse-wheel-flip-direction 1
+      mouse-wheel-scroll-amount '(2 ((shift) . 1) ((control)))
+      mouse-wheel-progressive-speed nil
+      mouse-wheel-follow-mouse 't)
+
+;; Disable side movements
+;; (global-set-key (kbd "<mouse-6>") 'ignore)
+;; (global-set-key (kbd "<mouse-7>") 'ignore)
+;; (global-set-key (kbd "<triple-mouse-7>") 'ignore)
+;; (global-set-key (kbd "<triple-mouse-6>") 'ignore)
+
+;; Time
+(setq display-time-default-load-average nil)
+(display-time-mode 1)
+
+;; EPG
+(setq mml2015-use 'epg
+      epg-user-id (zp/get-string-from-file "~/org/pp/gpg/gpg-key-id")
+      mml-secure-openpgp-sign-with-sender t
+      mml-secure-openpgp-encrypt-to-self t)
+
+;;----------------------------------------------------------------------------
+;; Setup package repositories
+;;----------------------------------------------------------------------------
+;; MELPA
+(require 'package)
+(let* ((no-ssl (and (memq system-type '(windows-nt ms-dos))
+                    (not (gnutls-available-p))))
+       (proto (if no-ssl "http" "https")))
+  ;; Comment/uncomment these two lines to enable/disable MELPA and MELPA Stable as desired
+  (add-to-list 'package-archives (cons "melpa" (concat proto "://melpa.org/packages/")) t)
+  ;;(add-to-list 'package-archives (cons "melpa-stable" (concat proto "://stable.melpa.org/packages/")) t)
+  (when (< emacs-major-version 24)
+    ;; For important compatibility libraries like cl-lib
+    (add-to-list 'package-archives '("gnu" . (concat proto "://elpa.gnu.org/packages/")))))
+
+;; Disable org’s ELPA packages
+(setq package-load-list '(all
+                          (org nil)
+                          (org-plus-contrib nil)))
+
+;; org-elpa
+(add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") t)
+
+;; Initialise packages
+(package-initialize)
+
+;; ‘use-package’ initialisation
+(eval-when-compile
+  ;; Following line is not needed if use-package.el is in ~/.emacs.d
+  ;; (add-to-list 'load-path "<path where use-package is installed>")
+  (require 'use-package))
+
+;; Change indent-function to handle plists
+;; Reverted to default because I can’t remember the context in which it
+;; was necessary
+;; (setq lisp-indent-function 'common-lisp-indent-function)
+;; (setq lisp-indent-function 'lisp-indent-function) ;Default
+
+(use-package package
+  :bind ("C-c P" . package-list-packages))
+
+;; Start server
+(use-package server
+  :config
+  ;; Start server if it hasn’t been started already
+  (if (server-running-p)
+      (setq initial-scratch-message
+            (concat initial-scratch-message
+                    ";; STANDALONE\n\n"))
+    (server-start)))
+
+;; (setq use-package-verbose t)
 
 ;;----------------------------------------------------------------------------
 ;; Packages
 ;;----------------------------------------------------------------------------
-
 (use-package evil
   :config
   (evil-mode 0))
@@ -440,8 +423,8 @@ time is displayed."
   (setq epg-gpg-program "gpg2"))
 
 (use-package isearch
-  :config
-  (define-key isearch-mode-map (kbd "<backspace>") 'isearch-del-char))
+  :bind (:map isearch-mode-map
+              ("<backspace>" . 'isearch-del-char)))
 
 ;; fcitx (IME for CJK)
 ;; Disabled because of slow-downs in combination with visual-line-mode
@@ -450,8 +433,7 @@ time is displayed."
 (use-package ox-hugo)
 
 (use-package duplicate-thing
-  :config
-  (global-set-key (kbd "M-J") 'duplicate-thing))
+  :bind ("M-J" . duplicate-thing))
 
 (use-package volatile-highlights
   :config
@@ -463,10 +445,12 @@ time is displayed."
 ;;   (add-hook 'prog-mode-hook #'clean-aindent-mode))
 
 (use-package ws-butler
-  :config
-  (add-hook 'prog-mode-hook #'ws-butler-mode))
+  :hook (prog-mode . ws-butler-mode))
 
 (use-package whitespace
+  :bind (("C-c w" . zp/whitespace-mode-lines-tail)
+         ("C-c W" . whitespace-mode))
+  :hook (prog-mode . zp/whitespace-mode-lines-tail)
   :config
   (defun zp/whitespace-mode-lines-tail ()
     (interactive)
@@ -477,32 +461,25 @@ time is displayed."
       (let ((whitespace-style '(face trailing lines-tail))
             (whitespace-line-column 80))
         (whitespace-mode t)
-        (message "Whitespace mode enabled in current buffer"))))
-
-  (add-hook 'prog-mode-hook #'zp/whitespace-mode-lines-tail)
-
-  (global-set-key (kbd "C-c w") #'zp/whitespace-mode-lines-tail)
-  (global-set-key (kbd "C-c W") #'whitespace-mode))
+        (message "Whitespace mode enabled in current buffer")))))
 
 (use-package info+
-  :config
-  (define-key Info-mode-map (kbd "<mouse-4>") 'mwheel-scroll)
-  (define-key Info-mode-map (kbd "<mouse-5>") 'mwheel-scroll)
-  (define-key Info-mode-map (kbd "j") 'next-line)
-  (define-key Info-mode-map (kbd "k") 'previous-line))
+  :bind (:map Info-mode-map
+              ("<mouse-4>" . mwheel-scroll)
+              ("<mouse-5>" . mwheel-scroll)
+              ("j" . next-line)
+              ("k" . previous-line)))
 
 (use-package recentf-ext)
 
-;; diff-hl
+(use-package dired
+  :hook (dired-mode . turn-on-gnus-dired-mode))
+
 (use-package diff-hl
+  :hook (dired-mode . diff-hl-dired-mode)
   :config
   (global-diff-hl-mode)
-  (diff-hl-flydiff-mode)
-  (add-hook 'dired-mode-hook #'diff-hl-dired-mode))
-
-(use-package dired
-  :config
-  (add-hook 'dired-mode-hook #'turn-on-gnus-dired-mode))
+  (diff-hl-flydiff-mode))
 
 (use-package eyebrowse)
 
@@ -513,12 +490,6 @@ time is displayed."
 )
 
 (use-package lilypond-mode)
-
-(use-package nov
-  :config
-  (add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode))
-  (add-to-list 'auto-mode-alist '("\\.mobi\\'" . nov-mode))
-  (add-hook 'nov-mode-hook #'olivetti-mode))
 
 (use-package el-patch)
 
@@ -543,58 +514,46 @@ time is displayed."
   :config
   (exwm-config-default))
 
-(use-package fountain-mode
-  :config
-  (setq fountain-export-font "Courier Prime")
-  (setq fountain-mode-hook '(turn-on-visual-line-mode
-                             fountain-outline-hide-custom-level
-                             olivetti-mode)))
-
 ;; so-long
 (use-package so-long
+  :hook (debugger-mode . so-long-minor-mode)
   :config
-  (global-so-long-mode 1)
-  (add-hook 'debugger-mode-hook #'so-long-minor-mode))
+  (global-so-long-mode 1))
 
 (use-package sh-script
-  :config
-  (add-to-list 'auto-mode-alist '("\\zshrc\\'" . shell-script-mode))
-  (add-to-list 'auto-mode-alist '("\\prompt_.*_setup\\'" . shell-script-mode)))
+  :mode (("\\zshrc\\'" . shell-script-mode)
+         ("\\prompt_.*_setup\\'" . shell-script-mode)))
 
 
 (use-package fish-mode
-  :config
-  (add-to-list 'auto-mode-alist '("\\.*.fish\\'" . fish-mode)))
+  :mode "\\.fish\\'")
 
 (use-package prog-mode
+  ;; Force fringe indicators
+  :hook (prog-mode . zp/enable-visual-line-fringe-indicators)
   :config
   (defun zp/enable-visual-line-fringe-indicators ()
-    "Enable visual-line fringe-indicators."
-    (setq-local visual-line-fringe-indicators '(left-curly-arrow right-curly-arrow)))
-
-  ;; Force fringe indicators in ‘prog-mode’
-  (add-hook 'prog-mode-hook #'zp/enable-visual-line-fringe-indicators))
+    "Enablle visual-line fringe-indicators."
+    (setq-local visual-line-fringe-indicators '(left-curly-arrow right-curly-arrow))) )
 
 (use-package free-keys
   :config
   (setq free-keys-modifiers '("" "C" "M" "C-M" "H")))
 
 (use-package flycheck
+  :hook ((sh-mode . flycheck-mode)
+         (cperl-mode . flycheck-mode)
+         (elisp-mode . flycheck-mode)
+         ;; Enable flycheck everywhere
+         ;; Disabled because of slow-downs in large files
+         ;; (after-init . global-flycheck-mode)
+         )
+  :bind (:map zp/toggle-map
+              ("F" . flycheck-mode))
   :config
   (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc))
   (setq flycheck-emacs-lisp-load-path 'inherit
-        flycheck-display-errors-delay 0.5)
-
-  ;; Enable flycheck everywhere
-  ;; Disabled because of slow-downs in large files
-  ;; (add-hook 'after-init-hook #'global-flycheck-mode)
-
-  ;; Enable flycheck for some major-modes
-  (add-hook 'sh-mode-hook #'flycheck-mode)
-  (add-hook 'cperl-mode-hook #'flycheck-mode)
-  (add-hook 'elisp-mode-hook #'flycheck-mode)
-
-  (define-key zp/toggle-map "F" #'flycheck-mode))
+        flycheck-display-errors-delay 0.5))
 
 ;; Minor-mode to show Flycheck error messages in a popup
 (use-package fly-check-pos-tip
@@ -622,14 +581,176 @@ time is displayed."
 
   (add-hook 'emacs-lisp-mode-hook #'lispy-mode))
 
+(use-package nov
+  :mode "\\.\\(epub\\|mobi\\)\\'")
+
 (use-package olivetti
+  :hook (nov-mode . olivetti-mode)
+  :bind ("M-O" . olivetti-mode)
   :config
   (setq-default olivetti-body-width 0.6
-                olivetti-minimum-body-width 80)
+                olivetti-minimum-body-width 80))
 
-  (global-set-key (kbd "M-O") #'olivetti-mode))
+(use-package fountain-mode
+  :config
+  (setq fountain-export-font "Courier Prime")
+  (setq fountain-mode-hook '(turn-on-visual-line-mode
+                             fountain-outline-hide-custom-level
+                             olivetti-mode)))
+
+(use-package yasnippet
+  :config
+  (yas-global-mode 1)
+  (global-set-key (kbd "H-<backspace>") 'yas-prev-field))
+
+(use-package winner
+  :bind (("H-u" . winner-undo)
+         ("H-i" . winner-redo))
+  :config
+  (winner-mode 1))
+
+(use-package ace-window
+  :bind ("H-b" . ace-window)
+  :config
+  (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)
+        aw-scope 'frame))
+
+(use-package avy
+  :bind (;; ("H-n" . avy-goto-goto-word-1)
+         ;; ("H-n" . avy-goto-goto-char)
+         ("H-n" . avy-goto-char-timer)))
+
+(use-package ace-link
+  :config
+  (ace-link-setup-default))
+
+;; (use-package dumb-jump
+;;   :config
+;;   (dumb-jump-mode)
+;;   (global-visible-mark-mode 1))
+
+(use-package backup-walker
+  :hook (backup-walker-mode . zp/set-diff-backend-git-diff)
+  :config
+  (defun zp/set-diff-backend-git-diff ()
+    "Set diff backend to ‘git diff’.
+Modifies ‘diff-command’ and ‘diff-switches’ to use ‘git diff’."
+    (setq-local diff-command "git --no-pager diff")
+    (setq-local diff-switches "--textconv")))
+
+;; Disabled since Emacs now has a native package for showing
+;; line-numbers
+(use-package linum
+  :disabled
+  ;Add spaces before and after
+  (setq linum-format " %d "))
+
+(use-package pdf-tools
+  :magic ("%PDF" . pdf-view-mode)
+  :config
+  (pdf-tools-install :no-query))
+
+(use-package pdf-view
+  :config
+  (defun zp/toggle-pdf-view-auto-slice-minor-mode ()
+    "Toggle ‘pdf-view-auto-slice-minor-mode’ and reset slice."
+    (interactive)
+    (call-interactively 'pdf-view-auto-slice-minor-mode)
+    (if (not pdf-view-auto-slice-minor-mode)
+        (progn
+          (pdf-view-reset-slice))))
+
+  ;; Disable continuous view in pdf-view
+  ;; I prefer to explicitly turn pages
+  (setq pdf-view-continuous nil)
+
+  (defun zp/pdf-view-continuous-toggle ()
+    (interactive)
+    (cond ((not pdf-view-continuous)
+           (setq pdf-view-continuous t)
+           (message "Page scrolling: Continous"))
+          (t
+           (setq pdf-view-continuous nil)
+           (message "Page scrolling: Constrained"))))
+
+  (define-key pdf-view-mode-map (kbd "m") 'pdf-view-midnight-minor-mode)
+  (define-key pdf-view-mode-map (kbd "s") 'zp/toggle-pdf-view-auto-slice-minor-mode)
+  (define-key pdf-view-mode-map (kbd "M") 'pdf-view-set-slice-using-mouse)
+  (define-key pdf-view-mode-map (kbd "c") 'zp/pdf-view-continuous-toggle)
+  (define-key pdf-view-mode-map (kbd "w") 'pdf-view-fit-width-to-window)
+
+  (define-prefix-command 'slice-map)
+  (define-key pdf-view-mode-map (kbd "S") 'slice-map)
+  (define-key pdf-view-mode-map (kbd "S b") 'pdf-view-set-slice-from-bounding-box)
+  (define-key pdf-view-mode-map (kbd "S m") 'pdf-view-set-slice-using-mouse)
+  (define-key pdf-view-mode-map (kbd "S r") 'pdf-view-reset-slice)
+
+  (add-hook 'pdf-view-mode-hook #'pdf-view-midnight-minor-mode)
+  (add-hook 'pdf-view-mode-hook #'pdf-view-auto-slice-minor-mode))
+
+(use-package pdf-links
+  :config
+  (define-key pdf-links-minor-mode-map (kbd "f") 'pdf-view-fit-page-to-window))
+
+;; TODO: Consider deleting this semi-useless minor-mode
+(defun zp/save-buffers-kill-terminal-silently ()
+  (interactive)
+  (save-buffers-kill-terminal t))
+
+(define-minor-mode save-silently-mode
+  "Save buffers silently when exiting."
+  :lighter " SS"
+  :keymap (let ((map (make-sparse-keymap)))
+            (define-key map (kbd "C-x C-c") 'zp/save-buffers-kill-terminal-silently)
+            (define-key map (kbd "C-c C-k") 'zp/kanji-add-furigana)
+            (define-key map (kbd "M-n") 'zp/kanji-add-furigana)
+            map))
+
+;; Way to enable minor modes based on filenames
+;; Added with the package ‘auto-minor-mode-alist’
+;; But they can also be added via file-fariables or minor-modes
+;; TODO: Adapt this block
+(add-to-list 'auto-minor-mode-alist '("edit-in-emacs.txt" . visual-line-mode))
+(add-to-list 'auto-minor-mode-alist '("edit-in-emacs.txt" . olivetti-mode))
+(add-to-list 'auto-minor-mode-alist '("edit-in-emacs.txt" . flyspell-mode))
+(add-to-list 'auto-minor-mode-alist '("edit-in-emacs.txt" . save-silently-mode))
+
+;; (add-to-list 'auto-minor-mode-alist '("edit-in-emacs.html" . visual-line-mode))
+;; (add-to-list 'auto-minor-mode-alist '("edit-in-emacs.html" . olivetti-mode))
+;; (add-to-list 'auto-minor-mode-alist '("edit-in-emacs.html" . flyspell-mode))
+(add-to-list 'auto-minor-mode-alist '("edit-in-emacs.html" . save-silently-mode))
+
+(defun zp/kanji-add-furigana ()
+  "Adds furigana to the kanji at point.
+If text is selected, adds furigana to the selected kanji instead."
+  (interactive)
+  (if (not (region-active-p))
+      (progn
+        (call-interactively 'set-mark-command)
+        (call-interactively 'forward-char)))
+  (yas-expand-snippet (yas-lookup-snippet "anki-ruby")))
+
+(use-package recentf
+  :config
+  (setq recentf-max-menu-items 100))
+
+(use-package tramp
+  :config
+  (setq tramp-default-method "ssh"))
+
+(use-package realgud
+  :config
+  (setq realgud-safe-mode nil))
+
+(use-package picture
+  :config
+  (global-set-key (kbd "C-c \\") #'picture-mode))
+
+(use-package hidpi-fringe-bitmaps)
 
 (use-package thingatpt
+  :bind (("C-c C-=" . increment-integer-at-point)
+         ("C-c C--" . decrement-integer-at-point))
   :config
   (defun thing-at-point-goto-end-of-integer ()
     "Go to end of integer at point."
@@ -690,21 +811,11 @@ With numeric prefix arg INC, increment the integer by INC amount."
 
 With numeric prefix arg DEC, decrement the integer by DEC amount."
     (interactive "p")
-    (increment-integer-at-point (- (or dec 1))))
-
-  ;;------
-  ;; Keys
-  ;;------
-
-  (global-set-key (kbd "C-c C-=") 'increment-integer-at-point)
-  (global-set-key (kbd "C-c C--") 'decrement-integer-at-point))
-
-
+    (increment-integer-at-point (- (or dec 1)))))
 
 ;;----------------------------------------------------------------------------
 ;; Shortcuts
 ;;----------------------------------------------------------------------------
-
 ;; TODO: Consider optimising this section
 
 (define-prefix-command 'ledger-map)
@@ -818,13 +929,11 @@ With numeric prefix arg DEC, decrement the integer by DEC amount."
 (defun zp/set-shortcuts-all ()
   (zp/set-shortcuts zp/shortcuts-alist))
 
-
-
 ;;----------------------------------------------------------------------------
 ;; ispell
 ;;----------------------------------------------------------------------------
-
 (use-package ispell
+  :bind ("C-c d" . zp/helm-ispell-preselect)
   :config
   ;; TODO: Modernise
 
@@ -909,68 +1018,57 @@ LANGUAGE should be the name of an Ispell dictionary."
                             (eq current nil)
                             (string-match-p current "british"))
                            "French"
-                         "English"))))
-
-  ;;------
-  ;; Keys
-  ;;------
-
-  (global-set-key (kbd "C-c d") 'zp/helm-ispell-preselect))
+                         "English")))))
 
 (use-package flyspell
-  :config
-  (global-set-key (kbd "C-c f") #'flyspell-mode))
-
-
+  :bind ("C-c f" . flyspell-mode)
+  :hook (message-setup . flyspell-mode))
 
 ;;----------------------------------------------------------------------------
-;; notmuch
+;; Email
 ;;----------------------------------------------------------------------------
-
-(use-package epg-config
+(use-package message
+  :hook ((message-setup . zp/message-flyspell-auto)
+         (message-setup . electric-quote-local-mode)
+         ;; (message-mode-hook . footnote-mode)
+         )
   :config
-  (setq mml2015-use 'epg
-        epg-user-id (zp/get-string-from-file "~/org/pp/gpg/gpg-key-id")
-        mml-secure-openpgp-sign-with-sender t
-        mml-secure-openpgp-encrypt-to-self t))
-
-(use-package notmuch
-  :config
-  (setq message-signature
-        (lambda ()
-          (let* ((signature-override
-                  (concat (file-name-as-directory "~/org/sig")
-                          (message-sendmail-envelope-from)))
-                 (signature-file
-                  (if (file-readable-p signature-override)
-                      signature-override
-                    "~/.signature")))
-            (when (file-readable-p signature-file)
-              (with-temp-buffer
-                (insert-file-contents signature-file)
-                (buffer-string))))))
-
-
-  (setq message-sendmail-envelope-from 'header)
-  (setq notmuch-always-prompt-for-sender t)
-  (setq mml-enable-flowed t)
-  (setq message-kill-buffer-on-exit t)
+  (setq message-send-mail-function 'message-send-mail-with-sendmail
+        message-sendmail-envelope-from 'header
+        message-kill-buffer-on-exit t)
 
   ;; Enforce f=f in message-mode
   ;; Disabled because it’s bad practice according to the netiquette
+  ;; (setq mml-enable-flowed t)
   ;; (defun zp/message-mode-use-hard-newlines ()
   ;;   (use-hard-newlines t 'always))
   ;; (add-hook 'message-mode-hook #'zp/message-mode-use-hard-newlines)
 
+  (defun zp/get-message-signature ()
+    (let* ((signature-override
+            (concat (file-name-as-directory "~/org/sig")
+                    (message-sendmail-envelope-from)))
+           (signature-file
+            (if (file-readable-p signature-override)
+                signature-override
+              "~/.signature")))
+      (when (file-readable-p signature-file)
+        (with-temp-buffer
+          (insert-file-contents signature-file)
+          (buffer-string)))))
+
+  (setq message-signature #'zp/get-message-signature
+        message-sendmail-envelope-from 'header)
+
   ;; Set the marks for inserted text with message-mark-inserted-region
   (setq message-mark-insert-begin
-        "--------------------------------[START]--------------------------------
-"
+        "--------------------------------[START]--------------------------------\n"
         message-mark-insert-end
-        "
----------------------------------[END]---------------------------------")
+        "\n---------------------------------[END]---------------------------------")
 
-
+  ;;------------
+  ;; Get emails
+  ;;------------
 
   (defvar zp/email-private (zp/get-string-from-file "~/org/pp/private/email")
     "Email used for private communications.")
@@ -978,8 +1076,9 @@ LANGUAGE should be the name of an Ispell dictionary."
   (defvar zp/email-work (zp/get-string-from-file "~/org/pp/work/email")
     "Email used for work-related communications.")
 
-  (defun zp/notmuch-get-email-with-alias (email alias &optional regex)
+  (defun zp/get-email-with-alias (email alias &optional regex)
     "Create email alias from EMAIL and ALIAS.
+
 If REGEX is non-nil, creates a regex to match the email alias."
     (let* ((email (cond
                    ((equal email "work")
@@ -995,51 +1094,17 @@ If REGEX is non-nil, creates a regex to match the email alias."
           (regexp-quote email-alias)
         email-alias)))
 
-  (defvar zp/email-org (zp/notmuch-get-email-with-alias "work" "org")
+  (defvar zp/email-org (zp/get-email-with-alias "work" "org")
     "Email alias used for the org-mode mailing list.")
 
-  (defvar zp/email-dev (zp/notmuch-get-email-with-alias "work" "dev")
-    "Email alias used for general dev work.")
+  (defvar zp/email-dev (zp/get-email-with-alias "work" "dev")
+    "Email alias used for general development work.")
 
-  (defun zp/notmuch-fcc-email-format-regex (email))
+  ;;--------------------
+  ;; Extended movements
+  ;;--------------------
 
-  (setq notmuch-fcc-dirs
-        `((,(regexp-quote zp/email-private) .
-           "private/sent -inbox +sent -unread")
-          (,(regexp-quote zp/email-work) .
-           "work/sent -inbox +sent -unread")
-          (,(regexp-quote zp/email-org) .
-           "work/sent -inbox +sent -unread +org")
-          (,(regexp-quote zp/email-dev) .
-           "work/sent -inbox +sent -unread +dev")))
-
-  (setq message-send-mail-function 'smtpmail-send-it
-        smtpmail-auth-credentials
-        (expand-file-name "~/.authinfo.gpg"))
-
-  (setq send-mail-function 'sendmail-send-it)
-  (setq message-send-mail-function 'message-send-mail-with-sendmail)
-
-  (setq notmuch-search-oldest-first nil)
-
-  (define-key notmuch-search-mode-map "d"
-    (lambda (&optional untrash beg end)
-      "mark thread as spam"
-      (interactive (cons current-prefix-arg (notmuch-interactive-region)))
-      (if untrash
-          (notmuch-search-tag (list "-deleted"))
-        (notmuch-search-tag (list "+deleted" "-inbox")) beg end)
-      (notmuch-search-next-thread)))
-
-  (define-key notmuch-show-mode-map "d"
-    (lambda (&optional beg end)
-      "mark thread as spam"
-      (interactive (notmuch-interactive-region))
-      (notmuch-show-tag (list "+deleted" "-inbox" "-draft"))
-      (notmuch-show-next-thread-show)))
-
-
-  ;; Movements for message-mode
+  ;; TODO: Improve
 
   (defun zp/message-goto-bottom-1 ()
     (let ((newline message-signature-insert-empty-line))
@@ -1194,27 +1259,9 @@ of lines before the signature intact."
         (insert "\n")
         (forward-char -1))))
 
-  (define-key notmuch-search-mode-map "y" #'notmuch-search-refine)
-  (define-key notmuch-hello-mode-map "q" #'zp/notmuch-hello-quit)
-  (define-key notmuch-search-mode-map "g" #'notmuch-refresh-this-buffer)
-
-  (setq user-full-name "Leo Vivier"
-        mail-host-address "hidden")
-
-  (setq notmuch-saved-searches
-        '((:name "inbox" :query "tag:inbox" :key "i")
-          (:name "unread" :query "tag:unread" :key "u")
-          (:name "flagged" :query "tag:flagged" :key "f")
-          (:name "drafts" :query "tag:draft" :key "d")
-          (:name "sent (last week)" :query "tag:sent date:\"7d..today\"" :key "s")
-          (:name "archive (last week)" :query "* date:\"7d..today\"" :key "a")
-          (:name "sent" :query "tag:sent" :key "S")
-          (:name "archive" :query "*" :key "A")
-          (:name "trash" :query "tag:deleted" :key "t")))
-
-  (defvar zp/message-ispell-alist nil
-    "Alist of emails and the language they typically use.
-The language should be the name of a valid Ispell dictionary.")
+  ;;------------------------------
+  ;; Automatic language detection
+  ;;------------------------------
 
   (setq zp/message-ispell-alist
         `((,zp/email-private . "french")
@@ -1230,6 +1277,12 @@ based on ‘zp/message-mode-ispell-alist’."
     (let* ((sender (message-sendmail-envelope-from))
            (language (cdr (assoc sender zp/message-ispell-alist))))
       (zp/ispell-switch-dictionary language)))
+
+  ;;-------------------
+  ;; Unused functions
+  ;;-------------------
+
+  ;; TODO: Consider usage
 
   (defun zp/message-sendmail-envelope-to ()
     "Return the envelope to."
@@ -1268,7 +1321,79 @@ based on ‘zp/message-mode-ispell-alist’."
                                        bound)))
                   emails)
             (goto-char (1+ bound))))
-        (setq email-list emails))))
+        (setq email-list emails)))))
+
+(use-package sendmail
+  :after message
+  :config
+  (setq send-mail-function 'sendmail-send-it))
+
+(use-package notmuch
+  :bind (("H-l" . zp/switch-to-notmuch)
+         :map notmuch-hello-mode-map
+         ("q" . zp/notmuch-hello-quit)
+         :map notmuch-search-mode-map
+         ("g" . notmuch-refresh-this-buffer)
+         :map notmuch-message-mode-map
+         (("C-c C-c" . zp/notmuch-confirm-before-sending)
+          ("C-c C-b" . zp/message-goto-body)
+          ("C-c C-." . zp/message-goto-body-end)
+          ("M-<" . zp/message-goto-top)
+          ("M->" . zp/message-goto-bottom)
+          ("C-c C-z" . zp/message-kill-to-signature))
+         :map notmuch-show-mode-map
+         (("C-c C-o" . goto-address-at-point)))
+  :config
+  (setq notmuch-always-prompt-for-sender t
+        notmuch-search-oldest-first nil)
+
+  (setq notmuch-fcc-dirs
+        `((,(regexp-quote zp/email-private) .
+           "private/sent -inbox +sent -unread")
+          (,(regexp-quote zp/email-work) .
+           "work/sent -inbox +sent -unread")
+          (,(regexp-quote zp/email-org) .
+           "work/sent -inbox +sent -unread +org")
+          (,(regexp-quote zp/email-dev) .
+           "work/sent -inbox +sent -unread +dev")))
+
+  (define-key notmuch-search-mode-map "d"
+    (lambda (&optional untrash beg end)
+      "mark thread as spam"
+      (interactive (cons current-prefix-arg (notmuch-interactive-region)))
+      (if untrash
+          (notmuch-search-tag (list "-deleted"))
+        (notmuch-search-tag (list "+deleted" "-inbox")) beg end)
+      (notmuch-search-next-thread)))
+
+  (define-key notmuch-show-mode-map "d"
+    (lambda (&optional beg end)
+      "mark thread as spam"
+      (interactive (notmuch-interactive-region))
+      (notmuch-show-tag (list "+deleted" "-inbox" "-draft"))
+      (notmuch-show-next-thread-show)))
+
+
+  (define-key notmuch-hello-mode-map "q" #'zp/notmuch-hello-quit)
+  (define-key notmuch-search-mode-map "g" #'notmuch-refresh-this-buffer)
+
+  (setq user-full-name "Leo Vivier"
+        mail-host-address "hidden")
+
+  (setq notmuch-saved-searches
+        '((:name "inbox" :query "tag:inbox" :key "i")
+          (:name "unread" :query "tag:unread" :key "u")
+          (:name "flagged" :query "tag:flagged" :key "f")
+          (:name "drafts" :query "tag:draft" :key "d")
+          (:name "sent (last week)" :query "tag:sent date:\"7d..today\"" :key "s")
+          (:name "archive (last week)" :query "* date:\"7d..today\"" :key "a")
+          (:name "sent" :query "tag:sent" :key "S")
+          (:name "archive" :query "*" :key "A")
+          (:name "trash" :query "tag:deleted" :key "t")))
+
+  (defvar zp/message-ispell-alist nil
+    "Alist of emails and the language they typically use.
+The language should be the name of a valid Ispell dictionary.")
 
   (defun zp/notmuch-confirm-before-sending (&optional arg)
     (interactive "P")
@@ -1294,352 +1419,27 @@ based on ‘zp/message-mode-ispell-alist’."
           (t
            (setq zp/notmuch-before-config (current-window-configuration))
            (delete-other-windows)
-           (notmuch))))
-
-  (advice-add #'mu4e-quit :after (lambda ()
-                                   (mu4e-update-mail-and-index t)))
-
-  ;;----------------------------------------------------------------------------
-  ;; Keys
-  ;;----------------------------------------------------------------------------
-
-  (defun zp/notmuch-message-mode-config ()
-    "Modify keymaps used by ‘notmuch-show-mode’."
-    (local-set-key (kbd "C-c C-c") #'zp/notmuch-confirm-before-sending)
-    (local-set-key (kbd "C-c C-b") #'zp/message-goto-body)
-    (local-set-key (kbd "C-c C-.") #'zp/message-goto-body-end)
-    (local-set-key (kbd "M-<") #'zp/message-goto-top)
-    (local-set-key (kbd "M->") #'zp/message-goto-bottom)
-    (local-set-key (kbd "C-c C-z") #'zp/message-kill-to-signature))
-
-  (require 'orgalist)
-  (add-hook 'message-setup-hook #'flyspell-mode)
-  (add-hook 'message-setup-hook #'orgalist-mode)
-  (add-hook 'message-setup-hook #'zp/message-flyspell-auto)
-  (add-hook 'message-setup-hook #'electric-quote-local-mode)
-  (add-hook 'message-setup-hook #'zp/notmuch-message-mode-config)
-  ;; (add-hook 'message-mode-hook #'footnote-mode)
-
-  (defun zp/notmuch-show-mode-config ()
-    "Modify keymaps used by ‘notmuch-show-mode’."
-    (local-set-key (kbd "C-c C-o") #'goto-address-at-point))
-
-  (add-hook 'notmuch-show-mode-hook #'zp/notmuch-show-mode-config)
-
-  (global-set-key (kbd "H-l") 'zp/switch-to-notmuch))
+           (notmuch)))))
 
 (use-package org-notmuch
   :after notmuch)
+
+(use-package orgalist
+  :after message
+  :hook (message-setup . orgalist-mode))
 
 ;; Disabled because not used
 ;; (use-package footnote
 ;;   :config
 ;;   (setq footnote-section-tag "Footnotes: "))
 
-
-
-;;----------------------------------------------------------------------------
-;; Cosmetic options
-;;----------------------------------------------------------------------------
-
-(use-package menu-bar
-  :config
-  (menu-bar-mode -1)
-
-  (define-key zp/toggle-map "d" #'toggle-debug-on-error)
-  (define-key zp/toggle-map "Q" #'toggle-debug-on-quit))
-
-(use-package tool-bar
-  :config
-  (tool-bar-mode -1))
-
-(use-package scroll-bar
-  :config
-  (scroll-bar-mode 0)
-
-  (global-set-key (kbd "C-c s") #'scroll-bar-mode))
-
-(use-package hl-line
-  :config
-  (global-set-key (kbd "C-c H") #'global-hl-line-mode))
-
-(use-package display-line-numbers
-  :config
-  (global-set-key (kbd "C-c g") #'display-line-numbers-mode))
-
-(use-package fringe
-  :config
-  (fringe-mode 20))
-
-(use-package paren
-  :config
-  (show-paren-mode 1))
-
-(use-package yasnippet
-  :config
-  (yas-global-mode 1)
-  (global-set-key (kbd "H-<backspace>") 'yas-prev-field))
-
-(use-package simple
-  :config
-  (column-number-mode 1)
-  (setq next-line-add-newlines nil)
-
-  (define-key zp/toggle-map "l" #'toggle-truncate-lines)
-  (define-key zp/toggle-map "f" #'auto-fill-mode)
-
-  (global-set-key (kbd "C-c u") #'visual-line-mode)
-  (global-set-key (kbd "M-U") #'visual-line-mode)
-  (global-set-key (kbd "C-c i") #'toggle-truncate-lines))
-
-(use-package frame
-  :config
-  (blink-cursor-mode -1))
-
-(use-package winner
-  :config
-  (winner-mode 1)
-
-  (global-set-key (kbd "H-u") 'winner-undo)
-  (global-set-key (kbd "H-i") 'winner-redo))
-
-(use-package ace-window
-  :config
-  (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)
-        aw-scope 'frame)
-
-  (global-set-key (kbd "H-b") #'ace-window))
-
-(use-package avy
-  :config
-  ;; (global-set-key (kbd "H-n") #'avy-goto-word-1)
-  ;; (global-set-key (kbd "H-n") #'avy-goto-char)
-  (global-set-key (kbd "H-n") #'avy-goto-char-timer))
-
-(use-package ace-link
-  :config
-  (ace-link-setup-default))
-
-(use-package electric
-  :config
-  (electric-quote-mode 1)
-  (setq electric-quote-context-sensitive 1)
-
-  (define-key zp/toggle-map "q" #'electric-quote-local-mode))
-
-;; (use-package dumb-jump
-;;   :config
-;;   (dumb-jump-mode)
-;;   (global-visible-mark-mode 1))
-
-(use-package files
-  :config
-  (setq-default require-final-newline nil)
-
-  ;;---------
-  ;; Backups
-  ;;---------
-
-  ;; By default, Emacs only create a backup only once per editing session, right
-  ;; before the first save. In other words, it preserves the state of the file
-  ;; before Emacs touched it.
-
-  ;; Don’t clobber symlinks
-  (setq backup-by-copying t)
-
-  ;; Use versioned backups
-  (setq version-control t)
-
-  ;; Number of backups to keep
-  (setq kept-new-versions 10
-        kept-old-versions 0
-        delete-old-versions t)
-
-  ;; Backup directories
-  (setq backup-directory-alist '(("." . "~/.saves")))
-
-  ;;------
-  ;; Keys
-  ;;------
-
-  ;; Exit Emacs with ‘C-x r q’, and kill the current frame with ‘C-x C-c’
-  (global-set-key (kbd "C-x r q") 'save-buffers-kill-terminal)
-  (global-set-key (kbd "C-x C-c") 'delete-frame)
-
-
-  )
-
-(use-package vc-hooks
-  :config
-  ;; Also backup versioned files
-  (setq vc-make-backup-files t))
-
-(use-package diff
-  :config
-  ;; Diff backend
-  (setq diff-command "diff")            ;Default
-
-  ;; Add ‘-u’ switch for diff
-  (setq diff-switches "-u"))
-
-(use-package backup-walker
-  :config
-  (defun zp/set-diff-backend-git-diff ()
-    "Set diff backend to ‘git diff’.
-Modifies ‘diff-command’ and ‘diff-switches’ to use ‘git diff’."
-    (setq-local diff-command "git --no-pager diff")
-    (setq-local diff-switches "--textconv"))
-
-  (add-hook 'backup-walker-mode-hook #'zp/set-diff-backend-git-diff))
-
-(use-package windmove
-  :config
-  (windmove-default-keybindings 'super)
-  (setq windmove-wrap-around t))
-
-(use-package desktop
-  :disabled
-  :config
-  (desktop-save-mode 1))
-
-;; Disabled since Emacs now has a native package for showing
-;; line-numbers
-(use-package linum
-  :disabled
-  ;Add spaces before and after
-  (setq linum-format " %d "))
-
-;; Mouse & Scrolling options
-(use-package mwheel
-  :config
-  (setq mouse-wheel-flip-direction 1
-        mouse-wheel-scroll-amount '(2 ((shift) . 1) ((control)))
-        mouse-wheel-progressive-speed nil
-        mouse-wheel-follow-mouse 't))
-
-;; Disable side movements
-;; (global-set-key (kbd "<mouse-6>") 'ignore)
-;; (global-set-key (kbd "<mouse-7>") 'ignore)
-;; (global-set-key (kbd "<triple-mouse-7>") 'ignore)
-;; (global-set-key (kbd "<triple-mouse-6>") 'ignore)
-
-;; Time
-(use-package time
-  :config
-  (setq display-time-default-load-average nil)
-  (display-time-mode 1))
-
-(use-package pdf-tools
-  :config
-  (pdf-tools-install))
-
-(use-package pdf-view
-  :config
-  (defun zp/toggle-pdf-view-auto-slice-minor-mode ()
-    "Toggle ‘pdf-view-auto-slice-minor-mode’ and reset slice."
-    (interactive)
-    (call-interactively 'pdf-view-auto-slice-minor-mode)
-    (if (not pdf-view-auto-slice-minor-mode)
-        (progn
-          (pdf-view-reset-slice))))
-
-  ;; Disable continuous view in pdf-view
-  ;; I prefer to explicitly turn pages
-  (setq pdf-view-continuous nil)
-
-  (defun zp/pdf-view-continuous-toggle ()
-    (interactive)
-    (cond ((not pdf-view-continuous)
-           (setq pdf-view-continuous t)
-           (message "Page scrolling: Continous"))
-          (t
-           (setq pdf-view-continuous nil)
-           (message "Page scrolling: Constrained"))))
-
-  (define-key pdf-view-mode-map (kbd "m") 'pdf-view-midnight-minor-mode)
-  (define-key pdf-view-mode-map (kbd "s") 'zp/toggle-pdf-view-auto-slice-minor-mode)
-  (define-key pdf-view-mode-map (kbd "M") 'pdf-view-set-slice-using-mouse)
-  (define-key pdf-view-mode-map (kbd "c") 'zp/pdf-view-continuous-toggle)
-  (define-key pdf-view-mode-map (kbd "w") 'pdf-view-fit-width-to-window)
-
-  (define-prefix-command 'slice-map)
-  (define-key pdf-view-mode-map (kbd "S") 'slice-map)
-  (define-key pdf-view-mode-map (kbd "S b") 'pdf-view-set-slice-from-bounding-box)
-  (define-key pdf-view-mode-map (kbd "S m") 'pdf-view-set-slice-using-mouse)
-  (define-key pdf-view-mode-map (kbd "S r") 'pdf-view-reset-slice)
-
-  (add-hook 'pdf-view-mode-hook #'pdf-view-midnight-minor-mode)
-  (add-hook 'pdf-view-mode-hook #'pdf-view-auto-slice-minor-mode))
-
-(use-package pdf-links
-  :config
-  (define-key pdf-links-minor-mode-map (kbd "f") 'pdf-view-fit-page-to-window))
-
-;; TODO: Consider deleting this semi-useless minor-mode
-(defun zp/save-buffers-kill-terminal-silently ()
-  (interactive)
-  (save-buffers-kill-terminal t))
-
-(define-minor-mode save-silently-mode
-  "Save buffers silently when exiting."
-  :lighter " SS"
-  :keymap (let ((map (make-sparse-keymap)))
-            (define-key map (kbd "C-x C-c") 'zp/save-buffers-kill-terminal-silently)
-            (define-key map (kbd "C-c C-k") 'zp/kanji-add-furigana)
-            (define-key map (kbd "M-n") 'zp/kanji-add-furigana)
-            map))
-
-;; Way to enable minor modes based on filenames
-;; Added with the package ‘auto-minor-mode-alist’
-;; But they can also be added via file-fariables or minor-modes
-;; TODO: Adapt this block
-(add-to-list 'auto-minor-mode-alist '("\\journal.*\\'" . visual-line-mode))
-(add-to-list 'auto-minor-mode-alist '("\\journal.*\\'" . olivetti-mode))
-(add-to-list 'auto-minor-mode-alist '("\\journal.*\\'" . flyspell-mode))
-
-(add-to-list 'auto-minor-mode-alist '("edit-in-emacs.txt" . visual-line-mode))
-(add-to-list 'auto-minor-mode-alist '("edit-in-emacs.txt" . olivetti-mode))
-(add-to-list 'auto-minor-mode-alist '("edit-in-emacs.txt" . flyspell-mode))
-(add-to-list 'auto-minor-mode-alist '("edit-in-emacs.txt" . save-silently-mode))
-
-;; (add-to-list 'auto-minor-mode-alist '("edit-in-emacs.html" . visual-line-mode))
-;; (add-to-list 'auto-minor-mode-alist '("edit-in-emacs.html" . olivetti-mode))
-;; (add-to-list 'auto-minor-mode-alist '("edit-in-emacs.html" . flyspell-mode))
-(add-to-list 'auto-minor-mode-alist '("edit-in-emacs.html" . save-silently-mode))
-
-(defun zp/kanji-add-furigana ()
-  "Adds furigana to the kanji at point.
-If text is selected, adds furigana to the selected kanji instead."
-  (interactive)
-  (if (not (region-active-p))
-      (progn
-        (call-interactively 'set-mark-command)
-        (call-interactively 'forward-char)))
-  (yas-expand-snippet (yas-lookup-snippet "anki-ruby")))
-
-(use-package recentf
-  :config
-  (setq recentf-max-menu-items 100))
-
-(use-package tramp
-  :config
-  (setq tramp-default-method "ssh"))
-
-(use-package realgud
-  :config
-  (setq realgud-safe-mode nil))
-
-(use-package picture
-  :config
-  (global-set-key (kbd "C-c \\") #'picture-mode))
-
-
-
 ;;----------------------------------------------------------------------------
 ;; Programming modes
 ;;----------------------------------------------------------------------------
-
 (use-package cperl-mode
+  :bind (:map cperl-mode-map
+              ("M-RET" . zp/perl-eval-buffer)
+              ("<C-return>" . zp/perl-eval-region))
   :config
   ;; Use ‘cperl-mode’ instead ‘perl-mode’
   (defalias 'perl-mode 'cperl-mode)
@@ -1664,12 +1464,11 @@ If text is selected, adds furigana to the selected kanji instead."
     (let (max-mini-window-height)
       (unless arg
         (setq max-mini-window-height 999))
-      (shell-command-on-region (point-min) (point-max) "perl")))
-
-  (define-key cperl-mode-map (kbd "M-RET") 'zp/perl-eval-buffer)
-  (define-key cperl-mode-map (kbd "<C-return>") 'zp/perl-eval-region))
+      (shell-command-on-region (point-min) (point-max) "perl"))))
 
 (use-package python
+  :bind (:map python-mode-map
+              ("M-RET" . zp/python-eval-buffer))
   :config
   (defun zp/inferior-python-mode-config ()
     "Modify keymaps for ‘inferior-python-mode’."
@@ -1695,10 +1494,11 @@ If text is selected, adds furigana to the selected kanji instead."
   ;;   (recenter-top-bottom arg)
   ;;   (recenter-top-bottom arg)
   ;;   (scroll-up-line)))
-
-  (define-key python-mode-map (kbd "M-RET") 'zp/python-eval-buffer))
+  )
 
 (use-package racket-mode
+  :bind (:map racket-mode-map
+              ("M-RET" . zp/racket-eval-buffer))
   :config
   (defun zp/racket-eval-buffer (arg)
     "Run current buffer as Perl code"
@@ -1708,15 +1508,18 @@ If text is selected, adds furigana to the selected kanji instead."
         (setq max-mini-window-height 999))
       (let ((inhibit-message t))
         (basic-save-buffer))
-      (shell-command (concat "racket " (buffer-file-name)))))
-
-  (define-key racket-mode-map (kbd "M-RET") 'zp/racket-eval-buffer))
+      (shell-command (concat "racket " (buffer-file-name))))))
 
 ;;----------------------------------------------------------------------------
 ;; AUCTeX
 ;;----------------------------------------------------------------------------
-
 (use-package latex
+  :bind (:map LaTeX-mode-map
+              (("C-x n e" . zp/LaTeX-narrow-to-environment)
+               ("C-c DEL" . zp/LaTeX-remove-macro)
+               ("C-c <C-backspace>" . zp/LaTeX-remove-macro)
+               ("C-c <M-backspace>" . zp/LaTeX-remove-environment)
+               ("C-c C-t C-v" . zp/tex-view-program-switch)))
   :config
   ;; Set default library
   (setq-default TeX-engine 'luatex
@@ -1948,29 +1751,11 @@ return `nil'."
     (call-interactively #'narrow-to-region)
     (deactivate-mark)
     (move-end-of-line 1)
-    (message "Narrowing to parent environment"))
-
-  (define-key LaTeX-mode-map (kbd "C-x n e") #'zp/LaTeX-narrow-to-environment)
-  (define-key LaTeX-mode-map (kbd "C-x n w") #'zp/LaTeX-widen)
-  (define-key LaTeX-mode-map (kbd "C-x n f") #'zp/LaTeX-narrow-forwards)
-  (define-key LaTeX-mode-map (kbd "C-x n b") #'zp/LaTeX-narrow-backwards)
-  (define-key LaTeX-mode-map (kbd "C-x n u") #'zp/LaTeX-narrow-up)
-
-  (defun zp/LaTeX-mode-config ()
-    "Modify keymaps used by `latex-mode'."
-    (local-set-key (kbd "C-x n e") #'zp/LaTeX-narrow-to-environment)
-    (local-set-key (kbd "C-c DEL") 'zp/LaTeX-remove-macro)
-    (local-set-key (kbd "C-c <C-backspace>") 'zp/LaTeX-remove-macro)
-    (local-set-key (kbd "C-c <M-backspace>") 'zp/LaTeX-remove-environment)
-    (local-set-key (kbd "C-c C-t C-v") 'zp/tex-view-program-switch))
-  (setq LaTeX-mode-hook '(zp/LaTeX-mode-config)))
-
-
+    (message "Narrowing to parent environment")))
 
 ;;----------------------------------------------------------------------------
 ;; org → html/tex export
 ;;----------------------------------------------------------------------------
-
 (use-package ox-html
   :after (org ox)
   :config
@@ -2048,11 +1833,9 @@ return `nil'."
   :config
   (setq org-src-preserve-indentation t))
 
-
 ;;----------------------------------------------------------------------------
 ;; org-mode
 ;;----------------------------------------------------------------------------
-
 (use-package calendar
   :config
   (setq diary-file "~/diary")
@@ -2067,7 +1850,6 @@ return `nil'."
 
   (global-set-key (kbd "C-c c") 'calendar))
 
-;; Load org-habit
 (use-package org-habit
   :config
   (add-to-list 'org-modules 'org-habit)
@@ -2076,6 +1858,39 @@ return `nil'."
   (setq org-habit-graph-column 50))
 
 (use-package org
+  :bind (:map org-mode-map
+              ("C-c i" . org-indent-mode)
+              ("C-c [" . nil)
+              ("C-c ]" . nil)
+              ("C-c C-q" . counsel-org-tag)
+              ("C-c C-." . org-time-stamp)
+              ("C-c C-x r" . zp/org-set-appt-warntime)
+              ("C-c C-x l" . zp/org-set-location)
+              ("C-c C-x d" . org-delete-property)
+              ("C-c C-x D" . org-insert-drawer)
+              ("C-c C-x b" . zp/org-tree-to-indirect-buffer-folded)
+              ("S-<backspace>" . zp/org-kill-spawned-ibuf)
+              ("C-x n o" . zp/org-overview)
+              ("C-x n a" . zp/org-show-all)
+              ("C-x n u" . zp/org-narrow-up-heading-dwim)
+              ("C-x n y" . zp/org-narrow-previous-heading)
+              ("C-x n s" . zp/org-narrow-to-subtree)
+              ("C-x n f" . zp/org-narrow-forwards)
+              ("C-x n b" . zp/org-narrow-backwards)
+              ("C-x n w" . zp/org-widen)
+              ("C-c ," . zp/hydra-org-priority/body)
+              ("M-p" . org-metaup)
+              ("M-n" . org-metadown)
+              ("M-[" . org-metaleft)
+              ("M-]" . org-metaright)
+              ("M-{" . org-shiftmetaleft)
+              ("M-}" . org-shiftmetaright)
+              ("C-a" . org-beginning-of-line)
+              ("C-e" . org-end-of-line)
+              ("M-I" . org-indent-mode)
+              ("M-*" . zp/org-toggle-fontifications)
+              ("C-c C-x C-l" . zp/org-latex-preview-dwim)
+              ("C-c R" . org-display-inline-images))
   :config
   (setq org-agenda-inhibit-startup nil
         org-log-into-drawer "LOGBOOK-NOTES"
@@ -2117,6 +1932,11 @@ return `nil'."
   ;; Otherwise, curly quotes prevent fontification
   (setq org-emphasis-regexp-components '("-       ('‘\"“’{" "-    .,:!?;'’\"”)}\\[" "     
 " "." 1))
+
+  ;; Set the default apps to use when opening org-links
+  (add-to-list 'org-file-apps
+               '("\\.pdf\\'" . (lambda (file link)
+                                 (org-pdfview-open link))))
 
   ;; Define TODO keywords
   (setq org-todo-keywords
@@ -2254,6 +2074,40 @@ return `nil'."
 
   ;; Load library required for PlantUML
   (setq org-ditaa-jar-path "/usr/share/java/ditaa/ditaa-0.11.jar")
+
+  ;;------
+  ;; Handling ‘CREATED’
+  ;;------
+
+  (defvar org-created-property-name "CREATED"
+    "The name of the org-mode property that stores the creation date of the entry")
+
+  ;; TODO: Find the source for this because I’ve improved something which
+  ;; already existed
+  (defun zp/org-set-created-property (&optional active NAME)
+    "Set a property on the entry giving the creation time.
+
+By default the property is called CREATED. If given, the ‘NAME’
+argument will be used instead. If the property already exists, it
+will not be modified.
+
+If the function sets CREATED, it returns its value."
+    (interactive)
+    (let* ((created (or NAME org-created-property-name))
+           (fmt (if active "<%s>" "[%s]"))
+           (now (format fmt (format-time-string "%Y-%m-%d %a %H:%M")))
+           (is-capturing (and (boundp 'org-capture-mode) org-capture-mode))
+           (add-created (and is-capturing
+                             (plist-get org-capture-plist :add-created))))
+      (unless (or (and is-capturing
+                       (not add-created))
+                  (org-entry-get (point) created nil))
+        (when is-capturing
+          (unless (buffer-narrowed-p)
+            (error "Buffer is not narrowed"))
+          (goto-char (point-min)))
+        (org-set-property created now)
+        now)))
 
   ;;------------------------
   ;; Narrowing & Movements
@@ -2470,6 +2324,47 @@ With a C-u argument, toggle the link display."
   ;; Spawned indirect buffers
   ;;--------------------------
 
+  (defun zp/org-tree-to-indirect-buffer-folded (arg &optional dedicated bury)
+    "Clone tree to indirect buffer in a folded state.
+
+When called with a ‘C-u’ prefix or when DEDICATED is non-nil,
+create a dedicated frame."
+    (interactive "p")
+    (let* ((in-new-window (and arg
+                               (one-window-p)))
+           (org-indirect-buffer-display (if in-new-window
+                                            'other-window
+                                          'current-window))
+           (last-ibuf org-last-indirect-buffer)
+           (parent (current-buffer))
+           (parent-window (selected-window))
+           (dedicated (or dedicated
+                          (eq arg 4))))
+      (when dedicated
+        (setq org-last-indirect-buffer nil))
+      (when (and arg
+                 zp/org-spawned-ibuf-mode)
+        (zp/org-ibuf-spawned-dedicate))
+      (org-tree-to-indirect-buffer)
+      (when in-new-window
+        (select-window (next-window))
+        (setq zp/org-ibuf-spawned-also-kill-window parent-window))
+      (if dedicated
+          (setq org-last-indirect-buffer last-ibuf)
+        (zp/org-spawned-ibuf-mode t))
+      (when bury
+        (switch-to-buffer parent nil t)
+        (bury-buffer))
+      (let ((org-startup-folded nil))
+        (org-set-startup-visibility))
+      (org-overview)
+      (org-show-entry)
+      (org-show-children)
+      (prog1 (selected-window)
+        (when arg
+          (message "Cloned tree to indirect buffer.")
+          (run-hooks 'zp/org-after-view-change-hook)))))
+
   (defun zp/org-kill-spawned-ibuf (&optional arg)
     "Kill the current buffer if it is an indirect buffer."
     (interactive "p")
@@ -2509,48 +2404,25 @@ With a ‘C-u’ argument, dedicate the buffer instead."
         (zp/org-ibuf-spawned-dedicate t)
       (zp/org-kill-spawned-ibuf t)))
 
-  ;;--------------
-  ;; Key bindings
-  ;;--------------
+  (defvar-local zp/org-ibuf-spawned-also-kill-window nil
+    "When t, also kill the window when killing a spawned buffer.
 
-  (defun zp/org-mode-config ()
-    "Modify keymaps used by `org-mode'."
-    (local-set-key (kbd "C-c i") #'org-indent-mode)
-    ;; (local-set-key (kbd "C-c C-,") 'org-priority)
-    (local-set-key (kbd "C-c [") nil)
-    (local-set-key (kbd "C-c ]") nil)
-    (local-set-key (kbd "C-c C-q") #'counsel-org-tag)
-    (local-set-key (kbd "C-c C-.") #'org-time-stamp)
-    (local-set-key (kbd "C-c C-x r") #'zp/org-set-appt-warntime)
-    (local-set-key (kbd "C-c C-x l") #'zp/org-set-location)
-    (local-set-key (kbd "C-c C-x d") #'org-delete-property)
-    (local-set-key (kbd "C-c C-x D") #'org-insert-drawer)
-    (local-set-key (kbd "C-c C-x b") #'zp/org-tree-to-indirect-buffer-folded)
-    (local-set-key (kbd "S-<backspace>") #'zp/org-kill-spawned-ibuf)
-    (local-set-key (kbd "C-x n o") #'zp/org-overview)
-    (local-set-key (kbd "C-x n a") #'zp/org-show-all)
-    (local-set-key (kbd "C-x n u") #'zp/org-narrow-up-heading-dwim)
-    (local-set-key (kbd "C-x n y") #'zp/org-narrow-previous-heading)
-    (local-set-key (kbd "C-x n s") #'zp/org-narrow-to-subtree)
-    (local-set-key (kbd "C-x n f") #'zp/org-narrow-forwards)
-    (local-set-key (kbd "C-x n b") #'zp/org-narrow-backwards)
-    (local-set-key (kbd "C-x n w") #'zp/org-widen)
-    (local-set-key (kbd "C-c ,") #'zp/hydra-org-priority/body)
-    (local-set-key (kbd "M-p") #'org-metaup)
-    (local-set-key (kbd "M-n") #'org-metadown)
-    (local-set-key (kbd "M-[") #'org-metaleft)
-    (local-set-key (kbd "M-]") #'org-metaright)
-    (local-set-key (kbd "M-{") #'org-shiftmetaleft)
-    (local-set-key (kbd "M-}") #'org-shiftmetaright)
-    (local-set-key (kbd "C-a") #'org-beginning-of-line)
-    (local-set-key (kbd "C-e") #'org-end-of-line)
-    (local-set-key (kbd "M-I") #'org-indent-mode)
-    (local-set-key (kbd "M-*") #'zp/org-toggle-fontifications)
-    (local-set-key (kbd "C-c C-j") #'zp/org-jump-dwim)
-    (local-set-key (kbd "C-c C-x C-l") #'zp/org-latex-preview-dwim)
-    (local-set-key (kbd "C-c R") #'org-display-inline-images))
+A spawned buffer is an indirect buffer created by
+‘org-tree-to-indirect-buffer’ which will be replaced by
+subsequent calls.")
 
-  (add-hook 'org-mode-hook #'zp/org-mode-config))
+  (defvar zp/org-spawned-ibuf-mode-map
+    (let ((map (make-sparse-keymap)))
+      (define-key map (kbd "C-c C-k") #'zp/org-kill-spawned-ibuf-dwim)
+      map)
+    "Keymap for ‘zp/org-spawned-ibuf-mode’.")
+
+  (define-minor-mode zp/org-spawned-ibuf-mode
+    "Show when the current indirect buffer is a spawned buffer."
+    :lighter " Spawn"
+    :keymap zp/org-spawned-ibuf-mode-map
+    (setq header-line-format
+          "Spawned indirect buffer.  Kill with ‘C-c C-k’, dedicate with ‘C-u C-c C-k’.")))
 
 (use-package org-footnote
   :config
@@ -2606,11 +2478,6 @@ along with effort estimates and total time."
 ;; To enable that behaviour, set the ‘RESET_CHECK_BOXES’ property to t for the
 ;; parent
 (use-package org-checklist)
-
-;; Set the default apps to use when opening org-links
-(add-to-list 'org-file-apps
-             '("\\.pdf\\'" . (lambda (file link)
-                               (org-pdfview-open link))))
 
 (use-package org-faces
   :config
@@ -2695,16 +2562,39 @@ along with effort estimates and total time."
             (lambda ()
               (setq org-ditaa-jar-path "/usr/share/java/ditaa/ditaa-0.11.jar"))))
 
-
-
 ;;----------------------------------------------------------------------------
 ;; Helm
 ;;----------------------------------------------------------------------------
-
+(define-prefix-command 'zp/helm-map)
+(global-set-key (kbd "C-c h") 'zp/helm-map)
 (use-package helm
+  :bind (("M-x" . helm-M-x)
+         ("<menu>" . helm-M-x)
+         ("M-y" . helm-show-kill-ring)
+         ("C-x b" . helm-mini)
+         ("C-x C-b" . helm-mini)
+         ("C-x C-f" . helm-find-files)
+         ("M-s M-s" . helm-occur)
+         ("C-x r b" . helm-bookmarks)
+         ("C-h C-SPC" . helm-all-mark-rings)
+         :map helm-map
+         ("C-S-o" . helm-previous-source)
+         :map zp/helm-map
+         (("o" . helm-occur)
+          ("f" . helm-find-files)
+          ("r" . helm-regexp)
+          ("x" . helm-register)
+          ("b" . helm-resume)
+          ("c" . helm-colors)
+          ("M-:" . helm-eval-expression-with-eldoc)
+          ("i" . helm-semantic-or-imenu)
+          ("a" . helm-apropos)
+          ("/" . helm-find)
+          ("<tab>" . helm-lisp-completion-at-point)
+          ("p" . helm-projectile)))
   :config
   ;; Increase truncation of buffer names
-  (setq helm-buffer-max-length 30       ;Default: 20
+  (setq helm-buffer-max-length 30                 ;Default: 20
         helm-M-x-fuzzy-match t
         helm-buffers-fuzzy-matching t
         helm-recentf-fuzzy-match t
@@ -2718,40 +2608,11 @@ along with effort estimates and total time."
   ;; Disable helm-mode for some functions
   ;; Used to be necessary, but now it works just fine
   ;; (add-to-list 'helm-completing-read-handlers-alist '(org-set-property)))
-
-  (define-prefix-command 'zp/helm-map)
-  (define-key helm-map (kbd "C-S-o") #'helm-previous-source)
-
-  (global-set-key (kbd "C-c h") #'zp/helm-map)
-  (global-set-key (kbd "M-x") #'helm-M-x)
-  (global-set-key (kbd "<menu>") #'helm-M-x)
-  (global-set-key (kbd "M-y") #'helm-show-kill-ring)
-  (global-set-key (kbd "C-x b") #'helm-mini)
-  (global-set-key (kbd "C-x C-b") #'helm-mini)
-  (global-set-key (kbd "C-x C-f") #'helm-find-files)
-  (global-set-key (kbd "M-s M-s") #'helm-occur)
-
-  (global-set-key (kbd "C-x r b") #'helm-bookmarks)
-  (global-set-key (kbd "C-c h o") #'helm-occur)
-  (global-set-key (kbd "C-c h f") #'helm-find-files)
-  (global-set-key (kbd "C-c h r") #'helm-regexp)
-  (global-set-key (kbd "C-c h x") #'helm-register)
-  (global-set-key (kbd "C-c h b") #'helm-resume)
-  (global-set-key (kbd "C-c h c") #'helm-colors)
-  (global-set-key (kbd "C-c h M-:") #'helm-eval-expression-with-eldoc)
-  (global-set-key (kbd "C-c h i") #'helm-semantic-or-imenu)
-  (global-set-key (kbd "C-h C-SPC") #'helm-all-mark-rings)
-  (global-set-key (kbd "C-c h a") #'helm-apropos)
-  (global-set-key (kbd "C-c h /") #'helm-find)
-  (global-set-key (kbd "C-c h <tab>") #'helm-lisp-completion-at-point)
-  (global-set-key (kbd "C-c h p") #'helm-projectile))
-
-
+  )
 
 ;;----------------------------------------------------------------------------
 ;; Ivy
 ;;----------------------------------------------------------------------------
-
 (use-package ivy
   :config
   (ivy-mode 1)
@@ -2773,6 +2634,20 @@ along with effort estimates and total time."
   )
 
 (use-package counsel
+  :after swiper
+  :bind (("C-s" . zp/counsel-grep-or-swiper)
+         ;; Commented because I use the Helm equivalents
+         ;; ("M-x" . counsel-M-x)
+         ;; ("<menu>" . counsel-M-x)
+         ;; ("C-x C-f" . counsel-find-file)
+         ;; ("C-c j" . counsel-git-grep)
+         ;; Commented because unused
+         ;; ("C-c g" . counsel-git)
+         ;; ("C-c k" . counsel-ag)
+         ;; ("C-x l" . counsel-locate)
+         ;; ("C-S-o" . counsel-rhythmbox)
+         :map minibuffer-local-map
+         ("C-r" . counsel-minibuffer-history))
   :requires swiper
   :config
   (setq counsel-find-file-at-point t)
@@ -2791,33 +2666,13 @@ indirect-buffers."
               (not file)                          ;Indirect buffer?
               (string= ext "gpg"))                ;Encrypted buffer?
           (swiper)
-        (counsel-grep-or-swiper))))
-
-  (global-set-key "\C-s" #'zp/counsel-grep-or-swiper)
-  (global-set-key (kbd "<f1> f") #'counsel-describe-function)
-  (global-set-key (kbd "<f1> v") #'counsel-describe-variable)
-  (global-set-key (kbd "<f1> l") #'counsel-find-library)
-  (global-set-key (kbd "<f2> i") #'counsel-info-lookup-symbol)
-  (global-set-key (kbd "<f2> u") #'counsel-unicode-char)
-  (global-set-key (kbd "C-c g") #'counsel-git)
-  (global-set-key (kbd "C-c k") #'counsel-ag)
-  (global-set-key (kbd "C-x l") #'counsel-locate)
-  (global-set-key (kbd "C-S-o") #'counsel-rhythmbox)
-  (define-key minibuffer-local-map (kbd "C-r") #'counsel-minibuffer-history)
-
-  ;; Commented because I use the Helm equivalent
-  ;; (global-set-key (kbd "M-x") 'counsel-M-x)
-  ;; (global-set-key (kbd "<menu>") 'counsel-M-x)
-  ;; (global-set-key (kbd "C-x C-f") 'counsel-find-file)
-  ;; (global-set-key (kbd "C-c j") 'counsel-git-grep)
-  )
+        (counsel-grep-or-swiper)))))
 
 
 
 ;;----------------------------------------------------------------------------
 ;; Hydra
 ;;----------------------------------------------------------------------------
-
 (use-package hydra)
 
 (use-package hydra-org-priority
@@ -2828,10 +2683,9 @@ indirect-buffers."
 ;;----------------------------------------------------------------------------
 ;; org-super-agenda
 ;;----------------------------------------------------------------------------
-
 (use-package org-super-agenda
   :load-path "~/projects/forks/org-super-agenda/"
-  :requires org-agenda
+  :after org-agenda
   :config
   (org-super-agenda-mode)
 
@@ -2885,8 +2739,6 @@ indirect-buffers."
                         :scheduled nil))
       (:name "Appointments"
              :timestamp today)
-      (:name "Due soon"
-             :deadline t)
       (:name "Scheduled"
              :scheduled today)
       (:name "Subtasks"
@@ -2930,8 +2782,42 @@ indirect-buffers."
 ;;----------------------------------------------------------------------------
 ;; org-agenda
 ;;----------------------------------------------------------------------------
-
 (use-package org-agenda
+  :bind (("H-o" . zp/switch-to-agenda)
+         :map org-agenda-mode-map
+         (("M-n" . org-agenda-next-date-line)
+          ("M-p" . org-agenda-previous-date-line)
+          ("k" . zp/org-agenda-capture)
+          ("C-," . sunrise-sunset)
+          ("C-c C-q" . counsel-org-tag-agenda)
+          (":" . counsel-org-tag-agenda)
+          ("," . zp/hydra-org-priority/body)
+          ("M-k" . zp/toggle-org-habit-show-all-today)
+          ("M-i" . zp/toggle-org-agenda-category-icons)
+          ("M-t" . org-agenda-todo-yesterday)
+          ("D" . zp/toggle-org-agenda-include-deadlines)
+          ("S" . zp/toggle-org-agenda-include-scheduled)
+          ("K" . zp/toggle-org-agenda-include-habits)
+          ("M-d" . zp/toggle-org-deadline-warning-days-range)
+          ("r" . zp/org-agenda-benchmark)
+          ("R" . zp/org-agenda-garbage-collect)
+          ("y" . zp/toggle-org-agenda-split-subtasks)
+          ("i" . zp/toggle-org-agenda-sorting-strategy-special-first)
+          ("o" . zp/toggle-org-agenda-sort-by-rev-fifo)
+          ("h" . zp/toggle-org-agenda-todo-ignore-future)
+          ("W" . zp/toggle-org-agenda-projects-include-waiting)
+          ("C-c C-x r" . zp/org-agenda-set-appt-warntime)
+          ("C-c C-x l" . zp/org-agenda-set-location)
+          ("C-c C-x d" . zp/org-agenda-delete-property)
+          (">" . zp/org-agenda-date-prompt-and-update-appt)
+          ("C-c C-s" . zp/org-agenda-schedule-and-update-appt)
+          ("C-c C-S-w" . zp/org-agenda-refile-with-paths)
+          ("Z" . org-resolve-clocks)
+          ("C-<return>" . org-agenda-switch-to)
+          ("<return>" . zp/org-agenda-tree-to-indirect-buffer-without-grabbing-focus)
+          ("S-<return>" . zp/org-agenda-tree-to-indirect-buffer)
+          ("M-<return>" . zp/org-agenda-tree-to-indirect-buffer-maximise)
+          ("<backspace>" . zp/org-kill-spawned-ibuf-and-window)))
   :config
   (defun zp/org-agenda-get-key ()
     "Return the key of the current org-agenda view."
@@ -3967,6 +3853,18 @@ agenda settings after them."
               (org-agenda-files nil)
               (org-agenda-span 'day))))
 
+  (defun zp/org-agenda-block-header-with-deadlines (header groups &optional file)
+    `(agenda ""
+             ((org-agenda-overriding-header
+               (zp/org-agenda-format-header-main ,header))
+              ,@(if file
+                    `((org-agenda-files ',file)))
+              (org-agenda-entry-types
+               '(:deadline))
+              (org-agenda-skip-function
+               '(zp/skip-tasks-not-belonging-to-agenda-groups ',groups))
+              (org-agenda-span 'day))))
+
   (defun zp/org-agenda-block-agenda-with-group-filter (header groups &optional file)
     `(agenda ""
              ((org-agenda-overriding-header
@@ -4106,8 +4004,8 @@ It creates 4 blocks:
 - A ‘tags-todo’ block displaying the non-stuck projects
 - A ‘tags-todo’ block displaying the stuck projects
 - A ‘tags-todo’ block displaying the tasks"
-    `(,(zp/org-agenda-block-header
-        header)
+    `(,(zp/org-agenda-block-header-with-deadlines
+        header groups file)
       ,(zp/org-agenda-block-projects-with-group-filter
         groups tags file)
       ,(zp/org-agenda-block-tasks-with-group-filter
@@ -4824,58 +4722,22 @@ With a ‘C-u’ prefix, make a separate frame for this tree."
   ;; Keys
   ;;------
 
-  (defun zp/org-agenda-mode-config ()
-    "For use with `org-agenda-mode'."
-    (local-set-key (kbd "M-n") 'org-agenda-next-date-line)
-    (local-set-key (kbd "M-p") 'org-agenda-previous-date-line)
-    (local-set-key (kbd "k") 'zp/org-agenda-capture)
-    (local-set-key (kbd "C-,") 'sunrise-sunset)
-    (local-set-key (kbd "C-c C-q") 'counsel-org-tag-agenda)
-    (local-set-key (kbd ":") 'counsel-org-tag-agenda)
-    (local-set-key (kbd ",") 'zp/hydra-org-priority/body)
-    (local-set-key (kbd "M-k") 'zp/toggle-org-habit-show-all-today)
-    (local-set-key (kbd "M-i") 'zp/toggle-org-agenda-category-icons)
-    (local-set-key (kbd "M-t") 'org-agenda-todo-yesterday)
-    (local-set-key (kbd "D") 'zp/toggle-org-agenda-include-deadlines)
-    (local-set-key (kbd "S") 'zp/toggle-org-agenda-include-scheduled)
-    (local-set-key (kbd "K") 'zp/toggle-org-agenda-include-habits)
-    (local-set-key (kbd "M-d") 'zp/toggle-org-deadline-warning-days-range)
-    (local-set-key (kbd "r") 'zp/org-agenda-benchmark)
-    (local-set-key (kbd "R") 'zp/org-agenda-garbage-collect)
-    (local-set-key (kbd "y") 'zp/toggle-org-agenda-split-subtasks)
-    (local-set-key (kbd "i") 'zp/toggle-org-agenda-sorting-strategy-special-first)
-    (local-set-key (kbd "o") 'zp/toggle-org-agenda-sort-by-rev-fifo)
-    ;; (local-set-key (kbd "H") 'zp/toggle-org-agenda-dim-blocked-tasks)
-    (local-set-key (kbd "h") 'zp/toggle-org-agenda-todo-ignore-future)
-    (local-set-key (kbd "W") 'zp/toggle-org-agenda-projects-include-waiting)
-    (local-set-key (kbd "C-c C-x r") 'zp/org-agenda-set-appt-warntime)
-    (local-set-key (kbd "C-c C-x l") 'zp/org-agenda-set-location)
-    (local-set-key (kbd "C-c C-x d") 'zp/org-agenda-delete-property)
-    (local-set-key (kbd ">") 'zp/org-agenda-date-prompt-and-update-appt)
-    (local-set-key (kbd "C-c C-s") 'zp/org-agenda-schedule-and-update-appt)
-    ;; (local-set-key (kbd "C-c C-w") 'zp/org-agenda-refile)
-    (local-set-key (kbd "C-c C-S-w") 'zp/org-agenda-refile-with-paths)
-    (local-set-key (kbd "Z") 'org-resolve-clocks)
-    (local-set-key (kbd "C-<return>") 'org-agenda-switch-to)
-    (local-set-key (kbd "<return>") 'zp/org-agenda-tree-to-indirect-buffer-without-grabbing-focus)
-    (local-set-key (kbd "S-<return>") 'zp/org-agenda-tree-to-indirect-buffer)
-    (local-set-key (kbd "M-<return>") 'zp/org-agenda-tree-to-indirect-buffer-maximise)
-    (local-set-key (kbd "<backspace>") 'zp/org-kill-spawned-ibuf-and-window)
-
-    ;; Update org-super-agenda-header-map
-    (setq org-super-agenda-header-map org-agenda-mode-map))
-
-  (add-hook 'org-agenda-mode-hook #'zp/org-agenda-mode-config)
-
-  (global-set-key (kbd "H-o") #'zp/switch-to-agenda))
+  ;; Update ‘org-super-agenda-header-map’
+  (use-package org-super-agenda
+    :config
+    (setq org-super-agenda-header-map org-agenda-mode-map)))
 
 
 
 ;;----------------------------------------------------------------------------
 ;; org-capture
 ;;----------------------------------------------------------------------------
-
 (use-package org-capture
+  :commands zp/org-capture-web
+  :bind (("C-c n" . org-capture))
+  :hook ((org-capture-mode . zp/org-capture-make-full-frame)
+         (org-capture-prepare-finalize . zp/org-set-created-property))
+  :after org
   :config
   (setq org-default-notes-file "~/org/life.org")
 
@@ -5109,41 +4971,6 @@ TITLE and URL are those of the webpage."
     (let ((org-capture-templates zp/org-agenda-capture-templates))
       (org-agenda-capture arg)))
 
-  ;;------
-  ;; Handling ‘CREATED’
-  ;;------
-
-  (defvar org-created-property-name "CREATED"
-    "The name of the org-mode property that stores the creation date of the entry")
-
-  ;; TODO: Find the source for this because I’ve improved something which
-  ;; already existed
-  (defun zp/org-set-created-property (&optional active NAME)
-    "Set a property on the entry giving the creation time.
-
-By default the property is called CREATED. If given, the ‘NAME’
-argument will be used instead. If the property already exists, it
-will not be modified.
-
-If the function sets CREATED, it returns its value."
-    (interactive)
-    (let* ((created (or NAME org-created-property-name))
-           (fmt (if active "<%s>" "[%s]"))
-           (now (format fmt (format-time-string "%Y-%m-%d %a %H:%M")))
-           (is-capturing (and (boundp 'org-capture-mode) org-capture-mode))
-           (add-created (plist-get org-capture-plist :add-created)))
-      (unless (or (and is-capturing
-                       (not add-created))
-                  (org-entry-get (point) created nil))
-        (when is-capturing
-          (unless (buffer-narrowed-p)
-            (error "Buffer is not narrowed"))
-          (goto-char (point-min)))
-        (org-set-property created now)
-        now)))
-
-  (add-hook 'org-capture-prepare-finalize-hook #'zp/org-set-created-property)
-
   ;;------------------------------------------
   ;; Load extra minor modes based on template
   ;;------------------------------------------
@@ -5185,24 +5012,36 @@ If the function sets CREATED, it returns its value."
     "Maximise the org-capture frame if :full-frame is non-nil."
     (let ((full-frame (plist-get org-capture-plist :full-frame)))
       (if full-frame
-          (delete-other-windows))))
+          (delete-other-windows)))))
 
-  (add-hook 'org-capture-mode-hook 'zp/org-capture-make-full-frame)
-
-  ;;------
-  ;; Keys
-  ;;------
-
-  (global-set-key (kbd "C-c n") 'org-capture))
-
-
-
-
-;; ========================================
-;; ============== ORG-REFILE ==============
-;; ========================================
-
+;;----------------------------------------------------------------------------
+;; hydra-org-refile
+;;----------------------------------------------------------------------------
 (use-package hydra-org-refile
+  :commands (zp/org-jump-dwim
+             zp/org-refile-dwim
+             zp/hydra-org-refile)
+  :bind ("C-c C-j" . zp/hydra-org-jump)
+  :after (:any org org-capture)
+  :init
+  ;; ‘hydra-org-refile’ needs to modify the keymaps of ‘org-mode’,
+  ;; ‘org-agenda-mode’, and ‘org-capture-mode’, but since those packages are
+  ;; loaded lazily, we can’t simply add new key-bindings to their keymaps
+  ;; because they might have not been initialised.  Instead, we defer the
+  ;; feature-related key-binding assignments until their corresponding feature
+  ;; has been loaded.
+  (use-package org
+    :bind (:map org-mode-map
+                ("C-c C-j" . zp/org-jump-dwim )
+                ("C-c C-w" . zp/org-refile-dwim )))
+
+  (use-package org-agenda
+    :bind (:map org-agenda-mode-map
+                ("C-c C-w" . zp/hydra-org-refile )))
+
+  (use-package org-capture
+    :bind (:map org-capture-mode-map
+                ("C-c C-w" . zp/hydra-org-refile )))
   :config
   ;; Exclude separators in all org-refile commands
   (setq org-refile-target-verify-function
@@ -5438,21 +5277,11 @@ If the function sets CREATED, it returns its value."
      ("j" "~/org/life.org" "Music" "List of jazz pieces")
      ("o" "~/org/life.org" "Music" "List of other genres"))
     nil
-    media)
-
-  ;; Add key bindings
-  (global-set-key (kbd "C-c C-w") 'zp/hydra-org-refile)
-  (global-set-key (kbd "C-c C-j") 'zp/hydra-org-jump)
-  (define-key org-capture-mode-map (kbd "C-c C-w") 'zp/hydra-org-refile)
-  (define-key org-mode-map (kbd "C-c C-w") 'zp/org-refile-dwim)
-  (define-key org-agenda-mode-map (kbd "C-c C-w") 'zp/hydra-org-refile/body))
-
-
+    media))
 
 ;;----------------------------------------------------------------------------
 ;; org-ref
 ;;----------------------------------------------------------------------------
-
 (use-package org-ref
   :requires org
   :config
@@ -5461,12 +5290,9 @@ If the function sets CREATED, it returns its value."
         org-ref-default-bibliography '("~/org/bib/monty-python.bib")
         org-ref-pdf-directory "~/org/bib/pdf"))
 
-
-
 ;;----------------------------------------------------------------------------
 ;; org-brain
 ;;----------------------------------------------------------------------------
-
 ;; Disabled because I don’t use it
 (use-package org-brain
   :disabled
@@ -5478,12 +5304,9 @@ If the function sets CREATED, it returns its value."
   ;; (setq org-id-locations-file "~/.emacs.d/.org-id-locations")
   )
 
-
-
 ;; ========================================
 ;; ================= APPT =================
 ;; ========================================
-
 (use-package appt
   :config
   (appt-activate t)
@@ -5623,13 +5446,12 @@ Check their respective dosctrings for more info."
    after
    zp/org-set-appt-warntime-if-timestamp))
 
-
-
 ;;----------------------------------------------------------------------------
-;; ledger-mode
+;; ledger
 ;;----------------------------------------------------------------------------
-
 (use-package ledger-mode
+  :bind (:map ledger-mode-map
+              ("C-c C-d" . ledger-kill-current-transaction))
   :config
   (add-to-list 'auto-mode-alist '("\\.ledger$" . ledger-mode))
 
@@ -5687,32 +5509,59 @@ that date.  Leave point on the first amount."
     "Delete the transaction surrounging POS."
     (interactive "d")
     (let ((bounds (ledger-navigate-find-xact-extents pos)))
-      (kill-region (car bounds) (cadr bounds))))
+      (kill-region (car bounds) (cadr bounds)))))
 
-  (define-key ledger-mode-map (kbd "C-c C-d") #'ledger-kill-current-transaction))
-
-
-
-
-;; ========================================
-;; ================ MAGIT =================
-;; ========================================
-
+;;----------------------------------------------------------------------------
+;; magit
+;;----------------------------------------------------------------------------
 (use-package magit
+  :bind ("H-m" . magit-status)
   :config
   (setq magit-diff-refine-hunk 'all)
-  (magit-wip-mode)
+  (magit-wip-mode))
 
-  (global-set-key (kbd "H-m") #'magit-status))
-
-
-
-
-;; ========================================
-;; =============== CHRONOS ================
-;; ========================================
-
+;;----------------------------------------------------------------------------
+;; chronos
+;;----------------------------------------------------------------------------
 (use-package chronos
+  :bind (:map chronos-mode-map
+              (("a" . 'helm-chronos-add-timer)
+               ("A" . (lambda ()
+                        (interactive)
+                        (let ((zp/helm-chronos-add-relatively t))
+                          (helm-chronos-add-timer))))
+
+               ;; Quick keys
+               ("U" . (lambda ()
+                        (interactive)
+                        (zp/chronos-edit-quick "-0:00:05" "5 s")))
+               ("I" . (lambda ()
+                        (interactive)
+                        (zp/chronos-edit-quick "+0:00:05" "5 s")))
+               ("u" . (lambda ()
+                        (interactive)
+                        (zp/chronos-edit-quick "-0:00:15" "15 s")))
+               ("i" . (lambda ()
+                        (interactive)
+                        (zp/chronos-edit-quick "+0:00:15" "15 s")))
+               ("j" . (lambda ()
+                        (interactive)
+                        (zp/chronos-edit-quick "-0:01:00" "1 min")))
+               ("k" . (lambda ()
+                        (interactive)
+                        (zp/chronos-edit-quick "+0:01:00" "1 min")))
+               ("J" . (lambda ()
+                        (interactive)
+                        (zp/chronos-edit-quick "-0:05:00" "5 min")))
+               ("K" . (lambda ()
+                        (interactive)
+                        (zp/chronos-edit-quick "+0:05:00" "5 min")))
+               ("m" . (lambda ()
+                        (interactive)
+                        (zp/chronos-edit-quick "-0:10:00" "10 min")))
+               ("," . (lambda ()
+                        (interactive)
+                        (zp/chronos-edit-quick "+0:10:00" "10 min")))))
   :config
   (setq helm-chronos-recent-timers-limit 100
         helm-chronos-standard-timers
@@ -5778,56 +5627,15 @@ running."
                    no-running-timer)
               (eq arg '(4)))
           (quit-window 1)
-        (quit-window))))
+        (quit-window)))))
 
-  ;;------
-  ;; Keys
-  ;;------
-
-  (defun zp/chronos-mode-config ()
-    "Modify keymaps used by `org-mode'."
-    (local-set-key (kbd "U") (lambda ()
-                               (interactive)
-                               (zp/chronos-edit-quick "-0:00:05" "5 s")))
-    (local-set-key (kbd "I") (lambda ()
-                               (interactive)
-                               (zp/chronos-edit-quick "+0:00:05" "5 s")))
-    (local-set-key (kbd "u") (lambda ()
-                               (interactive)
-                               (zp/chronos-edit-quick "-0:00:15" "15 s")))
-    (local-set-key (kbd "i") (lambda ()
-                               (interactive)
-                               (zp/chronos-edit-quick "+0:00:15" "15 s")))
-    (local-set-key (kbd "j") (lambda ()
-                               (interactive)
-                               (zp/chronos-edit-quick "-0:01:00" "1 min")))
-    (local-set-key (kbd "k") (lambda ()
-                               (interactive)
-                               (zp/chronos-edit-quick "+0:01:00" "1 min")))
-    (local-set-key (kbd "J") (lambda ()
-                               (interactive)
-                               (zp/chronos-edit-quick "-0:05:00" "5 min")))
-    (local-set-key (kbd "K") (lambda ()
-                               (interactive)
-                               (zp/chronos-edit-quick "+0:05:00" "5 min")))
-    (local-set-key (kbd "m") (lambda ()
-                               (interactive)
-                               (zp/chronos-edit-quick "-0:10:00" "10 min")))
-    (local-set-key (kbd ",") (lambda ()
-                               (interactive)
-                               (zp/chronos-edit-quick "+0:10:00" "10 min")))
-    (local-set-key (kbd "a") 'helm-chronos-add-timer)
-    (local-set-key (kbd "A") (lambda ()
-                               (interactive)
-                               (let ((zp/helm-chronos-add-relatively t))
-                                 (helm-chronos-add-timer)))))
-
-  (add-hook 'chronos-mode-hook #'zp/chronos-mode-config))
-
-(use-package helm-chronos
+(use-package helm-chronos-patched
+  :bind (("H-;" . zp/switch-to-chronos)
+         ("H-M-;" . zp/switch-to-chronos-and-add))
   :requires chronos
   :config
   ;; Fix for adding new timers with helm-chronos
+  ;; TODO: Check if still necessary with ‘helm-chronos-patched’
   (defvar helm-chronos--fallback-source
     (helm-build-dummy-source "Enter <expiry time spec>/<message>"
       :filtered-candidate-transformer
@@ -5859,21 +5667,11 @@ If ADD is non-nil, prompt for a new timer upon switching."
 
 If switching to Chronos’s buffer, also add a timer."
     (interactive)
-    (zp/switch-to-chronos t))
-
-  ;;------
-  ;; Keys
-  ;;------
-
-  (global-set-key (kbd "H-;") #'zp/switch-to-chronos)
-  (global-set-key (kbd "H-M-;") #'zp/switch-to-chronos-and-add))
-
-
+    (zp/switch-to-chronos t)))
 
 ;;----------------------------------------------------------------------------
 ;; org-noter
 ;;----------------------------------------------------------------------------
-
 (use-package org-noter
   :config
   (setq org-noter-hide-other t
@@ -5936,12 +5734,9 @@ buffer, thereby propagating the indirectness."
   ;; TODO: Use ‘org-agenda-keymap’ instead of setting it globally
   (global-set-key (kbd "C-c N") 'zp/org-noter-dwim))
 
-
-
 ;;----------------------------------------------------------------------------
 ;; Psychotherapy
 ;;----------------------------------------------------------------------------
-
 (use-package psychotherapy
   :requires (org org-capture)
   :config
@@ -5976,12 +5771,9 @@ buffer, thereby propagating the indirectness."
   (add-to-list 'zp/org-capture-extra-minor-modes-alist
                '("D" . zp/psychotherapy-mode)))
 
-
-
 ;;----------------------------------------------------------------------------
 ;; Feedback sounds
 ;;----------------------------------------------------------------------------
-
 (use-package feedback-sounds
   :requires org
   :config
@@ -6001,6 +5793,9 @@ buffer, thereby propagating the indirectness."
 ;;----------------------------------------------------------------------------
 
 (use-package helm-bibtex
+  :bind (("H-y" . zp/helm-bibtex-with-local-bibliograph)
+         ("H-M-y" . zp/helm-bibtex-select-bib)
+         ("C-c D" . zp/bibtex-completion-message-key-last))
   :config
   ;; TODO: Modernise
   ;; A lot of this code is baby Elisp.
@@ -6200,32 +5995,18 @@ commas and space."
       (helm-attrset 'action new-action helm-source-bibtex)
       (helm-bibtex)
       ;; Wrapping with (progn (foo) nil) suppress the output
-      (progn (helm-attrset 'action previous-actions helm-source-bibtex) nil)))
-
-  ;;------
-  ;; Keys
-  ;;------
-
-  (global-set-key (kbd "H-y") #'zp/helm-bibtex-with-local-bibliography)
-  (global-set-key (kbd "H-M-y") #'zp/helm-bibtex-select-bib)
-  (global-set-key (kbd "C-c D") #'zp/bibtex-completion-message-key-last))
-
-
+      (progn (helm-attrset 'action previous-actions helm-source-bibtex) nil))))
 
 ;;----------------------------------------------------------------------------
 ;; Miscellaneous
 ;;----------------------------------------------------------------------------
-
 (defun zp/echo-buffer-name ()
   (interactive)
   (message (concat "Current buffer: " (replace-regexp-in-string "%" "%%" (buffer-name)))))
 
-
-
 ;;----------------------------------------------------------------------------
 ;; External
 ;;----------------------------------------------------------------------------
-
 ;; Source: https://gitlab.com/marcowahl/herald-the-mode-lined
 (defun herald-the-mode-line ()
   "Show the modeline in the minibuffer.
@@ -6256,8 +6037,9 @@ the beginning of the line."
 (global-set-key [remap move-beginning-of-line]
                 'move-beginning-of-line-dwim)
 
-
-
+;;----------------------------------------------------------------------------
+;; Mode-line
+;;----------------------------------------------------------------------------
 (use-package minions
   :config
   (minions-mode 1))
@@ -6271,15 +6053,6 @@ the beginning of the line."
 
   (moody-replace-mode-line-buffer-identification)
   (moody-replace-vc-mode))
-
-
-
-
-
-
-;;----------------------------------------------------------------------------
-;; Mode-line
-;;----------------------------------------------------------------------------
 
 (defvar ml-selected-window nil
   "Current selected window.")
@@ -6377,15 +6150,17 @@ mouse-1: Previous buffer\nmouse-3: Next buffer")
                     "  "
                     mode-line-end-spaces)))))
 
-
-
-
-
 ;;----------------------------------------------------------------------------
 ;; Theme
 ;;----------------------------------------------------------------------------
 
 (use-package theme
+  :demand
+  :bind (("C-c y" . zp/variable-pitch-mode)
+         ("C-c T" . zp/switch-emacs-theme)
+         :map zp/toggle-map
+         (("t" . zp/switch-emacs-theme)
+          ("c" . zp/helm-select-font-dwim)))
   :config
   ;; Fonts
   (zp/set-font "sarasa")
@@ -6393,20 +6168,12 @@ mouse-1: Previous buffer\nmouse-3: Next buffer")
 
   ;; Day/night cycle
   (setq zp/time-of-day-sections '("06:00" "08:00" "16:00" "20:00" "00:00"))
-  (zp/switch-theme-auto)
-
-  (define-key zp/toggle-map "t" #'zp/switch-emacs-theme)
-  (define-key zp/toggle-map "c" #'zp/helm-select-font-dwim)
-
-  (global-set-key (kbd "C-c y") 'zp/variable-pitch-mode)
-  (global-set-key (kbd "C-c T") 'zp/switch-emacs-theme))
-
+  (zp/switch-theme-auto))
 
 ;;----------------------------------------------------------------------------
 ;; Interaction with terminal emulators
 ;;----------------------------------------------------------------------------
-
-(defun zp/terminator-dwim (&optional arguments)
+(defun zp/terminator-dwim (&optional arg)
   "Run terminator in the CWD.
 
 Trim unnecessary TRAMP information from the path (e.g. /sudo:…),
@@ -6415,24 +6182,18 @@ accepted by terminator (e.g. ‘-x command’).
 
 See ‘~/.bin/terminator-dwim’ for more info."
   (interactive)
-  (let ((client-buffer (current-buffer))
-        (arg ARGUMENTS))
-    (with-current-buffer (window-buffer (selected-window))
-      (let* ((path-emacs default-directory)
-             (tramp-regex "/sudo:root@.*?:")
-             (path (replace-regexp-in-string
-                    tramp-regex "" path-emacs)))
-        (set-buffer client-buffer)
-        (shell-command
-         (concat "terminator --working-dir \"" path "\""
-                 (if arg (concat " " arg))))))))
-
-
+  (with-current-buffer (window-buffer (selected-window))
+    (let* ((path-emacs default-directory)
+           (tramp-regex "/sudo:root@.*?:")
+           (path (replace-regexp-in-string
+                  tramp-regex "" path-emacs)))
+      (shell-command
+       (concat "terminator --working-dir \"" path "\""
+               (if arg (concat " " arg)))))))
 
 ;;----------------------------------------------------------------------------
 ;; Late packages
 ;;----------------------------------------------------------------------------
-
 ;; Packages which are required to be loaded late
 ;; TODO: See if I can handle that with use-package
 
@@ -6470,12 +6231,9 @@ See ‘~/.bin/terminator-dwim’ for more info."
   (diminish 'magit-wip-mode)
   (diminish 'ws-butler-mode))
 
-
-
 ;;----------------------------------------------------------------------------
 ;; Custom
 ;;----------------------------------------------------------------------------
-
 (put 'upcase-region 'disabled nil)
 (put 'downcase-region 'disabled nil)
 (put 'narrow-to-region 'disabled nil)
