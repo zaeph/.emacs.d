@@ -6155,6 +6155,12 @@ mouse-1: Previous buffer\nmouse-3: Next buffer")
 ;;----------------------------------------------------------------------------
 
 (use-package theme
+  :demand
+  :bind (("C-c y" . zp/variable-pitch-mode)
+         ("C-c T" . zp/switch-emacs-theme)
+         :map zp/toggle-map
+         (("t" . zp/switch-emacs-theme)
+          ("c" . zp/helm-select-font-dwim)))
   :config
   ;; Fonts
   (zp/set-font "sarasa")
@@ -6162,13 +6168,7 @@ mouse-1: Previous buffer\nmouse-3: Next buffer")
 
   ;; Day/night cycle
   (setq zp/time-of-day-sections '("06:00" "08:00" "16:00" "20:00" "00:00"))
-  (zp/switch-theme-auto)
-
-  (define-key zp/toggle-map "t" #'zp/switch-emacs-theme)
-  (define-key zp/toggle-map "c" #'zp/helm-select-font-dwim)
-
-  (global-set-key (kbd "C-c y") 'zp/variable-pitch-mode)
-  (global-set-key (kbd "C-c T") 'zp/switch-emacs-theme))
+  (zp/switch-theme-auto))
 
 ;;----------------------------------------------------------------------------
 ;; Interaction with terminal emulators
