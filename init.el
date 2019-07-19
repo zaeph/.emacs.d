@@ -5786,12 +5786,9 @@ buffer, thereby propagating the indirectness."
   (add-hook 'zp/org-after-view-change-hook #'zp/play-sound-turn-page)
   (add-hook 'zp/org-after-refile-hook #'zp/play-sound-turn-page))
 
-
-
 ;;----------------------------------------------------------------------------
 ;; helm-bibtex
 ;;----------------------------------------------------------------------------
-
 (use-package helm-bibtex
   :bind (("H-y" . zp/helm-bibtex-with-local-bibliograph)
          ("H-M-y" . zp/helm-bibtex-select-bib)
@@ -6153,7 +6150,6 @@ mouse-1: Previous buffer\nmouse-3: Next buffer")
 ;;----------------------------------------------------------------------------
 ;; Theme
 ;;----------------------------------------------------------------------------
-
 (use-package theme
   :demand
   :bind (("C-c y" . zp/variable-pitch-mode)
