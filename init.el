@@ -6120,7 +6120,7 @@ mouse-1: Previous buffer\nmouse-3: Next buffer")
 ;; Interaction with terminal emulators
 ;;----------------------------------------------------------------------------
 
-(defun zp/terminator-dwim (&optional arguments)
+(defun zp/terminator-dwim (&optional arg)
   "Run terminator in the CWD.
 
 Trim unnecessary TRAMP information from the path (e.g. /sudo:…),
@@ -6129,17 +6129,14 @@ accepted by terminator (e.g. ‘-x command’).
 
 See ‘~/.bin/terminator-dwim’ for more info."
   (interactive)
-  (let ((client-buffer (current-buffer))
-        (arg arguments))
-    (with-current-buffer (window-buffer (selected-window))
-      (let* ((path-emacs default-directory)
-             (tramp-regex "/sudo:root@.*?:")
-             (path (replace-regexp-in-string
-                    tramp-regex "" path-emacs)))
-        (set-buffer client-buffer)
-        (shell-command
-         (concat "terminator --working-dir \"" path "\""
-                 (if arg (concat " " arg))))))))
+  (with-current-buffer (window-buffer (selected-window))
+    (let* ((path-emacs default-directory)
+           (tramp-regex "/sudo:root@.*?:")
+           (path (replace-regexp-in-string
+                  tramp-regex "" path-emacs)))
+      (shell-command
+       (concat "terminator --working-dir \"" path "\""
+               (if arg (concat " " arg)))))))
 
 
 
