@@ -1896,7 +1896,7 @@ return `nil'."
               ("C-c R" . org-display-inline-images))
   :config
   ;; Require dependencies
-  (require 'hydra-org-refile nil t)
+  ;; (require 'hydra-org-refile nil t)
 
   (setq org-agenda-inhibit-startup nil
         org-log-into-drawer "LOGBOOK-NOTES"
@@ -4964,9 +4964,18 @@ If the function sets CREATED, it returns its value."
 ;; hydra-org-refile
 ;;----------------------------------------------------------------------------
 (use-package hydra-org-refile
+  :commands (zp/org-jump-dwim
+             zp/org-refile-dwim
+             zp/hydra-org-refile)
   :bind ("C-c C-j" . zp/hydra-org-jump)
   :after (:any org org-capture)
-  :config
+  :init
+  ;; ‘hydra-org-refile’ needs to modify the keymaps of ‘org-mode’,
+  ;; ‘org-agenda-mode’, and ‘org-capture-mode’, but since those packages are
+  ;; loaded lazily, we can’t simply add new key-bindings to their keymaps
+  ;; because they might have not been initialised.  Instead, we defer the
+  ;; feature-related key-binding assignments until their corresponding feature
+  ;; has been loaded.
   (with-eval-after-load "org"
     (define-key org-mode-map (kbd "C-c C-j") #'zp/org-jump-dwim)
     (define-key org-mode-map (kbd "C-c C-w") #'zp/org-refile-dwim))
@@ -4976,7 +4985,7 @@ If the function sets CREATED, it returns its value."
 
   (with-eval-after-load "org-capture"
     (define-key org-capture-mode-map (kbd "C-c C-w") #'zp/hydra-org-refile))
-
+  :config
   ;; Exclude separators in all org-refile commands
   (setq org-refile-target-verify-function
         'zp/org-refile-target-verify-exclude-separators)
