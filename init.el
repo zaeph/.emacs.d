@@ -1892,9 +1892,6 @@ return `nil'."
               ("C-c C-x C-l" . zp/org-latex-preview-dwim)
               ("C-c R" . org-display-inline-images))
   :config
-  ;; Require dependencies
-  ;; (require 'hydra-org-refile nil t)
-
   (setq org-agenda-inhibit-startup nil
         org-log-into-drawer "LOGBOOK-NOTES"
         org-use-property-inheritance '("AGENDA_GROUP")
