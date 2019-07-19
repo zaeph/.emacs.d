@@ -6155,7 +6155,6 @@ mouse-1: Previous buffer\nmouse-3: Next buffer")
 ;;----------------------------------------------------------------------------
 
 (use-package theme
-  ;; :after diff-hl
   :config
   ;; Fonts
   (zp/set-font "sarasa")
