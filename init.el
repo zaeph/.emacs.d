@@ -399,9 +399,8 @@ time is displayed."
 
 ;; Start server
 (use-package server
-  :demand
   :config
-  ;; Start server or standalone
+  ;; Start server if it hasn’t been started already
   (if (server-running-p)
       (setq initial-scratch-message
             (concat initial-scratch-message
@@ -478,7 +477,6 @@ time is displayed."
 
 (use-package diff-hl
   :hook (dired-mode . diff-hl-dired-mode)
-  :demand
   :config
   (global-diff-hl-mode)
   (diff-hl-flydiff-mode))
@@ -748,8 +746,7 @@ If text is selected, adds furigana to the selected kanji instead."
   :config
   (global-set-key (kbd "C-c \\") #'picture-mode))
 
-(use-package hidpi-fringe-bitmaps
-  :demand)
+(use-package hidpi-fringe-bitmaps)
 
 (use-package thingatpt
   :bind (("C-c C-=" . increment-integer-at-point)
@@ -5458,7 +5455,6 @@ that date.  Leave point on the first amount."
 ;; magit
 ;;----------------------------------------------------------------------------
 (use-package magit
-  :demand
   :bind ("H-m" . magit-status)
   :config
   (setq magit-diff-refine-hunk 'all)
