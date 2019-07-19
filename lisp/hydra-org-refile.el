@@ -40,8 +40,6 @@
   (setq zp/hydra-org-refile-from
         (not zp/hydra-org-refile-from)))
 
-
-
 (defun zp/org-refile (&optional print-message jump)
   "Refile the current heading to another with completion.
 
