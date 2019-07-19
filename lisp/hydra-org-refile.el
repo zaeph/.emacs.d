@@ -466,7 +466,5 @@ Ensures that the toggles are set to their default variable."
      (zp/create-hydra-org-refile-protocol jump t
        ,name ,docstring ,targets ,heads ,back)))
 
-
-
 (provide 'hydra-org-refile)
 ;;; test.el ends here
