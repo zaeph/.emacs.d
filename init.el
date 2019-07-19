@@ -6170,11 +6170,9 @@ mouse-1: Previous buffer\nmouse-3: Next buffer")
   (global-set-key (kbd "C-c y") 'zp/variable-pitch-mode)
   (global-set-key (kbd "C-c T") 'zp/switch-emacs-theme))
 
-
 ;;----------------------------------------------------------------------------
 ;; Interaction with terminal emulators
 ;;----------------------------------------------------------------------------
-
 (defun zp/terminator-dwim (&optional arg)
   "Run terminator in the CWD.
 
@@ -6193,12 +6191,9 @@ See ‘~/.bin/terminator-dwim’ for more info."
        (concat "terminator --working-dir \"" path "\""
                (if arg (concat " " arg)))))))
 
-
-
 ;;----------------------------------------------------------------------------
 ;; Late packages
 ;;----------------------------------------------------------------------------
-
 ;; Packages which are required to be loaded late
 ;; TODO: See if I can handle that with use-package
 
@@ -6236,12 +6231,9 @@ See ‘~/.bin/terminator-dwim’ for more info."
   (diminish 'magit-wip-mode)
   (diminish 'ws-butler-mode))
 
-
-
 ;;----------------------------------------------------------------------------
 ;; Custom
 ;;----------------------------------------------------------------------------
-
 (put 'upcase-region 'disabled nil)
 (put 'downcase-region 'disabled nil)
 (put 'narrow-to-region 'disabled nil)
