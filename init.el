@@ -4716,7 +4716,16 @@ With a ‘C-u’ prefix, make a separate frame for this tree."
                         (prog1 (current-buffer)
                           (select-window (previous-window)))))))
       (with-current-buffer other
-        (zp/org-kill-spawned-ibuf)))))
+        (zp/org-kill-spawned-ibuf))))
+
+  ;;------
+  ;; Keys
+  ;;------
+
+  ;; Update ‘org-super-agenda-header-map’
+  (use-package org-super-agenda
+    :config
+    (setq org-super-agenda-header-map org-agenda-mode-map)))
 
 
 
