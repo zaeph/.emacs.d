@@ -2705,8 +2705,6 @@ indirect-buffers."
                         :scheduled nil))
       (:name "Appointments"
              :timestamp today)
-      (:name "Due soon"
-             :deadline t)
       (:name "Scheduled"
              :scheduled today)
       (:name "Subtasks"
@@ -3821,6 +3819,18 @@ agenda settings after them."
               (org-agenda-files nil)
               (org-agenda-span 'day))))
 
+  (defun zp/org-agenda-block-header-with-deadlines (header groups &optional file)
+    `(agenda ""
+             ((org-agenda-overriding-header
+               (zp/org-agenda-format-header-main ,header))
+              ,@(if file
+                    `((org-agenda-files ',file)))
+              (org-agenda-entry-types
+               '(:deadline))
+              (org-agenda-skip-function
+               '(zp/skip-tasks-not-belonging-to-agenda-groups ',groups))
+              (org-agenda-span 'day))))
+
   (defun zp/org-agenda-block-agenda-with-group-filter (header groups &optional file)
     `(agenda ""
              ((org-agenda-overriding-header
@@ -3960,8 +3970,8 @@ It creates 4 blocks:
 - A ‘tags-todo’ block displaying the non-stuck projects
 - A ‘tags-todo’ block displaying the stuck projects
 - A ‘tags-todo’ block displaying the tasks"
-    `(,(zp/org-agenda-block-header
-        header)
+    `(,(zp/org-agenda-block-header-with-deadlines
+        header groups file)
       ,(zp/org-agenda-block-projects-with-group-filter
         groups tags file)
       ,(zp/org-agenda-block-tasks-with-group-filter
