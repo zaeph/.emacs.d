@@ -176,47 +176,6 @@ If JUMP is non-nil, jump instead."
     (org-reveal)
     (org-beginning-of-line)))
 
-(defun zp/org-tree-to-indirect-buffer-folded (arg &optional dedicated bury)
-  "Clone tree to indirect buffer in a folded state.
-
-When called with a ‘C-u’ prefix or when DEDICATED is non-nil,
-create a dedicated frame."
-  (interactive "p")
-  (let* ((in-new-window (and arg
-                             (one-window-p)))
-         (org-indirect-buffer-display (if in-new-window
-                                          'other-window
-                                        'current-window))
-         (last-ibuf org-last-indirect-buffer)
-         (parent (current-buffer))
-         (parent-window (selected-window))
-         (dedicated (or dedicated
-                        (eq arg 4))))
-    (when dedicated
-      (setq org-last-indirect-buffer nil))
-    (when (and arg
-               zp/org-spawned-ibuf-mode)
-      (zp/org-ibuf-spawned-dedicate))
-    (org-tree-to-indirect-buffer)
-    (when in-new-window
-      (select-window (next-window))
-      (setq zp/org-ibuf-spawned-also-kill-window parent-window))
-    (if dedicated
-        (setq org-last-indirect-buffer last-ibuf)
-      (zp/org-spawned-ibuf-mode t))
-    (when bury
-      (switch-to-buffer parent nil t)
-      (bury-buffer))
-    (let ((org-startup-folded nil))
-      (org-set-startup-visibility))
-    (org-overview)
-    (org-show-entry)
-    (org-show-children)
-    (prog1 (selected-window)
-      (when arg
-        (message "Cloned tree to indirect buffer.")
-        (run-hooks 'zp/org-after-view-change-hook)))))
-
 (defun zp/org-refile-to-other-buffer (&optional print-message)
   "Refile current heading to another within the other window’s buffer."
   (interactive)
