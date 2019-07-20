@@ -134,15 +134,11 @@ If JUMP is non-nil, jump to it instead."
         nil
       t)))
 
-(defvar zp/org-refile-target-verify-restricted--min nil)
+(defun zp/org-refile-target-verify-restriction (min max)
+  "Exclude refile targets which aren’t in the current restriction.
 
-(defvar zp/org-refile-target-verify-restricted--max nil)
-
-(defun zp/org-refile-target-verify-restricted ()
-  "Exclude refile targets which aren’t in the current restriction."
-  (let ((regex "^\\* -+.*-+$")
-        (min zp/org-refile-target-verify-restricted--min)
-        (max zp/org-refile-target-verify-restricted--max))
+MIN and MAX should be the positions of the restriction."
+  (let ((regex "^\\* -+.*-+$"))
     ;; (message (buffer-substring-no-properties (point) (line-end-position)))
     (cond ((< (point) min)
            (goto-char min)
@@ -158,14 +154,13 @@ If JUMP is non-nil, jump to it instead."
 
 If JUMP is non-nil, jump instead."
   (interactive "p")
-  (let ((org-refile-targets '((nil :maxlevel . 9)))
-        (org-refile-target-verify-function #'zp/org-refile-target-verify-restricted)
-        (min (point-min))
-        (max (point-max))
-        target)
-    ;; Storing restriction in dynamic variables
-    (setq zp/org-refile-target-verify-restricted--min min
-          zp/org-refile-target-verify-restricted--max max)
+  (let* ((org-refile-targets '((nil :maxlevel . 9)))
+         (min (point-min))
+         (max (point-max))
+         (org-refile-target-verify-function
+          (lambda ()
+            (zp/org-refile-target-verify-restriction min max)))
+         target)
     (zp/org-refile print-message jump)))
 
 (defun zp/org-jump-restricted (&optional print-message)
