@@ -3106,6 +3106,35 @@ With a prefix argument, do so in all agenda buffers."
               (setq has-subtask t))))
         (and is-a-task has-subtask))))
 
+  (defun zp/is-project-p (&optional exclude-empty)
+    "Any task with a todo keyword subtask.
+
+When EXCLUDE-EMPTY is non-nil, tasks which only have finished
+sub-tasks (i.e. their todo-keywords is an elem of ‘org-done-keywords’) will not be
+considered as projects."
+    (save-restriction
+      (widen)
+      (let ((has-subtask)
+            (subtree-end (save-excursion (org-end-of-subtree t)))
+            (is-a-task (member (nth 2 (org-heading-components)) org-todo-keywords-1)))
+        (save-excursion
+          (forward-line 1)
+          (while (and (not has-subtask)
+                      (< (point) subtree-end)
+                      (re-search-forward "^\*+ " subtree-end t))
+            (when (and (member (org-get-todo-state) org-todo-keywords-1)
+                       (if (not exclude-empty) t
+                         (let ((done-list (delete-dups org-done-keywords)))
+                           (catch 'done
+                             (mapc (lambda (todo)
+                                     (when (string-match-p todo (org-get-todo-state))
+                                       (throw 'done t)))
+                                   done-list)
+                             ;; Return nil if we didn’t match anything
+                             nil))))
+              (setq has-subtask t))))
+        (and is-a-task has-subtask))))
+
   (defun bh/is-project-subtree-p ()
     "Any task with a todo keyword that is in a project subtree.
 Callers of this function already widen the buffer view."
@@ -3276,7 +3305,7 @@ agenda.")
       (when zp/org-agenda-skip-functions-debug
         (message "SNSP: %s" (org-entry-get (point) "ITEM")))
       (let ((next-headline (save-excursion (or (outline-next-heading) (point-max)))))
-        (if (bh/is-project-p)
+        (if (zp/is-project-p t)
             (let* ((subtree-end (save-excursion (org-end-of-subtree t)))
                    (is-waiting (string-match-p "WAIT" (org-get-todo-state)))
                    (has-next))
@@ -3316,7 +3345,7 @@ agenda.")
       (widen)
       (let ((subtree-end (save-excursion (org-end-of-subtree t))))
         (cond
-         ((bh/is-project-p)
+         ((zp/is-project-p t)
           nil)
          ((and (bh/is-project-subtree-p) (not (bh/is-task-p)))
           nil)
