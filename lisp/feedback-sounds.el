@@ -27,8 +27,5 @@
 (defun zp/play-sound-turn-page ()
   (start-process-shell-command "play-sound" nil "notification-sound-org page"))
 
-(defun zp/movement--play-sound-turn-page ()
-  (zp/play-sound-turn-page))
-
 (provide 'feedback-sounds)
 ;;; feedback-sounds.el ends here
