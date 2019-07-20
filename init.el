@@ -4733,7 +4733,8 @@ With a ‘C-u’ prefix, make a separate frame for this tree."
 ;; org-capture
 ;;----------------------------------------------------------------------------
 (use-package org-capture
-  :commands zp/org-capture-web
+  :commands (zp/org-capture-web
+             zp/org-agenda-capture)
   :bind (("C-c n" . org-capture))
   :hook ((org-capture-mode . zp/org-capture-make-full-frame)
          (org-capture-prepare-finalize . zp/org-set-created-property))
