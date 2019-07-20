@@ -1,4 +1,4 @@
-;;; theme.el --- Custom theme with day/night cycle -*- lexical-binding: t; -*-
+;;; theme.el --- Custom theme with day/night cycle  -*- lexical-binding: t; -*-
 ;;; Commentary:
 
 ;;; Code:
