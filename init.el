@@ -3309,11 +3309,11 @@ group-heads (i.e. with a STBY todo-keyword) from being considered
 as regular projects."
     (save-restriction
       (widen)
-      (and (zp/is-task-p)
-           (save-excursion
-             (and (org-up-heading-safe)
-                  (zp/is-project-p)
-                  (not (zp/is-group-head-p)))))))
+      (save-excursion
+        (and (zp/is-task-p)
+             (org-up-heading-safe)
+             (zp/is-project-p)
+             (not (zp/is-group-head-p))))))
 
   ;;---------
   ;; Sorting
