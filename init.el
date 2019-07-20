@@ -2762,7 +2762,7 @@ indirect-buffers."
     (let ((marker (or (get-text-property 0 'org-marker item)
                       (get-text-property 0 'org-hd-marker item))))
       (org-with-point-at marker
-        (zp/org-project-stuck-p))))
+        (zp/is-stuck-project-p))))
 
   (defun zp/org-super-agenda-projects ()
     '((:name "Group heads"
@@ -3087,13 +3087,6 @@ With a prefix argument, do so in all agenda buffers."
   ;; Inspired by Bernst Hansen’s helper functions.
   ;; Source: http://doc.norang.ca/org-mode.html
 
-
-  (defvar zp/fluid-project-definition t
-  "When t, a project with no remaining subtasks become a task.
-
-When nil, a project with no remaining subtasks will be considered
-stuck.")
-
   (defun zp/org-task-in-agenda-groups-p (groups &optional match-groupless pom)
     "Test whether a task is in agenda-group matched by GROUPS.
 
@@ -3160,72 +3153,104 @@ trees."
            (t
             (goto-char (point-max))))))))
 
+  (defvar zp/fluid-project-definition t
+    "When t, a project with no remaining subtasks become a task.
+
+When nil, a project with no remaining subtasks will be considered
+stuck.")
+
   (defun zp/identify-task-type ()
-  "Identify the type of the task at point.
+    "Identify the type of the task at point.
 
-- If the task has at least one subtask, return 'project.
+- If the task at point has at least one subtask, return 'project.
 
-- If the task does not have any subtask, return 'task.
+- If the task at point does not have any subtask, return 'task.
+
+- Return nil if point is not on a task.
 
 When ‘zp/fluid-project-definition’ is non-nil, projects with no
-remaining subtasks become tasks.
-
-Return nil if point is not on a task."
-  (save-restriction
-    (widen)
-    (let ((has-subtask)
-          (subtree-end (save-excursion (org-end-of-subtree t)))
-          (is-a-task (member (nth 2 (org-heading-components)) org-todo-keywords-1))
-          (fluid zp/fluid-project-definition))
-      (save-excursion
-        (forward-line 1)
-        (while (and (not has-subtask)
-                    (< (point) subtree-end)
-                    (re-search-forward "^\*+ " subtree-end t))
-          (when (and (member (org-get-todo-state) org-todo-keywords-1)
-                     (if fluid (not (org-entry-is-done-p)) t))
-            (setq has-subtask t))))
-      (cond ((and is-a-task has-subtask)
-             'project)
-            (is-a-task
-             'task)))))
+remaining subtasks are considered as tasks.  We say it is ‘fluid’ because
+a tree can go back-and-forth between being a task and being a project."
+    (save-restriction
+      (widen)
+      (let ((has-subtask)
+            (subtree-end (save-excursion (org-end-of-subtree t)))
+            (is-a-task (member (nth 2 (org-heading-components)) org-todo-keywords-1))
+            (fluid zp/fluid-project-definition))
+        (save-excursion
+          (forward-line 1)
+          (while (and (not has-subtask)
+                      (< (point) subtree-end)
+                      (re-search-forward "^\*+ " subtree-end t))
+            (when (and (member (org-get-todo-state) org-todo-keywords-1)
+                       (if fluid (not (org-entry-is-done-p)) t))
+              (setq has-subtask t))))
+        (cond ((and is-a-task has-subtask)
+               'project)
+              (is-a-task
+               'task)))))
 
   (defun zp/is-project-p ()
+    "Return t if the tree at point is a project."
     (eq (zp/identify-task-type) 'project))
 
   (defun zp/is-task-p ()
+    "Return t if the item at point is a task."
     (eq (zp/identify-task-type) 'task))
 
-  (defun zp/org-project-stuck-p ()
-    "Skip trees that are not stuck projects"
+  (defun zp/is-stuck-project-p ()
+    "Return t if the project at point is stuck.
+
+A project is considered to be stuck if it any of the following
+condition is not true:
+
+- The project (or any of its subprojects) does not have a task
+  with a NEXT todo-keyword.  In GTD lingo, this means that the
+  project has no ‘next action’.
+
+- The project (or any of its subprojects) does not have a task
+  with a STRT todo-keyword.  In GTD lingo, this means that an
+  action is underway.
+
+- The project is waiting (i.e. it has a WAIT todo-keyword) but
+  has no waiting task.  This is to ensure that a project marked
+  as waiting is actually waiting for something."
     (save-restriction
       (widen)
       (when zp/org-agenda-skip-functions-debug
         (message "SNSP: %s" (org-entry-get (point) "ITEM")))
-      (let ((next-headline (save-excursion (or (outline-next-heading) (point-max)))))
-        (let* ((subtree-end (save-excursion (org-end-of-subtree t)))
-               (is-waiting (string-match-p "WAIT" (org-get-todo-state)))
-               (has-next))
-          (save-excursion
-            (forward-line 1)
-            (while (and (not has-next)
-                        (< (point) subtree-end)
-                        (if is-waiting
-                            (re-search-forward "^\\*+ \\(WAIT\\) " subtree-end t)
-                          (re-search-forward "^\\*+ \\(NEXT\\|STRT\\) " subtree-end t)))
-              (setq has-next t)))
-          (if has-next
-              nil
-            next-headline)))))
+      (let ((subtree-end (save-excursion (org-end-of-subtree t)))
+            (is-waiting (string= (nth 2 (org-heading-components)) "WAIT"))
+            (has-next))
+        (save-excursion
+          (forward-line 1)
+          (while (and (not has-next)
+                      (< (point) subtree-end)
+                      (if is-waiting
+                          (re-search-forward "^\\*+ \\(WAIT\\) " subtree-end t)
+                        (re-search-forward "^\\*+ \\(NEXT\\|STRT\\) " subtree-end t)))
+            (setq has-next t)))
+        (if has-next
+            nil
+          t))))
 
   (defun zp/is-waiting-p ()
+    "Return t if the item/tree at point is waiting for something."
     (member "waiting" (org-get-tags-at)))
 
   (defvar zp/org-agenda-include-waiting nil
-    "When t, includes stuck projects with a waiting task in the
-agenda.")
+    "When t, include waiting item/trees in the agenda.")
 
   (defun zp/skip-waiting ()
+    "Skip items/trees which are waiting for something.
+
+An item or a tree are considered to be waiting for something when they
+have the :waiting: tag.
+
+Note that this function only checks the tag of those items/trees.
+This means that waiting project will *not* be validated by
+checking whether they have a waiting subtask (i.e. with a WAIT
+todo-keyword)."
     (save-restriction
       (widen)
       (let ((next-headline (save-excursion (or (outline-next-heading)
@@ -3236,7 +3261,7 @@ agenda.")
           nil))))
 
   (defun zp/skip-non-projects ()
-    "Skip trees that are not projects"
+    "Skip trees which aren’t projects."
     (save-restriction
       (widen)
       (let ((subtree-end (save-excursion (org-end-of-subtree t))))
@@ -3249,8 +3274,7 @@ agenda.")
           subtree-end)))))
 
   (defun zp/skip-non-tasks (&optional subtasks)
-    "Show non-project tasks.
-Skip projects and habits.
+    "Skip items which aren’t tasks.
 
 When SUBTASKS is non-nil, also skip project subtasks."
     (save-restriction
