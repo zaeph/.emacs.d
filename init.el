@@ -5632,8 +5632,8 @@ running."
         (quit-window)))))
 
 (use-package helm-chronos-patched
-  :bind (("H-;" . zp/switch-to-chronos)
-         ("H-M-;" . zp/switch-to-chronos-and-add))
+  :bind (("H-;" . zp/switch-to-chronos-dwim)
+         ("H-M-;" . zp/helm-chronos-add))
   :requires chronos
   :config
   ;; Fix for adding new timers with helm-chronos
@@ -5650,26 +5650,55 @@ running."
                                      (message "No timer")
                                    (helm-chronos--parse-string-and-add-timer helm-pattern)))))))
 
-  (defun zp/switch-to-chronos (add)
-    "Switch to and from Chronos’s buffer.
+  (defun zp/switch-to-chronos (&optional print-message)
+    "Switch to and from chronos’s main buffer.
 
-If ADD is non-nil, prompt for a new timer upon switching."
-    (interactive "P")
-    (cond ((string-match "*chronos*" (buffer-name))
-           (zp/chronos-quit))
-          ((get-buffer "*chronos*")
-           (switch-to-buffer "*chronos*")
-           (when add
-             (helm-chronos-add-timer)))
+Also initialise chronos if it wasn’t live.
+
+Return t when switching to chronos, nil otherwise."
+    (interactive "p")
+    (cond ((derived-mode-p 'chronos-mode)
+           (zp/chronos-quit)
+           (when print-message
+             (message "Exited chronos."))
+           nil)
           (t
-           (chronos-initialize))))
+           (if-let ((buffer (get-buffer "*chronos*")))
+               (switch-to-buffer buffer)
+             (chronos-initialize))
+           (when print-message
+             (message "Switched to chronos."))
+           t)))
 
-  (defun zp/switch-to-chronos-and-add ()
-    "Switch to and from Chronos’s buffer.
+  (defun zp/helm-chronos-add (&optional arg visit)
+    "Add a new chronos timer with ‘helm-chronos-add-timer’.
 
-If switching to Chronos’s buffer, also add a timer."
-    (interactive)
-    (zp/switch-to-chronos t)))
+This wrapper displays the current list of timers in the current
+buffer.
+
+With a ‘C-u’ argument or when VISIT is non-nil, stay in chronos
+after adding the timer."
+    (interactive "p")
+    (let ((in-chronos (derived-mode-p 'chronos-mode)))
+      (unless in-chronos
+        (zp/switch-to-chronos))
+      (helm-chronos-add-timer)
+      (unless (or visit
+                  (eq arg 4))
+        (zp/chronos-quit)))
+    (when arg
+      (message "Timer has been added.")))
+
+  (defun zp/switch-to-chronos-dwim (arg &optional add-only)
+    "Conditionally switch to and from chronos’s main buffer.
+
+With a ‘C-u’ argument or when ADD-ONLY is non-nil, only visit
+chronos’s main buffer for adding a new timer."
+    (interactive "p")
+    (if (or add-only
+            (eq arg 4))
+        (zp/helm-chronos-add (when arg 1))
+      (zp/switch-to-chronos arg))))
 
 ;;----------------------------------------------------------------------------
 ;; org-noter
