@@ -5531,6 +5531,7 @@ that date.  Leave point on the first amount."
                         (interactive)
                         (let ((zp/helm-chronos-add-relatively t))
                           (helm-chronos-add-timer))))
+               ("q" . zp/chronos-quit)
 
                ;; Quick keys
                ("U" . (lambda ()
