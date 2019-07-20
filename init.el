@@ -3084,11 +3084,9 @@ With a prefix argument, do so in all agenda buffers."
   ;; Skipping
   ;;----------
 
-  ;; Taken from & Inspired by Bernst Hansen’s helper functions
+  ;; Inspired by Bernst Hansen’s helper functions.
   ;; Source: http://doc.norang.ca/org-mode.html
 
-  ;; Functions prefixed by bh are Bernst Hansen’s
-  ;; Functions prefixed by zp are my own
 
   (defvar zp/fluid-project-definition t
   "When t, a project with no remaining subtasks become a task.
