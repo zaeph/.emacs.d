@@ -3124,14 +3124,9 @@ considered as projects."
                       (re-search-forward "^\*+ " subtree-end t))
             (when (and (member (org-get-todo-state) org-todo-keywords-1)
                        (if (not exclude-empty) t
-                         (let ((done-list (delete-dups org-done-keywords)))
-                           (catch 'done
-                             (mapc (lambda (todo)
-                                     (when (string-match-p todo (org-get-todo-state))
-                                       (throw 'done t)))
-                                   done-list)
-                             ;; Return nil if we didn’t match anything
-                             nil))))
+                         (not (let ((todo (nth 2 (org-heading-components)))
+                                    (done-list (delete-dups org-done-keywords)))
+                                (member todo done-list)))))
               (setq has-subtask t))))
         (and is-a-task has-subtask))))
 
