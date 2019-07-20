@@ -5242,6 +5242,7 @@ that date.  Leave point on the first amount."
 ;; chronos
 ;;----------------------------------------------------------------------------
 (use-package chronos
+  :demand
   :bind (:map chronos-mode-map
               (("a" . 'helm-chronos-add-timer)
                ("A" . (lambda ()
