@@ -154,7 +154,7 @@ If JUMP is non-nil, jump instead."
   (interactive "p")
   (let ((org-refile-targets '((nil :maxlevel . 9)))
         ;; (org-refile-use-outline-path t)
-        (org-refile-target-verify-function 'zp/org-refile-target-verify-restricted)
+        (org-refile-target-verify-function #'zp/org-refile-target-verify-restricted)
         target
         ;; Restriction info for verify function
         (min (point-min))
