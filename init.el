@@ -3106,26 +3106,38 @@ With a prefix argument, do so in all agenda buffers."
               (setq has-subtask t))))
         (and is-a-task has-subtask))))
 
-  (defun zp/is-project-p (&optional include-all-done)
-    "Any task with a todo keyword subtask.
+  (defun zp/identify-task-type ()
+  "Identify the type of the task at point.
 
-When INCLUDE-ALL-DONE is non-nil, tasks which only have finished
-sub-tasks (i.e. their todo-keywords is an elem of
-‘org-done-keywords’) will also be considered as projects."
-    (save-restriction
-      (widen)
-      (let ((has-subtask)
-            (subtree-end (save-excursion (org-end-of-subtree t)))
-            (is-a-task (member (nth 2 (org-heading-components)) org-todo-keywords-1)))
-        (save-excursion
-          (forward-line 1)
-          (while (and (not has-subtask)
-                      (< (point) subtree-end)
-                      (re-search-forward "^\*+ " subtree-end t))
-            (when (and (member (org-get-todo-state) org-todo-keywords-1)
-                       (if include-all-done t (not (org-entry-is-done-p))))
-              (setq has-subtask t))))
-        (and is-a-task has-subtask))))
+- If the task has at least one subtask, return 'project.
+
+- If the task does not have any subtask, return 'task.
+
+When ‘zp/fluid-project-definition’ is non-nil, projects with no
+remaining subtasks become tasks.
+
+Return nil if point is not on a task."
+  (save-restriction
+    (widen)
+    (let ((has-subtask)
+          (subtree-end (save-excursion (org-end-of-subtree t)))
+          (is-a-task (member (nth 2 (org-heading-components)) org-todo-keywords-1))
+          (fluid zp/fluid-project-definition))
+      (save-excursion
+        (forward-line 1)
+        (while (and (not has-subtask)
+                    (< (point) subtree-end)
+                    (re-search-forward "^\*+ " subtree-end t))
+          (when (and (member (org-get-todo-state) org-todo-keywords-1)
+                     (if fluid (not (org-entry-is-done-p)) t))
+            (setq has-subtask t))))
+      (cond ((and is-a-task has-subtask)
+             'project)
+            (is-a-task
+             'task)))))
+
+  (defun zp/is-project-p ()
+    (eq (zp/identify-task-type) 'project))
 
   (defun bh/is-project-subtree-p ()
     "Any task with a todo keyword that is in a project subtree.
@@ -3154,27 +3166,8 @@ Callers of this function already widen the buffer view."
               (setq has-subtask t))))
         (and is-a-task (not has-subtask)))))
 
-  (defun zp/is-task-p (&optional exclude-all-done)
-  "Any task with a todo keyword and no subtask.
-
-When EXCLUDE-ALL-DONE is non-nil, tasks which only have finished
-sub-tasks (i.e. their todo-keywords is an elem of
-‘org-done-keywords’) will be considered as projects rather than
-tasks."
-  (save-restriction
-    (widen)
-    (let ((has-subtask)
-          (subtree-end (save-excursion (org-end-of-subtree t)))
-          (is-a-task (member (nth 2 (org-heading-components)) org-todo-keywords-1)))
-      (save-excursion
-        (forward-line 1)
-        (while (and (not has-subtask)
-                    (< (point) subtree-end)
-                    (re-search-forward "^\*+ " subtree-end t))
-          (when (and (member (org-get-todo-state) org-todo-keywords-1)
-                     (if exclude-all-done t (not (org-entry-is-done-p))))
-            (setq has-subtask t))))
-      (and is-a-task (not has-subtask)))))
+  (defun zp/is-task-p ()
+    (eq (zp/identify-task-type) 'task))
 
   (defun bh/is-subproject-p ()
     "Any task which is a subtask of another project"
@@ -3352,16 +3345,16 @@ agenda.")
               subtree-end))))
       (save-excursion (org-end-of-subtree t))))
 
-  (defun zp/skip-non-projects (&optional include-all-done)
+  (defun zp/skip-non-projects ()
     "Skip trees that are not projects"
     ;; (bh/list-sublevels-for-projects-indented)
     (save-restriction
       (widen)
       (let ((subtree-end (save-excursion (org-end-of-subtree t))))
         (cond
-         ((zp/is-project-p include-all-done)
+         ((zp/is-project-p)
           nil)
-         ((and (bh/is-project-subtree-p) (not (bh/is-task-p)))
+         ((and (bh/is-project-subtree-p) (not (zp/is-task-p)))
           nil)
          (t
           subtree-end)))))
@@ -3404,7 +3397,7 @@ Skip project and sub-project tasks, habits, and project related tasks."
                   (bh/is-project-p)
                   (not (zp/is-group-head-p)))))))
 
-  (defun zp/skip-non-tasks (&optional subtasks exclude-all-done)
+  (defun zp/skip-non-tasks (&optional subtasks)
     "Show non-project tasks.
 Skip projects and habits.
 
@@ -3421,7 +3414,7 @@ When SUBTASKS is non-nil, also skip project subtasks."
          ((and subtasks
                (zp/is-subtask-p))
           next-headline)
-         ((and (zp/is-task-p exclude-all-done)
+         ((and (zp/is-task-p)
                (not (org-is-habit-p)))
           nil)
          (t
