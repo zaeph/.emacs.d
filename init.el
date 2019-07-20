@@ -5351,7 +5351,7 @@ running."
 (use-package helm-chronos-patched
   :bind (("H-;" . zp/switch-to-chronos-dwim)
          ("H-M-;" . zp/helm-chronos-add))
-  :requires chronos
+  :after chronos
   :config
   ;; Fix for adding new timers with helm-chronos
   ;; TODO: Check if still necessary with ‘helm-chronos-patched’
