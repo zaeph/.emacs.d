@@ -2512,22 +2512,6 @@ along with effort estimates and total time."
   (defface org-todo-wait '((t)) nil)
   (defface org-todo-cxld '((t)) nil)
 
-  (defun zp/org-todo-format-face (type face colour)
-    (cond ((string= type "box")
-           (set-face-attribute face nil
-                               :box '(:line-width -3 :style released-button)
-                               :height 0.8
-                               :weight 'bold
-                               :foreground "white"
-                               :background colour))
-          ((string= type "normal")
-           (set-face-attribute face nil
-                               :box nil
-                               :height 0.8
-                               :background nil
-                               :weight 'bold
-                               :foreground colour))))
-
   (defface org-priority-face-a '((t)) nil)
   (defface org-priority-face-b '((t)) nil)
   (defface org-priority-face-c '((t)) nil)
@@ -2538,21 +2522,7 @@ along with effort estimates and total time."
   (defface org-tag-todo '((t :inherit 'org-tag)) nil)
   (defface org-tag-important '((t :inherit 'org-tag)) nil)
   (defface org-tag-curios '((t :inherit 'org-tag)) nil)
-  (defface org-tag-french '((t :inherit 'org-tag)) nil)
-
-  (defun zp/org-format-face (face &rest args)
-    (let ((foreground (plist-get args :foreground))
-          (weight (plist-get args :weight))
-          (background (plist-get args :background)))
-      (if (bound-and-true-p foreground)
-          (set-face-attribute face nil :foreground foreground)
-        (set-face-attribute face nil :foreground nil))
-      (if (bound-and-true-p background)
-          (set-face-attribute face nil :background background)
-        (set-face-attribute face nil :background nil))
-      (if (bound-and-true-p weight)
-          (set-face-attribute face nil :weight weight)
-        (set-face-attribute face nil :weight 'normal)))))
+  (defface org-tag-french '((t :inherit 'org-tag)) nil))
 
 ;; Babel
 (use-package ob-async

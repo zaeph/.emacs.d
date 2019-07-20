@@ -4,6 +4,25 @@
 ;;; Code:
 
 ;;----------------------------------------------------------------------------
+;; Helper functions
+;;----------------------------------------------------------------------------
+(defun zp/org-todo-format-face (type face colour)
+    (cond ((string= type "box")
+           (set-face-attribute face nil
+                               :box '(:line-width -3 :style released-button)
+                               :height 0.8
+                               :weight 'bold
+                               :foreground "white"
+                               :background colour))
+          ((string= type "normal")
+           (set-face-attribute face nil
+                               :box nil
+                               :height 0.8
+                               :background nil
+                               :weight 'bold
+                               :foreground colour))))
+
+;;----------------------------------------------------------------------------
 ;; Theme definition
 ;;----------------------------------------------------------------------------
 (defvar zp/emacs-theme nil
@@ -52,20 +71,20 @@
   (zp/org-todo-format-face 'normal 'org-todo-wait "Skyblue4")
   (zp/org-todo-format-face 'normal 'org-todo-cxld "turquoise")
 
-  (zp/org-format-face 'org-priority-face-a :foreground "white" :background "darkred")
-  (zp/org-format-face 'org-priority-face-b :foreground "darkred")
-  (zp/org-format-face 'org-priority-face-c :foreground "yellow")
-  (zp/org-format-face 'org-priority-face-d :foreground "ForestGreen")
-  (zp/org-format-face 'org-priority-face-e :foreground "RoyalBlue")
+  (set-face-attribute 'org-priority-face-a nil :foreground "white" :background "darkred")
+  (set-face-attribute 'org-priority-face-b nil :foreground "darkred")
+  (set-face-attribute 'org-priority-face-c nil :foreground "yellow")
+  (set-face-attribute 'org-priority-face-d nil :foreground "ForestGreen")
+  (set-face-attribute 'org-priority-face-e nil :foreground "RoyalBlue")
 
-  (zp/org-format-face 'org-tag-location  :weight 'bold :foreground "BlueViolet")
-  (zp/org-format-face 'org-tag-todo   :weight 'bold :foreground "Skyblue4")
-  (zp/org-format-face 'org-tag-important :weight 'bold :foreground "darkred")
-  (zp/org-format-face 'org-tag-curios   :weight 'bold :foreground "DeepPink")
-  (zp/org-format-face 'org-tag-french    :weight 'bold :foreground "DodgerBlue1")
+  (set-face-attribute 'org-tag-location nil  :weight 'bold :foreground "BlueViolet")
+  (set-face-attribute 'org-tag-todo nil   :weight 'bold :foreground "Skyblue4")
+  (set-face-attribute 'org-tag-important nil :weight 'bold :foreground "darkred")
+  (set-face-attribute 'org-tag-curios nil   :weight 'bold :foreground "DeepPink")
+  (set-face-attribute 'org-tag-french nil    :weight 'bold :foreground "DodgerBlue1")
 
   (with-eval-after-load "magit"
-    (zp/org-format-face 'magit-tag :foreground "SpringGreen4"))
+    (set-face-attribute 'magit-tag nil :foreground "SpringGreen4"))
 
   (zp/org-super-agenda-update-face)
 
@@ -120,20 +139,20 @@
   (zp/org-todo-format-face 'normal 'org-todo-wait "Skyblue4")
   (zp/org-todo-format-face 'normal 'org-todo-cxld "turquoise")
 
-  (zp/org-format-face 'org-priority-face-a :foreground "white" :background "red")
-  (zp/org-format-face 'org-priority-face-b :foreground "red")
-  (zp/org-format-face 'org-priority-face-c :foreground "gold3")
-  (zp/org-format-face 'org-priority-face-d :foreground "ForestGreen")
-  (zp/org-format-face 'org-priority-face-e :foreground "RoyalBlue")
+  (set-face-attribute 'org-priority-face-a nil :foreground "white" :background "red")
+  (set-face-attribute 'org-priority-face-b nil :foreground "red")
+  (set-face-attribute 'org-priority-face-c nil :foreground "gold3")
+  (set-face-attribute 'org-priority-face-d nil :foreground "ForestGreen")
+  (set-face-attribute 'org-priority-face-e nil :foreground "RoyalBlue")
 
-  (zp/org-format-face 'org-tag-location  :weight 'bold :foreground "BlueViolet")
-  (zp/org-format-face 'org-tag-todo      :weight 'bold :foreground "Skyblue1")
-  (zp/org-format-face 'org-tag-important :weight 'bold :foreground "red")
-  (zp/org-format-face 'org-tag-curios   :weight 'bold :foreground "DeepPink")
-  (zp/org-format-face 'org-tag-french    :weight 'bold :foreground "DodgerBlue1")
+  (set-face-attribute 'org-tag-location nil :weight 'bold :foreground "BlueViolet")
+  (set-face-attribute 'org-tag-todo nil :weight 'bold :foreground "Skyblue1")
+  (set-face-attribute 'org-tag-important nil :weight 'bold :foreground "red")
+  (set-face-attribute 'org-tag-curios nil :weight 'bold :foreground "DeepPink")
+  (set-face-attribute 'org-tag-french nil :weight 'bold :foreground "DodgerBlue1")
 
   (with-eval-after-load "magit"
-    (zp/org-format-face 'magit-tag :foreground "SpringGreen4"))
+    (set-face-attribute 'magit-tag nil :foreground "SpringGreen4"))
 
   (zp/org-super-agenda-update-face)
 
