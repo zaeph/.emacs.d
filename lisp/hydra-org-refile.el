@@ -134,6 +134,21 @@ If JUMP is non-nil, jump to it instead."
         nil
       t)))
 
+(defun zp/org-refile-target-verify-restriction (min max)
+  "Exclude refile targets which aren’t in the current restriction.
+
+MIN and MAX should be the positions of the restriction."
+  (let ((regex "^\\* -+.*-+$"))
+    ;; (message (buffer-substring-no-properties (point) (line-end-position)))
+    (cond ((< (point) min)
+           (goto-char min)
+           nil)
+          ((> (point) max)
+           (goto-char (point-max))
+           nil)
+          (t
+           (zp/org-refile-target-verify-exclude-separators)))))
+
 (defun zp/org-refile-restricted (&optional print-message jump)
     "Refile current heading to another within the current restriction.
 
@@ -144,17 +159,7 @@ If JUMP is non-nil, jump instead."
          (max (point-max))
          (org-refile-target-verify-function
           (lambda ()
-            "Exclude refile targets which aren’t in the current restriction."
-            (let ((regex "^\\* -+.*-+$"))
-              ;; (message (buffer-substring-no-properties (point) (line-end-position)))
-              (cond ((< (point) min)
-                     (goto-char min)
-                     nil)
-                    ((> (point) max)
-                     (goto-char (point-max))
-                     nil)
-                    (t
-                     (zp/org-refile-target-verify-exclude-separators))))))
+            (zp/org-refile-target-verify-restriction min max)))
          target)
     (zp/org-refile print-message jump)))
 
