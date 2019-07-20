@@ -1422,7 +1422,7 @@ The language should be the name of a valid Ispell dictionary.")
            (notmuch)))))
 
 (use-package org-notmuch
-  :after notmuch)
+  :after (:any org notmuch))
 
 (use-package orgalist
   :after message
