@@ -3213,8 +3213,9 @@ condition is not true:
   action is underway.
 
 - The project is waiting (i.e. it has a WAIT todo-keyword) but
-  has no waiting task.  This is to ensure that a project marked
-  as waiting is actually waiting for something."
+  none of its subtasks (direct or indirect) is waiting..  This is
+  to ensure that a project marked as waiting is actually waiting
+  for something."
     (save-restriction
       (widen)
       (when zp/org-agenda-skip-functions-debug
@@ -3296,9 +3297,17 @@ When SUBTASKS is non-nil, also skip project subtasks."
           next-headline)))))
 
   (defun zp/is-group-head-p ()
+    "Return t when the tree at point is the head of an agenda-group."
     (org-entry-get (point) "AGENDA_GROUP"))
 
   (defun zp/is-subtask-p ()
+    "Return t when the item at point is a project subtask.
+
+As a special case, if the item is a subtask of an agenda-group’s
+head (i.e. it has an ‘AGENDA_GROUP’ property), it will *not* be
+considered as a subtask.  This is to avoid inactive
+group-heads (i.e. with a STBY todo-keyword) from being considered
+as regular projects."
     (save-restriction
       (widen)
       (and (zp/is-task-p)
