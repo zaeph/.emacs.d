@@ -4740,16 +4740,18 @@ TITLE and URL are those of the webpage."
   ^Life^              ^Pages^^^
  ^^^^^^------------------------------------
   _i_: Inbox          _x_/_X_: Maintenance
-  _o_: Life           _p_/_P_: Pro
-  _k_: Curiosities    _r_/_R_: Research
-  _s_: Social         _m_/_M_: Media
-  _n_: Nicolas        _h_/_H_: Hacking
+  _l_: Life           _p_/_P_: Pro
+  _o_: Planning       _r_/_R_: Research
+  _k_: Curiosities    _m_/_M_: Media
+  _s_: Social         _h_/_H_: Hacking
+  _n_: Nicolas
   _S_: Swimming
   _R_: Running
   _a_: Politics       _c_/_C_: Calendars
 "
     (("i" "~/org/life.org" "Inbox")
-     ("o" "~/org/life.org" "Life")
+     ("l" "~/org/life.org" "Life")
+     ("o" "~/org/life.org" "Planning")
      ("k" "~/org/life.org" "Curiosities")
      ("s" "~/org/life.org" "Social")
      ("n" "~/org/life.org" "Social" "Nicolas")
