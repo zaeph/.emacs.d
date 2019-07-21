@@ -49,11 +49,7 @@ Based on the info provided by org-capture-web.sh.
 
 TITLE and URL are those of the webpage."
   (interactive)
-  (kill-new (concat "[["
-                    url
-                    "]["
-                    title
-                    "]]"))
+  (kill-new (concat "[[" url "][" title "]]"))
   (message (concat "Link added to kill-ring: \n" url)))
 
 ;;----------------------------------------------------------------------------
