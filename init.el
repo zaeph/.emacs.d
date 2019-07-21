@@ -4422,8 +4422,7 @@ With a ‘C-u’ prefix, make a separate frame for this tree."
 ;; org-capture
 ;;----------------------------------------------------------------------------
 (use-package org-capture
-  :commands (zp/org-capture-web
-             zp/org-agenda-capture)
+  :commands (zp/org-agenda-capture)
   :bind (("C-c n" . org-capture))
   :hook ((org-capture-mode . zp/org-capture-make-full-frame)
          (org-capture-prepare-finalize . zp/org-set-created-property))
@@ -4521,19 +4520,12 @@ With a ‘C-u’ prefix, make a separate frame for this tree."
           ("a" "Meditation session" entry (file+headline "~/org/projects/awakening/awakening.org.gpg" "Sessions")
            "* DONE Session%^{SESSION_DURATION}p\n%t" :immediate-finish t)
 
-          ("W" "Web")
-          ("Wa" "Automatic template" entry (file+headline "~/org/life.org" "Inbox")
-           "* TODO %(print zp/org-capture-web-action) [[%?%(print zp/org-capture-web-url)][%(print zp/org-capture-web-title)]] :curios:online:"
-           :add-created t)
           ("WF" "S: Flat" entry (file+headline "~/org/life.org" "Inbox")
            "* %? :online:%^{PRICE}p%^{LOCATION}p%^{MEUBLÉ}p%^{M²}p
 :PROPERTIES:
 :LINK: [[%(print zp/org-capture-web-url)][%(print zp/org-capture-web-title)]]
 :END:"
-           :add-created t)
-          ("Wf" "S: Film" entry (file+olp "~/org/life.org" "Film" "List")
-           ,zp/org-capture-web-letterboxd-template
-           :prepend t)))
+           :add-created t)))
 
   (defvar zp/swimming-workout-default nil
     "Default swimming workout.")
@@ -4623,6 +4615,14 @@ With a ‘C-u’ prefix, make a separate frame for this tree."
     (let ((full-frame (plist-get org-capture-plist :full-frame)))
       (if full-frame
           (delete-other-windows)))))
+
+(use-package org-capture-web
+  :commands (zp/org-capture-web
+             zp/org-capture-web-letterboxd)
+  :after org-capture
+  :config
+  (setq zp/org-capture-web-default-target
+        '(file+headline "~/org/life.org" "Inbox")))
 
 ;;----------------------------------------------------------------------------
 ;; hydra-org-refile

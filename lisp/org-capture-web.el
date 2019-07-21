@@ -15,31 +15,53 @@
          (m (% min 60)))
     (format "%1s:%02d" h m)))
 
-;;----------------------------
-;; Functions for basic templates
-;;----------------------------
-(defvar zp/org-capture-web-action nil
-  "Action to be taken on the webpage captured by org-capture-web.sh.")
-(defvar zp/org-capture-web-title nil
-  "Title of the webpage captured by org-capture-web.sh.")
-(defvar zp/org-capture-web-url nil
-  "URL of the webpage captured by org-capture-web.sh.")
+;;----------------------------------------------------------------------------
+;; Creating the templates
+;;----------------------------------------------------------------------------
+(defvar zp/org-capture-web-default-key "a"
+  "Key to use for the dummy org-capture template.")
 
-(defun zp/org-capture-web (action title url &optional template)
+(defun zp/org-capture-with-dummy-template ()
+  "Run org-capture with a dummy template"
+  (org-capture nil zp/org-capture-web-default-key))
+
+(defvar zp/org-capture-web-default-target nil
+  "Where the org-capture-web items should be placed.
+
+It can be any target specification accepted by
+‘org-capture-mode’.  See ‘org-capture-templates’ for more
+information.")
+
+(defun zp/org-capture-web-create-template (target &rest template)
+  (declare (indent defun))
+  (let* ((key zp/org-capture-web-default-key) ;Key for the dummy template
+         (target (or target
+                     zp/org-capture-web-default-target)))
+    `((,key nil entry ,target
+            ,(concat (pop template))
+            ,@(when template
+                template)))))
+
+;;----------------------------
+;; Basic templates
+;;----------------------------
+(defun zp/org-capture-web (action title url &optional curios)
   "Capture the website based on the info provided by org-capture-web.sh.
 
 ACTION is the action-verb to use for the task.
 
 TITLE and URL are those of the captured webpage.
 
-TEMPLATE can be another org-capture template to use than the
-default one."
-  (setq zp/org-capture-web-action action)
-  (setq zp/org-capture-web-title title)
-  (setq zp/org-capture-web-url url)
-  (org-capture nil (or template
-                       "Wa"))
-  (message (concat "Link added to template: \n" url)))
+When CURIOS is non-nil, add the :curios: tag to the task."
+  (let* ((org-capture-templates
+          (zp/org-capture-web-create-template nil
+            (format "* TODO %s [[%s][%s]]" action url title)
+            :add-created t)))
+    (zp/org-capture-with-dummy-template)
+    (org-toggle-tag "online" 'on)
+    (when curios
+      (org-toggle-tag "curios" 'on))
+    (message (concat "Link added to template: " url))))
 
 (defun zp/org-capture-web-kill-new (title url)
   "Make website the latest kill in the kill ring.
@@ -48,8 +70,8 @@ Based on the info provided by org-capture-web.sh.
 
 TITLE and URL are those of the webpage."
   (interactive)
-  (kill-new (concat "[[" url "][" title "]]"))
-  (message (concat "Link added to kill-ring: \n" url)))
+  (kill-new (format "[[%s][%s]]" url title))
+  (message (concat "Link added to kill-ring: " url)))
 
 ;;----------------------------------------------------------------------------
 ;; Letterboxd
@@ -60,28 +82,21 @@ TITLE and URL are those of the webpage."
 TITLE, DIRECTOR, YEAR and DURATION are related to the film.
 
 URL is the url to the Letterboxd page of the film."
-  (let ((template "Wf")
-        (duration-str (if (string= duration "")
-                          "???"
-                        (zp/convert-m-to-hm duration))))
-    (org-capture nil template)))
-
-(defvar zp/org-capture-web-letterboxd-template nil
-  "Default template for capturing films from Letterboxd with org-capture-web.sh.")
-
-(setq zp/org-capture-web-letterboxd-template
-      "* %(print title)%?
+  (let* ((template "* %s
 :PROPERTIES:
-:MEDIA_LINK: [[%(print url)][Letterboxd]]
-:MEDIA_DIRECTOR: %(print director)
-:MEDIA_YEAR: %(print year)
-:MEDIA_DURATION: %(print duration-str)
-:END:")
-
-;;----------------------------------------------------------------------------
-;; Flat
-;;----------------------------------------------------------------------------
-(defun zp/org-capture-web-flat (title url))
+:MEDIA_LINK: [[%s][Letterboxd]]
+:MEDIA_DIRECTOR: %s
+:MEDIA_YEAR: %s
+:MEDIA_DURATION: %s")
+         (duration-str (if (string= duration "")
+                           "???"
+                         (zp/convert-m-to-hm duration)))
+         (org-capture-templates
+          (zp/org-capture-web-create-template '(file+olp "~/org/life.org" "Film" "List")
+            (format template title url director year duration-str)
+            :add-created t
+            :prepend t)))
+    (zp/org-capture-with-dummy-template)))
 
 (provide 'org-capture-web)
 ;;; org-capture-web.el ends here
