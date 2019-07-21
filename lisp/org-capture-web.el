@@ -25,16 +25,21 @@
 (defvar zp/org-capture-web-url nil
   "URL of the webpage captured by org-capture-web.sh.")
 
-(defun zp/org-capture-web (action title url)
+(defun zp/org-capture-web (action title url &optional template)
   "Capture the website based on the info provided by org-capture-web.sh.
 
-TITLE and URL are those of the webpage.  TEMPLATE is the
-subtemplate to use."
+ACTION is the action-verb to use for the task.
+
+TITLE and URL are those of the captured webpage.
+
+TEMPLATE can be another org-capture template to use than the
+default one."
   (interactive)
   (setq zp/org-capture-web-action action)
   (setq zp/org-capture-web-title title)
   (setq zp/org-capture-web-url url)
-  (org-capture nil (concat "Wa"))
+  (org-capture nil (or template
+                       "Wa"))
   (message (concat "Link added to template: \n" url)))
 
 (defun zp/org-capture-web-kill-new (title url)
