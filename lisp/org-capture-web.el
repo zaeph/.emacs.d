@@ -98,5 +98,16 @@ URL is the url to the Letterboxd page of the film."
             :prepend t)))
     (zp/org-capture-with-dummy-template)))
 
+;;----------------------------------------------------------------------------
+;; Flat
+;;----------------------------------------------------------------------------
+(defun zp/org-capture-web-flat (title url)
+  (let* ((template "* [[%s][%s]]%%^{ADDRESS}p%%^{PRICE}p%%^{MEUBLÉ}p%%^{M²}p")
+         (org-capture-templates
+          (zp/org-capture-web-create-template nil
+            (format template url title)
+            :add-create t)))
+    (zp/org-capture-with-dummy-template)))
+
 (provide 'org-capture-web)
 ;;; org-capture-web.el ends here
