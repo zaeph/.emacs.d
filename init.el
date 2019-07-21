@@ -24,6 +24,9 @@
 ;; Use spaces instead of tabs
 (setq-default indent-tabs-mode nil)
 
+;; Set default fill column to 78
+(setq-default fill-column 78)
+
 ;; Add folders to load-path
 (add-to-list 'load-path "~/.emacs.d/old-lisp")
 (add-to-list 'load-path "~/.emacs.d/lisp")
