@@ -65,10 +65,11 @@ TITLE and URL are those of the webpage."
 TITLE, DIRECTOR, YEAR and DURATION are related to the film.
 
 URL is the url to the Letterboxd page of the film."
-  (let ((duration-str (if (string= duration "")
+  (let ((template "Wf")
+        (duration-str (if (string= duration "")
                           "???"
                         (zp/convert-m-to-hm duration))))
-    (org-capture nil "Wf")))
+    (org-capture nil template)))
 
 (defvar zp/org-capture-web-letterboxd-template nil
   "Default template for capturing films from Letterboxd with org-capture-web.sh.")
