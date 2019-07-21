@@ -59,17 +59,6 @@ TITLE and URL are those of the webpage."
 ;;----------------------------------------------------------------------------
 ;; Letterboxd
 ;;----------------------------------------------------------------------------
-(defvar zp/org-capture-web-letterboxd-title nil
-  "Title of the film captured by org-capture-web.sh.")
-(defvar zp/org-capture-web-letterboxd-url nil
-  "Letterboxd URL of the film captured by org-capture-web.sh.")
-(defvar zp/org-capture-web-letterboxd-director nil
-  "Name of the director of the film captured by
-  org-capture-web.sh.")
-(defvar zp/org-capture-web-letterboxd-year nil
-  "Year of the film captured by org-capture-web.sh.")
-(defvar zp/org-capture-web-letterboxd-duration nil
-  "Duration of the film captured by org-capture-web.sh.")
 (defvar zp/org-capture-web-letterboxd-template nil
   "Default template for capturing films from Letterboxd with org-capture-web.sh.")
 
@@ -82,21 +71,21 @@ URL is the url to the Letterboxd page of the film."
   (let ((duration-str (if (string= duration "")
                           "???"
                         (zp/convert-m-to-hm duration))))
-    (setq zp/org-capture-web-letterboxd-title title)
-    (setq zp/org-capture-web-letterboxd-url url)
-    (setq zp/org-capture-web-letterboxd-director director)
-    (setq zp/org-capture-web-letterboxd-year year)
-    (setq zp/org-capture-web-letterboxd-duration duration-str)
     (org-capture nil "Wf")))
 
 (setq zp/org-capture-web-letterboxd-template
-      "* %(print zp/org-capture-web-letterboxd-title)%?
+      "* %(print title)%?
 :PROPERTIES:
-:MEDIA_LINK: [[%(print zp/org-capture-web-letterboxd-url)][Letterboxd]]
-:MEDIA_DIRECTOR: %(print zp/org-capture-web-letterboxd-director)
-:MEDIA_YEAR: %(print zp/org-capture-web-letterboxd-year)
-:MEDIA_DURATION: %(print zp/org-capture-web-letterboxd-duration)
+:MEDIA_LINK: [[%(print url)][Letterboxd]]
+:MEDIA_DIRECTOR: %(print director)
+:MEDIA_YEAR: %(print year)
+:MEDIA_DURATION: %(print duration-str)
 :END:")
+
+;;----------------------------------------------------------------------------
+;; Flat
+;;----------------------------------------------------------------------------
+(defun zp/org-capture-web-flat (title url))
 
 (provide 'org-capture-web)
 ;;; org-capture-web.el ends here
