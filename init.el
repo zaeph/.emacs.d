@@ -4611,6 +4611,12 @@ TITLE and URL are those of the webpage."
           ("Wa" "Automatic template" entry (file+headline "~/org/life.org" "Inbox")
            "* TODO %(print zp/org-capture-web-action) [[%?%(print zp/org-capture-web-url)][%(print zp/org-capture-web-title)]] :curios:online:"
            :add-created t)
+          ("WF" "S: Flat" entry (file+headline "~/org/life.org" "Inbox")
+           "* %? :online:%^{PRICE}p%^{LOCATION}p%^{MEUBLÉ}p%^{M²}p
+:PROPERTIES:
+:LINK: [[%(print zp/org-capture-web-url)][%(print zp/org-capture-web-title)]]
+:END:"
+           :add-created t)
           ("Wf" "S: Film" entry (file+olp "~/org/life.org" "Film" "List")
            ,zp/org-capture-web-letterboxd-template
            :prepend t)))
