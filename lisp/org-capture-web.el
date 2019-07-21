@@ -34,7 +34,6 @@ TITLE and URL are those of the captured webpage.
 
 TEMPLATE can be another org-capture template to use than the
 default one."
-  (interactive)
   (setq zp/org-capture-web-action action)
   (setq zp/org-capture-web-title title)
   (setq zp/org-capture-web-url url)
