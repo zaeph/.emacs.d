@@ -1,12 +1,14 @@
 ;;; org-capture-web.el --- Templates for handling URLs  -*- lexical-binding: t; -*-
 ;;; Commentary:
 
+;; This package works in tandem with the ‘org-capture-web’ Bash
+;; script.
+
 ;;; Code:
 
 ;;------------------
 ;; Helper functions
 ;;------------------
-
 (defun zp/convert-m-to-hm (min-str)
   (let* ((min (string-to-number min-str))
          (h (/ min 60))
@@ -14,9 +16,8 @@
     (format "%1s:%02d" h m)))
 
 ;;----------------------------
-;; Template-related functions
+;; Functions for basic templates
 ;;----------------------------
-
 (defvar zp/org-capture-web-action nil
   "Action to be taken on the webpage captured by org-capture-web.sh.")
 (defvar zp/org-capture-web-title nil
@@ -36,6 +37,23 @@ subtemplate to use."
   (org-capture nil (concat "Wa"))
   (message (concat "Link added to template: \n" url)))
 
+(defun zp/org-capture-web-kill-new (title url)
+  "Make website the latest kill in the kill ring.
+
+Based on the info provided by org-capture-web.sh.
+
+TITLE and URL are those of the webpage."
+  (interactive)
+  (kill-new (concat "[["
+                    url
+                    "]["
+                    title
+                    "]]"))
+  (message (concat "Link added to kill-ring: \n" url)))
+
+;;----------------------------------------------------------------------------
+;; Letterboxd
+;;----------------------------------------------------------------------------
 (defvar zp/org-capture-web-letterboxd-title nil
   "Title of the film captured by org-capture-web.sh.")
 (defvar zp/org-capture-web-letterboxd-url nil
@@ -74,20 +92,6 @@ URL is the url to the Letterboxd page of the film."
 :MEDIA_YEAR: %(print zp/org-capture-web-letterboxd-year)
 :MEDIA_DURATION: %(print zp/org-capture-web-letterboxd-duration)
 :END:")
-
-(defun zp/org-capture-web-kill-new (title url)
-  "Make website the latest kill in the kill ring.
-
-Based on the info provided by org-capture-web.sh.
-
-TITLE and URL are those of the webpage."
-  (interactive)
-  (kill-new (concat "[["
-                    url
-                    "]["
-                    title
-                    "]]"))
-  (message (concat "Link added to kill-ring: \n" url)))
 
 (provide 'org-capture-web)
 ;;; org-capture-web.el ends here
