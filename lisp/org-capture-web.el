@@ -71,7 +71,7 @@ TITLE and URL are those of the webpage."
 (defvar zp/org-capture-web-letterboxd-duration nil
   "Duration of the film captured by org-capture-web.sh.")
 (defvar zp/org-capture-web-letterboxd-template nil
-  "Default template for capturing films from Letterboxd with org-capture.web.sh.")
+  "Default template for capturing films from Letterboxd with org-capture-web.sh.")
 
 (defun zp/org-capture-web-letterboxd (title url director year duration)
   "Capture a film based on the info provided by org-capture-web.sh.
