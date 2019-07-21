@@ -4744,10 +4744,9 @@ TITLE and URL are those of the webpage."
   _o_: Planning       _r_/_R_: Research
   _k_: Curiosities    _m_/_M_: Media
   _s_: Social         _h_/_H_: Hacking
-  _n_: Nicolas
+  _n_: Nicolas        _a_/_A_: Activism
   _S_: Swimming
-  _R_: Running
-  _a_: Politics       _c_/_C_: Calendars
+  _R_: Running        _c_/_C_: Calendars
 "
     (("i" "~/org/life.org" "Inbox")
      ("l" "~/org/life.org" "Life")
@@ -4757,13 +4756,13 @@ TITLE and URL are those of the webpage."
      ("n" "~/org/life.org" "Social" "Nicolas")
      ("S" "~/org/life.org" "Swimming")
      ("R" "~/org/life.org" "Running")
-     ("a" "~/org/life.org" "Politics")
 
      ("X" "~/org/life.org" "Maintenance")
      ("P" "~/org/life.org" "Professional")
      ("R" "~/org/life.org" "Research")
      ("M" "~/org/life.org" "Media")
      ("H" "~/org/life.org" "Hacking")
+     ("A" "~/org/life.org" "Activism")
 
      ("C" "~/org/life.org" "Life" "Calendar"))
     (("x" mx)
@@ -4771,6 +4770,7 @@ TITLE and URL are those of the webpage."
      ("r" research)
      ("m" media)
      ("h" hack)
+     ("a" activism)
      ("c" calendars)))
 
   (zp/create-hydra-org-refile mx
@@ -4856,6 +4856,16 @@ TITLE and URL are those of the webpage."
      ;; ("c" "~/org/life.org" "Contributing")
      ;; ("b" "~/org/life.org" "Troubleshooting")
      ))
+
+  (zp/create-hydra-org-refile activism
+      "
+  ^Activism^
+ ^^----------
+  _._: Root
+  _p_: Politics
+"
+    (("." "~/org/life.org" "Activism")
+     ("p" "~/org/life.org" "Politics")))
 
   (zp/create-hydra-org-refile calendars
       "
