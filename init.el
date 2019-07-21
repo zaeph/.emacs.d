@@ -4773,6 +4773,30 @@ TITLE and URL are those of the webpage."
      ("h" hack)
      ("c" calendars)))
 
+  (zp/create-hydra-org-refile mx
+      "
+  ^Maintenance^
+ ^^-------------
+  _._: Root
+  _f_: Finances
+  _a_: Animals
+  _c_: Cleaning
+  _p_: Plants
+  _s_: Supplies
+  _k_: Cooking
+  _g_: Grooming
+  _h_: Health
+"
+    (("." "~/org/life.org" "Maintenance")
+     ("f" "~/org/life.org" "Finances")
+     ("a" "~/org/life.org" "Animals")
+     ("c" "~/org/life.org" "Cleaning")
+     ("p" "~/org/life.org" "Plants")
+     ("s" "~/org/life.org" "Supplies")
+     ("k" "~/org/life.org" "Cooking")
+     ("g" "~/org/life.org" "Grooming")
+     ("h" "~/org/life.org" "Health")))
+
   (zp/create-hydra-org-refile research
       "
   ^Research^
@@ -4865,30 +4889,6 @@ TITLE and URL are those of the webpage."
      ("P" "~/org/life.org" "Politics" "Calendar")
      ("m" "~/org/life.org" "Media" "Calendar"))
     nil)
-
-  (zp/create-hydra-org-refile mx
-      "
-  ^Maintenance^
- ^^-------------
-  _._: Root
-  _f_: Finances
-  _a_: Animals
-  _c_: Cleaning
-  _p_: Plants
-  _s_: Supplies
-  _k_: Cooking
-  _g_: Grooming
-  _h_: Health
-"
-    (("." "~/org/life.org" "Maintenance")
-     ("f" "~/org/life.org" "Finances")
-     ("a" "~/org/life.org" "Animals")
-     ("c" "~/org/life.org" "Cleaning")
-     ("p" "~/org/life.org" "Plants")
-     ("s" "~/org/life.org" "Supplies")
-     ("k" "~/org/life.org" "Cooking")
-     ("g" "~/org/life.org" "Grooming")
-     ("h" "~/org/life.org" "Health")))
 
   (zp/create-hydra-org-refile media
       "
