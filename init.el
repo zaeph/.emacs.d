@@ -4201,12 +4201,12 @@ An agenda is considered special if its key isn’t listed in
 
 With a ‘C-u’ prefix argument, also kill the main Org buffer."
     (interactive "p")
-    (let ((kill-main (eq arg 4))
+    (let ((kill-file (eq arg 4))
           (kill-count (zp/org-agenda-kill-special-agendas)))
       (zp/create-agenda-view nil)
-      (when kill-main
-        (when-let ((main (find-buffer-visiting "~/org/life.org")))
-          (with-current-buffer (find-buffer-visiting "~/org/life.org")
+      (when kill-file
+        (when-let ((file (find-buffer-visiting "~/org/life.org")))
+          (with-current-buffer file
             (when (buffer-modified-p)
               (save-buffer))
             (kill-buffer))))
@@ -4215,8 +4215,8 @@ With a ‘C-u’ prefix argument, also kill the main Org buffer."
         (org-agenda-redo-all))
       (when arg
         (message (concat "Garbage collection complete: "
-                         (when kill-main
-                           "Org buffer was killed, and ")
+                         (when kill-file
+                           "Org file was killed, and ")
                          (pcase kill-count
                            (0 "no agenda-buffers were killed.")
                            (1 "1 agenda-buffer was killed.")
