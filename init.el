@@ -1,4 +1,4 @@
-;;; init.el --- Initialization file for Emacs  -*- fill-column: 78; comment-column: 50; lexical-binding: t; -*-
+;;; init.el --- Initialization file for Emacs  -*- fill-column: 78; lexical-binding: t; -*-
 ;;; Commentary: Emacs Startup File --- initialization for Emacs
 
 ;; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -23,6 +23,9 @@
 
 ;; Use spaces instead of tabs
 (setq-default indent-tabs-mode nil)
+
+;; Set default fill column to 78
+(setq-default fill-column 78)
 
 ;; Add folders to load-path
 (add-to-list 'load-path "~/.emacs.d/old-lisp")
@@ -458,7 +461,7 @@ time is displayed."
           (whitespace-mode -1)
           (message "Whitespace mode disabled in current buffer"))
       (let ((whitespace-style '(face trailing lines-tail))
-            (whitespace-line-column 80))
+            (whitespace-line-column nil))
         (whitespace-mode t)
         (message "Whitespace mode enabled in current buffer")))))
 
