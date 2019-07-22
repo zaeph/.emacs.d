@@ -55,7 +55,7 @@ TITLE and URL are those of the captured webpage.
 When CURIOS is non-nil, add the :curios: tag to the task."
   (let* ((org-capture-templates
           (zp/org-capture-web-create-template nil
-            (format "* TODO %s [[%s][%s]]" action url title)
+            (format "* TODO %s [[%%?%s][%s]]" action url title)
             :add-created t)))
     (zp/org-capture-with-dummy-template)
     (org-toggle-tag "online" 'on)
@@ -82,7 +82,7 @@ TITLE and URL are those of the webpage."
 TITLE, DIRECTOR, YEAR and DURATION are related to the film.
 
 URL is the url to the Letterboxd page of the film."
-  (let* ((template "* %s
+  (let* ((template "* %s%%?
 :PROPERTIES:
 :MEDIA_LINK: [[%s][Letterboxd]]
 :MEDIA_DIRECTOR: %s
@@ -102,7 +102,7 @@ URL is the url to the Letterboxd page of the film."
 ;; Flat
 ;;----------------------------------------------------------------------------
 (defun zp/org-capture-web-flat (title url)
-  (let* ((template "* [[%s][%s]]%%^{ADDRESS}p%%^{PRICE}p%%^{MEUBLÉ}p%%^{M²}p\
+  (let* ((template "* [[%%?%s][%s]]%%^{ADDRESS}p%%^{PRICE}p%%^{MEUBLÉ}p%%^{M²}p\
 %%^{DISTANCE_FROM_UPN}p%%^{DISTANCE_FROM_LPO}p")
          (org-capture-templates
           (zp/org-capture-web-create-template nil
