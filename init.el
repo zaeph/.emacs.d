@@ -2781,6 +2781,7 @@ indirect-buffers."
           ("C-c C-x r" . zp/org-agenda-set-appt-warntime)
           ("C-c C-x l" . zp/org-agenda-set-location)
           ("C-c C-x d" . zp/org-agenda-delete-property)
+          ("C-c C-x s" . zp/org-agenda-reset-local-config)
           (">" . zp/org-agenda-date-prompt-and-update-appt)
           ("C-c C-s" . zp/org-agenda-schedule-and-update-appt)
           ("C-c C-S-w" . zp/org-agenda-refile-with-paths)
@@ -4100,6 +4101,11 @@ Meant to be run with ‘org-agenda-mode-hook’."
       (run-hooks 'zp/org-agenda-load-local-config-post-hook)))
 
   (add-hook 'org-agenda-mode-hook #'zp/org-agenda-load-local-config)
+
+  (defun zp/org-agenda-reset-local-config ()
+    "Reset all local org-agenda config to their default value."
+    (interactive)
+    (setq zp/org-agenda-local-config (list (assoc 'default zp/org-agenda-local-config))))
 
   ;;--------------------------
   ;; Prepare org-agenda files
