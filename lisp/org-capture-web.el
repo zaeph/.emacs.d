@@ -102,7 +102,8 @@ URL is the url to the Letterboxd page of the film."
 ;; Flat
 ;;----------------------------------------------------------------------------
 (defun zp/org-capture-web-flat (title url)
-  (let* ((template "* [[%s][%s]]%%^{ADDRESS}p%%^{PRICE}p%%^{MEUBLÉ}p%%^{M²}p")
+  (let* ((template "* [[%s][%s]]%%^{ADDRESS}p%%^{PRICE}p%%^{MEUBLÉ}p%%^{M²}p\
+%%^{DISTANCE_FROM_UPN}p%%^{DISTANCE_FROM_LPO}p")
          (org-capture-templates
           (zp/org-capture-web-create-template nil
             (format template url title)
