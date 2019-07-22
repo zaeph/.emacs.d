@@ -4102,10 +4102,13 @@ Meant to be run with ‘org-agenda-mode-hook’."
 
   (add-hook 'org-agenda-mode-hook #'zp/org-agenda-load-local-config)
 
-  (defun zp/org-agenda-reset-local-config ()
+  (defun zp/org-agenda-reset-local-config (print-message)
     "Reset all local org-agenda config to their default value."
-    (interactive)
-    (setq zp/org-agenda-local-config (list (assoc 'default zp/org-agenda-local-config))))
+    (interactive "p")
+    (setq zp/org-agenda-local-config (list (assoc 'default zp/org-agenda-local-config)))
+    (org-agenda-redo-all)
+    (when print-message
+      (message "Local configs have been reset.")))
 
   ;;--------------------------
   ;; Prepare org-agenda files
