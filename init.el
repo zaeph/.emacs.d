@@ -2781,6 +2781,7 @@ indirect-buffers."
           ("C-c C-x r" . zp/org-agenda-set-appt-warntime)
           ("C-c C-x l" . zp/org-agenda-set-location)
           ("C-c C-x d" . zp/org-agenda-delete-property)
+          ("C-c C-x s" . zp/org-agenda-reset-local-config)
           (">" . zp/org-agenda-date-prompt-and-update-appt)
           ("C-c C-s" . zp/org-agenda-schedule-and-update-appt)
           ("C-c C-S-w" . zp/org-agenda-refile-with-paths)
