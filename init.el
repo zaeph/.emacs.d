@@ -4216,7 +4216,7 @@ With a ‘C-u’ prefix argument, also kill the main Org buffer."
       (when arg
         (message (concat "Garbage collection complete: "
                          (when kill-file
-                           "Org buffer was killed, and ")
+                           "Org file was killed, and ")
                          (pcase kill-count
                            (0 "no agenda-buffers were killed.")
                            (1 "1 agenda-buffer was killed.")
