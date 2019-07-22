@@ -4422,100 +4422,13 @@ With a ‘C-u’ prefix, make a separate frame for this tree."
 ;; org-capture
 ;;----------------------------------------------------------------------------
 (use-package org-capture
-  :commands (zp/org-capture-web
-             zp/org-agenda-capture)
+  :commands (zp/org-agenda-capture)
   :bind (("C-c n" . org-capture))
   :hook ((org-capture-mode . zp/org-capture-make-full-frame)
          (org-capture-prepare-finalize . zp/org-set-created-property))
   :after org
   :config
   (setq org-default-notes-file "~/org/life.org")
-
-  ;;------------------
-  ;; Helper functions
-  ;;------------------
-
-  (defun zp/convert-m-to-hm (min-str)
-    (let* ((min (string-to-number min-str))
-           (h (/ min 60))
-           (m (% min 60)))
-      (format "%1s:%02d" h m)))
-
-  ;;----------------------------
-  ;; Template-related functions
-  ;;----------------------------
-
-  (defvar zp/org-capture-web-action nil
-    "Action to be taken on the webpage captured by org-capture-web.sh.")
-  (defvar zp/org-capture-web-title nil
-    "Title of the webpage captured by org-capture-web.sh.")
-  (defvar zp/org-capture-web-url nil
-    "URL of the webpage captured by org-capture-web.sh.")
-
-  (defun zp/org-capture-web (action title url)
-    "Capture the website based on the info provided by org-capture-web.sh.
-
-TITLE and URL are those of the webpage.  TEMPLATE is the
-subtemplate to use."
-    (interactive)
-    (setq zp/org-capture-web-action action)
-    (setq zp/org-capture-web-title title)
-    (setq zp/org-capture-web-url url)
-    (org-capture nil (concat "Wa"))
-    (message (concat "Link added to template: \n" url)))
-
-  (defvar zp/org-capture-web-letterboxd-title nil
-    "Title of the film captured by org-capture-web.sh.")
-  (defvar zp/org-capture-web-letterboxd-url nil
-    "Letterboxd URL of the film captured by org-capture-web.sh.")
-  (defvar zp/org-capture-web-letterboxd-director nil
-    "Name of the director of the film captured by
-  org-capture-web.sh.")
-  (defvar zp/org-capture-web-letterboxd-year nil
-    "Year of the film captured by org-capture-web.sh.")
-  (defvar zp/org-capture-web-letterboxd-duration nil
-    "Duration of the film captured by org-capture-web.sh.")
-  (defvar zp/org-capture-web-letterboxd-template nil
-    "Default template for capturing films from Letterboxd with org-capture.web.sh.")
-
-  (defun zp/org-capture-web-letterboxd (title url director year duration)
-    "Capture a film based on the info provided by org-capture-web.sh.
-
-TITLE, DIRECTOR, YEAR and DURATION are related to the film.
-
-URL is the url to the Letterboxd page of the film."
-    (let ((duration-str (if (string= duration "")
-                            "???"
-                          (zp/convert-m-to-hm duration))))
-      (setq zp/org-capture-web-letterboxd-title title)
-      (setq zp/org-capture-web-letterboxd-url url)
-      (setq zp/org-capture-web-letterboxd-director director)
-      (setq zp/org-capture-web-letterboxd-year year)
-      (setq zp/org-capture-web-letterboxd-duration duration-str)
-      (org-capture nil "Wf")))
-
-  (setq zp/org-capture-web-letterboxd-template
-        "* %(print zp/org-capture-web-letterboxd-title)%?
-:PROPERTIES:
-:MEDIA_LINK: [[%(print zp/org-capture-web-letterboxd-url)][Letterboxd]]
-:MEDIA_DIRECTOR: %(print zp/org-capture-web-letterboxd-director)
-:MEDIA_YEAR: %(print zp/org-capture-web-letterboxd-year)
-:MEDIA_DURATION: %(print zp/org-capture-web-letterboxd-duration)
-:END:")
-
-  (defun zp/org-capture-web-kill-new (title url)
-    "Make website the latest kill in the kill ring.
-
-Based on the info provided by org-capture-web.sh.
-
-TITLE and URL are those of the webpage."
-    (interactive)
-    (kill-new (concat "[["
-                      url
-                      "]["
-                      title
-                      "]]"))
-    (message (concat "Link added to kill-ring: \n" url)))
 
   ;;-----------
   ;; Templates
@@ -4607,13 +4520,12 @@ TITLE and URL are those of the webpage."
           ("a" "Meditation session" entry (file+headline "~/org/projects/awakening/awakening.org.gpg" "Sessions")
            "* DONE Session%^{SESSION_DURATION}p\n%t" :immediate-finish t)
 
-          ("W" "Web")
-          ("Wa" "Automatic template" entry (file+headline "~/org/life.org" "Inbox")
-           "* TODO %(print zp/org-capture-web-action) [[%?%(print zp/org-capture-web-url)][%(print zp/org-capture-web-title)]] :curios:online:"
-           :add-created t)
-          ("Wf" "S: Film" entry (file+olp "~/org/life.org" "Film" "List")
-           ,zp/org-capture-web-letterboxd-template
-           :prepend t)))
+          ("WF" "S: Flat" entry (file+headline "~/org/life.org" "Inbox")
+           "* %? :online:%^{PRICE}p%^{LOCATION}p%^{MEUBLÉ}p%^{M²}p
+:PROPERTIES:
+:LINK: [[%(print zp/org-capture-web-url)][%(print zp/org-capture-web-title)]]
+:END:"
+           :add-created t)))
 
   (defvar zp/swimming-workout-default nil
     "Default swimming workout.")
@@ -4703,6 +4615,14 @@ TITLE and URL are those of the webpage."
     (let ((full-frame (plist-get org-capture-plist :full-frame)))
       (if full-frame
           (delete-other-windows)))))
+
+(use-package org-capture-web
+  :commands (zp/org-capture-web
+             zp/org-capture-web-letterboxd)
+  :after org-capture
+  :config
+  (setq zp/org-capture-web-default-target
+        '(file+headline "~/org/life.org" "Inbox")))
 
 ;;----------------------------------------------------------------------------
 ;; hydra-org-refile
