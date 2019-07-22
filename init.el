@@ -4205,8 +4205,8 @@ With a ‘C-u’ prefix argument, also kill the main Org buffer."
           (kill-count (zp/org-agenda-kill-special-agendas)))
       (zp/create-agenda-view nil)
       (when kill-file
-        (when-let ((main (find-buffer-visiting "~/org/life.org")))
-          (with-current-buffer (find-buffer-visiting "~/org/life.org")
+        (when-let ((file (find-buffer-visiting "~/org/life.org")))
+          (with-current-buffer file
             (when (buffer-modified-p)
               (save-buffer))
             (kill-buffer))))
