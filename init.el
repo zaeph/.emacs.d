@@ -461,7 +461,7 @@ time is displayed."
           (whitespace-mode -1)
           (message "Whitespace mode disabled in current buffer"))
       (let ((whitespace-style '(face trailing lines-tail))
-            (whitespace-line-column 80))
+            (whitespace-line-column nil))
         (whitespace-mode t)
         (message "Whitespace mode enabled in current buffer")))))
 
