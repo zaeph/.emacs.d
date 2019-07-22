@@ -1,4 +1,4 @@
-;;; init.el --- Initialization file for Emacs  -*- fill-column: 78; comment-column: 50; lexical-binding: t; -*-
+;;; init.el --- Initialization file for Emacs  -*- fill-column: 78; lexical-binding: t; -*-
 ;;; Commentary: Emacs Startup File --- initialization for Emacs
 
 ;; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
