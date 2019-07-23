@@ -2946,6 +2946,7 @@ off.")
           ("^org$" "~/org/svg/icons/org-mode-unicorn.svg" nil nil :ascent center)
           ("^python$" "~/org/svg/icons/python.svg" nil nil :ascent center)
           ("^perl$" "~/org/svg/icons/perl.svg" nil nil :ascent center)
+          ("^cl$" "~/org/svg/icons/common-lisp-b.svg" nil nil :ascent center)
           ("^contrib$" "~/org/svg/icons/chill.svg" nil nil :ascent center)
           ("^bug$" "~/org/svg/icons/cross.svg" nil nil :ascent center)
           ("^elisp$" "~/org/svg/icons/spacemacs-elisp.svg" nil nil :ascent center)
@@ -4774,6 +4775,7 @@ With a ‘C-u’ prefix, make a separate frame for this tree."
   _n_: NixOS
   _g_: Git
   _p_: Perl
+  _c_: Common Lisp
 "
     (("." "~/org/life.org" "Hacking")
      ("e" "~/org/life.org" "Emacs")
@@ -4784,6 +4786,7 @@ With a ‘C-u’ prefix, make a separate frame for this tree."
      ("n" "~/org/life.org" "NixOS")
      ("g" "~/org/life.org" "Git")
      ("p" "~/org/life.org" "Perl")
+     ("c" "~/org/life.org" "Common Lisp")
 
      ;; ("c" "~/org/life.org" "Contributing")
      ;; ("b" "~/org/life.org" "Troubleshooting")
