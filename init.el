@@ -4774,7 +4774,8 @@ With a ‘C-u’ prefix, make a separate frame for this tree."
   _l_: Linux
   _n_: NixOS
   _g_: Git
-  _p_: Perl
+  _p_: Python
+  _P_: Perl
   _c_: Common Lisp
 "
     (("." "~/org/life.org" "Hacking")
@@ -4785,7 +4786,8 @@ With a ‘C-u’ prefix, make a separate frame for this tree."
      ("l" "~/org/life.org" "Linux")
      ("n" "~/org/life.org" "NixOS")
      ("g" "~/org/life.org" "Git")
-     ("p" "~/org/life.org" "Perl")
+     ("p" "~/org/life.org" "Python")
+     ("P" "~/org/life.org" "Perl")
      ("c" "~/org/life.org" "Common Lisp")
 
      ;; ("c" "~/org/life.org" "Contributing")
