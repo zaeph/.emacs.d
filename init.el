@@ -4829,7 +4829,7 @@ With a ‘C-u’ prefix, make a separate frame for this tree."
      ("f" "~/org/life.org" "Finances" "Calendar")
      ("a" "~/org/life.org" "Animals" "Calendar")
      ("p" "~/org/life.org" "Professional" "Calendar")
-     ("s" "~/org/life.org" "School" "Calendar")
+     ("S" "~/org/life.org" "School" "Calendar")
      ("u" "~/org/life.org" "University" "Calendar")
      ("r" "~/org/life.org" "Research" "Calendar")
      ("h" "~/org/life.org" "Hacking" "Calendar")
