@@ -3026,6 +3026,7 @@ With a prefix argument, do so in all agenda buffers."
                   (zp/set-agenda-local 'org-habit-show-habits t agenda))))
             zp/org-agenda-local-config))
 
+  ;; Force habits to be shown if they’ve been disabled the previous day
   (run-at-time "06:00" 86400 #'zp/org-habit-show-habits-force)
 
   ;; Change face of the arrow for ‘org-agenda-bulk-mark’
@@ -4340,9 +4341,6 @@ Based on `org-agenda-set-property'."
 
   (add-hook 'org-agenda-finalize-hook #'zp/org-agenda-hi-lock)
   (add-hook 'org-agenda-finalize-hook #'zp/org-agenda-remove-mouse-face)
-
-  ;; Force habits to be shown if they’ve been disabled the previous day
-  (run-at-time "06:00" 86400 #'zp/org-habit-show-habits-force)
 
   ;; Variables used for debugging
   (defvar zp/org-agenda-skip-functions-debug nil
