@@ -1223,7 +1223,7 @@ Meant to be run with ‘org-agenda-mode-hook’."
   "Reset all local org-agenda configs to their default value."
   (interactive "p")
   (setq zp/org-agenda-local-config (list (assoc 'default zp/org-agenda-local-config)))
-  (org-agenda-redo-all)
+  (zp/org-agenda-redo-all)
   (when print-message
     (message "All local org-agenda configs have been reset.")))
 
