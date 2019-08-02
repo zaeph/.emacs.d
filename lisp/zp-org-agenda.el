@@ -1236,7 +1236,7 @@ With a ‘C-u’ prefix argument, reset all the local configs."
                     (zp/org-agenda-get-key))))
     (pcase print-message
       (4 (zp/org-agenda-reset-all-local-configs print-message))
-      (1 (zp/org-agenda-reset-current-local-config print-message agenda)))))
+      (_ (zp/org-agenda-reset-current-local-config print-message agenda)))))
 
 (defun zp/org-agenda-load-local-config (&optional agenda)
   "Load the org-agenda local config for the current view."
