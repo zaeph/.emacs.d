@@ -762,18 +762,19 @@ agenda settings after them."
             (org-agenda-dim-blocked-tasks 'dimmed)
             (org-deadline-warning-days 0))))
 
-(defun zp/org-agenda-block-agenda-week-appointments-only (header &optional file)
+(defun zp/org-agenda-block-agenda-timestamps-and-deadlines (header &optional file)
   `(agenda ""
            ((org-agenda-overriding-header
              (zp/org-agenda-format-header-main ,header))
             ,@(if (bound-and-true-p file)
                   `((org-agenda-files ',file)))
-            (org-agenda-span 'week)
-            (org-agenda-tag-filter-preset '("-routine"))
+            (org-agenda-span 'month)
+            (org-agenda-start-day "-1")
+            (org-deadline-warning-days 0)
             (org-agenda-skip-function
-             '(org-agenda-skip-entry-if
-               'todo '("CXLD")))
-            (org-agenda-entry-types '(:timestamp :sexp))
+             '(or (zp/skip-routine)
+                  (org-agenda-skip-entry-if 'todo '("CXLD"))))
+            (org-agenda-entry-types '(:deadline :timestamp :sexp))
             (org-agenda-dim-blocked-tasks 'dimmed))))
 
 (defun zp/org-agenda-block-tasks-with-group-filter (&optional groups tags by-groups file)

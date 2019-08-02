@@ -2876,9 +2876,9 @@ indirect-buffers."
           ("k" "Weekly agenda"
            (,(zp/org-agenda-block-agenda-week-with-group-filter "Weekly Agenda" nil)))
 
-          ("K" "Weekly appointments"
-           (,(zp/org-agenda-block-agenda-week-appointments-only
-              "Weekly Appointments (-routine)")))
+          ("K" "Timestamps & Deadlines"
+           (,(zp/org-agenda-block-agenda-timestamps-and-deadlines
+              "Timestamps & Deadlines")))
 
           ("A" "Active"
            (,@(zp/org-agenda-blocks-create "Active" nil nil t)))
