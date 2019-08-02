@@ -705,6 +705,8 @@ agenda settings after them."
             ,@(if (bound-and-true-p file)
                   `((org-agenda-files ',file)))
             (org-agenda-span 'day)
+            (org-agenda-skip-function
+             '(zp/skip-routine))
             (org-super-agenda-groups
              '((:name "Grid"
                       :time-grid t)
@@ -744,7 +746,8 @@ agenda settings after them."
             ,@(if (bound-and-true-p file)
                   `((org-agenda-files ',file)))
             (org-agenda-skip-function
-             '(zp/skip-tasks-not-belonging-to-agenda-groups ',groups))
+             '(or (zp/skip-tasks-not-belonging-to-agenda-groups ',groups)
+                  (zp/skip-routine)))
             (org-agenda-span 'day))))
 
 (defun zp/org-agenda-block-agenda-week-with-group-filter (header groups &optional file)
@@ -757,8 +760,7 @@ agenda settings after them."
             (org-habit-show-habits nil)
             (org-agenda-skip-function
              '(or (zp/skip-tasks-not-belonging-to-agenda-groups ',groups)
-                  (zp/skip-routine)
-                  (org-agenda-skip-entry-if 'todo '("CXLD"))))
+                  (zp/skip-routine)))
             (org-agenda-dim-blocked-tasks 'dimmed)
             (org-deadline-warning-days 0))))
 
@@ -791,6 +793,7 @@ agenda settings after them."
                   category-keep))
                (org-agenda-skip-function
                 '(or (zp/skip-tasks-not-belonging-to-agenda-groups ',groups)
+                     (zp/skip-routine)
                      (zp/skip-non-tasks)
                      (zp/skip-waiting)))
                (org-super-agenda-groups
