@@ -625,6 +625,8 @@ afterwards."
       (add-to-list 'word-list "-deadlines" t))
     (unless org-agenda-show-all-dates
       (add-to-list 'word-list "-empty" t))
+    (unless org-habit-show-habits
+      (add-to-list 'word-list "-habits" t))
     (unless zp/org-agenda-include-category-icons
       (add-to-list 'word-list "-icons" t))
     (unless zp/org-agenda-include-routine
@@ -989,21 +991,28 @@ It creates 4 blocks:
 (defvar zp/org-agenda-include-routine t
   "When non-nil, include habits and items with a :routine: tag.")
 
-(defun zp/toggle-org-agenda-include-routine ()
-  "Toggle the visibility of habits and :routine: items."
+(defun zp/toggle-org-agenda-include-habits-and-routine ()
+  "Toggle the visibility of items with a :routine: tag."
   (interactive)
-  (cond ((zp/set-agenda-local 'zp/org-agenda-include-habits-and-routine
-                                  (not (zp/get-agenda-local
-                                        'zp/org-agenda-include-habits-and-routine)))
-         (zp/set-agenda-local 'org-habit-show-habits nil)
-         (zp/set-agenda-local 'zp/org-agenda-include-routine nil)
-         (org-agenda-redo)
-         (message "Hiding habits & routine tasks."))
-        (t
+  (cond ((zp/set-agenda-local 'zp/org-agenda-include-routine
+                              (not (zp/get-agenda-local
+                                    'zp/org-agenda-include-routine)))
          (zp/set-agenda-local 'org-habit-show-habits t)
-         (zp/set-agenda-local 'zp/org-agenda-include-routine t)
          (org-agenda-redo)
-         (message "Displaying habits & routine tasks."))))
+         (message "Displaying habits & routine tasks."))
+        (t
+         (zp/set-agenda-local 'org-habit-show-habits nil)
+         (org-agenda-redo)
+         (message "Hiding habits & routine tasks."))))
+
+(defun zp/toggle-org-agenda-include-habits-or-routine (&optional arg)
+  "Toggle the visibility of habits and :routine: items.
+
+With a ‘C-u’ prefix, only toggle the visibility of the habits."
+  (interactive "P")
+  (pcase arg
+    ('(4) (zp/toggle-org-agenda-include-habits))
+    (_ (zp/toggle-org-agenda-include-habits-and-routine))))
 
 (defun zp/toggle-org-habit-show-all-today ()
   "Toggle the display of habits between showing only the habits
