@@ -3597,6 +3597,7 @@ agenda settings after them."
               ,@(if (bound-and-true-p file)
                     `((org-agenda-files ',file)))
               (org-agenda-span 'week)
+              (org-habit-show-habits nil)
               (org-agenda-tag-filter-preset '("-routine"))
               (org-agenda-skip-function
                '(or (zp/skip-tasks-not-belonging-to-agenda-groups ',groups)
