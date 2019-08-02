@@ -768,7 +768,7 @@ agenda settings after them."
              (zp/org-agenda-format-header-main ,header))
             ,@(if (bound-and-true-p file)
                   `((org-agenda-files ',file)))
-            (org-agenda-span 'month)
+            (org-agenda-span 'week)
             (org-agenda-start-day "-1")
             (org-deadline-warning-days 0)
             (org-agenda-skip-function
