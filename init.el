@@ -2770,7 +2770,8 @@ indirect-buffers."
           ("M-t" . org-agenda-todo-yesterday)
           ("D" . zp/toggle-org-agenda-include-deadlines)
           ("S" . zp/toggle-org-agenda-include-scheduled)
-          ("K" . zp/toggle-org-agenda-include-habits)
+          ("K" . zp/toggle-org-agenda-include-routine)
+          ("E" . zp/toggle-org-agenda-show-all-dates)
           ("M-d" . zp/toggle-org-deadline-warning-days-range)
           ("r" . zp/org-agenda-benchmark)
           ("R" . zp/org-agenda-garbage-collect)
@@ -2815,8 +2816,8 @@ indirect-buffers."
         zp/org-agenda-local-config
         (zp/org-agenda-local-config-init
          '(
-           org-habit-show-habits t
            org-habit-show-all-today nil
+           org-agenda-show-all-dates t
            org-agenda-include-deadlines t
            zp/org-agenda-include-scheduled t
            org-agenda-entry-types '(:deadline :scheduled :timestamp :sexp)
@@ -2824,6 +2825,9 @@ indirect-buffers."
            zp/org-agenda-sorting-strategy-special-first nil
            zp/org-agenda-split-subtasks nil
            zp/org-agenda-include-waiting t
+
+           org-habit-show-habits t
+           zp/org-agenda-include-routine t
 
            zp/org-agenda-todo-ignore-future t
            org-agenda-todo-ignore-scheduled 'future
@@ -2874,9 +2878,9 @@ indirect-buffers."
           ("k" "Weekly agenda"
            (,(zp/org-agenda-block-agenda-week-with-group-filter "Weekly Agenda" nil)))
 
-          ("K" "Weekly appointments"
-           (,(zp/org-agenda-block-agenda-week-appointments-only
-              "Weekly Appointments (-routine)")))
+          ("K" "Timestamps & Deadlines"
+           (,(zp/org-agenda-block-agenda-timestamps-and-deadlines
+              "Timestamps & Deadlines")))
 
           ("A" "Active"
            (,@(zp/org-agenda-blocks-create "Active" nil nil t)))

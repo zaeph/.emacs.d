@@ -443,6 +443,12 @@ as regular projects."
            (zp/is-project-p)
            (not (zp/is-group-head-p))))))
 
+(defun zp/skip-routine ()
+  "Skip items which have a :routine: tag."
+  (unless zp/org-agenda-include-routine
+    (when-let ((tag (car (member "routine" (org-get-tags (point) t)))))
+      (org-end-of-subtree))))
+
 ;;----------------------------------------------------------------------------
 ;; Sorting functions
 ;;----------------------------------------------------------------------------
@@ -617,10 +623,12 @@ afterwards."
          (word-list ()))
     (unless org-agenda-include-deadlines
       (add-to-list 'word-list "-deadlines" t))
-    (unless org-habit-show-habits
-      (add-to-list 'word-list "-habits" t))
+    (unless org-agenda-show-all-dates
+      (add-to-list 'word-list "-empty" t))
     (unless zp/org-agenda-include-category-icons
       (add-to-list 'word-list "-icons" t))
+    (unless zp/org-agenda-include-routine
+      (add-to-list 'word-list "-routine" t))
     (unless zp/org-agenda-include-scheduled
       (add-to-list 'word-list "-scheduled" t))
     (let ((word-list-formatted (s-join ";" word-list)))
@@ -695,6 +703,8 @@ agenda settings after them."
             ,@(if (bound-and-true-p file)
                   `((org-agenda-files ',file)))
             (org-agenda-span 'day)
+            (org-agenda-skip-function
+             '(zp/skip-routine))
             (org-super-agenda-groups
              '((:name "Grid"
                       :time-grid t)
@@ -734,7 +744,8 @@ agenda settings after them."
             ,@(if (bound-and-true-p file)
                   `((org-agenda-files ',file)))
             (org-agenda-skip-function
-             '(zp/skip-tasks-not-belonging-to-agenda-groups ',groups))
+             '(or (zp/skip-tasks-not-belonging-to-agenda-groups ',groups)
+                  (zp/skip-routine)))
             (org-agenda-span 'day))))
 
 (defun zp/org-agenda-block-agenda-week-with-group-filter (header groups &optional file)
@@ -745,25 +756,25 @@ agenda settings after them."
                   `((org-agenda-files ',file)))
             (org-agenda-span 'week)
             (org-habit-show-habits nil)
-            (org-agenda-tag-filter-preset '("-routine"))
             (org-agenda-skip-function
              '(or (zp/skip-tasks-not-belonging-to-agenda-groups ',groups)
-                  (org-agenda-skip-entry-if 'todo '("CXLD"))))
+                  (zp/skip-routine)))
             (org-agenda-dim-blocked-tasks 'dimmed)
             (org-deadline-warning-days 0))))
 
-(defun zp/org-agenda-block-agenda-week-appointments-only (header &optional file)
+(defun zp/org-agenda-block-agenda-timestamps-and-deadlines (header &optional file)
   `(agenda ""
            ((org-agenda-overriding-header
              (zp/org-agenda-format-header-main ,header))
             ,@(if (bound-and-true-p file)
                   `((org-agenda-files ',file)))
-            (org-agenda-span 'week)
-            (org-agenda-tag-filter-preset '("-routine"))
+            (org-agenda-span 'month)
+            (org-agenda-start-day "-1")
+            (org-deadline-warning-days 0)
             (org-agenda-skip-function
-             '(org-agenda-skip-entry-if
-               'todo '("CXLD")))
-            (org-agenda-entry-types '(:timestamp :sexp))
+             '(or (zp/skip-routine)
+                  (org-agenda-skip-entry-if 'todo '("CXLD"))))
+            (org-agenda-entry-types '(:deadline :timestamp :sexp))
             (org-agenda-dim-blocked-tasks 'dimmed))))
 
 (defun zp/org-agenda-block-tasks-with-group-filter (&optional groups tags by-groups file)
@@ -780,6 +791,7 @@ agenda settings after them."
                   category-keep))
                (org-agenda-skip-function
                 '(or (zp/skip-tasks-not-belonging-to-agenda-groups ',groups)
+                     (zp/skip-routine)
                      (zp/skip-non-tasks)
                      (zp/skip-waiting)))
                (org-super-agenda-groups
@@ -968,10 +980,30 @@ It creates 4 blocks:
   "Toggle habits."
   (interactive)
   (if (prog1 (zp/set-agenda-local 'org-habit-show-habits
-                                  (not (zp/get-agenda-local 'org-habit-show-habits)))
+                                  (not (zp/get-agenda-local
+                                        'org-habit-show-habits)))
         (org-agenda-redo))
       (message "Habits turned on.")
     (message "Habits turned off.")))
+
+(defvar zp/org-agenda-include-routine t
+  "When non-nil, include habits and items with a :routine: tag.")
+
+(defun zp/toggle-org-agenda-include-routine ()
+  "Toggle the visibility of habits and :routine: items."
+  (interactive)
+  (cond ((zp/set-agenda-local 'zp/org-agenda-include-habits-and-routine
+                                  (not (zp/get-agenda-local
+                                        'zp/org-agenda-include-habits-and-routine)))
+         (zp/set-agenda-local 'org-habit-show-habits nil)
+         (zp/set-agenda-local 'zp/org-agenda-include-routine nil)
+         (org-agenda-redo)
+         (message "Hiding habits & routine tasks."))
+        (t
+         (zp/set-agenda-local 'org-habit-show-habits t)
+         (zp/set-agenda-local 'zp/org-agenda-include-routine t)
+         (org-agenda-redo)
+         (message "Displaying habits & routine tasks."))))
 
 (defun zp/toggle-org-habit-show-all-today ()
   "Toggle the display of habits between showing only the habits
@@ -998,7 +1030,7 @@ due today, and showing all of them."
          (org-agenda-redo)
          (message "Deadlines: Visible"))))
 
-(defvar zp/org-agenda-include-scheduled nil
+(defvar zp/org-agenda-include-scheduled t
   "Toggle the inclusion of scheduled items in the agenda.")
 
 (defun zp/toggle-org-agenda-include-scheduled ()
@@ -1132,6 +1164,16 @@ due today, and showing all of them."
          (setq org-agenda-dim-blocked-tasks t)
          (org-agenda-redo)
          (message "Blocked tasks: Dimmed"))))
+
+(defun zp/toggle-org-agenda-show-all-dates ()
+  "Toggle the inclusion of days without entries in the agenda."
+  (interactive)
+  (if (prog1 (zp/set-agenda-local
+              'org-agenda-show-all-dates
+              (not (zp/get-agenda-local 'org-agenda-show-all-dates)))
+        (org-agenda-redo))
+      (message "Showing all dates.")
+    (message "Hiding empty dates.")))
 
 ;;----------------------------------------------------------------------------
 ;; Prepare agendas
