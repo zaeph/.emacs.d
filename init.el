@@ -2770,7 +2770,7 @@ indirect-buffers."
           ("M-t" . org-agenda-todo-yesterday)
           ("D" . zp/toggle-org-agenda-include-deadlines)
           ("S" . zp/toggle-org-agenda-include-scheduled)
-          ("K" . zp/toggle-org-agenda-include-habits)
+          ("K" . zp/toggle-org-agenda-include-routine)
           ("M-d" . zp/toggle-org-deadline-warning-days-range)
           ("r" . zp/org-agenda-benchmark)
           ("R" . zp/org-agenda-garbage-collect)
