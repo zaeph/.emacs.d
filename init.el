@@ -2815,7 +2815,6 @@ indirect-buffers."
         zp/org-agenda-local-config
         (zp/org-agenda-local-config-init
          '(
-           org-habit-show-habits t
            org-habit-show-all-today nil
            org-agenda-include-deadlines t
            zp/org-agenda-include-scheduled t
@@ -2824,6 +2823,9 @@ indirect-buffers."
            zp/org-agenda-sorting-strategy-special-first nil
            zp/org-agenda-split-subtasks nil
            zp/org-agenda-include-waiting t
+
+           org-habit-show-habits t
+           zp/org-agenda-include-routine t
 
            zp/org-agenda-todo-ignore-future t
            org-agenda-todo-ignore-scheduled 'future
