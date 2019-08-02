@@ -9,6 +9,12 @@
 (require 'org-agenda)
 
 ;;----------------------------------------------------------------------------
+;; Debugging
+;;----------------------------------------------------------------------------
+(setq zp/org-agenda-skip-functions-debug t)
+(setq zp/org-agenda-skip-functions-debug nil)
+
+;;----------------------------------------------------------------------------
 ;; Initialise local config
 ;;----------------------------------------------------------------------------
 (defun zp/org-agenda-get-key ()
@@ -233,8 +239,8 @@ a group."
 
 GROUPS is a list of AGENDA_GROUPS values to match.
 
-If EXHAUSTIVE is non-nil, the function will not skip groupless
-trees."
+If EXHAUSTIVE is non-nil or if nil is a member of GROUPS, the
+function will not skip groupless trees."
   (when zp/org-agenda-skip-functions-debug
     (message "STNG: %s" (org-entry-get (point) "ITEM")))
   (save-restriction
@@ -249,7 +255,8 @@ trees."
                                     (member nil groups))))
       (save-excursion
         (cond
-         ((zp/org-task-in-agenda-groups-p groups-regex include-groupless-p)
+         ((or (not groups)
+              (zp/org-task-in-agenda-groups-p groups-regex include-groupless-p))
           nil)
          ((and include-groupless-p
                (or (org-entry-get (point) property)
