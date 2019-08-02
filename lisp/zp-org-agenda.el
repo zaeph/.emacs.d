@@ -983,6 +983,25 @@ It creates 4 blocks:
       (message "Habits turned on.")
     (message "Habits turned off.")))
 
+(defvar zp/org-agenda-include-routine t
+  "When non-nil, include habits and items with a :routine: tag.")
+
+(defun zp/toggle-org-agenda-include-routine ()
+  "Toggle the visibility of habits and :routine: items."
+  (interactive)
+  (cond ((zp/set-agenda-local 'zp/org-agenda-include-habits-and-routine
+                                  (not (zp/get-agenda-local
+                                        'zp/org-agenda-include-habits-and-routine)))
+         (zp/set-agenda-local 'org-habit-show-habits nil)
+         (zp/set-agenda-local 'zp/org-agenda-include-routine nil)
+         (org-agenda-redo)
+         (message "Hiding habits & routine tasks."))
+        (t
+         (zp/set-agenda-local 'org-habit-show-habits t)
+         (zp/set-agenda-local 'zp/org-agenda-include-routine t)
+         (org-agenda-redo)
+         (message "Displaying habits & routine tasks."))))
+
 (defun zp/toggle-org-habit-show-all-today ()
   "Toggle the display of habits between showing only the habits
 due today, and showing all of them."
