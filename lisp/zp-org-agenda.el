@@ -255,7 +255,8 @@ function will not skip groupless trees."
                                     (member nil groups))))
       (save-excursion
         (cond
-         ((zp/org-task-in-agenda-groups-p groups-regex include-groupless-p)
+         ((or (not groups)
+              (zp/org-task-in-agenda-groups-p groups-regex include-groupless-p))
           nil)
          ((and include-groupless-p
                (or (org-entry-get (point) property)
