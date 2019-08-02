@@ -56,12 +56,15 @@
   (set-face-attribute 'org-block nil :foreground nil :inherit 'default :background "#1F1F1F")
 
 
-  (set-face-attribute 'zp/org-agenda-block-info-face nil
-                      :foreground "violetred1"
-                      :background "violetred4"
-                      :height 0.8
-                      :weight 'bold)
-  (set-face-attribute 'zp/org-agenda-block-warning-face nil :foreground "red" :weight 'bold)
+  (with-eval-after-load "zp-org-agenda"
+    (set-face-attribute 'zp/org-agenda-block-info-face nil
+                        :foreground "violetred1"
+                        :background "violetred4"
+                        :height 0.8
+                        :weight 'bold)
+    (set-face-attribute 'zp/org-agenda-block-warning-face nil
+                        :foreground "red"
+                        :weight 'bold))
 
   (zp/org-todo-format-face 'normal 'org-todo-todo "darkred")
   (zp/org-todo-format-face 'normal 'org-todo-next "DodgerBlue1")
@@ -124,12 +127,15 @@
     (set-face-attribute 'diff-hl-insert nil :foreground "#7ccd7c" :background "#b3e2b3")
     (set-face-attribute 'diff-hl-delete nil :foreground "#ee6363" :background "#f6a8a8"))
 
-  (set-face-attribute 'zp/org-agenda-block-info-face nil
-                      :foreground "violetred1"
-                      :background "thistle2"
-                      :height 0.8
-                      :weight 'bold)
-  (set-face-attribute 'zp/org-agenda-block-warning-face nil :foreground "red" :weight 'bold)
+  (with-eval-after-load "zp-org-agenda"
+    (set-face-attribute 'zp/org-agenda-block-info-face nil
+                        :foreground "violetred1"
+                        :background "thistle2"
+                        :height 0.8
+                        :weight 'bold)
+    (set-face-attribute 'zp/org-agenda-block-warning-face nil
+                        :foreground "red"
+                        :weight 'bold))
 
   (zp/org-todo-format-face 'normal 'org-todo-todo "red")
   (zp/org-todo-format-face 'normal 'org-todo-next "DodgerBlue1")
