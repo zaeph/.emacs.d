@@ -444,13 +444,14 @@ as regular projects."
            (not (zp/is-group-head-p))))))
 
 (defun zp/skip-routine ()
-  "Skip items which have the :routine: tag."
-  (let ((next-sibling (save-excursion (outline-get-next-sibling)))
-        (next-heading (save-excursion (outline-next-heading))))
-    (when (member "routine" (org-get-tags (point)))
-      (or next-sibling
-          next-heading
-          (point-max)))))
+  "Skip items which have a :routine: tag."
+  (unless zp/org-agenda-include-routine
+    (when-let ((tag (car (member "routine" (org-get-tags (point))))))
+      ;; If inherited, go up until we find the parent with the tag
+      (when (get-text-property 0 'inherited tag)
+        (while (not (member "routine" (org-get-tags (point) t)))
+          (org-up-heading-safe)))
+      (org-end-of-subtree))))
 
 ;;----------------------------------------------------------------------------
 ;; Sorting functions
