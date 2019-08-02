@@ -2761,7 +2761,6 @@ indirect-buffers."
          :map org-agenda-mode-map
          (("M-n" . org-agenda-next-date-line)
           ("M-p" . org-agenda-previous-date-line)
-          ("k" . zp/org-agenda-capture)
           ("C-," . sunrise-sunset)
           ("C-c C-q" . counsel-org-tag-agenda)
           (":" . counsel-org-tag-agenda)
@@ -4433,10 +4432,11 @@ With a ‘C-u’ prefix, make a separate frame for this tree."
 ;;----------------------------------------------------------------------------
 (use-package org-capture
   :commands (zp/org-agenda-capture)
-  :bind (("C-c n" . org-capture))
+  :bind (("C-c n" . org-capture)
+         :map org-agenda-mode-map
+         ("k" . zp/org-agenda-capture))
   :hook ((org-capture-mode . zp/org-capture-make-full-frame)
          (org-capture-prepare-finalize . zp/org-set-created-property))
-  :after org
   :config
   (setq org-default-notes-file "~/org/life.org")
 
@@ -4556,32 +4556,34 @@ With a ‘C-u’ prefix, make a separate frame for this tree."
   ;; Templates for ‘org-agenda-mode’
   ;;---------------------------------
 
-  ;; Special set of templates to be used in ‘org-agenda-mode’
-  (setq zp/org-agenda-capture-templates
-        '(("f" "Todo" entry (file+headline "~/org/life.org" "Inbox")
-           "* TODO %?\n%t")
-          ("r" "Todo (+time)" entry (file+headline "~/org/life.org" "Inbox")
-           "* TODO %?\n%^T")
+  (use-package org-agenda
+    :config
+    ;; Special set of templates to be used in ‘org-agenda-mode’
+    (setq zp/org-agenda-capture-templates
+          '(("f" "Todo" entry (file+headline "~/org/life.org" "Inbox")
+             "* TODO %?\n%t")
+            ("r" "Todo (+time)" entry (file+headline "~/org/life.org" "Inbox")
+             "* TODO %?\n%^T")
 
-          ("d" "Date" entry (file+olp "~/org/life.org" "Life" "Calendar")
-           "* %?\n%t")
-          ("e" "Date (+time)" entry (file+olp "~/org/life.org" "Life" "Calendar")
-           "* %?\n%^T")
+            ("d" "Date" entry (file+olp "~/org/life.org" "Life" "Calendar")
+             "* %?\n%t")
+            ("e" "Date (+time)" entry (file+olp "~/org/life.org" "Life" "Calendar")
+             "* %?\n%^T")
 
-          ("s" "Todo & Scheduled" entry (file+headline "~/org/life.org" "Inbox")
-           "* TODO %?\nSCHEDULED: %t")
-          ("w" "Todo & Scheduled (+time)" entry (file+headline "~/org/life.org" "Inbox")
-           "* TODO %?\nSCHEDULED: %^T")
+            ("s" "Todo & Scheduled" entry (file+headline "~/org/life.org" "Inbox")
+             "* TODO %?\nSCHEDULED: %t")
+            ("w" "Todo & Scheduled (+time)" entry (file+headline "~/org/life.org" "Inbox")
+             "* TODO %?\nSCHEDULED: %^T")
 
-          ("g" "Todo + Deadline" entry (file+headline "~/org/life.org" "Inbox")
-           "* TODO %?\nDEADLINE: %t")
-          ("t" "Todo & Deadline (+time)" entry (file+headline "~/org/life.org" "Inbox")
-           "* TODO %?\nDEADLINE: %^T")))
+            ("g" "Todo + Deadline" entry (file+headline "~/org/life.org" "Inbox")
+             "* TODO %?\nDEADLINE: %t")
+            ("t" "Todo & Deadline (+time)" entry (file+headline "~/org/life.org" "Inbox")
+             "* TODO %?\nDEADLINE: %^T")))
 
-  (defun zp/org-agenda-capture (&optional arg)
-    (interactive "P")
-    (let ((org-capture-templates zp/org-agenda-capture-templates))
-      (org-agenda-capture arg)))
+    (defun zp/org-agenda-capture (&optional arg)
+      (interactive "P")
+      (let ((org-capture-templates zp/org-agenda-capture-templates))
+        (org-agenda-capture arg))))
 
   ;;------------------------------------------
   ;; Load extra minor modes based on template
@@ -4629,7 +4631,6 @@ With a ‘C-u’ prefix, make a separate frame for this tree."
 (use-package org-capture-web
   :commands (zp/org-capture-web
              zp/org-capture-web-letterboxd)
-  :after org-capture
   :config
   (setq zp/org-capture-web-default-target
         '(file+headline "~/org/life.org" "Inbox")))
