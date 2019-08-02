@@ -3591,17 +3591,17 @@ agenda settings after them."
                '(zp/skip-tasks-not-belonging-to-agenda-groups ',groups))
               (org-agenda-span 'day))))
 
-  (defun zp/org-agenda-block-agenda-week (header &optional file)
+  (defun zp/org-agenda-block-agenda-week-with-group-filter (header groups &optional file)
     `(agenda ""
              ((org-agenda-overriding-header
                (zp/org-agenda-format-header-main ,header))
               ,@(if (bound-and-true-p file)
                     `((org-agenda-files ',file)))
               (org-agenda-span 'week)
-              (org-agenda-tag-filter-preset '("-recurring"))
+              (org-agenda-tag-filter-preset '("-routine"))
               (org-agenda-skip-function
-               '(org-agenda-skip-entry-if
-                 'todo '("CXLD")))
+               '(or (zp/skip-tasks-not-belonging-to-agenda-groups ',groups)
+                    (org-agenda-skip-entry-if 'todo '("CXLD"))))
               (org-agenda-dim-blocked-tasks 'dimmed)
               (org-deadline-warning-days 0))))
 
@@ -3998,8 +3998,8 @@ due today, and showing all of them."
           ("N" "Agenda (w/o groups)"
            (,(zp/org-agenda-block-agenda "Agenda (w/o groups)" org-agenda-files)))
 
-          ("k" "Weekly agenda"
-           (,(zp/org-agenda-block-agenda-week "Weekly Agenda")))
+          ("k" "Weekly agenda (Life & Pro)"
+           (,(zp/org-agenda-block-agenda-week-with-group-filter "Weekly Agenda" nil)))
 
           ("K" "Weekly appointments"
            (,(zp/org-agenda-block-agenda-week-appointments-only
