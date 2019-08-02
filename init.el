@@ -4559,7 +4559,6 @@ With a ‘C-u’ prefix, make a separate frame for this tree."
   (use-package org-agenda
     :config
     ;; Special set of templates to be used in ‘org-agenda-mode’
-    (message "Am I loaded?")
     (setq zp/org-agenda-capture-templates
           '(("f" "Todo" entry (file+headline "~/org/life.org" "Inbox")
              "* TODO %?\n%t")
