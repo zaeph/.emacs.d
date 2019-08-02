@@ -1008,7 +1008,7 @@ due today, and showing all of them."
          (org-agenda-redo)
          (message "Deadlines: Visible"))))
 
-(defvar zp/org-agenda-include-scheduled nil
+(defvar zp/org-agenda-include-scheduled t
   "Toggle the inclusion of scheduled items in the agenda.")
 
 (defun zp/toggle-org-agenda-include-scheduled ()
