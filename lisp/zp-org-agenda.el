@@ -627,10 +627,10 @@ afterwards."
          (word-list ()))
     (unless org-agenda-include-deadlines
       (add-to-list 'word-list "-deadlines" t))
-    (unless org-habit-show-habits
-      (add-to-list 'word-list "-habits" t))
     (unless zp/org-agenda-include-category-icons
       (add-to-list 'word-list "-icons" t))
+    (unless zp/org-agenda-include-routine
+      (add-to-list 'word-list "-routine" t))
     (unless zp/org-agenda-include-scheduled
       (add-to-list 'word-list "-scheduled" t))
     (let ((word-list-formatted (s-join ";" word-list)))
