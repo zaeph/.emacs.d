@@ -904,7 +904,6 @@ It creates 4 blocks:
             (org-agenda-entry-types '(:deadline))
             (org-agenda-include-deadlines t)
             (org-agenda-dim-blocked-tasks 'dimmed)
-            (org-deadline-warning-days 31)
             (org-agenda-sorting-strategy
              '((agenda habit-down time-up deadline-up priority-down category-keep)
                (tags priority-down category-keep)
