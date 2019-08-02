@@ -1192,20 +1192,49 @@ Meant to be run with ‘org-agenda-mode-hook’."
 (add-hook 'zp/org-agenda-load-local-config-post-hook
           #'zp/org-agenda-set-category-icons)
 
+(defun zp/org-agenda-reset-current-local-config (print-message &optional agenda)
+  "Reset the org-agenda local config to the default values."
+  (interactive "p")
+  (let ((agenda (or agenda
+                    (zp/org-agenda-get-key))))
+    (setf (alist-get agenda
+                     zp/org-agenda-local-config
+                     nil nil 'equal)
+          ;; Copying the list is necessary to have different
+          ;; references to the same values.  Otherwise, we’d also
+          ;; modify the global config.
+          (list (copy-alist (car (alist-get 'default
+                                            zp/org-agenda-local-config))))))
+  (when print-message
+    (org-agenda-redo-all)
+    (message "Local org-agenda config has been reset.")))
+
+(defun zp/org-agenda-reset-all-local-configs (print-message)
+  "Reset all local org-agenda configs to their default value."
+  (interactive "p")
+  (setq zp/org-agenda-local-config (list (assoc 'default zp/org-agenda-local-config)))
+  (org-agenda-redo-all)
+  (when print-message
+    (message "All local org-agenda configs have been reset.")))
+
+(defun zp/org-agenda-reset-local-config (&optional print-message agenda)
+  "Conditionally reset the org-agenda local config.
+
+With a ‘C-u’ prefix argument, reset all the local configs."
+  (interactive "p")
+  (let ((agenda (or agenda
+                    (zp/org-agenda-get-key))))
+    (pcase print-message
+      (4 (zp/org-agenda-reset-all-local-configs print-message))
+      (1 (zp/org-agenda-reset-current-local-config print-message agenda)))))
+
 (defun zp/org-agenda-load-local-config (&optional agenda)
   "Load the org-agenda local config for the current view."
   (let ((agenda (or agenda
                     (zp/org-agenda-get-key))))
     ;; Create local config if it doesn’t exist for current agenda
     (unless (assoc agenda zp/org-agenda-local-config)
-      (setf (alist-get agenda
-                       zp/org-agenda-local-config
-                       nil nil 'equal)
-            ;; Copying the list is necessary to have different
-            ;; references to the same values.  Otherwise, we’d also
-            ;; modify the global config.
-            (list (copy-alist (car (alist-get 'default
-                                              zp/org-agenda-local-config))))))
+      (zp/org-agenda-reset-current-local-config nil agenda))
     ;; Load all settings
     (mapcar (lambda (cons)
               (let ((variable (car cons))
@@ -1223,14 +1252,6 @@ Meant to be run with ‘org-agenda-mode-hook’."
     (run-hooks 'zp/org-agenda-load-local-config-post-hook)))
 
 (add-hook 'org-agenda-mode-hook #'zp/org-agenda-load-local-config)
-
-(defun zp/org-agenda-reset-local-config (print-message)
-  "Reset all local org-agenda config to their default value."
-  (interactive "p")
-  (setq zp/org-agenda-local-config (list (assoc 'default zp/org-agenda-local-config)))
-  (org-agenda-redo-all)
-  (when print-message
-    (message "Local configs have been reset.")))
 
 ;;----------------------------------------------------------------------------
 ;; Prepare org-agenda files
