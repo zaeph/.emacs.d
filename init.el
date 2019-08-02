@@ -4556,32 +4556,35 @@ With a ‘C-u’ prefix, make a separate frame for this tree."
   ;; Templates for ‘org-agenda-mode’
   ;;---------------------------------
 
-  ;; Special set of templates to be used in ‘org-agenda-mode’
-  (setq zp/org-agenda-capture-templates
-        '(("f" "Todo" entry (file+headline "~/org/life.org" "Inbox")
-           "* TODO %?\n%t")
-          ("r" "Todo (+time)" entry (file+headline "~/org/life.org" "Inbox")
-           "* TODO %?\n%^T")
+  (use-package org-agenda
+    :config
+    ;; Special set of templates to be used in ‘org-agenda-mode’
+    (message "Am I loaded?")
+    (setq zp/org-agenda-capture-templates
+          '(("f" "Todo" entry (file+headline "~/org/life.org" "Inbox")
+             "* TODO %?\n%t")
+            ("r" "Todo (+time)" entry (file+headline "~/org/life.org" "Inbox")
+             "* TODO %?\n%^T")
 
-          ("d" "Date" entry (file+olp "~/org/life.org" "Life" "Calendar")
-           "* %?\n%t")
-          ("e" "Date (+time)" entry (file+olp "~/org/life.org" "Life" "Calendar")
-           "* %?\n%^T")
+            ("d" "Date" entry (file+olp "~/org/life.org" "Life" "Calendar")
+             "* %?\n%t")
+            ("e" "Date (+time)" entry (file+olp "~/org/life.org" "Life" "Calendar")
+             "* %?\n%^T")
 
-          ("s" "Todo & Scheduled" entry (file+headline "~/org/life.org" "Inbox")
-           "* TODO %?\nSCHEDULED: %t")
-          ("w" "Todo & Scheduled (+time)" entry (file+headline "~/org/life.org" "Inbox")
-           "* TODO %?\nSCHEDULED: %^T")
+            ("s" "Todo & Scheduled" entry (file+headline "~/org/life.org" "Inbox")
+             "* TODO %?\nSCHEDULED: %t")
+            ("w" "Todo & Scheduled (+time)" entry (file+headline "~/org/life.org" "Inbox")
+             "* TODO %?\nSCHEDULED: %^T")
 
-          ("g" "Todo + Deadline" entry (file+headline "~/org/life.org" "Inbox")
-           "* TODO %?\nDEADLINE: %t")
-          ("t" "Todo & Deadline (+time)" entry (file+headline "~/org/life.org" "Inbox")
-           "* TODO %?\nDEADLINE: %^T")))
+            ("g" "Todo + Deadline" entry (file+headline "~/org/life.org" "Inbox")
+             "* TODO %?\nDEADLINE: %t")
+            ("t" "Todo & Deadline (+time)" entry (file+headline "~/org/life.org" "Inbox")
+             "* TODO %?\nDEADLINE: %^T")))
 
-  (defun zp/org-agenda-capture (&optional arg)
-    (interactive "P")
-    (let ((org-capture-templates zp/org-agenda-capture-templates))
-      (org-agenda-capture arg)))
+    (defun zp/org-agenda-capture (&optional arg)
+      (interactive "P")
+      (let ((org-capture-templates zp/org-agenda-capture-templates))
+        (org-agenda-capture arg))))
 
   ;;------------------------------------------
   ;; Load extra minor modes based on template
