@@ -140,7 +140,7 @@ off.")
 With a prefix argument, do so in all agenda buffers."
   (interactive "P")
   (cond ((equal arg '(4))
-         (with-timer "Rebuilding agenda buffer"
+         (with-timer "Rebuilding all agenda buffers"
            (zp/org-agenda-redo-all)))
         (t
          (with-timer "Rebuilding agenda buffer"
