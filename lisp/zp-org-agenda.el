@@ -1347,6 +1347,7 @@ An agenda is considered special if its key isn’t listed in
         (when (derived-mode-p 'org-agenda-mode)
           (let ((agenda (zp/org-agenda-get-key)))
             (unless (member agenda zp/org-agenda-default-agendas-list)
+              (zp/org-agenda-reset-local-config)
               (kill-buffer)
               (setq kill-count (1+ kill-count)))))))
     kill-count))
