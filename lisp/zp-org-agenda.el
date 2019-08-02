@@ -658,6 +658,8 @@ agenda settings after them."
       (add-to-list 'word-list "-future" t))
     (when zp/org-agenda-sort-by-rev-fifo
       (add-to-list 'word-list "+rev-fifo" t))
+    (unless zp/org-agenda-include-routine
+      (add-to-list 'word-list "-routine" t))
     (when zp/org-agenda-split-subtasks
       (add-to-list 'word-list "+split" t))
     (unless zp/org-agenda-include-waiting
