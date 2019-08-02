@@ -762,7 +762,8 @@ agenda settings after them."
             (org-agenda-tag-filter-preset '("-routine"))
             (org-agenda-skip-function
              '(org-agenda-skip-entry-if
-               'todo '("CXLD") 'scheduled 'deadline))
+               'todo '("CXLD")))
+            (org-agenda-entry-types '(:timestamp :sexp))
             (org-agenda-dim-blocked-tasks 'dimmed))))
 
 (defun zp/org-agenda-block-tasks-with-group-filter (&optional groups tags by-groups file)
