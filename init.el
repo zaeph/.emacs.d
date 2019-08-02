@@ -3997,7 +3997,7 @@ due today, and showing all of them."
           ("N" "Agenda (w/o groups)"
            (,(zp/org-agenda-block-agenda "Agenda (w/o groups)" org-agenda-files)))
 
-          ("k" "Weekly agenda (Life & Pro)"
+          ("k" "Weekly agenda"
            (,(zp/org-agenda-block-agenda-week-with-group-filter "Weekly Agenda" nil)))
 
           ("K" "Weekly appointments"
