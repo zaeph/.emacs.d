@@ -443,6 +443,15 @@ as regular projects."
            (zp/is-project-p)
            (not (zp/is-group-head-p))))))
 
+(defun zp/skip-routine ()
+  "Skip items which have the :routine: tag."
+  (let ((next-sibling (save-excursion (outline-get-next-sibling)))
+        (next-heading (save-excursion (outline-next-heading))))
+    (when (member "routine" (org-get-tags (point)))
+      (or next-sibling
+          next-heading
+          (point-max)))))
+
 ;;----------------------------------------------------------------------------
 ;; Sorting functions
 ;;----------------------------------------------------------------------------
