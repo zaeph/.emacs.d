@@ -60,7 +60,7 @@
   (set-face-attribute 'org-agenda-date nil
                       :foreground "#3971ed")
   (set-face-attribute 'org-agenda-date-today nil
-                      :foreground "#398fed"
+                      :foreground "#2aa198"
                       :slant 'normal)
   (set-face-attribute 'org-agenda-date-weekend nil
                       :foreground "#5b39ed"
@@ -138,10 +138,10 @@
   (set-face-attribute 'org-agenda-date nil
                       :foreground "#3971ed")
   (set-face-attribute 'org-agenda-date-today nil
-                      :foreground "#3953ed"
+                      :foreground "#2aa198"
                       :slant 'normal)
   (set-face-attribute 'org-agenda-date-weekend nil
-                      :foreground "#6839ed"
+                      :foreground "#5b39ed"
                       :slant 'normal
                       :weight 'normal)
 
