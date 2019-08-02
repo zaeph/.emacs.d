@@ -2876,12 +2876,13 @@ indirect-buffers."
           ("N" "Agenda (w/o groups)"
            (,(zp/org-agenda-block-agenda "Agenda (w/o groups)" org-agenda-files)))
 
-          ("k" "Weekly agenda"
-           (,(zp/org-agenda-block-agenda-week-with-group-filter "Weekly Agenda" nil)))
-
-          ("K" "Timestamps & Deadlines"
+          ("k" "Timestamps & Deadlines"
            (,(zp/org-agenda-block-agenda-timestamps-and-deadlines
               "Timestamps & Deadlines")))
+
+          ("K" "Seeking Agenda"
+           (,(zp/org-agenda-block-agenda-week-with-group-filter
+              "Seeking Agenda" nil)))
 
           ("A" "Active"
            (,@(zp/org-agenda-blocks-create "Active" nil nil t)))
