@@ -4436,7 +4436,6 @@ With a ‘C-u’ prefix, make a separate frame for this tree."
   :bind (("C-c n" . org-capture))
   :hook ((org-capture-mode . zp/org-capture-make-full-frame)
          (org-capture-prepare-finalize . zp/org-set-created-property))
-  :after (:any org org-agenda)
   :config
   (setq org-default-notes-file "~/org/life.org")
 
