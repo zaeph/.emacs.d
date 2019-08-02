@@ -2761,7 +2761,6 @@ indirect-buffers."
          :map org-agenda-mode-map
          (("M-n" . org-agenda-next-date-line)
           ("M-p" . org-agenda-previous-date-line)
-          ("k" . zp/org-agenda-capture)
           ("C-," . sunrise-sunset)
           ("C-c C-q" . counsel-org-tag-agenda)
           (":" . counsel-org-tag-agenda)
@@ -4433,7 +4432,9 @@ With a ‘C-u’ prefix, make a separate frame for this tree."
 ;;----------------------------------------------------------------------------
 (use-package org-capture
   :commands (zp/org-agenda-capture)
-  :bind (("C-c n" . org-capture))
+  :bind (("C-c n" . org-capture)
+         :map org-agenda-mode-map
+         ("k" . zp/org-agenda-capture))
   :hook ((org-capture-mode . zp/org-capture-make-full-frame)
          (org-capture-prepare-finalize . zp/org-set-created-property))
   :config
