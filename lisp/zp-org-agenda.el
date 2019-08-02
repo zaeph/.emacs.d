@@ -1228,7 +1228,7 @@ Meant to be run with ‘org-agenda-mode-hook’."
     (message "All local org-agenda configs have been reset.")))
 
 (defun zp/org-agenda-reset-local-config (&optional print-message agenda)
-  "Conditionally reset the org-agenda local config.
+  "Reset the org-agenda local config.
 
 With a ‘C-u’ prefix argument, reset all the local configs."
   (interactive "p")
