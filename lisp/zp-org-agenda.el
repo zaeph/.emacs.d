@@ -446,11 +446,7 @@ as regular projects."
 (defun zp/skip-routine ()
   "Skip items which have a :routine: tag."
   (unless zp/org-agenda-include-routine
-    (when-let ((tag (car (member "routine" (org-get-tags (point))))))
-      ;; If inherited, go up until we find the parent with the tag
-      (when (get-text-property 0 'inherited tag)
-        (while (not (member "routine" (org-get-tags (point) t)))
-          (org-up-heading-safe)))
+    (when-let ((tag (car (member "routine" (org-get-tags (point) t)))))
       (org-end-of-subtree))))
 
 ;;----------------------------------------------------------------------------
