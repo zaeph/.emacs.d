@@ -1883,6 +1883,8 @@ return `nil'."
               ("C-c ," . zp/hydra-org-priority/body)
               ("M-p" . org-metaup)
               ("M-n" . org-metadown)
+              ("M-P" . org-shiftmetaup)
+              ("M-N" . org-shiftmetadown)
               ("M-[" . org-metaleft)
               ("M-]" . org-metaright)
               ("M-{" . org-shiftmetaleft)
