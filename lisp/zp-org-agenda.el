@@ -977,7 +977,8 @@ It creates 4 blocks:
   "Toggle habits."
   (interactive)
   (if (prog1 (zp/set-agenda-local 'org-habit-show-habits
-                                  (not (zp/get-agenda-local 'org-habit-show-habits)))
+                                  (not (zp/get-agenda-local
+                                        'org-habit-show-habits)))
         (org-agenda-redo))
       (message "Habits turned on.")
     (message "Habits turned off.")))
