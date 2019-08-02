@@ -54,6 +54,11 @@
   (set-face-attribute 'secondary-selection nil :background "#3B3273")
   (set-face-attribute 'org-column nil :background "#1F1F1F")
   (set-face-attribute 'org-block nil :foreground nil :inherit 'default :background "#1F1F1F")
+  (set-face-attribute 'org-agenda-date-today nil :slant 'normal)
+  (set-face-attribute 'org-agenda-date-weekend nil
+                      :foreground "#7839ED"
+                      :slant 'normal
+                      :weight 'normal)
 
 
   (with-eval-after-load "zp-org-agenda"
@@ -121,6 +126,11 @@
   (set-face-attribute 'secondary-selection nil :background "#d3ccff")
   (set-face-attribute 'org-column nil :background "#F0E4BE")
   (set-face-attribute 'org-block nil :foreground nil :inherit 'default :background "#F0E6BE")
+  (set-face-attribute 'org-agenda-date-today nil :slant 'normal)
+  (set-face-attribute 'org-agenda-date-weekend nil
+                      :foreground "#7839ED"
+                      :slant 'normal
+                      :weight 'normal)
 
   (with-eval-after-load "diff-hl"
     (set-face-attribute 'diff-hl-change nil :foreground "#3a81c3" :background "#afcce7")
