@@ -3951,8 +3951,9 @@ buffer, thereby propagating the indirectness."
           "Tiredness"))
 
   ;; Load ‘zp/psychotherapy-mode’ with the org-capture-template ‘D’
-  (add-to-list 'zp/org-capture-extra-minor-modes-alist
-               '("D" . zp/psychotherapy-mode)))
+  ;; (add-to-list 'zp/org-capture-extra-minor-modes-alist
+  ;;              '("D" . zp/psychotherapy-mode))
+  )
 
 ;;----------------------------------------------------------------------------
 ;; Feedback sounds
