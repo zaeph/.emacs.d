@@ -45,7 +45,6 @@
   (set-face-attribute 'org-agenda-clocking nil :background "RoyalBlue4")
   (set-face-attribute 'fringe nil :background "gray10" :foreground "orangered")
   (set-face-attribute 'vertical-border nil :foreground "RoyalBlue1")
-  (set-face-attribute 'org-agenda-structure nil :foreground "DodgerBlue1" :weight 'bold)
   (set-face-attribute 'hl-line nil :background "#1F1F3F")
   (set-face-attribute 'org-level-4 nil :foreground "#ed3971")
   (set-face-attribute 'org-meta-line nil :foreground "DodgerBlue3")
@@ -55,6 +54,9 @@
   (set-face-attribute 'org-column nil :background "#1F1F1F")
   (set-face-attribute 'org-block nil :foreground nil :inherit 'default :background "#1F1F1F")
 
+  (set-face-attribute 'org-agenda-structure nil
+                      :foreground "DodgerBlue1"
+                      :weight 'bold)
   (set-face-attribute 'org-agenda-date nil
                       :foreground "#3971ed")
   (set-face-attribute 'org-agenda-date-today nil
@@ -124,13 +126,15 @@
   (set-face-attribute 'helm-selection nil :background "SteelBlue1")
   (set-face-attribute 'helm-visible-mark nil :background "goldenrod1")
   (set-face-attribute 'header-line nil :foreground "#ccc")
-  (set-face-attribute 'org-agenda-structure nil :foreground "DodgerBlue1" :weight 'bold)
   (set-face-attribute 'line-number nil :foreground "#636663" :background "#d4cdaa")
   ;; (set-face-attribute 'line-number-current-line nil :foreground "#707370" :background "#ccc6a4")
   (set-face-attribute 'secondary-selection nil :background "#d3ccff")
   (set-face-attribute 'org-column nil :background "#F0E4BE")
   (set-face-attribute 'org-block nil :foreground nil :inherit 'default :background "#F0E6BE")
 
+  (set-face-attribute 'org-agenda-structure nil
+                      :foreground "DodgerBlue1"
+                      :weight 'bold)
   (set-face-attribute 'org-agenda-date nil
                       :foreground "#3971ed")
   (set-face-attribute 'org-agenda-date-today nil
