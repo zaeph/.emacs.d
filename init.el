@@ -2799,6 +2799,7 @@ indirect-buffers."
         org-agenda-skip-scheduled-if-done 1
         org-agenda-skip-timestamp-if-done 1
         org-agenda-skip-deadline-if-done 1
+        org-agenda-skip-deadline-prewarning-if-scheduled nil
         org-agenda-tags-todo-honor-ignore-options 1
         org-agenda-todo-ignore-with-date nil
         org-agenda-todo-ignore-deadlines nil
