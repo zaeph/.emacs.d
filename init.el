@@ -4632,7 +4632,6 @@ With a ‘C-u’ prefix, make a separate frame for this tree."
 (use-package org-capture-web
   :commands (zp/org-capture-web
              zp/org-capture-web-letterboxd)
-  :after org-capture
   :config
   (setq zp/org-capture-web-default-target
         '(file+headline "~/org/life.org" "Inbox")))
