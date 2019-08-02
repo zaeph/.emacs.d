@@ -918,6 +918,7 @@ It creates 4 blocks:
              (zp/org-agenda-format-header-main "Deadlines"))
             (org-agenda-entry-types '(:deadline))
             (org-agenda-include-deadlines t)
+            (org-agenda-skip-deadline-prewarning-if-scheduled nil)
             (org-agenda-dim-blocked-tasks 'dimmed)
             (org-agenda-sorting-strategy
              '((agenda habit-down time-up deadline-up priority-down category-keep)
