@@ -2771,6 +2771,7 @@ indirect-buffers."
           ("D" . zp/toggle-org-agenda-include-deadlines)
           ("S" . zp/toggle-org-agenda-include-scheduled)
           ("K" . zp/toggle-org-agenda-include-routine)
+          ("E" . zp/toggle-org-agenda-show-all-dates)
           ("M-d" . zp/toggle-org-deadline-warning-days-range)
           ("r" . zp/org-agenda-benchmark)
           ("R" . zp/org-agenda-garbage-collect)
@@ -2816,6 +2817,7 @@ indirect-buffers."
         (zp/org-agenda-local-config-init
          '(
            org-habit-show-all-today nil
+           org-agenda-show-all-dates t
            org-agenda-include-deadlines t
            zp/org-agenda-include-scheduled t
            org-agenda-entry-types '(:deadline :scheduled :timestamp :sexp)

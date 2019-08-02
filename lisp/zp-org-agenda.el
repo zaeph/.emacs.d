@@ -623,6 +623,8 @@ afterwards."
          (word-list ()))
     (unless org-agenda-include-deadlines
       (add-to-list 'word-list "-deadlines" t))
+    (unless org-agenda-show-all-dates
+      (add-to-list 'word-list "-empty" t))
     (unless zp/org-agenda-include-category-icons
       (add-to-list 'word-list "-icons" t))
     (unless zp/org-agenda-include-routine
@@ -1162,6 +1164,16 @@ due today, and showing all of them."
          (setq org-agenda-dim-blocked-tasks t)
          (org-agenda-redo)
          (message "Blocked tasks: Dimmed"))))
+
+(defun zp/toggle-org-agenda-show-all-dates ()
+  "Toggle the inclusion of days without entries in the agenda."
+  (interactive)
+  (if (prog1 (zp/set-agenda-local
+              'org-agenda-show-all-dates
+              (not (zp/get-agenda-local 'org-agenda-show-all-dates)))
+        (org-agenda-redo))
+      (message "Showing all dates.")
+    (message "Hiding empty dates.")))
 
 ;;----------------------------------------------------------------------------
 ;; Prepare agendas
