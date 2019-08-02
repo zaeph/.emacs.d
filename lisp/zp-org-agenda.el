@@ -754,9 +754,9 @@ agenda settings after them."
                   `((org-agenda-files ',file)))
             (org-agenda-span 'week)
             (org-habit-show-habits nil)
-            (org-agenda-tag-filter-preset '("-routine"))
             (org-agenda-skip-function
              '(or (zp/skip-tasks-not-belonging-to-agenda-groups ',groups)
+                  (zp/skip-routine)
                   (org-agenda-skip-entry-if 'todo '("CXLD"))))
             (org-agenda-dim-blocked-tasks 'dimmed)
             (org-deadline-warning-days 0))))
