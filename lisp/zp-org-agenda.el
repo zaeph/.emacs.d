@@ -600,7 +600,8 @@ afterwards."
                              (if reverse a b))
         (when zp/org-agenda-sorting-strategy-special-first
           (zp/org-cmp-todo-special a b))
-        (org-cmp-values a b 'priority)
+        (unless reverse
+          (org-cmp-values a b 'priority))
         (zp/org-cmp-created (if reverse b a)
                             (if reverse a b)))))
 
