@@ -2921,6 +2921,7 @@ indirect-buffers."
         ("^linux$" "~/org/svg/icons/nixos.svg" nil nil :ascent center)
         ("^nixos$" "~/org/svg/icons/nixos.svg" nil nil :ascent center)
         ("^opsec$" "~/org/svg/icons/cyber-security-b.svg" nil nil :ascent center)
+        ("^ranger$" "~/org/svg/icons/ranger.svg" nil nil :ascent center)
         ("^git$" "~/org/svg/icons/git.svg" nil nil :ascent center)
 
         ;; Media
@@ -3364,6 +3365,7 @@ indirect-buffers."
   _e_: Emacs
   _i_: Elisp
   _o_: Org
+  _r_: Ranger
   _t_: LaTeX
   _l_: Linux
   _n_: NixOS
@@ -3376,6 +3378,7 @@ indirect-buffers."
      ("e" "~/org/life.org" "Emacs")
      ("i" "~/org/life.org" "Elisp")
      ("o" "~/org/life.org" "Org")
+     ("r" "~/org/life.org" "Ranger")
      ("t" "~/org/life.org" "LaTeX")
      ("l" "~/org/life.org" "Linux")
      ("n" "~/org/life.org" "NixOS")
