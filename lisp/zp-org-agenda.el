@@ -720,6 +720,8 @@ agenda settings after them."
              (zp/org-agenda-format-header-main ,header))
             ,@(if (bound-and-true-p file)
                   `((org-agenda-files ',file)))
+            (org-agenda-skip-function
+             '(zp/skip-routine))
             (org-agenda-span 'day))))
 
 (defun zp/org-agenda-block-header (header)
