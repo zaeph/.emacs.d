@@ -765,6 +765,7 @@ agenda settings after them."
                      `((org-agenda-files ',file)))
                (org-agenda-hide-tags-regexp
                 (concat org-agenda-hide-tags-regexp "\\|curios"))
+               (zp/my-groups (zp/set-agenda-local 'zp/testing ',groups))
                (org-agenda-sorting-strategy
                 '(user-defined-down
                   category-keep))
