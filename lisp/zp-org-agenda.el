@@ -143,6 +143,17 @@ With a prefix argument, do so in all agenda buffers."
 ;;----------------------------------------------------------------------------
 ;; Inspired by Bernst Hansen’s helper functions.
 ;; Source: http://doc.norang.ca/org-mode.html
+(defun zp/org-agenda-groups-format-regex (list)
+  "Format LIST of agenda groups as a regex"
+  (string-join
+   (mapcar (lambda (arg)
+             (if (not arg)
+                 "^$"
+               (concat "\\b"
+                       arg
+                       "\\b")))
+           list)
+   "\\|"))
 
 (defun zp/org-task-in-agenda-groups-p (groups &optional match-groupless pom)
   "Test whether a task is in agenda-group matched by GROUPS.
@@ -779,20 +790,6 @@ agenda settings after them."
                (org-agenda-dim-blocked-tasks nil)
                (org-super-agenda-groups
                 (zp/org-super-agenda-projects)))))
-
-(defun zp/org-agenda-groups-format-regex (list)
-  "Format LIST of agenda groups as a regex"
-  (string-join
-   (mapcar (lambda (arg)
-             (if (not arg)
-                 "^$"
-               (concat "\\b"
-                       arg
-                       "\\b")))
-           list)
-   "\\|"))
-
-
 
 (defun zp/org-agenda-blocks-create (header &optional groups tags by-groups file)
   "Format the main agenda blocks.
