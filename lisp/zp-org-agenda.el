@@ -1278,8 +1278,6 @@ If AGENDA is 'default, set SYMBOL to VALUE globally."
 Any agenda not in this list will be considered special, thereby
 marking it for deletion upon garbage collection.")
 
-(setq zp/org-agenda-default-agendas-list '("n" "N" "l"))
-
 (defun zp/org-agenda-kill-special-agendas ()
   "Kill all special agendas.
 

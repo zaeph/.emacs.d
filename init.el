@@ -2945,6 +2945,8 @@ indirect-buffers."
 
         (".*" '(space . (:width (24))) nil nil :ascent center)))
 
+  (setq zp/org-agenda-default-agendas-list '("n" "N" "k" "l"))
+
   (setq org-agenda-custom-commands
         `(("n" "Agenda"
            (,(zp/org-agenda-block-agenda-main "Agenda" org-agenda-files)))
