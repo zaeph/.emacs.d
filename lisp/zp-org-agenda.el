@@ -162,10 +162,9 @@ GROUPS can be a list or a regex.
 
 If MATCH-GROUPLESS is non-nil, returns -1 when a task doesn’t have
 a group."
-  (let ((groups-regex
-         (if (listp groups)
-             (zp/org-agenda-groups-format-regex groups)
-           groups)))
+  (let ((groups-regex (if (listp groups)
+                          (zp/org-agenda-groups-format-regex groups)
+                        groups)))
     (save-restriction
       (widen)
       (let ((task-group (org-entry-get (or pom (point))
