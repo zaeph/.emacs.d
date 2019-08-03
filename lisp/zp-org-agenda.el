@@ -561,7 +561,7 @@ afterwards."
          (header-formatted
           (zp/org-agenda-format-header-align
            (concat flanking-symbol " " header " " flanking-symbol)))
-         (word-list ()))
+         word-list)
     (unless org-agenda-include-deadlines
       (add-to-list 'word-list "-deadlines" t))
     (unless org-agenda-show-all-dates
