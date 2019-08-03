@@ -91,8 +91,9 @@
   (set-face-attribute 'org-priority-face-d nil :foreground "ForestGreen")
   (set-face-attribute 'org-priority-face-e nil :foreground "RoyalBlue")
 
-  (set-face-attribute 'org-tag-location nil  :weight 'bold :foreground "BlueViolet")
-  (set-face-attribute 'org-tag-todo nil   :weight 'bold :foreground "Skyblue4")
+  (set-face-attribute 'org-tag-context nil  :weight 'bold :foreground "BlueViolet")
+  (set-face-attribute 'org-tag-special nil :weight 'bold :foreground "SpringGreen4")
+  (set-face-attribute 'org-tag-standby nil :weight 'bold :foreground "Skyblue4")
   (set-face-attribute 'org-tag-important nil :weight 'bold :foreground "darkred")
   (set-face-attribute 'org-tag-curios nil   :weight 'bold :foreground "DeepPink")
   (set-face-attribute 'org-tag-french nil    :weight 'bold :foreground "DodgerBlue1")
@@ -174,8 +175,9 @@
   (set-face-attribute 'org-priority-face-d nil :foreground "ForestGreen")
   (set-face-attribute 'org-priority-face-e nil :foreground "RoyalBlue")
 
-  (set-face-attribute 'org-tag-location nil :weight 'bold :foreground "BlueViolet")
-  (set-face-attribute 'org-tag-todo nil :weight 'bold :foreground "Skyblue1")
+  (set-face-attribute 'org-tag-context nil :weight 'bold :foreground "BlueViolet")
+  (set-face-attribute 'org-tag-special nil :weight 'bold :foreground "SpringGreen4")
+  (set-face-attribute 'org-tag-standby nil :weight 'bold :foreground "SkyBlue4")
   (set-face-attribute 'org-tag-important nil :weight 'bold :foreground "red")
   (set-face-attribute 'org-tag-curios nil :weight 'bold :foreground "DeepPink")
   (set-face-attribute 'org-tag-french nil :weight 'bold :foreground "DodgerBlue1")
