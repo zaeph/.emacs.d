@@ -401,6 +401,15 @@ todo-keyword)."
        (t
         subtree-end)))))
 
+(defun zp/skip-non-projects-cond ()
+  "Conditionally skip trees which aren’ts projects.
+
+If ‘zp/org-agenda-include-projects’ is nil, skip to the end of
+the file."
+  (if zp/org-agenda-include-projects
+      (zp/skip-non-projects)
+    (point-max)))
+
 (defun zp/skip-non-tasks (&optional subtasks)
   "Skip items which aren’t tasks.
 
@@ -629,6 +638,8 @@ afterwards."
       (add-to-list 'word-list "-habits" t))
     (unless zp/org-agenda-include-category-icons
       (add-to-list 'word-list "-icons" t))
+    (unless zp/org-agenda-include-projects
+      (add-to-list 'word-list "-projects" t))
     (unless zp/org-agenda-include-routine
       (add-to-list 'word-list "-routine" t))
     (unless zp/org-agenda-include-scheduled
@@ -827,7 +838,7 @@ agenda settings after them."
                      `((org-agenda-files ',file)))
                (org-agenda-skip-function
                 '(or (zp/skip-tasks-not-belonging-to-agenda-groups ',groups t)
-                     (zp/skip-non-projects)
+                     (zp/skip-non-projects-cond)
                      (zp/skip-waiting)))
                (org-agenda-sorting-strategy
                 '(user-defined-down
@@ -1130,6 +1141,18 @@ due today, and showing all of them."
         (org-agenda-redo))
       (message "Show items in reverse FIFO order.")
     (message "Show items in FIFO order.")))
+
+(defvar zp/org-agenda-include-projects t
+  "When non-nil, include projects in the org-agenda task view.")
+
+(defun zp/toggle-org-agenda-include-projects ()
+  (interactive)
+  (if (prog1 (zp/set-agenda-local 'zp/org-agenda-include-projects
+                                  (not (zp/get-agenda-local
+                                        'zp/org-agenda-include-projects)))
+        (org-agenda-redo))
+      (message "Showing projects.")
+    (message "Hiding projects.")))
 
 (defun zp/toggle-org-agenda-projects-include-waiting ()
   "Toggle whether to include projects with a waiting task."

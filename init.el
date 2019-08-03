@@ -2773,6 +2773,7 @@ indirect-buffers."
           ("K" . zp/toggle-org-agenda-include-routine)
           ("H" . zp/toggle-org-agenda-include-habits)
           ("E" . zp/toggle-org-agenda-show-all-dates)
+          ("Y" . zp/toggle-org-agenda-include-projects)
           ("M-d" . zp/toggle-org-deadline-warning-days-range)
           ("r" . zp/org-agenda-benchmark)
           ("R" . zp/org-agenda-reset-local-config)
@@ -2828,6 +2829,7 @@ indirect-buffers."
            zp/org-agenda-sorting-strategy-special-first nil
            zp/org-agenda-split-subtasks nil
            zp/org-agenda-include-waiting t
+           zp/org-agenda-include-projects t
 
            org-habit-show-habits t
            zp/org-agenda-include-routine t
