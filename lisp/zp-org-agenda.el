@@ -792,13 +792,6 @@ agenda settings after them."
            list)
    "\\|"))
 
-(defun zp/org-agenda-groups-format-regex-for-filtering (list)
-  "Format LIST of agenda groups as a regex for tags-todo"
-  (concat
-   "+AGENDA_GROUP={"
-   (zp/org-agenda-groups-format-regex list)
-   "}"))
-
 
 
 (defun zp/org-agenda-blocks-create (header &optional groups tags by-groups file)
