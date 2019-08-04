@@ -252,6 +252,8 @@ time is displayed."
 (define-key zp/toggle-map (kbd "Q") #'toggle-debug-on-quit)
 (define-key zp/toggle-map (kbd "q") #'electric-quote-local-mode)
 (define-key zp/toggle-map (kbd "f") #'auto-fill-mode)
+(define-key zp/toggle-map (kbd "l") #'display-line-numbers-mode)
+(define-key zp/toggle-map (kbd "h") #'global-hl-line-mode)
 
 ;; Modes
 (global-set-key (kbd "C-c s") #'scroll-bar-mode)
