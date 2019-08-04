@@ -168,6 +168,39 @@ end-of-buffer signals; pass the rest to the default handler."
     (insert-file-contents file-path)
     (buffer-string)))
 
+;; TODO: Does it need to be macro?
+(defmacro zp/advise-commands (method commands where function)
+  (let ((where-keyword (intern-soft (concat ":" (symbol-name where)))))
+    `(progn
+       ,@(cond ((string= method 'add)
+                (mapcar (lambda (command)
+                          `(advice-add ',command ,where-keyword #',function))
+                        commands))
+               ((string= method 'remove)
+                (mapcar (lambda (command)
+                          `(advice-remove ',command  #',function))
+                        commands))))))
+
+(defmacro zp/add-hooks (method commands function)
+  (let ((where-keyword (intern-soft (concat ":" (symbol-name where)))))
+    `(progn
+       ,@(cond ((string= method 'add)
+                (mapcar (lambda (command)
+                          `(add-hook ',command #',function))
+                        commands))
+               ((string= method 'remove)
+                (mapcar (lambda (command)
+                          `(remove-hook ',command  #',function))
+                        commands))))))
+
+(defun other-window-reverse ()
+  "Select the previous window."
+  (interactive)
+  (select-window (previous-window)))
+
+;;----------------------------------------------------------------------------
+;; Timers
+;;----------------------------------------------------------------------------
 ;; TODO: Improve formatting & output in ‘eval’ context
 (defmacro with-timer (title &rest forms)
   "Run the given FORMS, counting the elapsed time.
@@ -204,36 +237,6 @@ time is displayed."
            (max (apply #'max list))
            (mean (/ (apply #'+ list) (length list))))
        (format "min: %.3fs / max: %.3fs / mean: %.3fs" min max mean))))
-
-;; TODO: Does it need to be macro?
-(defmacro zp/advise-commands (method commands where function)
-  (let ((where-keyword (intern-soft (concat ":" (symbol-name where)))))
-    `(progn
-       ,@(cond ((string= method 'add)
-                (mapcar (lambda (command)
-                          `(advice-add ',command ,where-keyword #',function))
-                        commands))
-               ((string= method 'remove)
-                (mapcar (lambda (command)
-                          `(advice-remove ',command  #',function))
-                        commands))))))
-
-(defmacro zp/add-hooks (method commands function)
-  (let ((where-keyword (intern-soft (concat ":" (symbol-name where)))))
-    `(progn
-       ,@(cond ((string= method 'add)
-                (mapcar (lambda (command)
-                          `(add-hook ',command #',function))
-                        commands))
-               ((string= method 'remove)
-                (mapcar (lambda (command)
-                          `(remove-hook ',command  #',function))
-                        commands))))))
-
-(defun other-window-reverse ()
-  "Select the previous window."
-  (interactive)
-  (select-window (previous-window)))
 
 ;;----------------------------------------------------------------------------
 ;; Editing commands
