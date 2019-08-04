@@ -101,6 +101,9 @@
   (with-eval-after-load "magit"
     (set-face-attribute 'magit-tag nil :foreground "SpringGreen4"))
 
+  (with-eval-after-load "highlight-indent-guides"
+    (highlight-indent-guides-auto-set-faces))
+
   (zp/org-super-agenda-update-face)
 
   (zp/mode-line-dark-theme)
@@ -184,6 +187,9 @@
 
   (with-eval-after-load "magit"
     (set-face-attribute 'magit-tag nil :foreground "SpringGreen4"))
+
+  (with-eval-after-load "highlight-indent-guides"
+    (highlight-indent-guides-auto-set-faces))
 
   (zp/org-super-agenda-update-face)
 
