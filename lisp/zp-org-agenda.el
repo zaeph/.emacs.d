@@ -169,7 +169,7 @@ a group."
       (widen)
       (let ((task-group (org-entry-get (or pom (point))
                                        "AGENDA_GROUP"
-                                       'selective)))
+                                       t)))
         (cond (task-group
                (string-match-p groups-regex task-group))
               (match-groupless
