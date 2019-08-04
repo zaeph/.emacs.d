@@ -113,8 +113,14 @@
 (setq focus-follows-mouse nil)
 (setq mouse-autoselect-window nil)
 
-;; Enable visual bell
-(setq visible-bell 1)
+;; Use a subtle visible bell
+(defun zp/subtle-visible-bell ()
+  "A more subtle visual bell effect."
+  (invert-face 'mode-line)
+  (run-with-timer 0.1 nil #'invert-face 'mode-line))
+
+(setq visible-bell nil
+      ring-bell-function #'zp/subtle-visible-bell)
 
 ;; Suppress bells for reaching beginning and end of buffer
 ;; Source: https://emacs.stackexchange.com/questions/10932/how-do-you-disable-the-buffer-end-beginning-warnings-in-the-minibuffer/20039
