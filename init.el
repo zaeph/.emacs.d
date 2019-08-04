@@ -258,7 +258,7 @@ ITERATIONS is the sample-size to use for the statistics.
 
 MULTIPLIER is an integer to specify how many times to evaluate
 FORMS on each iteration."
-  (declare (indent 1))
+  (declare (indent 2))
   `(let ((multiplier (or ,multiplier
                          1))
          list)
