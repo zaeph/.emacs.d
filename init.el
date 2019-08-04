@@ -183,6 +183,28 @@ time is displayed."
                 (float-time (time-subtract (current-time) now))))
            (message "%s...done (%.3fs)" ,title elapsed))))))
 
+(defmacro measure-time-float (&rest forms)
+  (let ((body `(progn ,@forms)))
+    `(let ((now (current-time)))
+       ,body
+       (let ((elapsed
+              (float-time (time-subtract (current-time) now))))
+         elapsed))))
+
+(defmacro measure-time (&rest forms)
+  `(let ((float (measure-time-float ,@forms)))
+     (format "%.3fs" float)))
+
+(defmacro measure-time-average (iterations &rest forms)
+  (declare (indent 1))
+  `(let (list)
+     (dotimes (i ,iterations)
+       (push (measure-time-float ,@forms) list))
+     (let ((min (apply #'min list))
+           (max (apply #'max list))
+           (mean (/ (apply #'+ list) (length list))))
+       (format "min: %.3fs / max: %.3fs / mean: %.3fs" min max mean))))
+
 ;; TODO: Does it need to be macro?
 (defmacro zp/advise-commands (method commands where function)
   (let ((where-keyword (intern-soft (concat ":" (symbol-name where)))))
