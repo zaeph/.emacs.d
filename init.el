@@ -216,13 +216,28 @@ time is displayed."
                 (float-time (time-subtract (current-time) now))))
            (message "%s...done (%.3fs)" ,title elapsed))))))
 
+(defvar measure-time-gc-cons-threshold 800000000
+  "Custom ‘gc-cons-threshold’ to be used by ‘measure-time’.
+
+This prevents garbage-collection from interfering with the
+functions being timed.
+
+The value needs to be sufficiently high to prevent
+garbage-collection during execution, but not so high as to cause
+performance problems.")
+
 (defmacro measure-time-float (&rest forms)
   (let ((body `(progn ,@forms)))
     `(let ((now (current-time)))
        ,body
+       ;; Temporarily raise ‘gc-cons-threshold’ during execution
+       (setq gc-cons-threshold measure-time-gc-cons-threshold)
        (let ((elapsed
               (float-time (time-subtract (current-time) now))))
-         elapsed))))
+         (prog1 elapsed
+           ;; Reset ‘gc-cons-threshold’ and ‘garbage-collect’
+           (setq gc-cons-threshold ,gc-cons-threshold-default)
+           (garbage-collect))))))
 
 (defmacro measure-time (&rest forms)
   `(let ((float (measure-time-float ,@forms)))
