@@ -571,7 +571,7 @@ afterwards."
 ;;----------------------------------------------------------------------------
 (defun zp/org-get-agenda-groups ()
   "Get agenda-groups from current tree."
-  (let ((string (org-entry-get (point) "AGENDA_GROUP")))
+  (let ((string (org-entry-get (point) "AGENDA_GROUP" t)))
     (split-string string ", ?")))
 
 ;;----------------------------------------------------------------------------
