@@ -201,21 +201,7 @@ end-of-buffer signals; pass the rest to the default handler."
 ;;----------------------------------------------------------------------------
 ;; Timers
 ;;----------------------------------------------------------------------------
-(defmacro with-timer (title &rest forms)
-  "Run the given FORMS, counting the elapsed time.
-
-A message including the given TITLE and the corresponding elapsed
-time is displayed."
-  (declare (indent 1))
-  (let ((body `(progn ,@forms)))
-    `(let ((now (current-time)))
-       (message "%s..." ,title)
-       (prog1 ,body
-         (let ((elapsed
-                (float-time (time-subtract (current-time) now))))
-           (message "%s...done (%.3fs)" ,title elapsed))))))
-
-(defvar measure-time-gc-cons-threshold 800000000
+(defvar gc-cons-threshold-for-timers 800000000
   "Custom ‘gc-cons-threshold’ to be used by ‘measure-time’.
 
 This prevents garbage-collection from interfering with the
@@ -225,24 +211,41 @@ The value needs to be sufficiently high to prevent
 garbage-collection during execution, but not so high as to cause
 performance problems.")
 
+(defmacro with-timer (title &rest forms)
+  "Run the given FORMS, counting the elapsed time.
+
+A message including the given TITLE and the corresponding elapsed
+time is displayed."
+  (declare (indent 1))
+  (message "%s..." title)
+  `(let* ((cons (measure-time-float ,@forms))
+          (elapsed (car cons))
+          (return-value (cdr cons)))
+     (prog1 return-value
+       (message "%s...done (%.3fs)" ,title elapsed))))
+
 (defmacro measure-time-float (&rest forms)
-  "Return the time taken to run FORMS as a float."
+  "Compute the time taken to run FORMS.
+
+Return a cons cell where:
+- the car is the time taken to run FORMS,
+- the cdr is the return-value of FORMS."
   (let ((body `(progn ,@forms))
         (gc-cons-threshold-default gc-cons-threshold))
     ;; Temporarily raise ‘gc-cons-threshold’ during execution
-    (setq gc-cons-threshold measure-time-gc-cons-threshold)
-    `(let ((now (current-time)))
-       ,body
+    (setq gc-cons-threshold gc-cons-threshold-for-timers)
+    `(let ((now (current-time))
+           (return-value ,body))
        (let ((elapsed
               (float-time (time-subtract (current-time) now))))
-         (prog1 elapsed
+         (prog1 (cons elapsed return-value)
            ;; Reset ‘gc-cons-threshold’ and ‘garbage-collect’
            (setq gc-cons-threshold ,gc-cons-threshold-default)
            (garbage-collect))))))
 
 (defmacro measure-time (&rest forms)
   "Return the time taken to run FORMS as a string."
-  `(let ((float (measure-time-float ,@forms)))
+  `(let ((float (car (measure-time-float ,@forms))))
      (format "%.3fs" float)))
 
 (defmacro measure-time-average (iterations &rest forms)
@@ -252,7 +255,7 @@ ITERATIONS is the sample-size to use for the statistics."
   (declare (indent 1))
   `(let (list)
      (dotimes (i ,iterations)
-       (push (measure-time-float ,@forms) list))
+       (push (car (measure-time-float nil ,@forms)) list))
      (let ((min (apply #'min list))
            (max (apply #'max list))
            (mean (/ (apply #'+ list) (length list))))
