@@ -226,6 +226,7 @@ garbage-collection during execution, but not so high as to cause
 performance problems.")
 
 (defmacro measure-time-float (&rest forms)
+  "Return the time taken to run FORMS as a float."
   (let ((body `(progn ,@forms))
         (gc-cons-threshold-default gc-cons-threshold))
     ;; Temporarily raise ‘gc-cons-threshold’ during execution
@@ -240,10 +241,14 @@ performance problems.")
            (garbage-collect))))))
 
 (defmacro measure-time (&rest forms)
+  "Return the time taken to run FORMS as a string."
   `(let ((float (measure-time-float ,@forms)))
      (format "%.3fs" float)))
 
 (defmacro measure-time-average (iterations &rest forms)
+  "Return statistics on the execution of FORMS.
+
+ITERATIONS is the sample-size to use for the statistics."
   (declare (indent 1))
   `(let (list)
      (dotimes (i ,iterations)
