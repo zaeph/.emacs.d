@@ -251,7 +251,7 @@ Return a list containing:
           (elapsed-total (pop results)))
      (format timer-output-format elapsed elapsed-gc elapsed-total)))
 
-(defmacro measure-time-average (iterations multiplier &rest forms)
+(defmacro measure-time-stats (iterations multiplier &rest forms)
   "Return statistics on the execution of FORMS.
 
 ITERATIONS is the sample-size to use for the statistics.
