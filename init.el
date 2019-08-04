@@ -171,6 +171,7 @@ end-of-buffer signals; pass the rest to the default handler."
 ;; TODO: Improve formatting & output in ‘eval’ context
 (defmacro with-timer (title &rest forms)
   "Run the given FORMS, counting the elapsed time.
+
 A message including the given TITLE and the corresponding elapsed
 time is displayed."
   (declare (indent 1))
