@@ -122,7 +122,7 @@
   (set-face-attribute 'org-agenda-dimmed-todo-face nil :foreground "LightSlateBlue")
   (set-face-attribute 'org-scheduled-today nil :foreground "DodgerBlue4")
   (set-face-attribute 'region nil :background "SkyBlue1")
-  (set-face-attribute 'hl-line nil :background "#ffea89")
+  (set-face-attribute 'hl-line nil :background "#fff989")
   (set-face-attribute 'org-level-4 nil :foreground "#ed3971")
   (set-face-attribute 'org-link nil :underline t)
   (set-face-attribute 'org-agenda-clocking nil :background "LightBlue2")
