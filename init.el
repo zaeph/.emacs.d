@@ -175,13 +175,12 @@ end-of-buffer signals; pass the rest to the default handler."
 A message including the given TITLE and the corresponding elapsed
 time is displayed."
   (declare (indent 1))
-  (let ((nowvar (make-symbol "now"))
-        (body   `(progn ,@forms)))
-    `(let ((,nowvar (current-time)))
+  (let ((body `(progn ,@forms)))
+    `(let ((now (current-time)))
        (message "%s..." ,title)
        (prog1 ,body
          (let ((elapsed
-                (float-time (time-subtract (current-time) ,nowvar))))
+                (float-time (time-subtract (current-time) now))))
            (message "%s...done (%.3fs)" ,title elapsed))))))
 
 ;; TODO: Does it need to be macro?
