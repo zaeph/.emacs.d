@@ -272,7 +272,7 @@ ITERATIONS is the sample-size to use for the statistics."
   (declare (indent 1))
   `(let (list)
      (dotimes (i ,iterations)
-       (push (nth 1 (measure-time-float nil ,@forms)) list))
+       (push (nth 1 (measure-time-float ,@forms)) list))
      (let ((min (apply #'min list))
            (max (apply #'max list))
            (mean (/ (apply #'+ list) (length list))))
