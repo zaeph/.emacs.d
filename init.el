@@ -226,11 +226,12 @@ garbage-collection during execution, but not so high as to cause
 performance problems.")
 
 (defmacro measure-time-float (&rest forms)
-  (let ((body `(progn ,@forms)))
+  (let ((body `(progn ,@forms))
+        (gc-cons-threshold-default gc-cons-threshold))
+    ;; Temporarily raise ‘gc-cons-threshold’ during execution
+    (setq gc-cons-threshold measure-time-gc-cons-threshold)
     `(let ((now (current-time)))
        ,body
-       ;; Temporarily raise ‘gc-cons-threshold’ during execution
-       (setq gc-cons-threshold measure-time-gc-cons-threshold)
        (let ((elapsed
               (float-time (time-subtract (current-time) now))))
          (prog1 elapsed
