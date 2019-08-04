@@ -202,7 +202,7 @@ end-of-buffer signals; pass the rest to the default handler."
 ;; Timers
 ;;----------------------------------------------------------------------------
 (defvar gc-cons-threshold-for-timers 800000000
-  "Custom ‘gc-cons-threshold’ to be used by ‘measure-time’.
+  "Custom ‘gc-cons-threshold’ to be used by ‘time’.
 
 This prevents garbage-collection from interfering with the
 functions being timed.
@@ -214,7 +214,7 @@ performance problems.")
 (defvar timer-output-format "%.3fs (GC: +%.3fs, Σ: %.3fs)"
   "Default output format for timers.")
 
-(defmacro measure-time-internal (&rest forms)
+(defmacro time-internal (&rest forms)
   "Compute the time taken to run FORMS.
 
 Return a list containing:
@@ -242,16 +242,16 @@ Return a list containing:
              (push elapsed-gc (cdr (last results)))
              (push elapsed-total (cdr (last results)))))))))
 
-(defmacro measure-time (&rest forms)
+(defmacro time (&rest forms)
   "Return the time taken to run FORMS as a string."
-  `(let* ((results (measure-time-internal ,@forms))
+  `(let* ((results (time-internal ,@forms))
           (return-value (pop results))
           (elapsed (pop results))
           (elapsed-gc (pop results))
           (elapsed-total (pop results)))
      (format timer-output-format elapsed elapsed-gc elapsed-total)))
 
-(defmacro measure-time-stats (iterations multiplier &rest forms)
+(defmacro time-stats (iterations multiplier &rest forms)
   "Return statistics on the execution of FORMS.
 
 ITERATIONS is the sample-size to use for the statistics.
@@ -264,7 +264,7 @@ FORMS on each iteration."
          list)
      (dotimes (i ,iterations)
        (message "Iteration: %s" (1+ i))
-       (push (nth 1 (measure-time-internal
+       (push (nth 1 (time-internal
                      (dotimes (y multiplier)
                        ,@forms)))
              list))
@@ -280,7 +280,7 @@ A message including the given TITLE and the corresponding elapsed
 time is displayed."
   (declare (indent 1))
   (message "%s..." title)
-  `(let* ((results (measure-time-internal ,@forms))
+  `(let* ((results (time-internal ,@forms))
           (return-value (pop results))
           (elapsed (pop results))
           (elapsed-gc (pop results))
