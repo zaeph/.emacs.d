@@ -214,22 +214,6 @@ performance problems.")
 (defvar timer-output-format "%.3fs (GC: +%.3fs, Σ: %.3fs)"
   "Default output format for timers.")
 
-(defmacro with-timer (title &rest forms)
-  "Run the given FORMS, counting the elapsed time.
-
-A message including the given TITLE and the corresponding elapsed
-time is displayed."
-  (declare (indent 1))
-  (message "%s..." title)
-  `(let* ((results (measure-time-float ,@forms))
-          (return-value (pop results))
-          (elapsed (pop results))
-          (elapsed-gc (pop results))
-          (elapsed-total (pop results)))
-     (prog1 return-value
-       (message (concat "%s...done in " timer-output-format)
-                ,title elapsed elapsed-gc elapsed-total))))
-
 (defmacro measure-time-float (&rest forms)
   "Compute the time taken to run FORMS.
 
@@ -277,6 +261,22 @@ ITERATIONS is the sample-size to use for the statistics."
            (max (apply #'max list))
            (mean (/ (apply #'+ list) (length list))))
        (format "min: %.3fs, max: %.3fs, mean: %.3fs" min max mean))))
+
+(defmacro with-timer (title &rest forms)
+  "Run the given FORMS, counting the elapsed time.
+
+A message including the given TITLE and the corresponding elapsed
+time is displayed."
+  (declare (indent 1))
+  (message "%s..." title)
+  `(let* ((results (measure-time-float ,@forms))
+          (return-value (pop results))
+          (elapsed (pop results))
+          (elapsed-gc (pop results))
+          (elapsed-total (pop results)))
+     (prog1 return-value
+       (message (concat "%s...done in " timer-output-format)
+                ,title elapsed elapsed-gc elapsed-total))))
 
 ;;----------------------------------------------------------------------------
 ;; Editing commands
