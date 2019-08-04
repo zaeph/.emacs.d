@@ -68,7 +68,7 @@ When CURIOS is non-nil, add the :curios: tag to the task."
       (org-toggle-tag "curios" 'on))
     (message (concat "Link added to template: " url))))
 
-(defun zp/org-capture-web-kill-new (title url)
+(defun zp/org-capture-web-kill (title url)
   "Make website the latest kill in the kill ring.
 
 Based on the info provided by org-capture-web.sh.

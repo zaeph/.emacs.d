@@ -3231,6 +3231,7 @@ indirect-buffers."
 
 (use-package org-capture-web
   :commands (zp/org-capture-web
+             zp/org-capture-web-kill
              zp/org-capture-web-letterboxd)
   :config
   (setq zp/org-capture-web-default-target
