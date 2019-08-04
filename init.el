@@ -3670,7 +3670,7 @@ Check their respective dosctrings for more info."
 
   ;; Conditional APPT_WARNTIME
   (defun zp/org-set-appt-warntime-if-timestamp (&rest args)
-    "Prompt for APPT_WARNTIME if the heading as a timestamp."
+    "Prompt for APPT_WARNTIME if the heading is a timestamp."
     (let ((warntime (org-entry-get (point) "APPT_WARNTIME")))
       (unless warntime
         (save-excursion
