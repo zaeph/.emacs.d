@@ -201,7 +201,6 @@ end-of-buffer signals; pass the rest to the default handler."
 ;;----------------------------------------------------------------------------
 ;; Timers
 ;;----------------------------------------------------------------------------
-;; TODO: Improve formatting & output in ‘eval’ context
 (defmacro with-timer (title &rest forms)
   "Run the given FORMS, counting the elapsed time.
 
