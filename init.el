@@ -214,25 +214,27 @@ performance problems.")
 (defvar timer-output-format "%.3fs (GC: +%.3fs, Σ: %.3fs)"
   "Default output format for timers.")
 
-(defmacro measure-time-float (&rest forms)
+(defmacro measure-time-internal (&rest forms)
   "Compute the time taken to run FORMS.
 
-Return a cons cell where:
-- the car is the time taken to run FORMS,
-- the cdr is the return-value of FORMS."
-  (let ((body `(progn ,@forms))
-        (gc-cons-threshold-default gc-cons-threshold))
-    ;; Temporarily raise ‘gc-cons-threshold’ during execution
-    (garbage-collect)
-    (setq gc-cons-threshold gc-cons-threshold-for-timers)
-    `(let ((start (current-time))
-           (return-value ,body))
+Return a list containing:
+- The return value of FORMS
+- The time taken to evaluate FORMS
+- The time taken to garbage collect
+- The total time"
+  `(let ((body '(progn ,@forms))
+         (gc-cons-threshold-default gc-cons-threshold))
+     (garbage-collect)
+     ;; Temporarily raise ‘gc-cons-threshold’ during execution
+     (setq gc-cons-threshold gc-cons-threshold-for-timers)
+     (let ((start (current-time))
+           (return-value (eval body)))
        (let* ((end (current-time))
               (elapsed (float-time (time-subtract end start)))
               results)
          (prog1 (setq results (list return-value elapsed))
            ;; Reset ‘gc-cons-threshold’ and ‘garbage-collect’
-           (setq gc-cons-threshold ,gc-cons-threshold-default)
+           (setq gc-cons-threshold gc-cons-threshold-default)
            (garbage-collect)
            (let* ((end-gc (current-time))
                   (elapsed-gc (float-time (time-subtract end-gc end)))
@@ -242,7 +244,7 @@ Return a cons cell where:
 
 (defmacro measure-time (&rest forms)
   "Return the time taken to run FORMS as a string."
-  `(let* ((results (measure-time-float ,@forms))
+  `(let* ((results (measure-time-internal ,@forms))
           (return-value (pop results))
           (elapsed (pop results))
           (elapsed-gc (pop results))
@@ -256,7 +258,7 @@ ITERATIONS is the sample-size to use for the statistics."
   (declare (indent 1))
   `(let (list)
      (dotimes (i ,iterations)
-       (push (nth 1 (measure-time-float ,@forms)) list))
+       (push (nth 1 (measure-time-internal ,@forms)) list))
      (let ((min (apply #'min list))
            (max (apply #'max list))
            (mean (/ (apply #'+ list) (length list))))
@@ -269,7 +271,7 @@ A message including the given TITLE and the corresponding elapsed
 time is displayed."
   (declare (indent 1))
   (message "%s..." title)
-  `(let* ((results (measure-time-float ,@forms))
+  `(let* ((results (measure-time-internal ,@forms))
           (return-value (pop results))
           (elapsed (pop results))
           (elapsed-gc (pop results))
