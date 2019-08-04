@@ -571,8 +571,16 @@ afterwards."
 ;;----------------------------------------------------------------------------
 (defun zp/org-get-agenda-groups ()
   "Get agenda-groups from current tree."
-  (let ((string (org-entry-get (point) "AGENDA_GROUP" t)))
-    (split-string string ", ?")))
+  (save-excursion
+    (save-restriction
+      (widen)
+      (let ((string
+             (catch 'found-group
+               (while (and (not (when-let ((group (org-entry-get (point) "AGENDA_GROUP")))
+                                  (throw 'found-group group)))
+                           (> (org-outline-level) 1))
+                 (org-up-heading-safe)))))
+        (split-string string ", ?")))))
 
 ;;----------------------------------------------------------------------------
 ;; Headers
