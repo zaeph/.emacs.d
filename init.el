@@ -251,14 +251,23 @@ Return a list containing:
           (elapsed-total (pop results)))
      (format timer-output-format elapsed elapsed-gc elapsed-total)))
 
-(defmacro measure-time-average (iterations &rest forms)
+(defmacro measure-time-average (iterations multiplier &rest forms)
   "Return statistics on the execution of FORMS.
 
-ITERATIONS is the sample-size to use for the statistics."
+ITERATIONS is the sample-size to use for the statistics.
+
+MULTIPLIER is an integer to specify how many times to evaluate
+FORMS on each iteration."
   (declare (indent 1))
-  `(let (list)
+  `(let ((multiplier (or ,multiplier
+                         1))
+         list)
      (dotimes (i ,iterations)
-       (push (nth 1 (measure-time-internal ,@forms)) list))
+       (message "Iteration: %s" (1+ i))
+       (push (nth 1 (measure-time-internal
+                     (dotimes (y multiplier)
+                       ,@forms)))
+             list))
      (let ((min (apply #'min list))
            (max (apply #'max list))
            (mean (/ (apply #'+ list) (length list))))
