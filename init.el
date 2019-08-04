@@ -3764,10 +3764,27 @@ that date.  Leave point on the first amount."
 ;; magit
 ;;----------------------------------------------------------------------------
 (use-package magit
-  :bind ("H-m" . magit-status)
+  :bind (("H-m" . magit-status)
+         ("H-M-m" . zp/magit-stage-file-and-commit))
   :config
   (setq magit-diff-refine-hunk 'all)
-  (magit-wip-mode))
+  (magit-wip-mode)
+
+  ;;----------
+  ;; Commands
+  ;;----------
+
+  (defun zp/magit-stage-file-and-commit (&optional arg)
+    "Stage the current file and commit the changes.
+
+With a ‘C-u’ prefix argument, amend the last commit instead."
+    (interactive "p")
+    (when (buffer-modified-p)
+      (save-buffer))
+    (magit-stage-file (magit-file-relative-name))
+    (pcase arg
+      (4 (magit-commit-amend))
+      (_ (magit-commit-create)))))
 
 ;;----------------------------------------------------------------------------
 ;; chronos
