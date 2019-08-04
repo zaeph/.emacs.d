@@ -45,7 +45,7 @@
   (set-face-attribute 'org-agenda-clocking nil :background "RoyalBlue4")
   (set-face-attribute 'fringe nil :background "gray10" :foreground "orangered")
   (set-face-attribute 'vertical-border nil :foreground "RoyalBlue1")
-  (set-face-attribute 'hl-line nil :background "#1F1F3F")
+  (set-face-attribute 'hl-line nil :background "#1f1f3f")
   (set-face-attribute 'org-level-4 nil :foreground "#ed3971")
   (set-face-attribute 'org-meta-line nil :foreground "DodgerBlue3")
   (set-face-attribute 'header-line nil :foreground "#777")
