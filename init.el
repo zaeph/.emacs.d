@@ -211,6 +211,9 @@ The value needs to be sufficiently high to prevent
 garbage-collection during execution, but not so high as to cause
 performance problems.")
 
+(defvar timer-output-format "%.3fs (GC: +%.3fs, Σ: %.3fs)"
+  "Default output format for timers.")
+
 (defmacro with-timer (title &rest forms)
   "Run the given FORMS, counting the elapsed time.
 
@@ -218,11 +221,14 @@ A message including the given TITLE and the corresponding elapsed
 time is displayed."
   (declare (indent 1))
   (message "%s..." title)
-  `(let* ((cons (measure-time-float ,@forms))
-          (elapsed (car cons))
-          (return-value (cdr cons)))
+  `(let* ((results (measure-time-float ,@forms))
+          (return-value (pop results))
+          (elapsed (pop results))
+          (elapsed-gc (pop results))
+          (elapsed-total (pop results)))
      (prog1 return-value
-       (message "%s...done (%.3fs)" ,title elapsed))))
+       (message (concat "%s...done in " timer-output-format)
+                ,title elapsed elapsed-gc elapsed-total))))
 
 (defmacro measure-time-float (&rest forms)
   "Compute the time taken to run FORMS.
@@ -233,20 +239,31 @@ Return a cons cell where:
   (let ((body `(progn ,@forms))
         (gc-cons-threshold-default gc-cons-threshold))
     ;; Temporarily raise ‘gc-cons-threshold’ during execution
+    (garbage-collect)
     (setq gc-cons-threshold gc-cons-threshold-for-timers)
-    `(let ((now (current-time))
+    `(let ((start (current-time))
            (return-value ,body))
-       (let ((elapsed
-              (float-time (time-subtract (current-time) now))))
-         (prog1 (cons elapsed return-value)
+       (let* ((end (current-time))
+              (elapsed (float-time (time-subtract end start)))
+              results)
+         (prog1 (setq results (list return-value elapsed))
            ;; Reset ‘gc-cons-threshold’ and ‘garbage-collect’
            (setq gc-cons-threshold ,gc-cons-threshold-default)
-           (garbage-collect))))))
+           (garbage-collect)
+           (let* ((end-gc (current-time))
+                  (elapsed-gc (float-time (time-subtract end-gc end)))
+                  (elapsed-total (+ elapsed elapsed-gc)))
+             (push elapsed-gc (cdr (last results)))
+             (push elapsed-total (cdr (last results)))))))))
 
 (defmacro measure-time (&rest forms)
   "Return the time taken to run FORMS as a string."
-  `(let ((float (car (measure-time-float ,@forms))))
-     (format "%.3fs" float)))
+  `(let* ((results (measure-time-float ,@forms))
+          (return-value (pop results))
+          (elapsed (pop results))
+          (elapsed-gc (pop results))
+          (elapsed-total (pop results)))
+     (format timer-output-format elapsed elapsed-gc elapsed-total)))
 
 (defmacro measure-time-average (iterations &rest forms)
   "Return statistics on the execution of FORMS.
@@ -255,11 +272,11 @@ ITERATIONS is the sample-size to use for the statistics."
   (declare (indent 1))
   `(let (list)
      (dotimes (i ,iterations)
-       (push (car (measure-time-float nil ,@forms)) list))
+       (push (nth 1 (measure-time-float nil ,@forms)) list))
      (let ((min (apply #'min list))
            (max (apply #'max list))
            (mean (/ (apply #'+ list) (length list))))
-       (format "min: %.3fs / max: %.3fs / mean: %.3fs" min max mean))))
+       (format "min: %.3fs, max: %.3fs, mean: %.3fs" min max mean))))
 
 ;;----------------------------------------------------------------------------
 ;; Editing commands
