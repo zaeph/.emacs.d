@@ -567,6 +567,20 @@ afterwards."
                             (if reverse a b)))))
 
 ;;----------------------------------------------------------------------------
+;; Agenda-groups filters
+;;----------------------------------------------------------------------------
+(defun zp/org-get-agenda-groups ()
+  "Get agenda-groups from current tree."
+  (let ((string (org-entry-get (point) "AGENDA_GROUP")))
+    (with-temp-buffer
+      (insert string)
+      (goto-char 0)
+      (let (list)
+        (while (re-search-forward "\\b\\([a-z_0-9]+\\)\\b" nil t)
+          (push (match-string 1) list))
+        (reverse list)))))
+
+;;----------------------------------------------------------------------------
 ;; Headers
 ;;----------------------------------------------------------------------------
 (defun zp/org-agenda-format-header-align (header)
