@@ -815,6 +815,14 @@ With numeric prefix arg DEC, decrement the integer by DEC amount."
     (interactive "p")
     (increment-integer-at-point (- (or dec 1)))))
 
+(use-package highlight-indent-guides
+  :bind (:map zp/toggle-map
+              ("c" . highlight-indent-guides-mode))
+  :config
+  (setq highlight-indent-guides-method 'column
+        highlight-indent-guides-auto-character-face-perc 20)
+  (add-hook 'prog-mode-hook #'highlight-indent-guides-mode))
+
 ;;----------------------------------------------------------------------------
 ;; Shortcuts
 ;;----------------------------------------------------------------------------
@@ -4420,7 +4428,7 @@ mouse-1: Previous buffer\nmouse-3: Next buffer")
          ("C-c T" . zp/switch-emacs-theme)
          :map zp/toggle-map
          (("t" . zp/switch-emacs-theme)
-          ("c" . zp/helm-select-font-dwim)))
+          ("C" . zp/helm-select-font-dwim)))
   :config
   ;; Fonts
   (zp/set-font "sarasa")
@@ -4550,7 +4558,7 @@ See ‘~/.bin/terminator-dwim’ for more info."
      ("\\.pdf\\'" . default))))
  '(package-selected-packages
    (quote
-    (dracula-theme use-package org-brain racket-mode wgrep fountain-mode org-mind-map org org-ref orgalist ws-butler minions moody org-super-agenda backup-walker bug-hunter org-plus-contrib messages-are-flowing notmuch forge go-mode company-anaconda anaconda-mode company realgud ace-link ivy-hydra counsel lispy dumb-jump lua-mode fish-mode exwm el-patch diminish circe-notifications circe ob-async nov which-key eyebrowse diff-hl recentf-ext flycheck-pos-tip helm-projectile projectile clean-aindent-mode volatile-highlights duplicate-thing org-noter magit hydra highlight mu4e-alert ox-hugo writeroom-mode anzu flycheck spaceline helm-chronos chronos olivetti multiple-cursors expand-region ace-window auto-minor-mode ledger-mode sublimity auctex smooth-scrolling yasnippet pdf-tools htmlize helm-bibtex free-keys evil color-theme base16-theme)))
+    (highlight-indent-guides dracula-theme use-package org-brain racket-mode wgrep fountain-mode org-mind-map org org-ref orgalist ws-butler minions moody org-super-agenda backup-walker bug-hunter org-plus-contrib messages-are-flowing notmuch forge go-mode company-anaconda anaconda-mode company realgud ace-link ivy-hydra counsel lispy dumb-jump lua-mode fish-mode exwm el-patch diminish circe-notifications circe ob-async nov which-key eyebrowse diff-hl recentf-ext flycheck-pos-tip helm-projectile projectile clean-aindent-mode volatile-highlights duplicate-thing org-noter magit hydra highlight mu4e-alert ox-hugo writeroom-mode anzu flycheck spaceline helm-chronos chronos olivetti multiple-cursors expand-region ace-window auto-minor-mode ledger-mode sublimity auctex smooth-scrolling yasnippet pdf-tools htmlize helm-bibtex free-keys evil color-theme base16-theme)))
  '(safe-local-variable-values
    (quote
     ((eval add-hook
