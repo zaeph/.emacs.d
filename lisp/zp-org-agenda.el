@@ -590,7 +590,8 @@ afterwards."
 (defun zp/org-get-agenda-groups ()
   "Get agenda-groups from current tree."
   (let ((string (org-entry-get (point) "AGENDA_GROUP" t)))
-    (split-string string ", ?")))
+    (when string
+      (split-string string ", ?"))))
 
 (defun zp/org-agenda-groups-process-filter (string)
   "Process STRING into a filter-list for agenda-groups.
@@ -599,24 +600,25 @@ Return a list of two lists:
   (inclusion-list exclusion-list)
 
 STRING should be formatted as \"+include-exclude\"."
-  (let* ((prefix-re "[\\+-]")
-         ;; Handle special case when 1st group is w/o prefix
-         (string (when-let ((match (substring string 0 1)))
-                   (if (string-match prefix-re match)
-                       string
-                     (concat "+" string))))
-         (groups (s-slice-at prefix-re string))
-         include
-         exclude)
-    (dolist (group groups)
-      (let* ((type (substring group 0 1))
-             (group (substring group 1)))
-        (push group
-              (pcase type
-                ("+" include)
-                ("-" exclude)))))
-    (list include
-          exclude)))
+  (when string
+    (let* ((prefix-re "[\\+-]")
+           ;; Handle special case when 1st group is w/o prefix
+           (string (when-let ((match (substring string 0 1)))
+                     (if (string-match prefix-re match)
+                         string
+                       (concat "+" string))))
+           (groups (s-slice-at prefix-re string))
+           include
+           exclude)
+      (dolist (group groups)
+        (let* ((type (substring group 0 1))
+               (group (substring group 1)))
+          (push group
+                (pcase type
+                  ("+" include)
+                  ("-" exclude)))))
+      (list include
+            exclude))))
 
 ;;----------------------------------------------------------------------------
 ;; Headers
