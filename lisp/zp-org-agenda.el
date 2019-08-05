@@ -216,15 +216,6 @@ function will not skip groupless trees.
          ((or (not filter)
               (zp/org-task-in-agenda-groups-p filter))
           nil)
-         ((and include-groupless-p
-               (or (org-entry-get (point) property)
-                   (catch 'found-next
-                     (while (re-search-backward (concat property-regex
-                                                        ".*$")
-                                                nil t)
-                       (if (org-entry-get (point) property)
-                           (throw 'found-next 't))))))
-          (outline-get-next-sibling))
          ((catch 'found-next
             (goto-char next-headline)
             (while (re-search-forward (concat property-regex
