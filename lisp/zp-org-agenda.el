@@ -167,11 +167,15 @@ a group."
                         groups)))
     (save-restriction
       (widen)
-      (let ((task-group (org-entry-get (or pom (point))
-                                       "AGENDA_GROUP"
-                                       t)))
-        (cond (task-group
-               (string-match-p groups-regex task-group))
+      (let ((task-groups (zp/org-get-agenda-groups)))
+        (cond (task-groups
+               (if (catch 'match
+                     (not (mapc (lambda (task-group)
+                                  (when (member task-group groups)
+                                    (throw 'match t)))
+                                task-groups)))
+                   t
+                 nil))
               (match-groupless
                -1))))))
 
