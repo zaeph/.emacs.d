@@ -218,12 +218,13 @@ function will not skip groupless trees.
           nil)
          ((catch 'found-next
             (goto-char next-headline)
-            (while (re-search-forward (concat property-regex
-                                              "\\("
-                                              groups-regex
-                                              "\\).*$")
-                                      nil t)
-              (if (org-entry-get (point) property)
+            (while (re-search-forward
+                    (concat property-regex
+                            "\\("
+                            groups-regex
+                            "\\).*$")
+                    nil t)
+              (if (zp/org-task-in-agenda-groups-p filter)
                   (throw 'found-next 't))))
           (outline-previous-heading))
          (t
