@@ -171,7 +171,7 @@ a group."
          (exclude (pop filter)))
     (save-restriction
       (widen)
-      (let* ((task-groups (zp/org-get-agenda-groups))
+      (let* ((task-groups (zp/org-get-agenda-groups pom))
              (test (lambda (list)
                      (catch 'match
                        (dolist (group task-groups)
@@ -587,9 +587,11 @@ afterwards."
 ;;----------------------------------------------------------------------------
 ;; Agenda-groups filters
 ;;----------------------------------------------------------------------------
-(defun zp/org-get-agenda-groups ()
+(defun zp/org-get-agenda-groups (&optional pom)
   "Get agenda-groups from current tree."
-  (let ((string (org-entry-get (point) "AGENDA_GROUP" t)))
+  (let* ((pos (or pom
+                  (point)))
+         (string (org-entry-get pos "AGENDA_GROUP" t)))
     (when string
       (split-string string ", ?"))))
 
