@@ -152,7 +152,7 @@ With a prefix argument, do so in all agenda buffers."
                (concat "\\b"
                        arg
                        "\\b")))
-           (car list))
+           list)
    "\\|"))
 
 (defun zp/org-task-in-agenda-groups-p (filter &optional match-groupless pom)
