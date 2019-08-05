@@ -562,7 +562,8 @@ time is displayed."
   :hook (dired-mode . turn-on-gnus-dired-mode))
 
 (use-package diff-hl
-  :hook (dired-mode . diff-hl-dired-mode)
+  :hook ((dired-mode . diff-hl-dired-mode)
+         (magit-post-refresh . diff-hl-magit-post-refresh))
   :config
   (global-diff-hl-mode)
   (diff-hl-flydiff-mode))
