@@ -207,7 +207,7 @@ function will not skip groupless trees."
            (property "AGENDA_GROUP")
            (property-regex (concat "^:" property ":.*"))
            (include-groupless-p (or exhaustive
-                                    (member nil groups))))
+                                    (member "nil" groups))))
       (save-excursion
         (cond
          ((or (not groups)
