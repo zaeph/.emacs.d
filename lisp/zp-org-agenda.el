@@ -807,7 +807,6 @@ agenda settings after them."
             (org-agenda-overriding-header
              (zp/org-agenda-format-header-main ,header))
             (org-agenda-span 'week)
-            (org-agenda-start-day "-1")
             (org-deadline-warning-days 0)
             (org-agenda-skip-function
              '(or (zp/skip-routine-cond)
