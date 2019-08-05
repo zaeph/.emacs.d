@@ -182,10 +182,10 @@ a group."
                                        (funcall test include)))
                      (matched-neg (and exclude
                                        (funcall test exclude))))
-                 (or (and (or matched-pos
-                              ;; Special case: Filter is exclude-only
-                              (null include))
-                          (not matched-neg)))))
+                 (and (or matched-pos
+                          ;; Special case: Filter is exclude-only
+                          (null include))
+                      (not matched-neg))))
               ((member "nil" include)
                -1))))))
 
