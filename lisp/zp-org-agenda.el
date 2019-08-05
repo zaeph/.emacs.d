@@ -155,7 +155,7 @@ With a prefix argument, do so in all agenda buffers."
            list)
    "\\|"))
 
-(defun zp/org-task-in-agenda-groups-p (filter &optional match-groupless pom)
+(defun zp/org-task-in-agenda-groups-p (filter &optional pom)
   "Test whether a task is in agenda-group matched by FILTER.
 
 FILTER can either be a string to be processed by
@@ -186,10 +186,10 @@ a group."
                               ;; Special case: Filter is exclude-only
                               (null include))
                           (not matched-neg)))))
-              (match-groupless
+              ((member "nil" include)
                -1))))))
 
-(defun zp/skip-tasks-not-belonging-to-agenda-groups (filter &optional exhaustive)
+(defun zp/skip-tasks-not-belonging-to-agenda-groups (filter)
   "Skip tasks if they aren’t part of GROUPS.
 
 GROUPS is a list of AGENDA_GROUPS values to match.
@@ -204,18 +204,17 @@ function will not skip groupless trees.
     (widen)
     (let* ((include (car filter))
            (exclude (cadr filter))
+           (include-groupless-p (member "nil" include))
            (next-headline (save-excursion
                             (or (outline-next-heading)
                                 (point-max))))
            (groups-regex (zp/org-agenda-groups-format-regex include))
            (property "AGENDA_GROUP")
-           (property-regex (concat "^:" property ":.*"))
-           (include-groupless-p (or exhaustive
-                                    (member "nil" include))))
+           (property-regex (concat "^:" property ":.*")))
       (save-excursion
         (cond
          ((or (not filter)
-              (zp/org-task-in-agenda-groups-p filter include-groupless-p))
+              (zp/org-task-in-agenda-groups-p filter))
           nil)
          ((and include-groupless-p
                (or (org-entry-get (point) property)
@@ -861,7 +860,7 @@ agenda settings after them."
                      `((org-agenda-files ',file)))
                (org-agenda-skip-function
                 '(or (zp/skip-tasks-not-belonging-to-agenda-groups
-                      ',(zp/org-agenda-groups-process-filter groups) t)
+                      ',(zp/org-agenda-groups-process-filter groups))
                      (zp/skip-non-projects-cond)
                      (zp/skip-waiting)
                      (zp/skip-future-non-waiting-timestamped-tasks-cond)))
