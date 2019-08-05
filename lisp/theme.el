@@ -67,6 +67,11 @@
                       :slant 'normal
                       :weight 'normal)
 
+  (with-eval-after-load "diff-hl"
+    (set-face-attribute 'diff-hl-change nil :foreground "#6679cc")
+    (set-face-attribute 'diff-hl-insert nil :foreground "#ac9739")
+    (set-face-attribute 'diff-hl-delete nil :foreground "#c94922"))
+
   (with-eval-after-load "zp-org-agenda"
     (set-face-attribute 'zp/org-agenda-block-info-face nil
                         :foreground "violetred1"
