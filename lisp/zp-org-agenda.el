@@ -189,29 +189,33 @@ a group."
               (match-groupless
                -1))))))
 
-(defun zp/skip-tasks-not-belonging-to-agenda-groups (groups &optional exhaustive)
+(defun zp/skip-tasks-not-belonging-to-agenda-groups (filter &optional exhaustive)
   "Skip tasks if they aren’t part of GROUPS.
 
 GROUPS is a list of AGENDA_GROUPS values to match.
 
 If EXHAUSTIVE is non-nil or if nil is a member of GROUPS, the
-function will not skip groupless trees."
+function will not skip groupless trees.
+
+\(fn (INCLUDE EXCLUDE) &optional EXHAUSTIVE)"
   (when zp/org-agenda-skip-functions-debug
     (message "STNG: %s" (org-entry-get (point) "ITEM")))
   (save-restriction
     (widen)
-    (let* ((next-headline (save-excursion
+    (let* ((include (car filter))
+           (exclude (cadr filter))
+           (next-headline (save-excursion
                             (or (outline-next-heading)
                                 (point-max))))
-           (groups-regex (zp/org-agenda-groups-format-regex groups))
+           (groups-regex (zp/org-agenda-groups-format-regex include))
            (property "AGENDA_GROUP")
            (property-regex (concat "^:" property ":.*"))
            (include-groupless-p (or exhaustive
-                                    (member "nil" groups))))
+                                    (member "nil" include))))
       (save-excursion
         (cond
-         ((or (not groups)
-              (zp/org-task-in-agenda-groups-p groups-regex include-groupless-p))
+         ((or (not filter)
+              (zp/org-task-in-agenda-groups-p filter include-groupless-p))
           nil)
          ((and include-groupless-p
                (or (org-entry-get (point) property)
