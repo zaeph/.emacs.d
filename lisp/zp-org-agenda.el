@@ -831,18 +831,6 @@ agenda settings after them."
                         (t
                          (zp/org-super-agenda-scheduled)))))))
 
-(defun zp/org-agenda-block-projects (&optional file)
-  `(tags-todo "-standby-reading"
-              ((org-agenda-overriding-header
-                (zp/org-agenda-format-header-projects))
-               ,@(if (bound-and-true-p file)
-                     `((org-agenda-files ',file)))
-               (org-agenda-skip-function 'zp/skip-non-projects-and-waiting)
-               (org-agenda-sorting-strategy
-                '(user-defined-down priority-down category-keep))
-               (org-agenda-todo-ignore-scheduled nil)
-               (org-agenda-dim-blocked-tasks nil))))
-
 (defun zp/org-agenda-block-projects-with-group-filter (&optional groups tags file)
   `(tags-todo ,(or tags
                    "-standby-cancelled-curios")
