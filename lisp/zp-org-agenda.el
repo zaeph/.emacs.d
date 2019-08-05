@@ -158,8 +158,9 @@ With a prefix argument, do so in all agenda buffers."
 (defun zp/org-task-in-agenda-groups-p (filter &optional match-groupless pom)
   "Test whether a task is in agenda-group matched by FILTER.
 
-FILTER is a filter-list as created by
-‘zp/org-agenda-groups-process-filter’.
+FILTER can either be a string to be processed by
+‘zp/org-agenda-groups-process-filter’, or a filter-list created
+by the same function.
 
 If MATCH-GROUPLESS is non-nil, returns -1 when a task doesn’t have
 a group."
