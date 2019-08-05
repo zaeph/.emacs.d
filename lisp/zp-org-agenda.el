@@ -155,24 +155,33 @@ With a prefix argument, do so in all agenda buffers."
            list)
    "\\|"))
 
-(defun zp/org-task-in-agenda-groups-p (groups &optional match-groupless pom)
-  "Test whether a task is in agenda-group matched by GROUPS.
+(defun zp/org-task-in-agenda-groups-p (filter &optional match-groupless pom)
+  "Test whether a task is in agenda-group matched by FILTER.
 
-GROUPS can be a list or a regex.
+FILTER is a filter-list as created by
+‘zp/org-agenda-groups-process-filter’.
 
 If MATCH-GROUPLESS is non-nil, returns -1 when a task doesn’t have
 a group."
-  (let ((groups-regex (if (listp groups)
-                          (zp/org-agenda-groups-format-regex groups)
-                        groups)))
+  (let ((include (pop filter))
+        (exclude (pop filter)))
     (save-restriction
       (widen)
-      (let ((task-groups (zp/org-get-agenda-groups)))
+      (let* ((task-groups (zp/org-get-agenda-groups))
+             (test (lambda (list)
+                     (catch 'match
+                       (dolist (group task-groups)
+                         (when (member group list)
+                           (throw 'match t)))))))
         (cond (task-groups
-               (catch 'match
-                 (dolist (group groups)
-                   (when (member group task-groups)
-                     (throw 'match t)))))
+               (let ((matched-pos (and include
+                                       (funcall test include)))
+                     (matched-neg (and exclude
+                                       (funcall test exclude))))
+                 (or (and (or matched-pos
+                              ;; Special case: Filter is exclude-only
+                              (null include))
+                          (not matched-neg)))))
               (match-groupless
                -1))))))
 
