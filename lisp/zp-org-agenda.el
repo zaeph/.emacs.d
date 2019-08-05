@@ -163,8 +163,11 @@ FILTER is a filter-list as created by
 
 If MATCH-GROUPLESS is non-nil, returns -1 when a task doesn’t have
 a group."
-  (let ((include (pop filter))
-        (exclude (pop filter)))
+  (let* ((filter (if (listp filter)
+                     filter
+                   (zp/org-agenda-groups-process-filter filter)))
+         (include (pop filter))
+         (exclude (pop filter)))
     (save-restriction
       (widen)
       (let* ((task-groups (zp/org-get-agenda-groups))
