@@ -169,13 +169,10 @@ a group."
       (widen)
       (let ((task-groups (zp/org-get-agenda-groups)))
         (cond (task-groups
-               (if (catch 'match
-                     (not (mapc (lambda (task-group)
-                                  (when (member task-group groups)
-                                    (throw 'match t)))
-                                task-groups)))
-                   t
-                 nil))
+               (catch 'match
+                 (dolist (group groups)
+                   (when (member group task-groups)
+                     (throw 'match t)))))
               (match-groupless
                -1))))))
 
