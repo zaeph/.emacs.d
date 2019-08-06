@@ -2206,6 +2206,11 @@ If the function sets CREATED, it returns its value."
         (org-set-property created now)
         now)))
 
+  (defun zp/org-capture-set-appt-warntime-if-timestamp ()
+    (let ((add-warntime (plist-get org-capture-plist :add-warntime)))
+      (when add-warntime
+        (zp/org-set-appt-warntime-if-timestamp))))
+
   ;;------------------------
   ;; Narrowing & Movements
   ;;------------------------
