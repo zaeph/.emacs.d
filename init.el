@@ -2201,6 +2201,7 @@ If the function sets CREATED, it returns its value."
         now)))
 
   (defun zp/org-capture-set-created-property ()
+    "Conditionally set the CREATED property on captured trees."
     (let ((add-created (plist-get org-capture-plist :add-created)))
       (unless (buffer-narrowed-p)
         (error "Buffer is not narrowed"))
@@ -2208,6 +2209,7 @@ If the function sets CREATED, it returns its value."
       (zp/org-set-created-property)))
 
   (defun zp/org-capture-set-appt-warntime-if-timestamp ()
+    "Conditionally set the APPT_WARNTIME on capture trees."
     (let ((add-warntime (plist-get org-capture-plist :add-warntime)))
       (when add-warntime
         (zp/org-set-appt-warntime-if-timestamp))))
