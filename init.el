@@ -2176,7 +2176,7 @@ return `nil'."
   ;; Handling ‘CREATED’
   ;;------
 
-  (defvar org-created-property-name "CREATED"
+  (defvar zp/org-created-property-name "CREATED"
     "The name of the org-mode property that stores the creation date of the entry")
 
   ;; TODO: Find the source for this because I’ve improved something which
@@ -2190,7 +2190,7 @@ will not be modified.
 
 If the function sets CREATED, it returns its value."
     (interactive)
-    (let* ((created (or name org-created-property-name))
+    (let* ((created (or name zp/org-created-property-name))
            (fmt (if active "<%s>" "[%s]"))
            (now (format fmt (format-time-string "%Y-%m-%d %a %H:%M")))
            (is-capturing (and (boundp 'org-capture-mode) org-capture-mode))
