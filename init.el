@@ -2208,6 +2208,10 @@ If the function sets CREATED, it returns its value."
       (goto-char (point-min))
       (zp/org-set-created-property)))
 
+  ;;--------------------------
+  ;; Handling ‘APPT_WARNTIME’
+  ;;--------------------------
+
   (defun zp/org-capture-set-appt-warntime-if-timestamp ()
     "Conditionally set the APPT_WARNTIME on capture trees."
     (let ((add-warntime (plist-get org-capture-plist :add-warntime)))
