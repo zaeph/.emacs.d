@@ -184,14 +184,14 @@ a group."
                      t))))
       (cond (task-groups
              (let ((matched-pos
-                    (and include
+                    (and (cl-some #'identity include)
                          ;; Check if all include-filters match
-                         (cl-every 'identity
+                         (cl-every #'identity
                                    (mapcar (lambda (filter)
                                              (funcall test filter))
                                            include))))
                    (matched-neg
-                    (and exclude
+                    (and (cl-some #'identity exclude)
                          (funcall test exclude))))
                (and (or matched-pos
                         ;; Special case: Filter is exclude-only
