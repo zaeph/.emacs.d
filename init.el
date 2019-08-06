@@ -2197,16 +2197,6 @@ If the function sets CREATED, it returns its value."
         (org-set-property created now)
         now)))
 
-  ;;--------------------------
-  ;; Handling ‘APPT_WARNTIME’
-  ;;--------------------------
-
-  (defun zp/org-capture-set-appt-warntime-if-timestamp ()
-    "Conditionally set the APPT_WARNTIME on capture trees."
-    (let ((add-warntime (plist-get org-capture-plist :add-warntime)))
-      (when add-warntime
-        (zp/org-set-appt-warntime-if-timestamp))))
-
   ;;------------------------
   ;; Narrowing & Movements
   ;;------------------------
@@ -3123,7 +3113,6 @@ indirect-buffers."
          :map org-agenda-mode-map
          ("k" . zp/org-agenda-capture))
   :hook ((org-capture-mode . zp/org-capture-make-full-frame)
-         (org-capture-mode . zp/org-capture-set-appt-warntime-if-timestamp)
          (org-capture-prepare-finalize . zp/org-set-created-property))
   :config
   (setq org-default-notes-file "~/org/life.org")
@@ -3307,6 +3296,15 @@ indirect-buffers."
       (save-excursion
         (goto-char (point-min))
         (zp/org-set-created-property))))
+
+  (use-package appt
+    :hook (org-capture-mode . zp/org-capture-set-appt-warntime-if-timestamp)
+    :config
+    (defun zp/org-capture-set-appt-warntime-if-timestamp ()
+      "Conditionally set the APPT_WARNTIME on capture trees."
+      (let ((add-warntime (plist-get org-capture-plist :add-warntime)))
+        (when add-warntime
+          (zp/org-set-appt-warntime-if-timestamp)))))
 
   ;;------
   ;; Rest
