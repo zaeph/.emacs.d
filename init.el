@@ -2181,7 +2181,7 @@ return `nil'."
 
   ;; TODO: Find the source for this because I’ve improved something which
   ;; already existed
-  (defun zp/org-set-created-property (&optional active NAME)
+  (defun zp/org-set-created-property (&optional active name)
     "Set a property on the entry giving the creation time.
 
 By default the property is called CREATED. If given, the ‘NAME’
@@ -2190,7 +2190,7 @@ will not be modified.
 
 If the function sets CREATED, it returns its value."
     (interactive)
-    (let* ((created (or NAME org-created-property-name))
+    (let* ((created (or name org-created-property-name))
            (fmt (if active "<%s>" "[%s]"))
            (now (format fmt (format-time-string "%Y-%m-%d %a %H:%M")))
            (is-capturing (and (boundp 'org-capture-mode) org-capture-mode))
