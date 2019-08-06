@@ -3634,7 +3634,6 @@ indirect-buffers."
 ;; appt
 ;;----------------------------------------------------------------------------
 (use-package appt
-  :hook (org-capture-mode . zp/org-set-appt-warntime-if-timestamp)
   :config
   (appt-activate t)
 
