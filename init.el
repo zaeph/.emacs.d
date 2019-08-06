@@ -3255,22 +3255,22 @@ indirect-buffers."
           '(("f" "Todo" entry (file+headline "~/org/life.org" "Inbox")
              "* TODO %?\n%t")
             ("r" "Todo (+time)" entry (file+headline "~/org/life.org" "Inbox")
-             "* TODO %?\n%^T")
+             "* TODO %?\n%^T" :add-warntime t)
 
             ("d" "Date" entry (file+olp "~/org/life.org" "Life" "Calendar")
              "* %?\n%t")
             ("e" "Date (+time)" entry (file+olp "~/org/life.org" "Life" "Calendar")
-             "* %?\n%^T")
+             "* %?\n%^T" :add-warntime t)
 
             ("s" "Todo & Scheduled" entry (file+headline "~/org/life.org" "Inbox")
              "* TODO %?\nSCHEDULED: %t")
             ("w" "Todo & Scheduled (+time)" entry (file+headline "~/org/life.org" "Inbox")
-             "* TODO %?\nSCHEDULED: %^T")
+             "* TODO %?\nSCHEDULED: %^T" :add-warntime t)
 
             ("g" "Todo + Deadline" entry (file+headline "~/org/life.org" "Inbox")
              "* TODO %?\nDEADLINE: %t")
             ("t" "Todo & Deadline (+time)" entry (file+headline "~/org/life.org" "Inbox")
-             "* TODO %?\nDEADLINE: %^T")))
+             "* TODO %?\nDEADLINE: %^T" :add-warntime t)))
 
     (defun zp/org-agenda-capture (&optional arg)
       (interactive "P")
