@@ -2202,8 +2202,9 @@ If the function sets CREATED, it returns its value."
     (let ((add-created (plist-get org-capture-plist :add-created)))
       (unless (buffer-narrowed-p)
         (error "Buffer is not narrowed"))
-      (goto-char (point-min))
-      (zp/org-set-created-property)))
+      (save-excursion
+        (goto-char (point-min))
+        (zp/org-set-created-property))))
 
   ;;--------------------------
   ;; Handling ‘APPT_WARNTIME’
