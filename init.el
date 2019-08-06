@@ -3765,8 +3765,11 @@ Check their respective dosctrings for more info."
         (start-process "zp/appt-notification-app" nil zp/appt-notification-app (nth i min-to-app) (nth i msg)))))
 
   ;; Conditional APPT_WARNTIME
-  (defun zp/org-set-appt-warntime-if-timestamp ()
-    "Prompt for APPT_WARNTIME if the heading is a timestamp."
+  (defun zp/org-set-appt-warntime-if-timestamp (&rest args)
+    "Prompt for APPT_WARNTIME if the heading is a timestamp.
+
+ARGS is only there to catch extra arguments when the function is
+called as an advice."
     (let ((warntime (org-entry-get (point) "APPT_WARNTIME")))
       (unless warntime
         (save-excursion
