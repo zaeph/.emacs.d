@@ -2196,15 +2196,16 @@ If the function sets CREATED, it returns its value."
            (is-capturing (and (boundp 'org-capture-mode) org-capture-mode))
            (add-created (and is-capturing
                              (plist-get org-capture-plist :add-created))))
-      (unless (or (and is-capturing
-                       (not add-created))
-                  (org-entry-get (point) created nil))
-        (when is-capturing
-          (unless (buffer-narrowed-p)
-            (error "Buffer is not narrowed"))
-          (goto-char (point-min)))
+      (unless (org-entry-get (point) created nil)
         (org-set-property created now)
         now)))
+
+  (defun zp/org-capture-set-created-property ()
+    (let ((add-created (plist-get org-capture-plist :add-created)))
+      (unless (buffer-narrowed-p)
+        (error "Buffer is not narrowed"))
+      (goto-char (point-min))
+      (zp/org-set-created-property)))
 
   (defun zp/org-capture-set-appt-warntime-if-timestamp ()
     (let ((add-warntime (plist-get org-capture-plist :add-warntime)))
