@@ -2771,7 +2771,8 @@ indirect-buffers."
     "Check if ITEM is in agenda GROUPS."
     (let ((marker (or (get-text-property 0 'org-marker item)
                       (get-text-property 0 'org-hd-marker item))))
-      (zp/org-task-in-agenda-groups-p groups marker)))
+      (org-with-point-at marker
+        (zp/org-task-in-agenda-groups-p groups))))
 
   (defun zp/org-super-agenda-groups (header groups)
     "Create org-super-agenda section for GROUPS with HEADER."
