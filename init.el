@@ -2192,10 +2192,7 @@ If the function sets CREATED, it returns its value."
     (interactive)
     (let* ((created (or name zp/org-created-property-name))
            (fmt (if active "<%s>" "[%s]"))
-           (now (format fmt (format-time-string "%Y-%m-%d %a %H:%M")))
-           (is-capturing (and (boundp 'org-capture-mode) org-capture-mode))
-           (add-created (and is-capturing
-                             (plist-get org-capture-plist :add-created))))
+           (now (format fmt (format-time-string "%Y-%m-%d %a %H:%M"))))
       (unless (org-entry-get (point) created nil)
         (org-set-property created now)
         now)))
