@@ -171,6 +171,7 @@ a group."
                         filter
                       ;; Convert filter if it is given as a string
                       (zp/org-agenda-groups-process-filter filter))))
+        ;; Sort filters by include/exclude
         (push (pop filter) include)
         (push (car (pop filter)) exclude)))
     (let* ((task-groups (zp/org-get-agenda-groups))
