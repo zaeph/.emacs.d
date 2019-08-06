@@ -155,7 +155,7 @@ With a prefix argument, do so in all agenda buffers."
            list)
    "\\|"))
 
-(defun zp/org-task-in-agenda-groups-p (filter)
+(defun zp/org-task-in-agenda-groups-p (&rest filters)
   "Test whether a task is in agenda-group matched by FILTER.
 
 FILTER can either be a string to be processed by
@@ -164,27 +164,34 @@ by the same function.
 
 If MATCH-GROUPLESS is non-nil, returns -1 when a task doesn’t have
 a group."
-  (let* ((filter (if (listp filter)
-                     filter
-                   (zp/org-agenda-groups-process-filter filter)))
-         (include (pop filter))
-         (exclude (pop filter)))
+  (let* (include
+         exclude)
+    (dolist (filter filters)
+      (let ((filter (if (listp filter)
+                        filter
+                      ;; Convert filter if it is given as a string
+                      (zp/org-agenda-groups-process-filter filter))))
+        (push (pop filter) include)
+        (push (car (pop filter)) exclude)))
     (save-restriction
       (widen)
       (let* ((task-groups (zp/org-get-agenda-groups))
              (test (lambda (list)
-                     (catch 'match
-                       (dolist (group task-groups)
-                         (when (member group list)
-                           (throw 'match t)))))))
+                     (cl-some (lambda (group)
+                                (member group list))
+                              task-groups))))
         (cond (task-groups
                (let ((matched-pos (and include
-                                       (funcall test include)))
+                                       ;; Check if all include-filters match
+                                       (cl-every 'identity
+                                        (mapcar (lambda (filter)
+                                                  (funcall test filter))
+                                                include))))
                      (matched-neg (and exclude
                                        (funcall test exclude))))
                  (and (or matched-pos
                           ;; Special case: Filter is exclude-only
-                          (null include))
+                          (cl-every 'not include))
                       (not matched-neg))))
               ((member "nil" include)
                -1))))))
