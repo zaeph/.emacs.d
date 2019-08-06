@@ -173,31 +173,29 @@ a group."
                       (zp/org-agenda-groups-process-filter filter))))
         (push (pop filter) include)
         (push (car (pop filter)) exclude)))
-    (save-restriction
-      (widen)
-      (let* ((task-groups (zp/org-get-agenda-groups))
-             (test (lambda (list)
-                     (if list
-                         (cl-some (lambda (group)
-                                    (member group list))
-                                  task-groups)
-                       ;; Return t if the filter is nil
-                       t))))
-        (cond (task-groups
-               (let ((matched-pos (and include
-                                       ;; Check if all include-filters match
-                                       (cl-every 'identity
-                                        (mapcar (lambda (filter)
-                                                  (funcall test filter))
-                                                include))))
-                     (matched-neg (and exclude
-                                       (funcall test exclude))))
-                 (and (or matched-pos
-                          ;; Special case: Filter is exclude-only
-                          (cl-every 'not include))
-                      (not matched-neg))))
-              ((member "nil" include)
-               -1))))))
+    (let* ((task-groups (zp/org-get-agenda-groups))
+           (test (lambda (list)
+                   (if list
+                       (cl-some (lambda (group)
+                                  (member group list))
+                                task-groups)
+                     ;; Return t if the filter is nil
+                     t))))
+      (cond (task-groups
+             (let ((matched-pos (and include
+                                     ;; Check if all include-filters match
+                                     (cl-every 'identity
+                                               (mapcar (lambda (filter)
+                                                         (funcall test filter))
+                                                       include))))
+                   (matched-neg (and exclude
+                                     (funcall test exclude))))
+               (and (or matched-pos
+                        ;; Special case: Filter is exclude-only
+                        (cl-every 'not include))
+                    (not matched-neg))))
+            ((member "nil" include)
+             -1)))))
 
 (defun zp/skip-tasks-not-belonging-to-agenda-groups (filter)
   "Skip tasks if they aren’t part of GROUPS.
