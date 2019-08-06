@@ -177,9 +177,12 @@ a group."
       (widen)
       (let* ((task-groups (zp/org-get-agenda-groups))
              (test (lambda (list)
-                     (cl-some (lambda (group)
-                                (member group list))
-                              task-groups))))
+                     (if list
+                         (cl-some (lambda (group)
+                                    (member group list))
+                                  task-groups)
+                       ;; Return t if the filter is nil
+                       t))))
         (cond (task-groups
                (let ((matched-pos (and include
                                        ;; Check if all include-filters match
