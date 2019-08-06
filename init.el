@@ -3765,11 +3765,8 @@ Check their respective dosctrings for more info."
         (start-process "zp/appt-notification-app" nil zp/appt-notification-app (nth i min-to-app) (nth i msg)))))
 
   ;; Conditional APPT_WARNTIME
-  (defun zp/org-set-appt-warntime-if-timestamp (&rest args)
-    "Prompt for APPT_WARNTIME if the heading is a timestamp.
-
-ARGS is only there to catch extra arguments when the function is
-called as an advice."
+  (defun zp/org-set-appt-warntime-if-timestamp ()
+    "Prompt for APPT_WARNTIME if the heading is a timestamp."
     (let ((warntime (org-entry-get (point) "APPT_WARNTIME")))
       (unless warntime
         (save-excursion
@@ -3779,6 +3776,15 @@ called as an advice."
                                      end t)
               (zp/org-set-appt-warntime)))))))
 
+  (defun zp/org-set-appt-warntime-if-timestamp-advice (&rest args)
+    "Prompt for APPT_WARNTIME if the heading is a timestamp.
+
+This function is intended to be used as an advice.
+
+ARGS is only there to catch the shared arguments between the
+advised function and this one."
+    (zp/org-set-appt-warntime-if-timestamp))
+
   ;; Advise timestamp-related commands
   (zp/advise-commands
    add
@@ -3786,7 +3792,7 @@ called as an advice."
     org-deadline
     org-time-stamp)
    after
-   zp/org-set-appt-warntime-if-timestamp))
+   zp/org-set-appt-warntime-if-timestamp-advice))
 
 ;;----------------------------------------------------------------------------
 ;; ledger
