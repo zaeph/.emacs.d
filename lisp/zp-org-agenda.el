@@ -197,7 +197,9 @@ a group."
                         ;; Special case: Filter is exclude-only
                         (cl-every 'not include))
                     (not matched-neg))))
-            ((member "nil" include)
+            ((cl-some (lambda (filter)
+                        (member "nil" filter))
+                      include)
              -1)))))
 
 (defun zp/skip-tasks-not-belonging-to-agenda-groups (filter)
