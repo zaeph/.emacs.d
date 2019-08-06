@@ -155,7 +155,7 @@ With a prefix argument, do so in all agenda buffers."
            list)
    "\\|"))
 
-(defun zp/org-task-in-agenda-groups-p (filter &optional pom)
+(defun zp/org-task-in-agenda-groups-p (filter)
   "Test whether a task is in agenda-group matched by FILTER.
 
 FILTER can either be a string to be processed by
@@ -171,7 +171,7 @@ a group."
          (exclude (pop filter)))
     (save-restriction
       (widen)
-      (let* ((task-groups (zp/org-get-agenda-groups pom))
+      (let* ((task-groups (zp/org-get-agenda-groups))
              (test (lambda (list)
                      (catch 'match
                        (dolist (group task-groups)
