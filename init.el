@@ -3127,6 +3127,7 @@ indirect-buffers."
          :map org-agenda-mode-map
          ("k" . zp/org-agenda-capture))
   :hook ((org-capture-mode . zp/org-capture-make-full-frame)
+         (org-capture-mode . zp/org-capture-set-appt-warntime-if-timestamp)
          (org-capture-prepare-finalize . zp/org-set-created-property))
   :config
   (setq org-default-notes-file "~/org/life.org")
