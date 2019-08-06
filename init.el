@@ -2197,15 +2197,6 @@ If the function sets CREATED, it returns its value."
         (org-set-property created now)
         now)))
 
-  (defun zp/org-capture-set-created-property ()
-    "Conditionally set the CREATED property on captured trees."
-    (let ((add-created (plist-get org-capture-plist :add-created)))
-      (unless (buffer-narrowed-p)
-        (error "Buffer is not narrowed"))
-      (save-excursion
-        (goto-char (point-min))
-        (zp/org-set-created-property))))
-
   ;;--------------------------
   ;; Handling ‘APPT_WARNTIME’
   ;;--------------------------
@@ -3303,6 +3294,19 @@ indirect-buffers."
             (funcall minor-mode)))))
 
   (add-hook 'org-capture-mode-hook #'zp/org-capture-load-extra-minor-mode)
+
+  ;;-------------------------
+  ;; Handling extra keywords
+  ;;-------------------------
+
+  (defun zp/org-capture-set-created-property ()
+    "Conditionally set the CREATED property on captured trees."
+    (let ((add-created (plist-get org-capture-plist :add-created)))
+      (unless (buffer-narrowed-p)
+        (error "Buffer is not narrowed"))
+      (save-excursion
+        (goto-char (point-min))
+        (zp/org-set-created-property))))
 
   ;;------
   ;; Rest
