@@ -395,9 +395,13 @@ as regular projects."
 
 (defun zp/skip-routine ()
   "Skip items which have a :routine: tag."
+  (when (member "routine" (org-get-tags (point) t))
+    (org-end-of-subtree)))
+
+(defun zp/skip-routine-cond ()
+  "Conditionally skip items which have a :routine: tag."
   (unless zp/org-agenda-include-routine
-    (when (member "routine" (org-get-tags (point) t))
-      (org-end-of-subtree))))
+    (zp/skip-routine)))
 
 ;;----------------------------------------------------------------------------
 ;; Sorting functions
