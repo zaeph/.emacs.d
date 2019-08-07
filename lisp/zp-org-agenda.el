@@ -329,6 +329,22 @@ todo-keyword)."
           next-headline
         nil))))
 
+(defun zp/skip-future-non-waiting-timestamped-tasks ()
+  "Skip non-waiting tasks with a future timestamp."
+  (save-restriction
+    (widen)
+    (let ((ts (org-entry-get (point) "TIMESTAMP" nil)))
+      (if (and ts
+               (not (zp/is-waiting-p)))
+          (save-excursion
+            (org-end-of-subtree))
+        nil))))
+
+(defun zp/skip-future-non-waiting-timestamped-tasks-cond ()
+  "Cond. skip non-waiting tasks with a future timestamp."
+  (when zp/org-agenda-todo-ignore-future
+    (zp/skip-future-non-waiting-timestamped-tasks)))
+
 (defun zp/skip-non-projects ()
   "Skip trees which aren’t projects."
   (save-restriction
