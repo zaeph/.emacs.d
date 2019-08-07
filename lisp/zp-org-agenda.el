@@ -1063,13 +1063,11 @@ due today, and showing all of them."
   (cond ((eq (zp/get-agenda-local 'zp/org-agenda-todo-ignore-future) t)
          (zp/set-agenda-local 'zp/org-agenda-todo-ignore-future nil)
          (zp/set-agenda-local 'org-agenda-todo-ignore-scheduled nil)
-         (zp/set-agenda-local 'org-agenda-todo-ignore-timestamp nil)
          (org-agenda-redo)
          (message "Show items in the future."))
         (t
          (zp/set-agenda-local 'zp/org-agenda-todo-ignore-future t)
          (zp/set-agenda-local 'org-agenda-todo-ignore-scheduled 'future)
-         (zp/set-agenda-local 'org-agenda-todo-ignore-timestamp 'future)
          (org-agenda-redo)
          (message "Ignore items in the future."))))
 
