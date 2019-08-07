@@ -2796,7 +2796,9 @@ indirect-buffers."
              :scheduled past)
       (:name "Waiting"
              :and (:tag "waiting"
-                        :scheduled nil))
+                        :scheduled nil)
+             :and (:tag "waiting"
+                        :scheduled today))
       (:name "Appointments"
              :timestamp today)
       (:name "Scheduled"
