@@ -396,7 +396,7 @@ as regular projects."
 (defun zp/skip-routine ()
   "Skip items which have a :routine: tag."
   (unless zp/org-agenda-include-routine
-    (when-let ((tag (car (member "routine" (org-get-tags (point) t)))))
+    (when (member "routine" (org-get-tags (point) t))
       (org-end-of-subtree))))
 
 ;;----------------------------------------------------------------------------
