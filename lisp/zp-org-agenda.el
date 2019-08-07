@@ -829,7 +829,7 @@ It creates 4 blocks:
     ;; Curiosities
     ,(zp/org-agenda-variant-create
       "c" key "Curiosities"
-      header groups (concat "+curios-cancelled" tags) by-groups file)))
+      header groups (concat tags "+curios-cancelled") by-groups file)))
 
 (defun zp/org-agenda-create-all (list)
   (mapcan (lambda (params)
