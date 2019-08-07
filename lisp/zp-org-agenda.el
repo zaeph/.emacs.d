@@ -34,7 +34,7 @@
   "Hooks to run after the local org-agenda config has been
   loaded.")
 
-(defun zp/org-agenda-local-config-init (alist)
+(defun zp/org-agenda-local-config-init (list)
   "Create the data structure for org-agenda local config.
 
 This function takes every variables in
@@ -42,10 +42,10 @@ This function takes every variables in
 a data structure, thus defining the global state of those
 variables."
   (let ((settings))
-    (while (cdr alist)
-      (let ((var (pop alist)))
+    (while (cdr list)
+      (let ((var (pop list)))
         (push var settings)
-        (set var (eval (pop alist)))))
+        (set var (eval (pop list)))))
     (list (cons 'default (list (mapcar (lambda (setting)
                                          (cons setting (eval setting)))
                                        settings))))))
