@@ -772,7 +772,8 @@ agenda settings after them."
                 '(or (zp/skip-tasks-not-belonging-to-agenda-groups ',groups)
                      (zp/skip-routine-cond)
                      (zp/skip-non-tasks)
-                     (zp/skip-waiting)))
+                     (zp/skip-waiting)
+                     (zp/skip-future-non-waiting-timestamped-tasks-cond)))
                (org-super-agenda-groups
                 ',(cond (by-groups
                          (zp/org-super-agenda-groups-all))
@@ -801,7 +802,8 @@ agenda settings after them."
                (org-agenda-skip-function
                 '(or (zp/skip-tasks-not-belonging-to-agenda-groups ',groups t)
                      (zp/skip-non-projects-cond)
-                     (zp/skip-waiting)))
+                     (zp/skip-waiting)
+                     (zp/skip-future-non-waiting-timestamped-tasks-cond)))
                (org-agenda-sorting-strategy
                 '(user-defined-down
                   category-keep))
