@@ -665,7 +665,7 @@ agenda settings after them."
                   `((org-agenda-files ',file)))
             (org-agenda-span 'day)
             (org-agenda-skip-function
-             '(zp/skip-routine))
+             '(zp/skip-routine-cond))
             (org-super-agenda-groups
              '((:name "Grid"
                       :time-grid t)
@@ -678,7 +678,7 @@ agenda settings after them."
             ,@(if (bound-and-true-p file)
                   `((org-agenda-files ',file)))
             (org-agenda-skip-function
-             '(zp/skip-routine))
+             '(zp/skip-routine-cond))
             (org-agenda-span 'day))))
 
 (defun zp/org-agenda-block-header (header)
@@ -708,7 +708,7 @@ agenda settings after them."
                   `((org-agenda-files ',file)))
             (org-agenda-skip-function
              '(or (zp/skip-tasks-not-belonging-to-agenda-groups ',groups)
-                  (zp/skip-routine)))
+                  (zp/skip-routine-cond)))
             (org-agenda-span 'day))))
 
 (defun zp/org-agenda-block-agenda-week-with-group-filter (header groups &optional file)
@@ -721,21 +721,21 @@ agenda settings after them."
             (org-habit-show-habits nil)
             (org-agenda-skip-function
              '(or (zp/skip-tasks-not-belonging-to-agenda-groups ',groups)
-                  (zp/skip-routine)))
+                  (zp/skip-routine-cond)))
             (org-agenda-dim-blocked-tasks 'dimmed)
             (org-deadline-warning-days 0))))
 
 (defun zp/org-agenda-block-agenda-timestamps-and-deadlines (header &optional file)
   `(agenda ""
-           ((org-agenda-overriding-header
-             (zp/org-agenda-format-header-main ,header))
-            ,@(if (bound-and-true-p file)
+           (,@(if (bound-and-true-p file)
                   `((org-agenda-files ',file)))
+            (org-agenda-overriding-header
+             (zp/org-agenda-format-header-main ,header))
             (org-agenda-span 'week)
             (org-agenda-start-day "-1")
             (org-deadline-warning-days 0)
             (org-agenda-skip-function
-             '(or (zp/skip-routine)
+             '(or (zp/skip-routine-cond)
                   (org-agenda-skip-entry-if 'todo '("CXLD"))))
             (org-agenda-entry-types '(:deadline :timestamp :sexp))
             (org-agenda-dim-blocked-tasks 'dimmed))))
@@ -754,7 +754,7 @@ agenda settings after them."
                   category-keep))
                (org-agenda-skip-function
                 '(or (zp/skip-tasks-not-belonging-to-agenda-groups ',groups)
-                     (zp/skip-routine)
+                     (zp/skip-routine-cond)
                      (zp/skip-non-tasks)
                      (zp/skip-waiting)))
                (org-super-agenda-groups
