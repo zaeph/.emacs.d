@@ -329,6 +329,22 @@ todo-keyword)."
           next-headline
         nil))))
 
+(defun zp/skip-future-non-waiting-timestamped-tasks ()
+  "Skip non-waiting tasks with a future timestamp."
+  (save-restriction
+    (widen)
+    (let ((ts (org-entry-get (point) "TIMESTAMP" nil)))
+      (if (and ts
+               (not (zp/is-waiting-p)))
+          (save-excursion
+            (org-end-of-subtree))
+        nil))))
+
+(defun zp/skip-future-non-waiting-timestamped-tasks-cond ()
+  "Cond. skip non-waiting tasks with a future timestamp."
+  (when zp/org-agenda-todo-ignore-future
+    (zp/skip-future-non-waiting-timestamped-tasks)))
+
 (defun zp/skip-non-projects ()
   "Skip trees which aren’t projects."
   (save-restriction
@@ -395,9 +411,13 @@ as regular projects."
 
 (defun zp/skip-routine ()
   "Skip items which have a :routine: tag."
+  (when (member "routine" (org-get-tags (point) t))
+    (org-end-of-subtree)))
+
+(defun zp/skip-routine-cond ()
+  "Conditionally skip items which have a :routine: tag."
   (unless zp/org-agenda-include-routine
-    (when-let ((tag (car (member "routine" (org-get-tags (point) t)))))
-      (org-end-of-subtree))))
+    (zp/skip-routine)))
 
 ;;----------------------------------------------------------------------------
 ;; Sorting functions
@@ -661,7 +681,7 @@ agenda settings after them."
                   `((org-agenda-files ',file)))
             (org-agenda-span 'day)
             (org-agenda-skip-function
-             '(zp/skip-routine))
+             '(zp/skip-routine-cond))
             (org-super-agenda-groups
              '((:name "Grid"
                       :time-grid t)
@@ -674,7 +694,7 @@ agenda settings after them."
             ,@(if (bound-and-true-p file)
                   `((org-agenda-files ',file)))
             (org-agenda-skip-function
-             '(zp/skip-routine))
+             '(zp/skip-routine-cond))
             (org-agenda-span 'day))))
 
 (defun zp/org-agenda-block-header (header)
@@ -704,7 +724,7 @@ agenda settings after them."
                   `((org-agenda-files ',file)))
             (org-agenda-skip-function
              '(or (zp/skip-tasks-not-belonging-to-agenda-groups ',groups)
-                  (zp/skip-routine)))
+                  (zp/skip-routine-cond)))
             (org-agenda-span 'day))))
 
 (defun zp/org-agenda-block-agenda-week-with-group-filter (header groups &optional file)
@@ -717,21 +737,21 @@ agenda settings after them."
             (org-habit-show-habits nil)
             (org-agenda-skip-function
              '(or (zp/skip-tasks-not-belonging-to-agenda-groups ',groups)
-                  (zp/skip-routine)))
+                  (zp/skip-routine-cond)))
             (org-agenda-dim-blocked-tasks 'dimmed)
             (org-deadline-warning-days 0))))
 
 (defun zp/org-agenda-block-agenda-timestamps-and-deadlines (header &optional file)
   `(agenda ""
-           ((org-agenda-overriding-header
-             (zp/org-agenda-format-header-main ,header))
-            ,@(if (bound-and-true-p file)
+           (,@(if (bound-and-true-p file)
                   `((org-agenda-files ',file)))
+            (org-agenda-overriding-header
+             (zp/org-agenda-format-header-main ,header))
             (org-agenda-span 'week)
             (org-agenda-start-day "-1")
             (org-deadline-warning-days 0)
             (org-agenda-skip-function
-             '(or (zp/skip-routine)
+             '(or (zp/skip-routine-cond)
                   (org-agenda-skip-entry-if 'todo '("CXLD"))))
             (org-agenda-entry-types '(:deadline :timestamp :sexp))
             (org-agenda-dim-blocked-tasks 'dimmed))))
@@ -750,9 +770,10 @@ agenda settings after them."
                   category-keep))
                (org-agenda-skip-function
                 '(or (zp/skip-tasks-not-belonging-to-agenda-groups ',groups)
-                     (zp/skip-routine)
+                     (zp/skip-routine-cond)
                      (zp/skip-non-tasks)
-                     (zp/skip-waiting)))
+                     (zp/skip-waiting)
+                     (zp/skip-future-non-waiting-timestamped-tasks-cond)))
                (org-super-agenda-groups
                 ',(cond (by-groups
                          (zp/org-super-agenda-groups-all))
@@ -781,7 +802,8 @@ agenda settings after them."
                (org-agenda-skip-function
                 '(or (zp/skip-tasks-not-belonging-to-agenda-groups ',groups t)
                      (zp/skip-non-projects-cond)
-                     (zp/skip-waiting)))
+                     (zp/skip-waiting)
+                     (zp/skip-future-non-waiting-timestamped-tasks-cond)))
                (org-agenda-sorting-strategy
                 '(user-defined-down
                   category-keep))
@@ -829,7 +851,7 @@ It creates 4 blocks:
     ;; Curiosities
     ,(zp/org-agenda-variant-create
       "c" key "Curiosities"
-      header groups (concat "+curios-cancelled" tags) by-groups file)))
+      header groups (concat tags "+curios-cancelled") by-groups file)))
 
 (defun zp/org-agenda-create-all (list)
   (mapcan (lambda (params)
@@ -1041,13 +1063,11 @@ due today, and showing all of them."
   (cond ((eq (zp/get-agenda-local 'zp/org-agenda-todo-ignore-future) t)
          (zp/set-agenda-local 'zp/org-agenda-todo-ignore-future nil)
          (zp/set-agenda-local 'org-agenda-todo-ignore-scheduled nil)
-         (zp/set-agenda-local 'org-agenda-todo-ignore-timestamp nil)
          (org-agenda-redo)
          (message "Show items in the future."))
         (t
          (zp/set-agenda-local 'zp/org-agenda-todo-ignore-future t)
          (zp/set-agenda-local 'org-agenda-todo-ignore-scheduled 'future)
-         (zp/set-agenda-local 'org-agenda-todo-ignore-timestamp 'future)
          (org-agenda-redo)
          (message "Ignore items in the future."))))
 

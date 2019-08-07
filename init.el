@@ -2796,7 +2796,9 @@ indirect-buffers."
              :scheduled past)
       (:name "Waiting"
              :and (:tag "waiting"
-                        :scheduled nil))
+                        :scheduled nil)
+             :and (:tag "waiting"
+                        :scheduled today))
       (:name "Appointments"
              :timestamp today)
       (:name "Scheduled"
@@ -2891,6 +2893,7 @@ indirect-buffers."
         org-agenda-tags-todo-honor-ignore-options 1
         org-agenda-todo-ignore-with-date nil
         org-agenda-todo-ignore-deadlines nil
+        org-agenda-todo-ignore-timestamp nil
         org-agenda-todo-list-sublevels t
         org-agenda-dim-blocked-tasks nil
         org-agenda-include-deadlines 'all
@@ -2922,7 +2925,6 @@ indirect-buffers."
 
            zp/org-agenda-todo-ignore-future t
            org-agenda-todo-ignore-scheduled 'future
-           org-agenda-todo-ignore-timestamp 'future
 
            zp/org-agenda-sort-by-rev-fifo nil))
 
