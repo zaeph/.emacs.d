@@ -2865,7 +2865,7 @@ indirect-buffers."
           ("M-d" . zp/toggle-org-deadline-warning-days-range)
           ("r" . zp/org-agenda-benchmark)
           ("R" . zp/org-agenda-garbage-collect)
-          ("G" . zp/org-agenda-reset-local-config)
+          ("G" . zp/org-agenda-wipe-local-config)
           ("y" . zp/toggle-org-agenda-split-subtasks)
           ("i" . zp/toggle-org-agenda-sorting-strategy-special-first)
           ("o" . zp/toggle-org-agenda-sort-by-rev-fifo)
@@ -2874,7 +2874,7 @@ indirect-buffers."
           ("C-c C-x r" . zp/org-agenda-set-appt-warntime)
           ("C-c C-x l" . zp/org-agenda-set-location)
           ("C-c C-x d" . zp/org-agenda-delete-property)
-          ("C-c C-x s" . zp/org-agenda-reset-local-config)
+          ("C-c C-x s" . zp/org-agenda-wipe-local-config)
           (">" . zp/org-agenda-date-prompt-and-update-appt)
           ("C-c C-s" . zp/org-agenda-schedule-and-update-appt)
           ("C-c C-S-w" . zp/org-agenda-refile-with-paths)
@@ -2927,6 +2927,9 @@ indirect-buffers."
            org-agenda-todo-ignore-scheduled 'future
 
            zp/org-agenda-sort-by-rev-fifo nil))
+
+        zp/org-agenda-extra-local-config
+        '(("k" ((zp/org-agenda-include-routine . nil))))
 
         ;; View setup
         org-agenda-hide-tags-regexp "recurring\\|waiting\\|standby"

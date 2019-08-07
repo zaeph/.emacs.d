@@ -28,13 +28,13 @@
       (match-string 1 name))))
 
 (defvar zp/org-agenda-local-settings nil
-  "List structure for org-agenda views local settings.")
+  "Settings to use for local agenda views.")
 
 (defvar zp/org-agenda-load-local-config-post-hook nil
   "Hooks to run after the local org-agenda config has been
   loaded.")
 
-(defun zp/org-agenda-local-config-init (alist)
+(defun zp/org-agenda-local-config-init (list)
   "Create the data structure for org-agenda local config.
 
 This function takes every variables in
@@ -42,10 +42,10 @@ This function takes every variables in
 a data structure, thus defining the global state of those
 variables."
   (let ((settings))
-    (while (cdr alist)
-      (let ((var (pop alist)))
+    (while (cdr list)
+      (let ((var (pop list)))
         (push var settings)
-        (set var (eval (pop alist)))))
+        (set var (eval (pop list)))))
     (list (cons 'default (list (mapcar (lambda (setting)
                                          (cons setting (eval setting)))
                                        settings))))))
@@ -1158,9 +1158,7 @@ Meant to be run with ‘org-agenda-mode-hook’."
 (add-hook 'zp/org-agenda-load-local-config-post-hook
           #'zp/org-agenda-set-category-icons)
 
-(defun zp/org-agenda-reset-current-local-config (print-message &optional agenda)
-  "Reset the org-agenda local config to the default values."
-  (interactive "p")
+(defun zp/org-agenda-create-local-config (&optional agenda)
   (let ((agenda (or agenda
                     (zp/org-agenda-get-key))))
     (setf (alist-get agenda
@@ -1170,12 +1168,21 @@ Meant to be run with ‘org-agenda-mode-hook’."
           ;; references to the same values.  Otherwise, we’d also
           ;; modify the global config.
           (list (copy-alist (car (alist-get 'default
-                                            zp/org-agenda-local-config))))))
+                                            zp/org-agenda-local-config)))))))
+
+(defun zp/org-agenda-wipe-current-local-config (print-message &optional agenda)
+  "Reset the org-agenda local config to the default values."
+  (interactive "p")
+  (let ((agenda (or agenda
+                    (zp/org-agenda-get-key))))
+    (setq zp/org-agenda-local-config
+          (delq (assoc agenda zp/org-agenda-local-config)
+                zp/org-agenda-local-config)))
   (when print-message
     (org-agenda-redo-all)
     (message "Local org-agenda config has been reset.")))
 
-(defun zp/org-agenda-reset-all-local-configs (print-message)
+(defun zp/org-agenda-wipe-all-local-configs (print-message)
   "Reset all local org-agenda configs to their default value."
   (interactive "p")
   (setq zp/org-agenda-local-config (list (assoc 'default zp/org-agenda-local-config)))
@@ -1183,7 +1190,7 @@ Meant to be run with ‘org-agenda-mode-hook’."
   (when print-message
     (message "All local org-agenda configs have been reset.")))
 
-(defun zp/org-agenda-reset-local-config (&optional print-message agenda)
+(defun zp/org-agenda-wipe-local-config (&optional print-message agenda)
   "Reset the org-agenda local config.
 
 With a ‘C-u’ prefix argument, reset all the local configs."
@@ -1191,8 +1198,30 @@ With a ‘C-u’ prefix argument, reset all the local configs."
   (let ((agenda (or agenda
                     (zp/org-agenda-get-key))))
     (pcase print-message
-      (4 (zp/org-agenda-reset-all-local-configs print-message))
-      (_ (zp/org-agenda-reset-current-local-config print-message agenda)))))
+      (4 (zp/org-agenda-wipe-all-local-configs print-message))
+      (_ (zp/org-agenda-wipe-current-local-config print-message agenda)))))
+
+(defvar zp/org-agenda-extra-local-config nil
+  "Extra settings to use for local agenda views.
+
+Those settings will be loaded *after* the ones in
+‘zp/org-agenda-local-config’.  This is to allow some of your
+local agendas to have a different default state for some
+variables.
+
+Note that those variables will also be loaded after
+a wipe (‘zp/org-agenda-wipe-local-config’).")
+
+(defun zp/org-agenda-load-extra-local-config (&optional agenda)
+  "Load the extra local config for the current view."
+  (let ((agenda (or agenda
+                    (zp/org-agenda-get-key)))
+        (config zp/org-agenda-extra-local-config))
+    (mapcar (lambda (params)
+              (let ((var (car params))
+                    (val (cdr params)))
+                (zp/set-agenda-local var val agenda)))
+            (car (alist-get agenda config nil nil 'equal)))))
 
 (defun zp/org-agenda-load-local-config (&optional agenda)
   "Load the org-agenda local config for the current view."
@@ -1200,7 +1229,8 @@ With a ‘C-u’ prefix argument, reset all the local configs."
                     (zp/org-agenda-get-key))))
     ;; Create local config if it doesn’t exist for current agenda
     (unless (assoc agenda zp/org-agenda-local-config)
-      (zp/org-agenda-reset-current-local-config nil agenda))
+      (zp/org-agenda-create-local-config agenda)
+      (zp/org-agenda-load-extra-local-config agenda))
     ;; Load all settings
     (mapcar (lambda (cons)
               (let ((variable (car cons))
@@ -1299,7 +1329,7 @@ An agenda is considered special if its key isn’t listed in
         (when (derived-mode-p 'org-agenda-mode)
           (let ((agenda (zp/org-agenda-get-key)))
             (unless (member agenda zp/org-agenda-default-agendas-list)
-              (zp/org-agenda-reset-local-config)
+              (zp/org-agenda-wipe-local-config)
               (kill-buffer)
               (setq kill-count (1+ kill-count)))))))
     kill-count))
