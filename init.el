@@ -2928,6 +2928,9 @@ indirect-buffers."
 
            zp/org-agenda-sort-by-rev-fifo nil))
 
+        zp/org-agenda-extra-local-config
+        '(("k" ((zp/org-agenda-include-routine . nil))))
+
         ;; View setup
         org-agenda-hide-tags-regexp "recurring\\|waiting\\|standby"
         org-agenda-tags-column -94
