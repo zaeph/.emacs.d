@@ -3652,6 +3652,11 @@ indirect-buffers."
 ;; appt
 ;;----------------------------------------------------------------------------
 (use-package appt
+  :hook (;; Update reminders when…
+         ;; Saving org-agenda-files agenda
+         (after-save . zp/org-agenda-to-appt-on-save)
+         ;; Loading the org-agenda for the first time
+         (org-agenda-finalize . zp/org-agenda-to-appt-on-load))
   :config
   (appt-activate t)
 
@@ -3666,7 +3671,7 @@ Return nil if APPT_WARNTIME is ‘none’."
     (let ((marker (get-text-property (1- (length arg)) 'org-hd-marker arg)))
       (not (string= "none" (org-entry-get marker "APPT_WARNTIME")))))
 
-                                                  ; Use appointment data from org-mode
+  ;; Use appointment data from org-mode
   (defun zp/org-agenda-to-appt (&optional arg)
     "Update appt-list based on org-agenda items."
     (interactive "P")
@@ -3730,28 +3735,14 @@ Check their respective dosctrings for more info."
     (org-agenda-schedule arg time)
     (zp/org-agenda-to-appt))
 
-
-
   ;; ----------------------------------------
-  ;; Update reminders when...
+  ;; Update reminders when…
 
   ;; Starting Emacs
   ;; (zp/org-agenda-to-appt)
 
   ;; Everyday at 12:05am
   ;; (run-at-time "12:05am" (* 24 3600) 'zp/org-agenda-to-appt)
-
-  ;; When saving org-agenda-files
-  (add-hook 'after-save-hook #'zp/org-agenda-to-appt-on-save)
-
-  ;; When loading org-agenda for the first time
-  (add-hook 'org-agenda-finalize-hook #'zp/org-agenda-to-appt-on-load)
-
-  ;; ----------------------------------------
-  ;; Remove hooks
-  ;; (remove-hook 'after-save-hook 'zp/org-agenda-to-appt-on-save)
-  ;; (remove-hook 'org-agenda-finalize-hook 'zp/org-agenda-to-appt)
-
   ;; ----------------------------------------
 
   ;; Display appointments as a window manager notification
