@@ -4168,16 +4168,14 @@ buffer, thereby propagating the indirectness."
 ;; Feedback sounds
 ;;----------------------------------------------------------------------------
 (use-package feedback-sounds
-  :requires org
-  :config
-  ;; Add feedback sounds to the following commands
-  (add-hook 'org-clock-in-prepare-hook #'zp/play-sound-clock-in)
-  (add-hook 'org-clock-out-hook #'zp/play-sound-clock-out)
-  (add-hook 'org-after-todo-state-change-hook #'zp/play-sound-reward)
-  (add-hook 'org-capture-mode-hook #'zp/play-sound-start-capture)
-  (add-hook 'org-capture-after-finalize-hook #'zp/play-sound-after-capture)
-  (add-hook 'zp/org-after-view-change-hook #'zp/play-sound-turn-page)
-  (add-hook 'zp/org-after-refile-hook #'zp/play-sound-turn-page))
+  :hook ((org-clock-in-prepare . zp/play-sound-clock-in)
+         (org-clock-out . zp/play-sound-clock-out)
+         (org-after-todo-state-change . zp/play-sound-reward)
+         (org-capture-mode . zp/play-sound-start-capture)
+         (org-capture-after-finalize . zp/play-sound-after-capture)
+         (zp/org-after-view-change . zp/play-sound-turn-page)
+         (zp/org-after-refile . zp/play-sound-turn-page))
+  :requires org)
 
 ;;----------------------------------------------------------------------------
 ;; helm-bibtex
