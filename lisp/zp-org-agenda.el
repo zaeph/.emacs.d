@@ -624,6 +624,14 @@ FILTER should be formatted as \"+include-exclude\"."
     (list include
           exclude)))
 
+(defun zp/org-agenda-groups-validate-filter (filter)
+  "Validate org-agenda group FILTER."
+  (unless (and (listp filter)
+               (cl-every #'listp filter)
+               (cl-every #'stringp (car filter))
+               (cl-every #'stringp (cadr filter)))
+    (error "Filter is not valid")))
+
 (defun zp/org-agenda-groups-process-filters-maybe (&rest filters)
   "Process FILTERS into a list of filter-lists.
 
@@ -635,7 +643,7 @@ See ‘zp/org-agenda-groups-process-filter’ for more information."
     (mapcar (lambda (filter)
               (if (stringp filter)
                   (zp/org-agenda-groups-process-filter filter)
-                filter))
+                (zp/org-agenda-groups-validate-filter filter)))
             filters)))
 
 ;;----------------------------------------------------------------------------
