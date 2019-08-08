@@ -3689,7 +3689,7 @@ This is a filter intended to be use with ‘org-agenda-to-appt’."
     (setq appt-time-msg-list nil)
     (when (eq arg 4)
       (appt-check))
-    (with-temp-message "Updating appt."
+    (with-temp-message (current-message)
       (org-agenda-to-appt nil 'zp/org-agenda-to-appt-check-warntime))
     (when arg
       (message
