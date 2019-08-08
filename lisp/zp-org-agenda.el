@@ -164,16 +164,15 @@ created by the same function.
 
 If MATCH-GROUPLESS is non-nil, returns -1 when a task doesn’t have
 a group."
-  (let* (include
+  (let* (;; Process filters if some are given as strings
+         (filters (apply #'zp/org-agenda-groups-process-filters-maybe
+                         filters))
+         include
          exclude)
     (dolist (filter filters)
-      (let ((filter (if (listp filter)
-                        filter
-                      ;; Convert filter if it is given as a string
-                      (zp/org-agenda-groups-process-filter filter))))
-        ;; Sort filters by include/exclude
-        (push (pop filter) include)
-        (push (car (pop filter)) exclude)))
+      ;; Sort filters by include/exclude
+      (push (pop filter) include)
+      (push (car (pop filter)) exclude))
     (let* ((task-groups (zp/org-get-agenda-groups))
            (test (lambda (list)
                    (if list
@@ -202,7 +201,7 @@ a group."
                       include)
              -1)))))
 
-(defun zp/skip-tasks-not-belonging-to-agenda-groups (filter)
+(defun zp/skip-tasks-not-belonging-to-agenda-groups (filters)
   "Skip tasks if they aren’t part of GROUPS.
 
 GROUPS is a list of AGENDA_GROUPS values to match.
@@ -599,32 +598,45 @@ afterwards."
     (when string
       (split-string string ", ?"))))
 
-(defun zp/org-agenda-groups-process-filter (string)
-  "Process STRING into a filter-list for agenda-groups.
+(defun zp/org-agenda-groups-process-filter (filter)
+  "Process FILTER into a filter-list for agenda-groups.
 
 Return a list of two lists:
   (inclusion-list exclusion-list)
 
-STRING should be formatted as \"+include-exclude\"."
-  (when string
-    (let* ((prefix-re "[\\+-]")
-           ;; Handle special case when 1st group is w/o prefix
-           (string (when-let ((match (substring string 0 1)))
-                     (if (string-match prefix-re match)
-                         string
-                       (concat "+" string))))
-           (groups (s-slice-at prefix-re string))
-           include
-           exclude)
-      (dolist (group groups)
-        (let* ((type (substring group 0 1))
-               (group (substring group 1)))
-          (push group
-                (pcase type
-                  ("+" include)
-                  ("-" exclude)))))
-      (list include
-            exclude))))
+FILTER should be formatted as \"+include-exclude\"."
+  (let* ((prefix-re "[\\+-]")
+         ;; Handle special case when 1st group is w/o prefix
+         (filter (when-let ((match (substring filter 0 1)))
+                   (if (string-match prefix-re match)
+                       filter
+                     (concat "+" filter))))
+         (groups (s-slice-at prefix-re filter))
+         include
+         exclude)
+    (dolist (group groups)
+      (let ((type (substring group 0 1))
+            (group (substring group 1)))
+        (push group
+              (pcase type
+                ("+" include)
+                ("-" exclude)))))
+    (list include
+          exclude)))
+
+(defun zp/org-agenda-groups-process-filters-maybe (&rest filters)
+  "Process FILTERS into a list of filter-lists.
+
+The function will only process the members of FILTERS given as
+string and skip the others.
+
+See ‘zp/org-agenda-groups-process-filter’ for more information."
+  (when filters
+    (mapcar (lambda (filter)
+              (if (stringp filter)
+                  (zp/org-agenda-groups-process-filter filter)
+                filter))
+            filters)))
 
 ;;----------------------------------------------------------------------------
 ;; Headers
@@ -765,7 +777,7 @@ agenda settings after them."
             (org-agenda-span 'day))))
 
 (defun zp/org-agenda-block-header-with-deadlines (header groups &optional file)
-  (let ((filter (zp/org-agenda-groups-process-filter groups)))
+  (let ((filter (apply #'zp/org-agenda-groups-process-filter groups)))
        `(agenda ""
             ((org-agenda-overriding-header
               (zp/org-agenda-format-header-main ,header))
@@ -796,19 +808,19 @@ agenda settings after them."
             (org-agenda-span 'day))))
 
 (defun zp/org-agenda-block-agenda-week-with-group-filter (header groups &optional file)
-  `(agenda ""
-           ((org-agenda-overriding-header
-             (zp/org-agenda-format-header-main ,header))
-            ,@(if (bound-and-true-p file)
-                  `((org-agenda-files ',file)))
-            (org-agenda-span 'week)
-            (org-habit-show-habits nil)
-            (org-agenda-skip-function
-             '(or (zp/skip-tasks-not-belonging-to-agenda-groups
-                   ',(zp/org-agenda-groups-process-filter groups))
-                  (zp/skip-routine-cond)))
-            (org-agenda-dim-blocked-tasks 'dimmed)
-            (org-deadline-warning-days 0))))
+  (let ((filter (apply #'zp/org-agenda-groups-process-filter groups)))
+    `(agenda ""
+             ((org-agenda-overriding-header
+               (zp/org-agenda-format-header-main ,header))
+              ,@(if (bound-and-true-p file)
+                    `((org-agenda-files ',file)))
+              (org-agenda-span 'week)
+              (org-habit-show-habits nil)
+              (org-agenda-skip-function
+               '(or (zp/skip-tasks-not-belonging-to-agenda-groups ',filter)
+                    (zp/skip-routine-cond)))
+              (org-agenda-dim-blocked-tasks 'dimmed)
+              (org-deadline-warning-days 0)))))
 
 (defun zp/org-agenda-block-agenda-timestamps-and-deadlines (header &optional file)
   `(agenda ""
@@ -825,7 +837,7 @@ agenda settings after them."
             (org-agenda-dim-blocked-tasks 'dimmed))))
 
 (defun zp/org-agenda-block-tasks-with-group-filter (&optional groups tags by-groups file)
-  (let ((filter (zp/org-agenda-groups-process-filter groups)))
+  (let ((filter (apply #'zp/org-agenda-groups-process-filter groups)))
     `(tags-todo ,(or tags
                      "-standby-cancelled-recurring-curios")
                 ((org-agenda-overriding-header
@@ -851,7 +863,7 @@ agenda settings after them."
                            (zp/org-super-agenda-scheduled))))))))
 
 (defun zp/org-agenda-block-projects-with-group-filter (&optional groups tags file)
-  (let ((filter (zp/org-agenda-groups-process-filter groups)))
+  (let ((filter (apply #'zp/org-agenda-groups-process-filter groups)))
     `(tags-todo ,(or tags
                      "-standby-cancelled-curios")
                 ((org-agenda-overriding-header
