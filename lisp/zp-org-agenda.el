@@ -1257,7 +1257,8 @@ a wipe (‘zp/org-agenda-wipe-local-config’).")
 
 Save the file it has been modified, and reveal everything in the
 file (trees, drawers, etc.)."
-  (let ((buffer (get-file-buffer "~/org/life.org")))
+  (let ((buffer (get-file-buffer "~/org/life.org"))
+        (inhibit-message t))
     (when buffer
       (with-current-buffer buffer
         (when (buffer-modified-p (get-file-buffer "~/org/life.org"))
