@@ -1321,7 +1321,9 @@ marking it for deletion upon garbage collection.")
   "Kill all special agendas.
 
 An agenda is considered special if its key isn’t listed in
-‘zp/org-agenda-default-agendas-list’."
+‘zp/org-agenda-default-agendas-list’.
+
+This will also wipe the local config of the special agendas."
   (interactive)
   (let ((kill-count 0))
     (dolist (buffer (buffer-list))
