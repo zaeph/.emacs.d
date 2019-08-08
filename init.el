@@ -3720,9 +3720,7 @@ on init and them removes itself."
     "Update appt if task with APPT_WARNTIME is marked as DONE."
     (when-let* ((done (org-entry-get (point) "TODO" nil))
                 (warntime (zp/org-appt-check-warntime)))
-      (with-temp-message "testing"
-        (org-with-remote-undo (current-buffer)
-          (zp/org-agenda-to-appt)))))
+      (zp/org-agenda-to-appt)))
 
   (defun zp/org-set-appt-warntime (&optional arg)
     "Set the `APPT_WARNTIME' property."
