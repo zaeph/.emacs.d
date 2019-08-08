@@ -3656,7 +3656,9 @@ indirect-buffers."
          ;; Saving org-agenda-files agenda
          (after-save . zp/org-agenda-to-appt-on-save)
          ;; Loading the org-agenda for the first time
-         (org-agenda-finalize . zp/org-agenda-to-appt-on-load))
+         (org-agenda-finalize . zp/org-agenda-to-appt-on-load)
+         ;; After marking a task with APPT_WARNTIME as DONE
+         (org-after-todo-state-change . zp/org-agenda-to-appt-on-done))
   :config
   (appt-activate t)
 
@@ -3664,23 +3666,36 @@ indirect-buffers."
         appt-display-interval 5
         appt-display-mode-line nil)
 
-  (defun zp/org-agenda-to-appt-check-warntime (arg)
-    "Check APPT_WARNTIME for current entry.
+  (defun zp/org-appt-check-warntime (&optional pom)
+    "Check APPT_WARNTIME for current item.
 
-Return nil if APPT_WARNTIME is ‘none’."
+Return nil if APPT_WARNTIME is ‘none’"
+    (not (string= "none" (org-entry-get (or pom
+                                            (point))
+                                        "APPT_WARNTIME"))))
+
+  (defun zp/org-agenda-to-appt-check-warntime (arg)
+    "Check APPT_WARNTIME for current item in the agenda.
+
+This is a filter intended to be use with ‘org-agenda-to-appt’."
     (let ((marker (get-text-property (1- (length arg)) 'org-hd-marker arg)))
-      (not (string= "none" (org-entry-get marker "APPT_WARNTIME")))))
+      (org-with-point-at marker
+        (zp/org-appt-check-warntime marker))))
 
   ;; Use appointment data from org-mode
   (defun zp/org-agenda-to-appt (&optional arg)
     "Update appt-list based on org-agenda items."
-    (interactive "P")
+    (interactive "p")
     (setq appt-time-msg-list nil)
-    (unless (not (equal arg '(4)))
-      (appt-check)
-      (message "Appt has been reset"))
-    (let ((inhibit-message t))
-      (org-agenda-to-appt nil 'zp/org-agenda-to-appt-check-warntime)))
+    (when (eq arg 4)
+      (appt-check))
+    (with-temp-message "Updating appt."
+      (org-agenda-to-appt nil 'zp/org-agenda-to-appt-check-warntime))
+    (when arg
+      (message
+       (pcase arg
+         (4 "appt has been reset and updated.")
+         (_ "appt has been updated.")))))
 
   ;; TODO: Rename variables to more meaningful names
   ;; The name refers to the rôle they’ll have in the hook rather than to what
@@ -3694,8 +3709,20 @@ on init and them removes itself."
 
   (defun zp/org-agenda-to-appt-on-save ()
     "Update appt if buffer is visiting a file in ‘org-agenda-files’."
-    (if (member buffer-file-name org-agenda-files)
-        (zp/org-agenda-to-appt)))
+    (let ((file (or (buffer-file-name)
+                    (buffer-file-name (buffer-base-buffer))))
+          (agenda-files
+           (mapcar #'expand-file-name org-agenda-files)))
+      (if (member file agenda-files)
+          (zp/org-agenda-to-appt))))
+
+  (defun zp/org-agenda-to-appt-on-done ()
+    "Update appt if task with APPT_WARNTIME is marked as DONE."
+    (when-let* ((done (org-entry-get (point) "TODO" nil))
+                (warntime (zp/org-appt-check-warntime)))
+      (with-temp-message "testing"
+        (org-with-remote-undo (current-buffer)
+          (zp/org-agenda-to-appt)))))
 
   (defun zp/org-set-appt-warntime (&optional arg)
     "Set the `APPT_WARNTIME' property."
