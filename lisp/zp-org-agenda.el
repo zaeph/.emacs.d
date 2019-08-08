@@ -785,7 +785,7 @@ agenda settings after them."
             (org-agenda-span 'day))))
 
 (defun zp/org-agenda-block-header-with-deadlines (header groups &optional file)
-  (let ((filter (apply #'zp/org-agenda-groups-process-filter groups)))
+  (let ((filter (apply #'zp/org-agenda-groups-process-filters-maybe groups)))
        `(agenda ""
             ((org-agenda-overriding-header
               (zp/org-agenda-format-header-main ,header))
@@ -798,7 +798,7 @@ agenda settings after them."
                             ',filter))
              (org-agenda-skip-function
               '(zp/skip-tasks-not-belonging-to-agenda-groups
-                ',(zp/org-agenda-groups-process-filter groups)))
+                ',filter))
              (org-agenda-span 'day)))))
 
 (defun zp/org-agenda-block-agenda-with-group-filter (header groups &optional file)
@@ -816,7 +816,7 @@ agenda settings after them."
             (org-agenda-span 'day))))
 
 (defun zp/org-agenda-block-agenda-week-with-group-filter (header groups &optional file)
-  (let ((filter (apply #'zp/org-agenda-groups-process-filter groups)))
+  (let ((filter (apply #'zp/org-agenda-groups-process-filters-maybe groups)))
     `(agenda ""
              ((org-agenda-overriding-header
                (zp/org-agenda-format-header-main ,header))
@@ -845,7 +845,7 @@ agenda settings after them."
             (org-agenda-dim-blocked-tasks 'dimmed))))
 
 (defun zp/org-agenda-block-tasks-with-group-filter (&optional groups tags by-groups file)
-  (let ((filter (apply #'zp/org-agenda-groups-process-filter groups)))
+  (let ((filter (apply #'zp/org-agenda-groups-process-filters-maybe groups)))
     `(tags-todo ,(or tags
                      "-standby-cancelled-recurring-curios")
                 ((org-agenda-overriding-header
@@ -871,7 +871,7 @@ agenda settings after them."
                            (zp/org-super-agenda-scheduled))))))))
 
 (defun zp/org-agenda-block-projects-with-group-filter (&optional groups tags file)
-  (let ((filter (apply #'zp/org-agenda-groups-process-filter groups)))
+  (let ((filter (apply #'zp/org-agenda-groups-process-filters-maybe groups)))
     `(tags-todo ,(or tags
                      "-standby-cancelled-curios")
                 ((org-agenda-overriding-header
