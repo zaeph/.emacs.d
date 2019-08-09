@@ -3051,28 +3051,28 @@ indirect-buffers."
           ("N" "Agenda (w/o groups)"
            (,(zp/org-agenda-block-agenda "Agenda (w/o groups)" org-agenda-files)))
 
-          ;; ("k" "Timestamps & Deadlines"
-          ;;  (,(zp/org-agenda-block-agenda-timestamps-and-deadlines
-          ;;     "Timestamps & Deadlines")))
+          ("k" "Timestamps & Deadlines"
+           (,(zp/org-agenda-block-agenda-timestamps-and-deadlines
+              "Timestamps & Deadlines")))
 
-          ;; ("K" "Seeking Agenda"
-          ;;  (,(zp/org-agenda-block-agenda-week-with-group-filter
-          ;;     "Seeking Agenda" nil)))
+          ("K" "Seeking Agenda"
+           (,(zp/org-agenda-block-agenda-week-with-group-filter
+              "Seeking Agenda" nil)))
 
-          ;; ("A" "Active"
-          ;;  (,@(zp/org-agenda-blocks-create "Active" nil nil t)))
+          ("A" "Active"
+           (,@(zp/org-agenda-blocks-create "Active" nil nil t)))
 
-          ;; ("I" "Inactive"
-          ;;  (,@(zp/org-agenda-blocks-create "Inactive" nil "/STBY")))
+          ("I" "Inactive"
+           (,@(zp/org-agenda-blocks-create "Inactive" nil "/STBY")))
 
-          ;; ("ii" "Inactive (+groups)"
-          ;;  (,@(zp/org-agenda-blocks-create "Inactive (+groups)" nil "/STBY" t)))
+          ("ii" "Inactive (+groups)"
+           (,@(zp/org-agenda-blocks-create "Inactive (+groups)" nil "/STBY" t)))
 
-          ;; ("C" "Curiosities"
-          ;;  (,@(zp/org-agenda-blocks-create "Curiosities" nil "+curios")))
+          ("C" "Curiosities"
+           (,@(zp/org-agenda-blocks-create "Curiosities" nil "+curios")))
 
-          ;; ("cc" "Curiosities (+groups)"
-          ;;  (,@(zp/org-agenda-blocks-create "Curiosities (+groups)" nil "+curios" t)))
+          ("cc" "Curiosities (+groups)"
+           (,@(zp/org-agenda-blocks-create "Curiosities (+groups)" nil "+curios" t)))
 
           ,@(zp/org-agenda-create-all
              '(("l" "Life" ("+life+mx+pro+research+act"))
@@ -3089,26 +3089,26 @@ indirect-buffers."
                ("f" "Film" ("film"))
                ("g" "Groupless" ("nil"))))
 
-          ;; ("j" "Journal entries"
-          ;;  (,(zp/org-agenda-block-journal))
-          ;;  ((org-agenda-files '("~/org/journal.org"))))
+          ("j" "Journal entries"
+           (,(zp/org-agenda-block-journal))
+           ((org-agenda-files '("~/org/journal.org"))))
 
-          ;; ("d" "Deadlines"
-          ;;  (,(zp/org-agenda-block-deadlines)))
+          ("d" "Deadlines"
+           (,(zp/org-agenda-block-deadlines)))
 
-          ;; ("w" "Waiting list"
-          ;;  (,(zp/org-agenda-block-tasks-waiting)))
+          ("w" "Waiting list"
+           (,(zp/org-agenda-block-tasks-waiting)))
 
-          ;; ("A" "Meditation records"
-          ;;  ((agenda ""
-          ;;           ((org-agenda-files zp/org-agenda-files-awakening)
-          ;;            (org-agenda-log-mode))))
-          ;;  ((org-agenda-skip-timestamp-if-done nil)))
+          ("A" "Meditation records"
+           ((agenda ""
+                    ((org-agenda-files zp/org-agenda-files-awakening)
+                     (org-agenda-log-mode))))
+           ((org-agenda-skip-timestamp-if-done nil)))
 
-          ;; ("S" "Swimming records"
-          ;;  ((agenda ""
-          ;;           ((org-agenda-files zp/org-agenda-files-sports))))
-          ;;  ((org-agenda-skip-timestamp-if-done nil)))
+          ("S" "Swimming records"
+           ((agenda ""
+                    ((org-agenda-files zp/org-agenda-files-sports))))
+           ((org-agenda-skip-timestamp-if-done nil)))
           ))
 
   ;; Update ‘org-super-agenda-header-map’
