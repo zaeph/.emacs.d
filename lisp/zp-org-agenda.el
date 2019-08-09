@@ -149,6 +149,23 @@ With a prefix argument, do so in all agenda buffers."
     (when string
       (split-string string ", ?"))))
 
+(defun zp/org-agenda-is-group-filter-p (object)
+  "Return t if OBJECT is an org-agenda group-filter."
+  (and (listp object)
+       (cl-every #'listp object)
+       (eq 2 (length object))
+       (cl-every #'stringp (car object))
+       (cl-every #'stringp (cadr object))))
+
+(defun zp/org-agenda-is-compound-group-filter-p (object)
+  "Return t if OBJECT is a compound org-agenda group-filter."
+  (and (listp object)
+       (cl-every #'listp object)
+       (eq 2 (length object))
+       (cl-every #'listp (car object))
+       (cl-every #'stringp (caar object))
+       (cl-every #'stringp (cadr object))))
+
 (defun zp/org-agenda-groups-process-filter (filter)
   "Process FILTER into a filter-list for agenda-groups.
 
@@ -174,23 +191,6 @@ FILTER should be formatted as \"+include-exclude\"."
                 ("-" exclude)))))
     (list include
           exclude)))
-
-(defun zp/org-agenda-is-group-filter-p (object)
-  "Return t if OBJECT is an org-agenda group-filter."
-  (and (listp object)
-       (cl-every #'listp object)
-       (eq 2 (length object))
-       (cl-every #'stringp (car object))
-       (cl-every #'stringp (cadr object))))
-
-(defun zp/org-agenda-is-compound-group-filter-p (object)
-  "Return t if OBJECT is a compound org-agenda group-filter."
-  (and (listp object)
-       (cl-every #'listp object)
-       (eq 2 (length object))
-       (cl-every #'listp (car object))
-       (cl-every #'stringp (caar object))
-       (cl-every #'stringp (cadr object))))
 
 (defun zp/org-agenda-groups-process-filters-maybe (&rest filters)
   "Process FILTERS into a list of filter-lists.
