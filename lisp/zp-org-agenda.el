@@ -329,7 +329,7 @@ For more information on formatting, see
       (save-excursion
         (cond
          ((or (not filters)
-              (apply #'zp/org-task-in-agenda-groups-p filters))
+              (zp/org-task-in-agenda-groups-p filters))
           nil)
          ((catch 'found-next
             (goto-char next-headline)
@@ -339,7 +339,7 @@ For more information on formatting, see
                             groups-regex
                             "\\).*$")
                     nil t)
-              (if (apply #'zp/org-task-in-agenda-groups-p filters)
+              (if (zp/org-task-in-agenda-groups-p filters)
                   (throw 'found-next 't))))
           (outline-previous-heading))
          (t
