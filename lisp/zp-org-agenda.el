@@ -225,6 +225,20 @@ information on list-formatted filters."
       ;; Remove nil filters
       (delete nil))))
 
+(defun zp/org-agenda-groups-create-compound-filter (filters)
+  "Process org-agenda group-FILTERS into a compound filter.
+
+See ‘zp/org-agenda-groups-is-compound-group-filter-p’ for more
+information on compound filters."
+  (let (include
+        exclude)
+    (dolist (filter filters)
+      ;; Only push include-filter if non-nil
+      (when-let ((this (pop filter)))
+        (push this include))
+      (push (car (pop filter)) exclude))
+    (list include exclude)))
+
 ;;----------------------------------------------------------------------------
 ;; Skip functions
 ;;----------------------------------------------------------------------------
