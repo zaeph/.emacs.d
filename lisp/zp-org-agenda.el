@@ -165,8 +165,8 @@ created by the same function.
 If MATCH-GROUPLESS is non-nil, returns -1 when a task doesn’t have
 a group."
   (let* (;; Process filters if some are given as strings
-         (filters (apply #'zp/org-agenda-groups-process-filters-maybe
-                         filters))
+         ;; (filters (apply #'zp/org-agenda-groups-process-filters-maybe
+         ;;                 filters))
          include
          exclude)
     (dolist (filter filters)
@@ -214,8 +214,9 @@ function will not skip groupless trees.
     (message "STNG: %s" (org-entry-get (point) "ITEM")))
   (save-restriction
     (widen)
-    (let* ((include (car filter))
-           (exclude (cadr filter))
+    (let* ((include (mapcan (lambda (filter)
+                              (car filter))
+                            filters))
            (include-groupless-p (member "nil" include))
            (next-headline (save-excursion
                             (or (outline-next-heading)
@@ -225,8 +226,8 @@ function will not skip groupless trees.
            (property-regex (concat "^:" property ":.*")))
       (save-excursion
         (cond
-         ((or (not filter)
-              (zp/org-task-in-agenda-groups-p filter))
+         ((or (not filters)
+              (apply #'zp/org-task-in-agenda-groups-p filters))
           nil)
          ((catch 'found-next
             (goto-char next-headline)
@@ -236,7 +237,7 @@ function will not skip groupless trees.
                             groups-regex
                             "\\).*$")
                     nil t)
-              (if (zp/org-task-in-agenda-groups-p filter)
+              (if (apply #'zp/org-task-in-agenda-groups-p filters)
                   (throw 'found-next 't))))
           (outline-previous-heading))
          (t
@@ -639,7 +640,7 @@ The function will only process the members of FILTERS given as
 string and skip the others.
 
 See ‘zp/org-agenda-groups-process-filter’ for more information."
-  (when filters
+  (when (car filters)
     (mapcar (lambda (filter)
               (if (stringp filter)
                   (zp/org-agenda-groups-process-filter filter)

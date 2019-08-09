@@ -2772,7 +2772,7 @@ indirect-buffers."
     (let ((marker (or (get-text-property 0 'org-marker item)
                       (get-text-property 0 'org-hd-marker item))))
       (org-with-point-at marker
-        (zp/org-task-in-agenda-groups-p groups))))
+        (apply #'zp/org-task-in-agenda-groups-p groups))))
 
   (defun zp/org-super-agenda-groups (header groups)
     "Create org-super-agenda section for GROUPS with HEADER."
@@ -2781,15 +2781,15 @@ indirect-buffers."
                     (zp/org-super-agenda-item-in-agenda-groups-p item ',groups))))
 
   (defun zp/org-super-agenda-groups-all ()
-    `(,(zp/org-super-agenda-groups "Inbox" "inbox")
-      ,(zp/org-super-agenda-groups "Life" "life")
-      ,(zp/org-super-agenda-groups "Maintenance" "mx")
-      ,(zp/org-super-agenda-groups "Professional" "pro")
-      ,(zp/org-super-agenda-groups "Research" "research")
-      ,(zp/org-super-agenda-groups "Activism" "act")
-      ,(zp/org-super-agenda-groups "Hacking" "hack")
-      ,(zp/org-super-agenda-groups "Curiosities" "curios")
-      ,(zp/org-super-agenda-groups "Media" "media")))
+    `(,(zp/org-super-agenda-groups "Inbox" '("inbox"))
+      ,(zp/org-super-agenda-groups "Life" '("life"))
+      ,(zp/org-super-agenda-groups "Maintenance" '("mx"))
+      ,(zp/org-super-agenda-groups "Professional" '("pro"))
+      ,(zp/org-super-agenda-groups "Research" '("research"))
+      ,(zp/org-super-agenda-groups "Activism" '("act"))
+      ,(zp/org-super-agenda-groups "Hacking" '("hack"))
+      ,(zp/org-super-agenda-groups "Curiosities" '("curios"))
+      ,(zp/org-super-agenda-groups "Media" '("media"))))
 
   (defun zp/org-super-agenda-subtask-p (item)
     (let ((marker (or (get-text-property 0 'org-marker item)
@@ -3051,53 +3051,53 @@ indirect-buffers."
           ("N" "Agenda (w/o groups)"
            (,(zp/org-agenda-block-agenda "Agenda (w/o groups)" org-agenda-files)))
 
-          ("k" "Timestamps & Deadlines"
-           (,(zp/org-agenda-block-agenda-timestamps-and-deadlines
-              "Timestamps & Deadlines")))
+          ;; ("k" "Timestamps & Deadlines"
+          ;;  (,(zp/org-agenda-block-agenda-timestamps-and-deadlines
+          ;;     "Timestamps & Deadlines")))
 
-          ("K" "Seeking Agenda"
-           (,(zp/org-agenda-block-agenda-week-with-group-filter
-              "Seeking Agenda" nil)))
+          ;; ("K" "Seeking Agenda"
+          ;;  (,(zp/org-agenda-block-agenda-week-with-group-filter
+          ;;     "Seeking Agenda" nil)))
 
-          ("A" "Active"
-           (,@(zp/org-agenda-blocks-create "Active" nil nil t)))
+          ;; ("A" "Active"
+          ;;  (,@(zp/org-agenda-blocks-create "Active" nil nil t)))
 
-          ("I" "Inactive"
-           (,@(zp/org-agenda-blocks-create "Inactive" nil "/STBY")))
+          ;; ("I" "Inactive"
+          ;;  (,@(zp/org-agenda-blocks-create "Inactive" nil "/STBY")))
 
-          ("ii" "Inactive (+groups)"
-           (,@(zp/org-agenda-blocks-create "Inactive (+groups)" nil "/STBY" t)))
+          ;; ("ii" "Inactive (+groups)"
+          ;;  (,@(zp/org-agenda-blocks-create "Inactive (+groups)" nil "/STBY" t)))
 
-          ("C" "Curiosities"
-           (,@(zp/org-agenda-blocks-create "Curiosities" nil "+curios")))
+          ;; ("C" "Curiosities"
+          ;;  (,@(zp/org-agenda-blocks-create "Curiosities" nil "+curios")))
 
-          ("cc" "Curiosities (+groups)"
-           (,@(zp/org-agenda-blocks-create "Curiosities (+groups)" nil "+curios" t)))
+          ;; ("cc" "Curiosities (+groups)"
+          ;;  (,@(zp/org-agenda-blocks-create "Curiosities (+groups)" nil "+curios" t)))
 
           ,@(zp/org-agenda-create-all
-             '(("l" "Life" "+life+mx+pro+research+act")
-               ("L" "Life (strict)" "+life+mx")
-               ("x" "Maintenance" "mx")
-               ("p" "Professional" "pro")
-               ("r" "Research" "research")
-               ("h" "Hacking" "hack")
-               ("o" "Org" "org")
-               ("e" "Emacs" "emacs")
-               ("O" "OPSEC" "opsec")
-               ("P" "Activism" "act")
-               ("m" "Media" "media")
-               ("f" "Film" "film")
-               ("g" "Groupless" "nil")))
+             '(("l" "Life" ("+life+mx+pro+research+act"))
+               ("L" "Life (strict)" ("+life+mx"))
+               ("x" "Maintenance" ("mx"))
+               ("p" "Professional" ("pro"))
+               ("r" "Research" ("research"))
+               ("h" "Hacking" ("hack"))
+               ("o" "Org" ("org"))
+               ("e" "Emacs" ("emacs"))
+               ("O" "OPSEC" ("opsec"))
+               ("P" "Activism" ("act"))
+               ("m" "Media" ("media"))
+               ("f" "Film" ("film"))
+               ("g" "Groupless" ("nil"))))
 
-          ("j" "Journal entries"
-           (,(zp/org-agenda-block-journal))
-           ((org-agenda-files '("~/org/journal.org"))))
+          ;; ("j" "Journal entries"
+          ;;  (,(zp/org-agenda-block-journal))
+          ;;  ((org-agenda-files '("~/org/journal.org"))))
 
-          ("d" "Deadlines"
-           (,(zp/org-agenda-block-deadlines)))
+          ;; ("d" "Deadlines"
+          ;;  (,(zp/org-agenda-block-deadlines)))
 
-          ("w" "Waiting list"
-           (,(zp/org-agenda-block-tasks-waiting)))
+          ;; ("w" "Waiting list"
+          ;;  (,(zp/org-agenda-block-tasks-waiting)))
 
           ;; ("A" "Meditation records"
           ;;  ((agenda ""
@@ -3105,10 +3105,11 @@ indirect-buffers."
           ;;            (org-agenda-log-mode))))
           ;;  ((org-agenda-skip-timestamp-if-done nil)))
 
-          ("S" "Swimming records"
-           ((agenda ""
-                    ((org-agenda-files zp/org-agenda-files-sports))))
-           ((org-agenda-skip-timestamp-if-done nil)))))
+          ;; ("S" "Swimming records"
+          ;;  ((agenda ""
+          ;;           ((org-agenda-files zp/org-agenda-files-sports))))
+          ;;  ((org-agenda-skip-timestamp-if-done nil)))
+          ))
 
   ;; Update ‘org-super-agenda-header-map’
   (use-package org-super-agenda
