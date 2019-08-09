@@ -139,6 +139,65 @@ With a prefix argument, do so in all agenda buffers."
                  (length org-agenda-bulk-marked-entries))))))
 
 ;;----------------------------------------------------------------------------
+;; Agenda-groups filters
+;;----------------------------------------------------------------------------
+(defun zp/org-get-agenda-groups (&optional pom)
+  "Get agenda-groups from current tree."
+  (let* ((pos (or pom
+                  (point)))
+         (string (org-entry-get pos "AGENDA_GROUP" t)))
+    (when string
+      (split-string string ", ?"))))
+
+(defun zp/org-agenda-groups-process-filter (filter)
+  "Process FILTER into a filter-list for agenda-groups.
+
+Return a list of two lists:
+  (inclusion-list exclusion-list)
+
+FILTER should be formatted as \"+include-exclude\"."
+  (let* ((prefix-re "[\\+-]")
+         ;; Handle special case when 1st group is w/o prefix
+         (filter (when-let ((match (substring filter 0 1)))
+                   (if (string-match prefix-re match)
+                       filter
+                     (concat "+" filter))))
+         (groups (s-slice-at prefix-re filter))
+         include
+         exclude)
+    (dolist (group groups)
+      (let ((type (substring group 0 1))
+            (group (substring group 1)))
+        (push group
+              (pcase type
+                ("+" include)
+                ("-" exclude)))))
+    (list include
+          exclude)))
+
+(defun zp/org-agenda-groups-validate-filter (filter)
+  "Validate org-agenda group FILTER."
+  (unless (and (listp filter)
+               (cl-every #'listp filter)
+               (cl-every #'stringp (car filter))
+               (cl-every #'stringp (cadr filter)))
+    (error "Filter is not valid")))
+
+(defun zp/org-agenda-groups-process-filters-maybe (&rest filters)
+  "Process FILTERS into a list of filter-lists.
+
+The function will only process the members of FILTERS given as
+string and skip the others.
+
+See ‘zp/org-agenda-groups-process-filter’ for more information."
+  (when (car filters)
+    (mapcar (lambda (filter)
+              (if (stringp filter)
+                  (zp/org-agenda-groups-process-filter filter)
+                (zp/org-agenda-groups-validate-filter filter)))
+            filters)))
+
+;;----------------------------------------------------------------------------
 ;; Skip functions
 ;;----------------------------------------------------------------------------
 ;; Inspired by Bernst Hansen’s helper functions.
@@ -587,65 +646,6 @@ afterwards."
           (org-cmp-values a b 'priority))
         (zp/org-cmp-created (if reverse b a)
                             (if reverse a b)))))
-
-;;----------------------------------------------------------------------------
-;; Agenda-groups filters
-;;----------------------------------------------------------------------------
-(defun zp/org-get-agenda-groups (&optional pom)
-  "Get agenda-groups from current tree."
-  (let* ((pos (or pom
-                  (point)))
-         (string (org-entry-get pos "AGENDA_GROUP" t)))
-    (when string
-      (split-string string ", ?"))))
-
-(defun zp/org-agenda-groups-process-filter (filter)
-  "Process FILTER into a filter-list for agenda-groups.
-
-Return a list of two lists:
-  (inclusion-list exclusion-list)
-
-FILTER should be formatted as \"+include-exclude\"."
-  (let* ((prefix-re "[\\+-]")
-         ;; Handle special case when 1st group is w/o prefix
-         (filter (when-let ((match (substring filter 0 1)))
-                   (if (string-match prefix-re match)
-                       filter
-                     (concat "+" filter))))
-         (groups (s-slice-at prefix-re filter))
-         include
-         exclude)
-    (dolist (group groups)
-      (let ((type (substring group 0 1))
-            (group (substring group 1)))
-        (push group
-              (pcase type
-                ("+" include)
-                ("-" exclude)))))
-    (list include
-          exclude)))
-
-(defun zp/org-agenda-groups-validate-filter (filter)
-  "Validate org-agenda group FILTER."
-  (unless (and (listp filter)
-               (cl-every #'listp filter)
-               (cl-every #'stringp (car filter))
-               (cl-every #'stringp (cadr filter)))
-    (error "Filter is not valid")))
-
-(defun zp/org-agenda-groups-process-filters-maybe (&rest filters)
-  "Process FILTERS into a list of filter-lists.
-
-The function will only process the members of FILTERS given as
-string and skip the others.
-
-See ‘zp/org-agenda-groups-process-filter’ for more information."
-  (when (car filters)
-    (mapcar (lambda (filter)
-              (if (stringp filter)
-                  (zp/org-agenda-groups-process-filter filter)
-                (zp/org-agenda-groups-validate-filter filter)))
-            filters)))
 
 ;;----------------------------------------------------------------------------
 ;; Headers
