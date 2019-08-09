@@ -201,12 +201,20 @@ Return a list of list-formatted FILTERS.
 
 Any member of FILTERS given as a string will first be read with
 ‘zp/org-agenda-groups-read-group-filter-string’"
-  (when (car filters)
-    (mapcar (lambda (filter)
-              (if (stringp filter)
-                  (zp/org-agenda-groups-process-filter filter)
-                (zp/org-agenda-groups-validate-filter filter)))
-            filters)))
+  (when filters
+    (thread-last filters
+      ;; Read filters provided as strings
+      (mapcar (lambda (filter)
+                (cond ((not filter)
+                       nil)
+                      ((stringp filter)
+                       (zp/org-agenda-groups-process-filter filter))
+                      ((zp/org-agenda-groups-is-group-filter-p filter)
+                       filter)
+                      (t
+                       (error "Invalid filter format")))))
+      ;; Remove nil filters
+      (delete nil))))
 
 ;;----------------------------------------------------------------------------
 ;; Skip functions
