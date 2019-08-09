@@ -36,6 +36,7 @@
   (set-face-attribute 'default nil :foreground "#BCAF8E" :background "#141414")
   (set-face-attribute 'org-todo nil :foreground "darkred")
   (set-face-attribute 'org-done nil :foreground "spring green")
+  (set-face-attribute 'org-scheduled nil :foreground "#198844")
   (set-face-attribute 'org-scheduled-today nil :foreground "CadetBlue")
   (set-face-attribute 'org-link nil :underline t)
   (set-face-attribute 'org-hide nil :foreground "#141414")
