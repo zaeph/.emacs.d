@@ -341,11 +341,6 @@ agenda-group."
                ("" "Filter has been reset.")
                (_ (concat "New filter has been set: " arg))))))
 
-;;----------------------------------------------------------------------------
-;; Skip functions
-;;----------------------------------------------------------------------------
-;; Inspired by Bernst Hansen’s helper functions.
-;; Source: http://doc.norang.ca/org-mode.html
 (defun zp/org-agenda-groups-format-re-matcher (list)
   "Format a regexp to match agenda-groups in LIST."
   (let* ((property-groups zp/org-agenda-groups-property)
@@ -368,6 +363,11 @@ agenda-group."
                       ".*"))
             "$")))
 
+;;----------------------------------------------------------------------------
+;; Skip functions
+;;----------------------------------------------------------------------------
+;; Inspired by Bernst Hansen’s helper functions.
+;; Source: http://doc.norang.ca/org-mode.html
 (defun zp/skip-tasks-not-in-agenda-groups (filters)
   "Skip tasks which aren’t in an org-agenda group matched by FILTERS.
 
