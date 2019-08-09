@@ -346,8 +346,8 @@ agenda-group."
 ;;----------------------------------------------------------------------------
 ;; Inspired by Bernst Hansen’s helper functions.
 ;; Source: http://doc.norang.ca/org-mode.html
-(defun zp/org-agenda-groups-format-regex (list)
-  "Format LIST of agenda groups as a regex."
+(defun zp/org-agenda-groups-format-re-matcher (list)
+  "Format a regexp to match agenda-groups in LIST."
   (let* ((property-groups zp/org-agenda-groups-property)
          (property-category "CATEGORY")
          (groups (mapconcat #'identity
@@ -390,7 +390,7 @@ For more information on formatting, see
              (next-headline (save-excursion
                               (or (outline-next-heading)
                                   (point-max))))
-             (groups-re (zp/org-agenda-groups-format-regex include)))
+             (groups-re (zp/org-agenda-groups-format-re-matcher include)))
         (save-excursion
           (cond
            ((or (not compound-filter)
