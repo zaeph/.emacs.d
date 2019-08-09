@@ -239,23 +239,6 @@ For more information on compound filters, see
       (push (car (pop filter)) exclude))
     (list include exclude)))
 
-;;----------------------------------------------------------------------------
-;; Skip functions
-;;----------------------------------------------------------------------------
-;; Inspired by Bernst Hansen’s helper functions.
-;; Source: http://doc.norang.ca/org-mode.html
-(defun zp/org-agenda-groups-format-regex (list)
-  "Format LIST of agenda groups as a regex"
-  (string-join
-   (mapcar (lambda (arg)
-             (if (not arg)
-                 "^$"
-               (concat "\\b"
-                       arg
-                       "\\b")))
-           list)
-   "\\|"))
-
 (defun zp/org-task-in-agenda-groups-p (&rest filters)
   "Test whether a task is in agenda-group matched by FILTER.
 
@@ -301,6 +284,23 @@ a group."
                         (member "nil" filter))
                       include)
              -1)))))
+
+;;----------------------------------------------------------------------------
+;; Skip functions
+;;----------------------------------------------------------------------------
+;; Inspired by Bernst Hansen’s helper functions.
+;; Source: http://doc.norang.ca/org-mode.html
+(defun zp/org-agenda-groups-format-regex (list)
+  "Format LIST of agenda groups as a regex"
+  (string-join
+   (mapcar (lambda (arg)
+             (if (not arg)
+                 "^$"
+               (concat "\\b"
+                       arg
+                       "\\b")))
+           list)
+   "\\|"))
 
 (defun zp/skip-tasks-not-belonging-to-agenda-groups (filters)
   "Skip tasks if they aren’t part of GROUPS.
