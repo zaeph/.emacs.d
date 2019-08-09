@@ -300,7 +300,7 @@ agenda-group."
            list)
    "\\|"))
 
-(defun zp/skip-tasks-not-belonging-to-agenda-groups (filters)
+(defun zp/skip-tasks-not-in-agenda-groups (filters)
   "Skip tasks which aren’t in an org-agenda group matched by FILTERS.
 
 FILTERS must be a list of either list-formatted or
@@ -846,7 +846,7 @@ agenda settings after them."
             (org-agenda-span 'day))))
 
 (defun zp/org-agenda-block-header-with-deadlines (header groups &optional file)
-  (let ((filter (zp/org-agenda-groups-process-filters groups)))
+  (let ((filters (zp/org-agenda-groups-process-filters groups)))
        `(agenda ""
             ((org-agenda-overriding-header
               (zp/org-agenda-format-header-main ,header))
@@ -858,8 +858,8 @@ agenda settings after them."
                             'zp/testing
                             ',filter))
              (org-agenda-skip-function
-              '(zp/skip-tasks-not-belonging-to-agenda-groups
-                ',filter))
+              '(zp/skip-tasks-not-in-agenda-groups-with-extra-filters
+                ',filters))
              (org-agenda-span 'day)))))
 
 (defun zp/org-agenda-block-agenda-with-group-filter (header groups &optional file)
@@ -869,7 +869,7 @@ agenda settings after them."
             ,@(if (bound-and-true-p file)
                   `((org-agenda-files ',file)))
             (org-agenda-skip-function
-             '(or (zp/skip-tasks-not-belonging-to-agenda-groups
+             '(or (zp/skip-tasks-not-in-agenda-groups
                    (zp/set-agenda-local
                     'zp/testing
                     ',(zp/org-agenda-groups-process-filter groups)))
@@ -877,7 +877,7 @@ agenda settings after them."
             (org-agenda-span 'day))))
 
 (defun zp/org-agenda-block-agenda-week-with-group-filter (header groups &optional file)
-  (let ((filter (zp/org-agenda-groups-process-filters groups)))
+  (let ((filters (zp/org-agenda-groups-process-filters groups)))
     `(agenda ""
              ((org-agenda-overriding-header
                (zp/org-agenda-format-header-main ,header))
@@ -886,7 +886,8 @@ agenda settings after them."
               (org-agenda-span 'week)
               (org-habit-show-habits nil)
               (org-agenda-skip-function
-               '(or (zp/skip-tasks-not-belonging-to-agenda-groups ',filter)
+               '(or (zp/skip-tasks-not-in-agenda-groups-with-extra-filters
+                     ',filters)
                     (zp/skip-routine-cond)))
               (org-agenda-dim-blocked-tasks 'dimmed)
               (org-deadline-warning-days 0)))))
@@ -906,7 +907,7 @@ agenda settings after them."
             (org-agenda-dim-blocked-tasks 'dimmed))))
 
 (defun zp/org-agenda-block-tasks-with-group-filter (&optional groups tags by-groups file)
-  (let ((filter (zp/org-agenda-groups-process-filters groups)))
+  (let ((filters (zp/org-agenda-groups-process-filters groups)))
     `(tags-todo ,(or tags
                      "-standby-cancelled-recurring-curios")
                 ((org-agenda-overriding-header
@@ -919,8 +920,8 @@ agenda settings after them."
                   '(user-defined-down
                     category-keep))
                  (org-agenda-skip-function
-                  '(or (zp/skip-tasks-not-belonging-to-agenda-groups
-                        ',filter)
+                  '(or (zp/skip-tasks-not-in-agenda-groups-with-extra-filters
+                        ',filters)
                        (zp/skip-routine-cond)
                        (zp/skip-non-tasks)
                        (zp/skip-waiting)
@@ -932,7 +933,7 @@ agenda settings after them."
                            (zp/org-super-agenda-scheduled))))))))
 
 (defun zp/org-agenda-block-projects-with-group-filter (&optional groups tags file)
-  (let ((filter (zp/org-agenda-groups-process-filters groups)))
+  (let ((filters (zp/org-agenda-groups-process-filters groups)))
     `(tags-todo ,(or tags
                      "-standby-cancelled-curios")
                 ((org-agenda-overriding-header
@@ -940,8 +941,8 @@ agenda settings after them."
                  ,@(if (bound-and-true-p file)
                        `((org-agenda-files ',file)))
                  (org-agenda-skip-function
-                  '(or (zp/skip-tasks-not-belonging-to-agenda-groups
-                        ',filter)
+                  '(or (zp/skip-tasks-not-in-agenda-groups-with-extra-filters
+                        ',filters)
                        (zp/skip-non-projects-cond)
                        (zp/skip-waiting)
                        (zp/skip-future-non-waiting-timestamped-tasks-cond)))
