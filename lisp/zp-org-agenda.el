@@ -150,7 +150,10 @@ With a prefix argument, do so in all agenda buffers."
       (split-string string ", ?"))))
 
 (defun zp/org-agenda-groups-is-group-filter-p (object)
-  "Return t if OBJECT is an org-agenda group-filter."
+  "Return t if OBJECT is a list-formatted org-agenda group-filter.
+
+A list-formatted group-filter should have the following form:
+  (inclusion-list exclusion-list)"
   (and (listp object)
        (cl-every #'listp object)
        (eq 2 (length object))
@@ -158,7 +161,10 @@ With a prefix argument, do so in all agenda buffers."
        (cl-every #'stringp (cadr object))))
 
 (defun zp/org-agenda-groups-is-compound-group-filter-p (object)
-  "Return t if OBJECT is a compound org-agenda group-filter."
+  "Return t if OBJECT is a compound org-agenda group-filter.
+
+A compound group-filter should have the following form:
+  ((inclusion-list-1 inclusion-list-2 ...) exclusion-list)"
   (and (listp object)
        (cl-every #'listp object)
        (eq 2 (length object))
