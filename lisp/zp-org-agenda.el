@@ -345,6 +345,23 @@ For more information on formatting, see
          (t
           (goto-char (point-max))))))))
 
+(defvar zp/org-agenda-groups-extra-filters nil
+  "Extra filters to use for filtering org-agenda groups.
+
+This is to allow interactive group-filtering in custom views.")
+
+(defun zp/skip-tasks-not-in-agenda-groups-with-extra-filters (filters)
+  "Skip tasks which aren’t in an org-agenda group matched by FILTERS.
+
+This function combines FILTERS with
+‘zp/org-agenda-groups-extra-filters’ to allow for interactive
+filtering in custom views.
+
+For more information, see ‘zp/skip-tasks-not-in-agenda-groups’."
+  (let ((filters (nconc filters
+                        zp/org-agenda-groups-extra-filters)))
+    (zp/skip-tasks-not-in-agenda-groups filters)))
+
 (defvar zp/fluid-project-definition t
   "When t, a project with no remaining subtasks become a task.
 
