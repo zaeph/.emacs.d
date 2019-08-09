@@ -240,7 +240,7 @@ For more information on compound filters, see
     (list include exclude)))
 
 (defun zp/org-task-in-agenda-groups-p (&rest filters)
-  "Test whether a task is in agenda-group matched by FILTER.
+  "Test whether a task is in agenda-group matched by FILTERS.
 
 FILTERS must be a list of either strings to be processed by
 ‘zp/org-agenda-groups-process-filter’, or of filter-lists as
@@ -248,15 +248,13 @@ created by the same function.
 
 If MATCH-GROUPLESS is non-nil, returns -1 when a task doesn’t have
 a group."
-  (let* (;; Process filters if some are given as strings
-         ;; (filters (apply #'zp/org-agenda-groups-process-filters-maybe
-         ;;                 filters))
-         include
-         exclude)
-    (dolist (filter filters)
-      ;; Sort filters by include/exclude
-      (push (pop filter) include)
-      (push (car (pop filter)) exclude))
+  (let* ((filters
+          (if (zp/org-agenda-groups-is-compound-group-filter-p (car filters))
+              (car filters)
+            (zp/org-agenda-groups-create-compound-filter
+             (zp/org-agenda-groups-process-filters filters))))
+         (include (pop filters))
+         (exclude (pop filters)))
     (let* ((task-groups (zp/org-get-agenda-groups))
            (test (lambda (list)
                    (if list
