@@ -243,12 +243,11 @@ For more information on compound filters, see
 (defun zp/org-task-in-agenda-groups-p (&rest filters)
   "Test whether a task is in agenda-group matched by FILTERS.
 
-FILTERS must be a list of either strings to be processed by
-‘zp/org-agenda-groups-process-filter’, or of filter-lists as
-created by the same function.
+FILTERS can either be provided as string-formatted or
+list-formatted filters.
 
-If MATCH-GROUPLESS is non-nil, returns -1 when a task doesn’t have
-a group."
+As a special case, return -1 if the task is not part of any
+agenda-group."
   (let* ((filters
           (if (zp/org-agenda-groups-is-compound-group-filter-p (car filters))
               (car filters)
