@@ -149,9 +149,15 @@ With a prefix argument, do so in all agenda buffers."
   (let* ((pos (or pom
                   (point)))
          (property zp/org-agenda-groups-property)
-         (string (org-entry-get pos property t)))
+         (groups (org-entry-get pos property t))
+         (category (org-entry-get pos "CATEGORY" t))
+         ;; Combine groups and category
+         (string (mapconcat #'identity
+                            (list groups
+                                  category)
+                            ", ")))
     (when string
-      (split-string string ", ?"))))
+      (delete-dups (split-string string ", ?")))))
 
 (defun zp/org-agenda-groups-is-group-filter-p (object)
   "Return t if OBJECT is a list-formatted org-agenda group-filter.
@@ -376,7 +382,10 @@ For more information on formatting, see
                                   (point-max))))
              (groups-regex (zp/org-agenda-groups-format-regex include))
              (property zp/org-agenda-groups-property)
-             (property-regex (concat "^:" property ":.*")))
+             (properties-regex (concat "^:\\("
+                                     property
+                                     "\\|CATEGORY\\)"
+                                     ":.*")))
         (save-excursion
           (cond
            ((or (not compound-filter)
@@ -385,7 +394,7 @@ For more information on formatting, see
            ((catch 'found-next
               (goto-char next-headline)
               (while (re-search-forward
-                      (concat property-regex
+                      (concat properties-regex
                               "\\("
                               groups-regex
                               "\\).*$")
