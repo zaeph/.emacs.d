@@ -208,8 +208,8 @@ Any member of FILTERS given as a string will first be read with
 
 Return a list of list-formatted filters.
 
-See ‘zp/org-agenda-groups-is-group-filter-p’ for more
-information on list-formatted filters."
+For more information on list-formatted filters, see
+‘zp/org-agenda-groups-is-group-filter-p’."
   (when filters
     (thread-last filters
       ;; Read filters provided as strings
@@ -228,8 +228,8 @@ information on list-formatted filters."
 (defun zp/org-agenda-groups-create-compound-filter (filters)
   "Process org-agenda group-FILTERS into a compound filter.
 
-See ‘zp/org-agenda-groups-is-compound-group-filter-p’ for more
-information on compound filters."
+For more information on compound filters, see
+‘zp/org-agenda-groups-is-compound-group-filter-p’."
   (let (include
         exclude)
     (dolist (filter filters)
