@@ -357,7 +357,8 @@ This function combines FILTERS with
 filtering in custom views.
 
 For more information, see ‘zp/skip-tasks-not-in-agenda-groups’."
-  (let ((filters zp/org-agenda-groups-extra-filters))
+  (let ((filters (append filters
+                         zp/org-agenda-groups-extra-filters)))
     (zp/skip-tasks-not-in-agenda-groups filters)))
 
 (defvar zp/fluid-project-definition t
