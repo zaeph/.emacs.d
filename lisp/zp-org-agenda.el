@@ -856,7 +856,7 @@ agenda settings after them."
               '(:deadline))
              (zp/my-groups (zp/set-agenda-local
                             'zp/testing
-                            ',filter))
+                            ',filters))
              (org-agenda-skip-function
               '(zp/skip-tasks-not-in-agenda-groups-with-extra-filters
                 ',filters))
