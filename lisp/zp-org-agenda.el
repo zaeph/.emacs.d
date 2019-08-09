@@ -289,6 +289,18 @@ agenda-group."
                       include)
              -1)))))
 
+(defun zp/org-agenda-groups-set-extra-filter (arg)
+  (interactive "sFilter: ")
+  (let* ((filters (if (string= "" arg)
+                      nil
+                    (split-string arg " ")))
+         (processed (zp/org-agenda-groups-process-filters filters)))
+    (zp/set-agenda-local 'zp/org-agenda-groups-extra-filters processed)
+    (org-agenda-redo-all)
+    (message (pcase arg
+               ("" "Filter has been reset.")
+               (_ (concat "New filter has been set: " arg))))))
+
 ;;----------------------------------------------------------------------------
 ;; Skip functions
 ;;----------------------------------------------------------------------------
