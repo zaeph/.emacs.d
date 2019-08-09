@@ -863,18 +863,17 @@ agenda settings after them."
              (org-agenda-span 'day)))))
 
 (defun zp/org-agenda-block-agenda-with-group-filter (header groups &optional file)
-  `(agenda ""
-           ((org-agenda-overriding-header
-             (zp/org-agenda-format-header-main ,header))
-            ,@(if (bound-and-true-p file)
-                  `((org-agenda-files ',file)))
-            (org-agenda-skip-function
-             '(or (zp/skip-tasks-not-in-agenda-groups
-                   (zp/set-agenda-local
-                    'zp/testing
-                    ',(zp/org-agenda-groups-process-filter groups)))
-                  (zp/skip-routine-cond)))
-            (org-agenda-span 'day))))
+  (let ((filters (zp/org-agenda-groups-process-filters groups)))
+    `(agenda ""
+             ((org-agenda-overriding-header
+               (zp/org-agenda-format-header-main ,header))
+              ,@(if (bound-and-true-p file)
+                    `((org-agenda-files ',file)))
+              (org-agenda-skip-function
+               '(or (zp/skip-tasks-not-in-agenda-groups
+                     ',filters)
+                    (zp/skip-routine-cond)))
+              (org-agenda-span 'day)))))
 
 (defun zp/org-agenda-block-agenda-week-with-group-filter (header groups &optional file)
   (let ((filters (zp/org-agenda-groups-process-filters groups)))
