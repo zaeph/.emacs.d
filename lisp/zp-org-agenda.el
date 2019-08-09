@@ -347,16 +347,26 @@ agenda-group."
 ;; Inspired by Bernst Hansen’s helper functions.
 ;; Source: http://doc.norang.ca/org-mode.html
 (defun zp/org-agenda-groups-format-regex (list)
-  "Format LIST of agenda groups as a regex"
-  (string-join
-   (mapcar (lambda (arg)
-             (if (not arg)
-                 "^$"
-               (concat "\\b"
-                       arg
-                       "\\b")))
-           list)
-   "\\|"))
+  "Format LIST of agenda groups as a regex."
+  (let* ((property-groups zp/org-agenda-groups-property)
+         (property-category "CATEGORY")
+         (groups (mapconcat #'identity
+                            list
+                            "\\|")))
+    (concat "^:\\("
+            property-groups
+            "\\|"
+            property-category
+            "\\)"
+            ":.*"
+            (when list
+              (concat "\\b"
+                      "\\("
+                      groups
+                      "\\)"
+                      "\\b"
+                      ".*"))
+            "$")))
 
 (defun zp/skip-tasks-not-in-agenda-groups (filters)
   "Skip tasks which aren’t in an org-agenda group matched by FILTERS.
@@ -380,12 +390,7 @@ For more information on formatting, see
              (next-headline (save-excursion
                               (or (outline-next-heading)
                                   (point-max))))
-             (groups-regex (zp/org-agenda-groups-format-regex include))
-             (property zp/org-agenda-groups-property)
-             (properties-regex (concat "^:\\("
-                                     property
-                                     "\\|CATEGORY\\)"
-                                     ":.*")))
+             (groups-re (zp/org-agenda-groups-format-regex include)))
         (save-excursion
           (cond
            ((or (not compound-filter)
@@ -394,10 +399,7 @@ For more information on formatting, see
            ((catch 'found-next
               (goto-char next-headline)
               (while (re-search-forward
-                      (concat properties-regex
-                              "\\("
-                              groups-regex
-                              "\\).*$")
+                      groups-re
                       nil t)
                 (if (zp/org-task-in-agenda-groups-p compound-filter)
                     (throw 'found-next 't))))
