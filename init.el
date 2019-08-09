@@ -2927,6 +2927,7 @@ indirect-buffers."
            zp/org-agenda-split-subtasks nil
            zp/org-agenda-include-waiting t
            zp/org-agenda-include-projects t
+           zp/org-agenda-groups-extra-filters nil
 
            org-habit-show-habits t
            zp/org-agenda-include-routine t
