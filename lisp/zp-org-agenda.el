@@ -167,9 +167,9 @@ With a prefix argument, do so in all agenda buffers."
        (cl-every #'stringp (cadr object))))
 
 (defun zp/org-agenda-groups-read-group-filter-string (filter)
-  "Convert an org-agenda group-FILTER from string to list.
+  "Read an org-agenda group-FILTER given as a string.
 
-Return an org-agenda group-filter, i.e. a list of two lists:
+Return a list-formatted FILTER:
   (inclusion-list exclusion-list)
 
 FILTER should be formatted as \"+group1-group2\" where:
