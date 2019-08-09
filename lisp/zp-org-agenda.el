@@ -821,7 +821,8 @@ agenda settings after them."
                   `((org-agenda-files ',file)))
             (org-agenda-span 'day)
             (org-agenda-skip-function
-             '(zp/skip-routine-cond))
+             '(or (zp/skip-tasks-not-in-agenda-groups-with-extra-filters nil)
+                  (zp/skip-routine-cond)))
             (org-super-agenda-groups
              '((:name "Grid"
                       :time-grid t)
