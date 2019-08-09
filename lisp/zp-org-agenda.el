@@ -203,10 +203,13 @@ FILTER should be formatted as \"+group1-group2\" where:
 (defun zp/org-agenda-groups-process-filters (filters)
   "Process org-agenda group-FILTERS into a list.
 
-Return a list of list-formatted FILTERS.
-
 Any member of FILTERS given as a string will first be read with
-‘zp/org-agenda-groups-read-group-filter-string’"
+‘zp/org-agenda-groups-read-group-filter-string’.
+
+Return a list of list-formatted filters.
+
+See ‘zp/org-agenda-groups-is-group-filter-p’ for more
+information on list-formatted filters."
   (when filters
     (thread-last filters
       ;; Read filters provided as strings
