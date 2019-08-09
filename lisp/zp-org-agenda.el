@@ -141,11 +141,15 @@ With a prefix argument, do so in all agenda buffers."
 ;;----------------------------------------------------------------------------
 ;; Group filters
 ;;----------------------------------------------------------------------------
+(defvar zp/org-agenda-groups-property "AGENDA_GROUP"
+  "Name of the property used for agenda-groups.")
+
 (defun zp/org-get-agenda-groups (&optional pom)
   "Get agenda-groups from current tree."
   (let* ((pos (or pom
                   (point)))
-         (string (org-entry-get pos "AGENDA_GROUP" t)))
+         (property zp/org-agenda-groups-property)
+         (string (org-entry-get pos property t)))
     (when string
       (split-string string ", ?"))))
 
@@ -323,7 +327,7 @@ For more information on formatting, see
                               (or (outline-next-heading)
                                   (point-max))))
              (groups-regex (zp/org-agenda-groups-format-regex include))
-             (property "AGENDA_GROUP")
+             (property zp/org-agenda-groups-property)
              (property-regex (concat "^:" property ":.*")))
         (save-excursion
           (cond
