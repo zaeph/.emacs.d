@@ -301,14 +301,15 @@ a group."
    "\\|"))
 
 (defun zp/skip-tasks-not-belonging-to-agenda-groups (filters)
-  "Skip tasks if they aren’t part of GROUPS.
+  "Skip tasks which aren’t in an org-agenda group matched by FILTERS.
 
-GROUPS is a list of AGENDA_GROUPS values to match.
+FILTERS must be a list of either list-formatted or
+string-formatted filters.  However, for the sake of efficiency,
+the former should be preferred.
 
-If EXHAUSTIVE is non-nil or if nil is a member of GROUPS, the
-function will not skip groupless trees.
-
-\(fn (INCLUDE EXCLUDE) &optional EXHAUSTIVE)"
+For more information on formatting, see
+‘zp/org-agenda-groups-is-group-filter-p’ and
+‘zp/org-agenda-groups-read-group-filter-string’."
   (when zp/org-agenda-skip-functions-debug
     (message "STNG: %s" (org-entry-get (point) "ITEM")))
   (save-restriction
