@@ -166,13 +166,15 @@ With a prefix argument, do so in all agenda buffers."
        (cl-every #'stringp (caar object))
        (cl-every #'stringp (cadr object))))
 
-(defun zp/org-agenda-groups-process-filter (filter)
-  "Process FILTER into a filter-list for agenda-groups.
+(defun zp/org-agenda-read-group-filter-string (filter)
+  "Convert an org-agenda group-FILTER from string to list.
 
-Return a list of two lists:
+Return an org-agenda group-filter, i.e. a list of two lists:
   (inclusion-list exclusion-list)
 
-FILTER should be formatted as \"+include-exclude\"."
+FILTER should be formatted as \"+group1-group2\" where:
+- \"group1\" is an org-agenda group to be included.
+- \"group2\" is an org-agenda group to be excluded."
   (let* ((prefix-re "[\\+-]")
          ;; Handle special case when 1st group is w/o prefix
          (filter (when-let ((match (substring filter 0 1)))
