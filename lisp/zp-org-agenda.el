@@ -319,7 +319,6 @@ For more information on formatting, see
              (compound-filter (zp/org-agenda-groups-create-compound-filter
                                (zp/org-agenda-groups-process-filters filters)))
              (include (apply #'append (car compound-filter)))
-             (include-groupless-p (member "nil" include))
              (next-headline (save-excursion
                               (or (outline-next-heading)
                                   (point-max))))
