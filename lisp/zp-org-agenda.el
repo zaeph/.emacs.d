@@ -139,7 +139,7 @@ With a prefix argument, do so in all agenda buffers."
                  (length org-agenda-bulk-marked-entries))))))
 
 ;;----------------------------------------------------------------------------
-;; Agenda-groups filters
+;; Group filters
 ;;----------------------------------------------------------------------------
 (defun zp/org-get-agenda-groups (&optional pom)
   "Get agenda-groups from current tree."
