@@ -236,7 +236,8 @@ For more information on compound filters, see
       ;; Only push include-filter if non-nil
       (when-let ((this (pop filter)))
         (push this include))
-      (push (car (pop filter)) exclude))
+      (when-let ((this (pop filter)))
+        (push (car this) exclude)))
     (list include exclude)))
 
 (defun zp/org-task-in-agenda-groups-p (&rest filters)
