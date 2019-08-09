@@ -312,37 +312,38 @@ For more information on formatting, see
 ‘zp/org-agenda-groups-read-group-filter-string’."
   (when zp/org-agenda-skip-functions-debug
     (message "STNG: %s" (org-entry-get (point) "ITEM")))
-  (save-restriction
-    (widen)
-    (let* (;; Create compound filter
-           (compound-filter (zp/org-agenda-groups-create-compound-filter
-                     (zp/org-agenda-groups-process-filters filters)))
-           (include (apply #'append (car compound-filter)))
-           (include-groupless-p (member "nil" include))
-           (next-headline (save-excursion
-                            (or (outline-next-heading)
-                                (point-max))))
-           (groups-regex (zp/org-agenda-groups-format-regex include))
-           (property "AGENDA_GROUP")
-           (property-regex (concat "^:" property ":.*")))
-      (save-excursion
-        (cond
-         ((or (not compound-filter)
-              (zp/org-task-in-agenda-groups-p compound-filter))
-          nil)
-         ((catch 'found-next
-            (goto-char next-headline)
-            (while (re-search-forward
-                    (concat property-regex
-                            "\\("
-                            groups-regex
-                            "\\).*$")
-                    nil t)
-              (if (zp/org-task-in-agenda-groups-p compound-filter)
-                  (throw 'found-next 't))))
-          (outline-previous-heading))
-         (t
-          (goto-char (point-max))))))))
+  (when filters
+    (save-restriction
+      (widen)
+      (let* (;; Create compound filter
+             (compound-filter (zp/org-agenda-groups-create-compound-filter
+                               (zp/org-agenda-groups-process-filters filters)))
+             (include (apply #'append (car compound-filter)))
+             (include-groupless-p (member "nil" include))
+             (next-headline (save-excursion
+                              (or (outline-next-heading)
+                                  (point-max))))
+             (groups-regex (zp/org-agenda-groups-format-regex include))
+             (property "AGENDA_GROUP")
+             (property-regex (concat "^:" property ":.*")))
+        (save-excursion
+          (cond
+           ((or (not compound-filter)
+                (zp/org-task-in-agenda-groups-p compound-filter))
+            nil)
+           ((catch 'found-next
+              (goto-char next-headline)
+              (while (re-search-forward
+                      (concat property-regex
+                              "\\("
+                              groups-regex
+                              "\\).*$")
+                      nil t)
+                (if (zp/org-task-in-agenda-groups-p compound-filter)
+                    (throw 'found-next 't))))
+            (outline-previous-heading))
+           (t
+            (goto-char (point-max)))))))))
 
 (defvar zp/org-agenda-groups-extra-filters nil
   "Extra filters to use for filtering org-agenda groups.
