@@ -806,7 +806,8 @@ afterwards."
        header-formatted word-list-formatted "\n"
        (when extra-filters
          (concat "Extra filters: "
-                 (zp/org-agenda-groups-format-filters extra-filters)))))))
+                 (zp/org-agenda-groups-format-filters extra-filters)
+                 "\n"))))))
 
 (defun zp/org-agenda-format-header-block (header)
   "Format header blocks in org-agenda."
