@@ -176,7 +176,7 @@ FILTER should be formatted as \"+include-exclude\"."
           exclude)))
 
 (defun zp/org-agenda-is-group-filter-p (object)
-  "Return t if OBJECT is an agenda-group-filter."
+  "Return t if OBJECT is an org-agenda group-filter."
   (and (listp object)
        (cl-every #'listp object)
        (eq 2 (length object))
@@ -184,7 +184,7 @@ FILTER should be formatted as \"+include-exclude\"."
        (cl-every #'stringp (cadr object))))
 
 (defun zp/org-agenda-is-compound-group-filter-p (object)
-  "Return t if OBJECT is a compound agenda-group-filter."
+  "Return t if OBJECT is a compound org-agenda group-filter."
   (and (listp object)
        (cl-every #'listp object)
        (eq 2 (length object))
