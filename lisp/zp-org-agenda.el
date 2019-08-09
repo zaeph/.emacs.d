@@ -204,6 +204,40 @@ FILTER should be formatted as \"+group1-group2\" where:
     (list include
           exclude)))
 
+(defun zp/org-agenda-groups-format-filter (filter)
+  "Format a list-formatted FILTER into a string.
+
+This function creates human-readable filters to be used in UI
+elements."
+  (let* ((include (car filter))
+         (exclude (cadr filter))
+         (format (lambda (symbol list)
+                   (mapconcat (lambda (elem)
+                                (concat symbol elem))
+                              list " ")))
+         (include-fmt (when (car include)
+                        (funcall format "+" include)))
+         (exclude-fmt (when (car exclude)
+                        (funcall format "-" exclude)))
+         (list (delete nil
+                       (list include-fmt
+                             exclude-fmt))))
+    (concat "{" (mapconcat #'identity
+                           list
+                           " ")
+            "}")))
+
+(defun zp/org-agenda-groups-format-filters (filters)
+  "Format a list of list-formatted FILTERS into a string.
+
+For more information, see ‘zp/org-agenda-groups-format-filter’."
+  (let ((i 1))
+    (mapconcat (lambda (filter)
+                 (prog1 (concat "F" (number-to-string i)
+                                ":" (zp/org-agenda-groups-format-filter filter))
+                   (setq i (1+ i))))
+               filters ", ")))
+
 (defun zp/org-agenda-groups-process-filters (filters)
   "Process org-agenda group-FILTERS into a list.
 
@@ -749,6 +783,7 @@ afterwards."
          (header-formatted
           (zp/org-agenda-format-header-align
            (concat flanking-symbol " " header " " flanking-symbol)))
+         (extra-filters zp/org-agenda-groups-extra-filters)
          word-list)
     (unless org-agenda-include-deadlines
       (add-to-list 'word-list "-deadlines" t))
@@ -768,7 +803,10 @@ afterwards."
       (if (not (eq word-list nil))
           (setq word-list-formatted (concat " " "(" word-list-formatted ")")))
       (concat
-       header-formatted word-list-formatted "\n"))))
+       header-formatted word-list-formatted "\n"
+       (when extra-filters
+         (concat "Extra filters: "
+                 (zp/org-agenda-groups-format-filters extra-filters)))))))
 
 (defun zp/org-agenda-format-header-block (header)
   "Format header blocks in org-agenda."
