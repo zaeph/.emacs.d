@@ -336,7 +336,7 @@ agenda-group."
                     (split-string arg " ")))
          (processed (zp/org-agenda-groups-process-filters filters)))
     (zp/set-agenda-local 'zp/org-agenda-groups-extra-filters processed)
-    (org-agenda-redo-all)
+    (org-agenda-redo)
     (message (pcase arg
                ("" "Filter has been reset.")
                (_ (concat "New filter has been set: " arg))))))
