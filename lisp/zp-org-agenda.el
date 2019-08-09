@@ -176,7 +176,7 @@ FILTER should be formatted as \"+include-exclude\"."
           exclude)))
 
 (defun zp/org-agenda-is-group-filter-p (object)
-  "Validate org-agenda group FILTER."
+  "Return t if OBJECT is an agenda-group-filter."
   (and (listp object)
        (cl-every #'listp object)
        (eq 2 (length object))
