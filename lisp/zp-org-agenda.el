@@ -242,6 +242,8 @@ For more information on compound filters, see
         (push this include))
       (when-let ((this (pop filter)))
         (push (car this) exclude)))
+    (delete-dups include)
+    (delete-dups exclude)
     (list include exclude)))
 
 (defun zp/org-task-in-agenda-groups-p (&rest filters)
