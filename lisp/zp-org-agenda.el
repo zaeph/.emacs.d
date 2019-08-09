@@ -194,13 +194,13 @@ FILTER should be formatted as \"+group1-group2\" where:
     (list include
           exclude)))
 
-(defun zp/org-agenda-groups-process-filters-maybe (&rest filters)
-  "Process FILTERS into a list of filter-lists.
+(defun zp/org-agenda-groups-process-filters (filters)
+  "Process org-agenda group-FILTERS into a list.
 
-The function will only process the members of FILTERS given as
-string and skip the others.
+Return a list of list-formatted FILTERS.
 
-See ‘zp/org-agenda-groups-process-filter’ for more information."
+Any member of FILTERS given as a string will first be read with
+‘zp/org-agenda-groups-read-group-filter-string’"
   (when (car filters)
     (mapcar (lambda (filter)
               (if (stringp filter)
