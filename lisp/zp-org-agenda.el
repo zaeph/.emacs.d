@@ -315,9 +315,10 @@ For more information on formatting, see
     (message "STNG: %s" (org-entry-get (point) "ITEM")))
   (save-restriction
     (widen)
-    (let* ((include (mapcan (lambda (filter)
-                              (car filter))
-                            filters))
+    (let* ((filters (zp/org-agenda-groups-create-compound-filter
+                     (zp/org-agenda-groups-process-filters filters)))
+           (include (mapcan #'identity
+                            (car filters)))
            (include-groupless-p (member "nil" include))
            (next-headline (save-excursion
                             (or (outline-next-heading)
