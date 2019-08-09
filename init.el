@@ -1024,6 +1024,8 @@ With numeric prefix arg DEC, decrement the integer by DEC amount."
 (defun zp/set-shortcuts-all ()
   (zp/set-shortcuts zp/shortcuts-alist))
 
+(zp/set-shortcuts-all)
+
 ;;----------------------------------------------------------------------------
 ;; ispell
 ;;----------------------------------------------------------------------------
