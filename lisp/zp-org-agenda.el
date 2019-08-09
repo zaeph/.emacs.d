@@ -1,4 +1,4 @@
-;;; zp-org-agenda.el --- Custom config for org-agenda   -*- fill-column: 78; lexical-binding: t; -*-
+;;; zp-org-agenda.el --- Custom config for org-agenda -*- fill-column: 78; lexical-binding: t; -*-
 ;;; Commentary:
 
 ;;; Code:
