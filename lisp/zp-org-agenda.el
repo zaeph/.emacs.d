@@ -217,7 +217,7 @@ For more information on list-formatted filters, see
                 (cond ((not filter)
                        nil)
                       ((stringp filter)
-                       (zp/org-agenda-groups-process-filter filter))
+                       (zp/org-agenda-groups-read-group-filter-string filter))
                       ((zp/org-agenda-groups-is-group-filter-p filter)
                        filter)
                       (t
