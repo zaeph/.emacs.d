@@ -183,6 +183,15 @@ FILTER should be formatted as \"+include-exclude\"."
        (cl-every #'stringp (car object))
        (cl-every #'stringp (cadr object))))
 
+(defun zp/org-agenda-is-compound-group-filter-p (object)
+  "Return t if OBJECT is a compound agenda-group-filter."
+  (and (listp object)
+       (cl-every #'listp object)
+       (eq 2 (length object))
+       (cl-every #'listp (car object))
+       (cl-every #'stringp (caar object))
+       (cl-every #'stringp (cadr object))))
+
 (defun zp/org-agenda-groups-process-filters-maybe (&rest filters)
   "Process FILTERS into a list of filter-lists.
 
