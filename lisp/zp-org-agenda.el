@@ -1167,8 +1167,8 @@ Meant to be run with ‘org-agenda-mode-hook’."
           ;; Copying the list is necessary to have different
           ;; references to the same values.  Otherwise, we’d also
           ;; modify the global config.
-          (list (copy-alist (car (alist-get 'default
-                                            zp/org-agenda-local-config)))))))
+          (list (copy-tree (car (alist-get 'default
+                                           zp/org-agenda-local-config)))))))
 
 (defun zp/org-agenda-wipe-current-local-config (print-message &optional agenda)
   "Reset the org-agenda local config to the default values."
