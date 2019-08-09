@@ -314,10 +314,11 @@ For more information on formatting, see
     (message "STNG: %s" (org-entry-get (point) "ITEM")))
   (save-restriction
     (widen)
-    (let* ((filters (zp/org-agenda-groups-create-compound-filter
+    (let* (;; Create compound filter
+           (compound-filter (zp/org-agenda-groups-create-compound-filter
                      (zp/org-agenda-groups-process-filters filters)))
            (include (mapcan #'identity
-                            (car filters)))
+                            (car compound-filter)))
            (include-groupless-p (member "nil" include))
            (next-headline (save-excursion
                             (or (outline-next-heading)
@@ -327,8 +328,8 @@ For more information on formatting, see
            (property-regex (concat "^:" property ":.*")))
       (save-excursion
         (cond
-         ((or (not filters)
-              (zp/org-task-in-agenda-groups-p filters))
+         ((or (not compound-filter)
+              (zp/org-task-in-agenda-groups-p compound-filter))
           nil)
          ((catch 'found-next
             (goto-char next-headline)
@@ -338,7 +339,7 @@ For more information on formatting, see
                             groups-regex
                             "\\).*$")
                     nil t)
-              (if (zp/org-task-in-agenda-groups-p filters)
+              (if (zp/org-task-in-agenda-groups-p compound-filter)
                   (throw 'found-next 't))))
           (outline-previous-heading))
          (t
