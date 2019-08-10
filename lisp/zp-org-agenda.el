@@ -366,6 +366,27 @@ agenda-group."
                       ".*"))
             "$")))
 
+(defun zp/org-agenda-groups-get-related-groups (filters)
+  "Get org-agenda related groups from FILTERS.
+
+A group is considered to be related to another if they share at
+least one group."
+  (let (l)
+    (dolist (file org-agenda-files)
+      (with-current-buffer (get-file-buffer file)
+        (save-restriction
+          (widen)
+          (save-excursion
+            (let* ((include (mapcan #'car (copy-tree filters)))
+                   (re (zp/org-agenda-groups-format-re-matcher include)))
+              (goto-char (point-min))
+              (while (re-search-forward re nil t)
+                (setq l (apply #'append
+                               (list l (zp/org-get-agenda-groups)))))
+              (delete-dups l)
+              (sort l #'string-lessp))))))
+    l))
+
 ;;----------------------------------------------------------------------------
 ;; Skip functions
 ;;----------------------------------------------------------------------------
