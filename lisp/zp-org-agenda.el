@@ -314,18 +314,17 @@ agenda-group."
                      t))))
       (cond (task-groups
              (let ((matched-pos
-                    (and (cl-some #'identity include)
+                    (and include
                          ;; Check if all include-filters match
-                         (cl-every #'identity
-                                   (mapcar (lambda (filter)
-                                             (funcall test filter))
-                                           include))))
+                         (cl-every (lambda (filter)
+                                     (funcall test filter))
+                                   include)))
                    (matched-neg
-                    (and (cl-some #'identity exclude)
+                    (and exclude
                          (funcall test exclude))))
                (and (or matched-pos
                         ;; Special case: Filter is exclude-only
-                        (cl-every 'not include))
+                        (not include))
                     (not matched-neg))))
             ((cl-some (lambda (filter)
                         (member "nil" filter))
