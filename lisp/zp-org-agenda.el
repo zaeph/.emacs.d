@@ -384,8 +384,7 @@ The function will exclude the base groups in FILTERS."
               (goto-char (point-min))
               (while (re-search-forward re nil t)
                 (let ((groups (zp/org-get-agenda-groups)))
-                  (setq related (apply #'append
-                                       (list related groups)))))
+                  (setq related (push (car groups) related))))
               (delete-dups related)
               (setq related
                     (dolist (group include related)
