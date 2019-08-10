@@ -3032,7 +3032,7 @@ indirect-buffers."
         ("^supplies$" "~/org/svg/icons/box.svg" nil nil :ascent center)
         ("^social$" "~/org/svg/icons/happy.svg" nil nil :ascent center)
         ("^grooming$" "~/org/svg/icons/razor.svg" nil nil :ascent center)
-        ("^cleaning$" "~/org/svg/icons/bucket.svg" nil nil :ascent center)
+        ("^clean$" "~/org/svg/icons/bucket.svg" nil nil :ascent center)
 
         (".*" '(space . (:width (24))) nil nil :ascent center)))
 
