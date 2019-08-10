@@ -324,6 +324,18 @@ time is displayed."
     (user-error "There is only one window in the frame")))
 
 ;;----------------------------------------------------------------------------
+;; Custom modes
+;;----------------------------------------------------------------------------
+(define-minor-mode print-circle-mode
+    "Mode for toggling ‘print-circle’ globally."
+  :global t
+  (if print-circle-mode
+      (setq print-circle t)
+    (setq print-circle nil)))
+
+(print-circle-mode)
+
+;;----------------------------------------------------------------------------
 ;; Keys
 ;;----------------------------------------------------------------------------
 ;; Define keymap for minor mode toggles
@@ -336,6 +348,7 @@ time is displayed."
 (define-key zp/toggle-map (kbd "f") #'auto-fill-mode)
 (define-key zp/toggle-map (kbd "l") #'display-line-numbers-mode)
 (define-key zp/toggle-map (kbd "h") #'global-hl-line-mode)
+(define-key zp/toggle-map (kbd "p") #'print-circle-mode)
 
 ;; Modes
 (global-set-key (kbd "C-c s") #'scroll-bar-mode)
