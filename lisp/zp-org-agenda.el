@@ -157,7 +157,9 @@ With a prefix argument, do so in all agenda buffers."
                                   category)
                             ", ")))
     (when string
-      (delete-dups (split-string string ", ?")))))
+      (let ((list (split-string string ", ?")))
+        (delete-dups list)
+        (delete "" list)))))
 
 (defun zp/org-agenda-groups-is-group-filter-p (object)
   "Return t if OBJECT is a list-formatted org-agenda group-filter.
