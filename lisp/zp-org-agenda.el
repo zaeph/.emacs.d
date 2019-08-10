@@ -153,8 +153,8 @@ With a prefix argument, do so in all agenda buffers."
          (category (org-entry-get pos "CATEGORY" t))
          ;; Combine groups and category
          (string (mapconcat #'identity
-                            (list groups
-                                  category)
+                            (list category
+                                  groups)
                             ", ")))
     (when string
       (let ((list (split-string string ", ?")))
