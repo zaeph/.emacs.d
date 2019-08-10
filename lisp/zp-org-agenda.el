@@ -370,7 +370,9 @@ agenda-group."
   "Get org-agenda related groups from FILTERS.
 
 A group is considered to be related to another if they share at
-least one group."
+least one group.
+
+The function will exclude the base groups in FILTERS."
   (let (related)
     (dolist (file org-agenda-files related)
       (with-current-buffer (get-file-buffer file)
@@ -386,6 +388,8 @@ least one group."
                   (setq related (apply #'append
                                        (list related groups)))))
               (delete-dups related)
+              (dolist (group include)
+                (setq related (delete group related)))
               (setq related (sort related #'string-lessp)))))))))
 
 ;;----------------------------------------------------------------------------
