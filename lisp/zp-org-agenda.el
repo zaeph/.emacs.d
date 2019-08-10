@@ -366,19 +366,6 @@ agenda-group."
                       ".*"))
             "$")))
 
-(defun zp/org-agenda-groups-subtract-base (groups &optional base)
-  "Subtract BASE from org-agenda GROUPS.
-
-When BASE isn’t specified, use the local
-‘zp/org-agenda-groups-filters’."
-  (let* ((filters (unless base
-                    (zp/get-agenda-local 'zp/org-agenda-groups-filters)))
-         (base (or base
-                   (mapcan #'car (copy-tree filters))))
-         result)
-    (dolist (group base result)
-      (setq result (delete group groups)))))
-
 (defun zp/org-agenda-groups-get-related-groups (filters)
   "Get org-agenda related groups from FILTERS.
 
@@ -402,7 +389,8 @@ The function will exclude the base groups in FILTERS."
                                        (list related groups)))))
               (delete-dups related)
               (setq related
-                    (zp/org-agenda-groups-subtract-base related include))
+                    (dolist (group include related)
+                      (setq related (delete group related))))
               (setq related (sort related #'string-lessp)))))))))
 
 ;;----------------------------------------------------------------------------
