@@ -386,9 +386,6 @@ The function will exclude the base groups in FILTERS."
                 (let ((groups (zp/org-get-agenda-groups)))
                   (setq related (push (car groups) related))))
               (delete-dups related)
-              (setq related
-                    (dolist (group include related)
-                      (setq related (delete group related))))
               (setq related (sort related #'string-lessp)))))))))
 
 ;;----------------------------------------------------------------------------
