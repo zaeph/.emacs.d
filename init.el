@@ -3403,7 +3403,7 @@ indirect-buffers."
      ("o" "~/org/life.org" "Planning")
      ("k" "~/org/life.org" "Curiosities")
      ("s" "~/org/life.org" "Social")
-     ("n" "~/org/life.org" "Social" "Nicolas")
+     ("n" "~/org/life.org" "Nicolas")
      ("S" "~/org/life.org" "Swimming")
      ("R" "~/org/life.org" "Running")
 
@@ -3543,7 +3543,7 @@ indirect-buffers."
 "
     (("o" "~/org/life.org" "Life" "Calendar")
      ("s" "~/org/life.org" "Social" "Calendar")
-     ("n" "~/org/life.org" "Social" "Nicolas" "Calendar")
+     ("n" "~/org/life.org" "Nicolas" "Calendar")
      ("x" "~/org/life.org" "Maintenance" "Calendar")
      ("f" "~/org/life.org" "Finances" "Calendar")
      ("a" "~/org/life.org" "Animals" "Calendar")
