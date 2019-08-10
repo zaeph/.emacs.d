@@ -371,21 +371,22 @@ agenda-group."
 
 A group is considered to be related to another if they share at
 least one group."
-  (let (l)
-    (dolist (file org-agenda-files)
+  (let (related)
+    (dolist (file org-agenda-files related)
       (with-current-buffer (get-file-buffer file)
         (save-restriction
           (widen)
           (save-excursion
-            (let* ((include (mapcan #'car (copy-tree filters)))
+            (let* ((include (and filters
+                                 (mapcan #'car (copy-tree filters))))
                    (re (zp/org-agenda-groups-format-re-matcher include)))
               (goto-char (point-min))
               (while (re-search-forward re nil t)
-                (setq l (apply #'append
-                               (list l (zp/org-get-agenda-groups)))))
-              (delete-dups l)
-              (sort l #'string-lessp))))))
-    l))
+                (let ((groups (zp/org-get-agenda-groups)))
+                  (setq related (apply #'append
+                                       (list related groups)))))
+              (delete-dups related)
+              (setq related (sort related #'string-lessp)))))))))
 
 ;;----------------------------------------------------------------------------
 ;; Skip functions
