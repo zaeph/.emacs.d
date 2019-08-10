@@ -388,6 +388,20 @@ The function will exclude the base groups in FILTERS."
               (delete-dups related)
               (setq related (sort related #'string-lessp)))))))))
 
+(defun zp/ivy-org-agenda-groups-set-extra-filters ()
+  "Set extra filters for the current org-agenda view."
+  (interactive)
+  (let* ((filters (zp/get-agenda-local 'zp/org-agenda-groups-filters))
+         (related (zp/org-agenda-groups-get-related-groups filters))
+         (extra-group (ivy-read "Filter(s): " related
+                                :preselect (when-let ((marker (get-text-property (point) 'org-hd-marker)))
+                                             (car (zp/org-get-agenda-groups marker)))))
+         (extra-filter (if (string= "" extra-group) nil
+                         (zp/org-agenda-groups-process-filters (list extra-group)))))
+    (zp/set-agenda-local 'zp/org-agenda-groups-extra-filters
+                         extra-filter)
+    (org-agenda-redo)))
+
 ;;----------------------------------------------------------------------------
 ;; Skip functions
 ;;----------------------------------------------------------------------------
