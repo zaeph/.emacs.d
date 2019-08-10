@@ -474,10 +474,8 @@ time is displayed."
   ;; (add-to-list 'load-path "<path where use-package is installed>")
   (require 'use-package))
 
-;; Change indent-function to handle plists
-;; Reverted to default because I can’t remember the context in which it
-;; was necessary
-;; (setq lisp-indent-function 'common-lisp-indent-function)
+;; Change indent-function to common-lisp’s
+(setq lisp-indent-function 'common-lisp-indent-function)
 ;; (setq lisp-indent-function 'lisp-indent-function) ;Default
 
 (use-package package
