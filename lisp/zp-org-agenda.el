@@ -1,4 +1,4 @@
-;;; zp-org-agenda.el --- Custom config for org-agenda   -*- fill-column: 78; lexical-binding: t; -*-
+;;; zp-org-agenda.el --- Custom config for org-agenda -*- fill-column: 78; lexical-binding: t; -*-
 ;;; Commentary:
 
 ;;; Code:
@@ -139,87 +139,337 @@ With a prefix argument, do so in all agenda buffers."
                  (length org-agenda-bulk-marked-entries))))))
 
 ;;----------------------------------------------------------------------------
+;; Group filters
+;;----------------------------------------------------------------------------
+(defvar zp/org-agenda-groups-property "AGENDA_GROUP"
+  "Name of the property used for agenda-groups.")
+
+(defun zp/org-get-agenda-groups (&optional pom)
+  "Get agenda-groups from current tree."
+  (let* ((pos (or pom
+                  (point)))
+         (property zp/org-agenda-groups-property)
+         (groups (org-entry-get pos property t))
+         (category (org-entry-get pos "CATEGORY" t))
+         ;; Combine groups and category
+         (string (mapconcat #'identity
+                            (list category
+                                  groups)
+                            ", ")))
+    (when string
+      (let ((list (split-string string ", ?")))
+        (delete-dups list)
+        (delete "" list)))))
+
+(defun zp/org-agenda-groups-is-group-filter-p (object)
+  "Return t if OBJECT is a list-formatted org-agenda group-filter.
+
+A list-formatted group-filter should have the following form:
+  (inclusion-list exclusion-list)"
+  (and (listp object)
+       (cl-every #'listp object)
+       (eq 2 (length object))
+       (cl-every #'stringp (car object))
+       (cl-every #'stringp (cadr object))))
+
+(defun zp/org-agenda-groups-is-compound-group-filter-p (object)
+  "Return t if OBJECT is a compound org-agenda group-filter.
+
+A compound group-filter should have the following form:
+  ((inclusion-list-1 inclusion-list-2 ...) exclusion-list)"
+  (and (listp object)
+       (cl-every #'listp object)
+       (eq 2 (length object))
+       (cl-every #'listp (car object))
+       (cl-every #'stringp (caar object))
+       (cl-every #'stringp (cadr object))))
+
+(defun zp/org-agenda-groups-read-group-filter-string (filter)
+  "Read an org-agenda group-FILTER given as a string.
+
+Return a list-formatted FILTER:
+  (inclusion-list exclusion-list)
+
+FILTER should be formatted as \"+group1-group2\" where:
+- \"group1\" is an org-agenda group to be included.
+- \"group2\" is an org-agenda group to be excluded."
+  (let* ((prefix-re "[\\+-]")
+         ;; Handle special case when 1st group is w/o prefix
+         (filter (when-let ((match (substring filter 0 1)))
+                   (if (string-match prefix-re match)
+                       filter
+                     (concat "+" filter))))
+         (groups (s-slice-at prefix-re filter))
+         include
+         exclude)
+    (dolist (group groups)
+      (let ((type (substring group 0 1))
+            (group (substring group 1)))
+        (push group
+              (pcase type
+                ("+" include)
+                ("-" exclude)))))
+    (list include
+          exclude)))
+
+(defun zp/org-agenda-groups-format-filter (filter)
+  "Format a list-formatted FILTER into a string.
+
+This function creates human-readable filters to be used in UI
+elements."
+  (let* ((include (car filter))
+         (exclude (cadr filter))
+         (format (lambda (symbol list)
+                   (mapconcat (lambda (elem)
+                                (concat symbol elem))
+                              list " ")))
+         (include-fmt (when (car include)
+                        (funcall format "+" include)))
+         (exclude-fmt (when (car exclude)
+                        (funcall format "-" exclude)))
+         (list (delete nil
+                       (list include-fmt
+                             exclude-fmt))))
+    (concat "{" (mapconcat #'identity
+                           list
+                           " ")
+            "}")))
+
+(defun zp/org-agenda-groups-format-filters (filters)
+  "Format a list of list-formatted FILTERS into a string.
+
+For more information, see ‘zp/org-agenda-groups-format-filter’."
+  (let ((i 1))
+    (mapconcat (lambda (filter)
+                 (prog1 (concat "F" (number-to-string i)
+                                ":" (zp/org-agenda-groups-format-filter filter))
+                   (setq i (1+ i))))
+               filters ", ")))
+
+(defun zp/org-agenda-groups-process-filters (filters)
+  "Process org-agenda group-FILTERS into a list.
+
+Any member of FILTERS given as a string will first be read with
+‘zp/org-agenda-groups-read-group-filter-string’.
+
+Return a list of list-formatted filters.
+
+For more information on list-formatted filters, see
+‘zp/org-agenda-groups-is-group-filter-p’."
+  (when filters
+    (thread-last filters
+      ;; Read filters provided as strings
+      (mapcar (lambda (filter)
+                (cond ((not filter)
+                       nil)
+                      ((stringp filter)
+                       (zp/org-agenda-groups-read-group-filter-string filter))
+                      ((zp/org-agenda-groups-is-group-filter-p filter)
+                       filter)
+                      (t
+                       (error "Invalid filter format")))))
+      ;; Remove nil filters
+      (delete nil))))
+
+(defun zp/org-agenda-groups-create-compound-filter (filters)
+  "Process org-agenda group-FILTERS into a compound filter.
+
+For more information on compound filters, see
+‘zp/org-agenda-groups-is-compound-group-filter-p’."
+  (let (include
+        exclude)
+    (dolist (filter filters)
+      ;; Only push include-filter if non-nil
+      (when-let ((this (pop filter)))
+        (push this include))
+      (when-let ((this (pop filter)))
+        (dolist (this this)
+          (push this exclude))))
+    (delete-dups include)
+    (delete-dups exclude)
+    (list include exclude)))
+
+(defun zp/org-task-in-agenda-groups-p (&rest filters)
+  "Test whether a task is in agenda-group matched by FILTERS.
+
+FILTERS can either be provided as string-formatted or
+list-formatted filters.
+
+As a special case, return -1 if the task is not part of any
+agenda-group."
+  (let* ((filters
+          (if (zp/org-agenda-groups-is-compound-group-filter-p (car filters))
+              (car filters)
+            (zp/org-agenda-groups-create-compound-filter
+             (zp/org-agenda-groups-process-filters filters))))
+         (include (pop filters))
+         (exclude (pop filters)))
+    (let* ((task-groups (zp/org-get-agenda-groups))
+           (test (lambda (list)
+                   (if list
+                       (cl-some (lambda (group)
+                                  (member group list))
+                                task-groups)
+                     ;; Return t if the filter is nil
+                     t))))
+      (cond (task-groups
+             (let ((matched-pos
+                    (and include
+                         ;; Check if all include-filters match
+                         (cl-every (lambda (filter)
+                                     (funcall test filter))
+                                   include)))
+                   (matched-neg
+                    (and exclude
+                         (funcall test exclude))))
+               (and (or matched-pos
+                        ;; Special case: Filter is exclude-only
+                        (not include))
+                    (not matched-neg))))
+            ((cl-some (lambda (filter)
+                        (member "nil" filter))
+                      include)
+             -1)))))
+
+(defun zp/org-agenda-groups-set-extra-filter (arg)
+  (interactive "sFilter: ")
+  (let* ((filters (if (string= "" arg)
+                      nil
+                    (split-string arg " ")))
+         (processed (zp/org-agenda-groups-process-filters filters)))
+    (zp/set-agenda-local 'zp/org-agenda-groups-extra-filters processed)
+    (org-agenda-redo)
+    (message (pcase arg
+               ("" "Filter has been reset.")
+               (_ (concat "New filter has been set: " arg))))))
+
+(defun zp/org-agenda-groups-format-re-matcher (list)
+  "Format a regexp to match agenda-groups in LIST."
+  (let* ((property-groups zp/org-agenda-groups-property)
+         (property-category "CATEGORY")
+         (groups (mapconcat #'identity
+                            list
+                            "\\|")))
+    (concat "^:\\("
+            property-groups
+            "\\|"
+            property-category
+            "\\)"
+            ":.*"
+            (when list
+              (concat "\\b"
+                      "\\("
+                      groups
+                      "\\)"
+                      "\\b"
+                      ".*"))
+            "$")))
+
+(defun zp/org-agenda-groups-get-related-groups (filters)
+  "Get org-agenda related groups from FILTERS.
+
+A group is considered to be related to another if they share at
+least one group.
+
+The function will exclude the base groups in FILTERS."
+  (let (related)
+    (dolist (file org-agenda-files related)
+      (with-current-buffer (get-file-buffer file)
+        (save-restriction
+          (widen)
+          (save-excursion
+            (let* ((include (and filters
+                                 (mapcan #'car (copy-tree filters))))
+                   (re (zp/org-agenda-groups-format-re-matcher include)))
+              (goto-char (point-min))
+              (while (re-search-forward re nil t)
+                (let ((groups (zp/org-get-agenda-groups)))
+                  (setq related (push (car groups) related))))
+              (delete-dups related)
+              (setq related (sort related #'string-lessp)))))))))
+
+(defun zp/ivy-org-agenda-groups-set-extra-filters (arg)
+  "Set extra filters for the current org-agenda view."
+  (interactive "p")
+  (pcase arg
+    (4 (progn
+         (zp/set-agenda-local 'zp/org-agenda-groups-extra-filters nil)
+         (org-agenda-redo)
+         (message "Cleared extra filters.")))
+    (_ (let* ((filters (zp/get-agenda-local 'zp/org-agenda-groups-filters))
+              (related (zp/org-agenda-groups-get-related-groups filters))
+              (extra-group (ivy-read "Filters: " related
+                                     :preselect (when-let ((marker (get-text-property (point) 'org-hd-marker)))
+                                                  (car (zp/org-get-agenda-groups marker)))))
+              (extra-filter (if (string= "" extra-group) nil
+                              (zp/org-agenda-groups-process-filters (list extra-group)))))
+         (zp/set-agenda-local 'zp/org-agenda-groups-extra-filters
+                              extra-filter)
+         (org-agenda-redo)
+         (message "Applied extra filters: %s."
+                  (zp/org-agenda-groups-format-filters
+                   extra-filter))))))
+
+;;----------------------------------------------------------------------------
 ;; Skip functions
 ;;----------------------------------------------------------------------------
 ;; Inspired by Bernst Hansen’s helper functions.
 ;; Source: http://doc.norang.ca/org-mode.html
-(defun zp/org-agenda-groups-format-regex (list)
-  "Format LIST of agenda groups as a regex"
-  (string-join
-   (mapcar (lambda (arg)
-             (if (not arg)
-                 "^$"
-               (concat "\\b"
-                       arg
-                       "\\b")))
-           list)
-   "\\|"))
+(defun zp/skip-tasks-not-in-agenda-groups (filters)
+  "Skip tasks which aren’t in an org-agenda group matched by FILTERS.
 
-(defun zp/org-task-in-agenda-groups-p (groups &optional match-groupless pom)
-  "Test whether a task is in agenda-group matched by GROUPS.
+FILTERS must be a list of either list-formatted or
+string-formatted filters.  However, for the sake of efficiency,
+the former should be preferred.
 
-GROUPS can be a list or a regex.
-
-If MATCH-GROUPLESS is non-nil, returns -1 when a task doesn’t have
-a group."
-  (let ((groups-regex (if (listp groups)
-                          (zp/org-agenda-groups-format-regex groups)
-                        groups)))
-    (save-restriction
-      (widen)
-      (let ((task-group (org-entry-get (or pom (point))
-                                       "AGENDA_GROUP"
-                                       'selective)))
-        (cond (task-group
-               (string-match-p groups-regex task-group))
-              (match-groupless
-               -1))))))
-
-(defun zp/skip-tasks-not-belonging-to-agenda-groups (groups &optional exhaustive)
-  "Skip tasks if they aren’t part of GROUPS.
-
-GROUPS is a list of AGENDA_GROUPS values to match.
-
-If EXHAUSTIVE is non-nil or if nil is a member of GROUPS, the
-function will not skip groupless trees."
+For more information on formatting, see
+‘zp/org-agenda-groups-is-group-filter-p’ and
+‘zp/org-agenda-groups-read-group-filter-string’."
   (when zp/org-agenda-skip-functions-debug
     (message "STNG: %s" (org-entry-get (point) "ITEM")))
-  (save-restriction
-    (widen)
-    (let* ((next-headline (save-excursion
-                            (or (outline-next-heading)
-                                (point-max))))
-           (groups-regex (zp/org-agenda-groups-format-regex groups))
-           (property "AGENDA_GROUP")
-           (property-regex (concat "^:" property ":.*"))
-           (include-groupless-p (or exhaustive
-                                    (member nil groups))))
-      (save-excursion
-        (cond
-         ((or (not groups)
-              (zp/org-task-in-agenda-groups-p groups-regex include-groupless-p))
-          nil)
-         ((and include-groupless-p
-               (or (org-entry-get (point) property)
-                   (catch 'found-next
-                     (while (re-search-backward (concat property-regex
-                                                        ".*$")
-                                                nil t)
-                       (if (org-entry-get (point) property)
-                           (throw 'found-next 't))))))
-          (outline-get-next-sibling))
-         ((catch 'found-next
-            (goto-char next-headline)
-            (while (re-search-forward (concat property-regex
-                                              "\\("
-                                              groups-regex
-                                              "\\).*$")
-                                      nil t)
-              (if (org-entry-get (point) property)
-                  (throw 'found-next 't))))
-          (outline-previous-heading))
-         (t
-          (goto-char (point-max))))))))
+  (when filters
+    (save-restriction
+      (widen)
+      (let* (;; Create compound filter
+             (compound-filter (zp/org-agenda-groups-create-compound-filter
+                               (zp/org-agenda-groups-process-filters filters)))
+             (include (apply #'append (car compound-filter)))
+             (next-headline (save-excursion
+                              (or (outline-next-heading)
+                                  (point-max))))
+             (groups-re (zp/org-agenda-groups-format-re-matcher include)))
+        (save-excursion
+          (cond
+           ((or (not compound-filter)
+                (zp/org-task-in-agenda-groups-p compound-filter))
+            nil)
+           ((catch 'found-next
+              (goto-char next-headline)
+              (while (re-search-forward
+                      groups-re
+                      nil t)
+                (if (zp/org-task-in-agenda-groups-p compound-filter)
+                    (throw 'found-next 't))))
+            (outline-previous-heading))
+           (t
+            (goto-char (point-max)))))))))
+
+(defvar zp/org-agenda-groups-extra-filters nil
+  "Extra filters to use for filtering org-agenda groups.
+
+This is to allow interactive group-filtering in custom views.")
+
+(defun zp/skip-tasks-not-in-agenda-groups-with-extra-filters (filters)
+  "Skip tasks which aren’t in an org-agenda group matched by FILTERS.
+
+This function combines FILTERS with
+‘zp/org-agenda-groups-extra-filters’ to allow for interactive
+filtering in custom views.
+
+For more information, see ‘zp/skip-tasks-not-in-agenda-groups’."
+  (let ((filters (append filters
+                         zp/org-agenda-groups-extra-filters)))
+    (zp/skip-tasks-not-in-agenda-groups filters)))
 
 (defvar zp/fluid-project-definition t
   "When t, a project with no remaining subtasks become a task.
@@ -591,6 +841,7 @@ afterwards."
          (header-formatted
           (zp/org-agenda-format-header-align
            (concat flanking-symbol " " header " " flanking-symbol)))
+         (extra-filters zp/org-agenda-groups-extra-filters)
          word-list)
     (unless org-agenda-include-deadlines
       (add-to-list 'word-list "-deadlines" t))
@@ -610,7 +861,11 @@ afterwards."
       (if (not (eq word-list nil))
           (setq word-list-formatted (concat " " "(" word-list-formatted ")")))
       (concat
-       header-formatted word-list-formatted "\n"))))
+       header-formatted word-list-formatted "\n"
+       (when extra-filters
+         (concat "Extra filters: "
+                 (zp/org-agenda-groups-format-filters extra-filters)
+                 "\n"))))))
 
 (defun zp/org-agenda-format-header-block (header)
   "Format header blocks in org-agenda."
@@ -667,6 +922,7 @@ agenda settings after them."
 
 (defun zp/org-agenda-hi-lock ()
   (highlight-regexp "([-+].*?)" 'zp/org-agenda-block-info-face)
+  (highlight-regexp "F.:{.*?}" 'zp/org-agenda-block-info-face)
   ;; (highlight-regexp "^[[:space:]]*? \\[ Stuck Projects \\]" 'zp/org-agenda-block-warning-face)
   (highlight-regexp "^~~.*~~$" 'font-lock-comment-face))
 
@@ -681,7 +937,8 @@ agenda settings after them."
                   `((org-agenda-files ',file)))
             (org-agenda-span 'day)
             (org-agenda-skip-function
-             '(zp/skip-routine-cond))
+             '(or (zp/skip-tasks-not-in-agenda-groups-with-extra-filters nil)
+                  (zp/skip-routine-cond)))
             (org-super-agenda-groups
              '((:name "Grid"
                       :time-grid t)
@@ -704,7 +961,7 @@ agenda settings after them."
             (org-agenda-files nil)
             (org-agenda-span 'day))))
 
-(defun zp/org-agenda-block-header-with-deadlines (header groups &optional file)
+(defun zp/org-agenda-block-header-with-deadlines (header filters &optional file)
   `(agenda ""
            ((org-agenda-overriding-header
              (zp/org-agenda-format-header-main ,header))
@@ -712,22 +969,27 @@ agenda settings after them."
                   `((org-agenda-files ',file)))
             (org-agenda-entry-types
              '(:deadline))
+            (zp/org-agenda-groups-filters
+             (zp/set-agenda-local 'zp/org-agenda-groups-filters
+                                  ',(copy-tree filters)))
             (org-agenda-skip-function
-             '(zp/skip-tasks-not-belonging-to-agenda-groups ',groups))
+             '(zp/skip-tasks-not-in-agenda-groups-with-extra-filters
+               ',filters))
             (org-agenda-span 'day))))
 
-(defun zp/org-agenda-block-agenda-with-group-filter (header groups &optional file)
+(defun zp/org-agenda-block-agenda-with-group-filter (header filters &optional file)
   `(agenda ""
            ((org-agenda-overriding-header
              (zp/org-agenda-format-header-main ,header))
             ,@(if (bound-and-true-p file)
                   `((org-agenda-files ',file)))
             (org-agenda-skip-function
-             '(or (zp/skip-tasks-not-belonging-to-agenda-groups ',groups)
+             '(or (zp/skip-tasks-not-in-agenda-groups
+                   ',filters)
                   (zp/skip-routine-cond)))
             (org-agenda-span 'day))))
 
-(defun zp/org-agenda-block-agenda-week-with-group-filter (header groups &optional file)
+(defun zp/org-agenda-block-agenda-week-with-group-filter (header filters &optional file)
   `(agenda ""
            ((org-agenda-overriding-header
              (zp/org-agenda-format-header-main ,header))
@@ -736,7 +998,8 @@ agenda settings after them."
             (org-agenda-span 'week)
             (org-habit-show-habits nil)
             (org-agenda-skip-function
-             '(or (zp/skip-tasks-not-belonging-to-agenda-groups ',groups)
+             '(or (zp/skip-tasks-not-in-agenda-groups-with-extra-filters
+                   ',filters)
                   (zp/skip-routine-cond)))
             (org-agenda-dim-blocked-tasks 'dimmed)
             (org-deadline-warning-days 0))))
@@ -748,7 +1011,6 @@ agenda settings after them."
             (org-agenda-overriding-header
              (zp/org-agenda-format-header-main ,header))
             (org-agenda-span 'week)
-            (org-agenda-start-day "-1")
             (org-deadline-warning-days 0)
             (org-agenda-skip-function
              '(or (zp/skip-routine-cond)
@@ -756,7 +1018,7 @@ agenda settings after them."
             (org-agenda-entry-types '(:deadline :timestamp :sexp))
             (org-agenda-dim-blocked-tasks 'dimmed))))
 
-(defun zp/org-agenda-block-tasks-with-group-filter (&optional groups tags by-groups file)
+(defun zp/org-agenda-block-tasks-with-group-filter (&optional filters tags by-groups file)
   `(tags-todo ,(or tags
                    "-standby-cancelled-recurring-curios")
               ((org-agenda-overriding-header
@@ -769,7 +1031,8 @@ agenda settings after them."
                 '(user-defined-down
                   category-keep))
                (org-agenda-skip-function
-                '(or (zp/skip-tasks-not-belonging-to-agenda-groups ',groups)
+                '(or (zp/skip-tasks-not-in-agenda-groups-with-extra-filters
+                      ',filters)
                      (zp/skip-routine-cond)
                      (zp/skip-non-tasks)
                      (zp/skip-waiting)
@@ -780,19 +1043,7 @@ agenda settings after them."
                         (t
                          (zp/org-super-agenda-scheduled)))))))
 
-(defun zp/org-agenda-block-projects (&optional file)
-  `(tags-todo "-standby-reading"
-              ((org-agenda-overriding-header
-                (zp/org-agenda-format-header-projects))
-               ,@(if (bound-and-true-p file)
-                     `((org-agenda-files ',file)))
-               (org-agenda-skip-function 'zp/skip-non-projects-and-waiting)
-               (org-agenda-sorting-strategy
-                '(user-defined-down priority-down category-keep))
-               (org-agenda-todo-ignore-scheduled nil)
-               (org-agenda-dim-blocked-tasks nil))))
-
-(defun zp/org-agenda-block-projects-with-group-filter (&optional groups tags file)
+(defun zp/org-agenda-block-projects-with-group-filter (&optional filters tags file)
   `(tags-todo ,(or tags
                    "-standby-cancelled-curios")
               ((org-agenda-overriding-header
@@ -800,7 +1051,8 @@ agenda settings after them."
                ,@(if (bound-and-true-p file)
                      `((org-agenda-files ',file)))
                (org-agenda-skip-function
-                '(or (zp/skip-tasks-not-belonging-to-agenda-groups ',groups t)
+                '(or (zp/skip-tasks-not-in-agenda-groups-with-extra-filters
+                      ',filters)
                      (zp/skip-non-projects-cond)
                      (zp/skip-waiting)
                      (zp/skip-future-non-waiting-timestamped-tasks-cond)))
@@ -826,12 +1078,13 @@ It creates 4 blocks:
 - A ‘tags-todo’ block displaying the non-stuck projects
 - A ‘tags-todo’ block displaying the stuck projects
 - A ‘tags-todo’ block displaying the tasks"
-  `(,(zp/org-agenda-block-header-with-deadlines
-      header groups file)
-    ,(zp/org-agenda-block-projects-with-group-filter
-      groups tags file)
-    ,(zp/org-agenda-block-tasks-with-group-filter
-      groups tags by-groups file)))
+  (let ((filters (zp/org-agenda-groups-process-filters groups)))
+    `(,(zp/org-agenda-block-header-with-deadlines
+        header filters file)
+      ,(zp/org-agenda-block-projects-with-group-filter
+        filters tags file)
+      ,(zp/org-agenda-block-tasks-with-group-filter
+        filters tags by-groups file))))
 
 (defun zp/org-agenda-variant-create (prefix-key key prefix-header header groups tags by-groups file)
   (let ((variant-key (concat prefix-key key))

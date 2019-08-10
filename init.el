@@ -2741,8 +2741,6 @@ indirect-buffers."
           (swiper)
         (counsel-grep-or-swiper)))))
 
-
-
 ;;----------------------------------------------------------------------------
 ;; Hydra
 ;;----------------------------------------------------------------------------
@@ -2750,8 +2748,6 @@ indirect-buffers."
 
 (use-package hydra-org-priority
   :requires (org hydra))
-
-
 
 ;;----------------------------------------------------------------------------
 ;; org-super-agenda
@@ -2775,7 +2771,8 @@ indirect-buffers."
     "Check if ITEM is in agenda GROUPS."
     (let ((marker (or (get-text-property 0 'org-marker item)
                       (get-text-property 0 'org-hd-marker item))))
-      (zp/org-task-in-agenda-groups-p groups nil marker)))
+      (org-with-point-at marker
+        (apply #'zp/org-task-in-agenda-groups-p groups))))
 
   (defun zp/org-super-agenda-groups (header groups)
     "Create org-super-agenda section for GROUPS with HEADER."
@@ -2852,8 +2849,6 @@ indirect-buffers."
       (:name "Current"
              :anything))))
 
-
-
 ;;----------------------------------------------------------------------------
 ;; org-agenda
 ;;----------------------------------------------------------------------------
@@ -2889,6 +2884,7 @@ indirect-buffers."
           ("C-c C-x d" . zp/org-agenda-delete-property)
           ("C-c C-x s" . zp/org-agenda-wipe-local-config)
           (">" . zp/org-agenda-date-prompt-and-update-appt)
+          ("<" . zp/ivy-org-agenda-groups-set-extra-filters)
           ("C-c C-s" . zp/org-agenda-schedule-and-update-appt)
           ("C-c C-S-w" . zp/org-agenda-refile-with-paths)
           ("Z" . org-resolve-clocks)
@@ -2932,6 +2928,7 @@ indirect-buffers."
            zp/org-agenda-split-subtasks nil
            zp/org-agenda-include-waiting t
            zp/org-agenda-include-projects t
+           zp/org-agenda-groups-extra-filters nil
 
            org-habit-show-habits t
            zp/org-agenda-include-routine t
@@ -3080,8 +3077,8 @@ indirect-buffers."
            (,@(zp/org-agenda-blocks-create "Curiosities (+groups)" nil "+curios" t)))
 
           ,@(zp/org-agenda-create-all
-             '(("l" "Life" ("life" "mx" "pro" "research" "act"))
-               ("L" "Life (strict)" ("life" "mx"))
+             '(("l" "Life" ("+life+mx+pro+research+act"))
+               ("L" "Life (strict)" ("+life+mx"))
                ("x" "Maintenance" ("mx"))
                ("p" "Professional" ("pro"))
                ("r" "Research" ("research"))
@@ -3092,7 +3089,7 @@ indirect-buffers."
                ("P" "Activism" ("act"))
                ("m" "Media" ("media"))
                ("f" "Film" ("film"))
-               ("g" "Groupless" (nil))))
+               ("g" "Groupless" ("nil"))))
 
           ("j" "Journal entries"
            (,(zp/org-agenda-block-journal))
@@ -3104,16 +3101,17 @@ indirect-buffers."
           ("w" "Waiting list"
            (,(zp/org-agenda-block-tasks-waiting)))
 
-          ;; ("A" "Meditation records"
-          ;;  ((agenda ""
-          ;;           ((org-agenda-files zp/org-agenda-files-awakening)
-          ;;            (org-agenda-log-mode))))
-          ;;  ((org-agenda-skip-timestamp-if-done nil)))
+          ("A" "Meditation records"
+           ((agenda ""
+                    ((org-agenda-files zp/org-agenda-files-awakening)
+                     (org-agenda-log-mode))))
+           ((org-agenda-skip-timestamp-if-done nil)))
 
           ("S" "Swimming records"
            ((agenda ""
                     ((org-agenda-files zp/org-agenda-files-sports))))
-           ((org-agenda-skip-timestamp-if-done nil)))))
+           ((org-agenda-skip-timestamp-if-done nil)))
+          ))
 
   ;; Update ‘org-super-agenda-header-map’
   (use-package org-super-agenda
