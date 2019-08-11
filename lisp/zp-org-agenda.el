@@ -445,11 +445,14 @@ FILTER should be a list of string-values to match."
         (save-excursion
           (cond ((zp/org-task-in-categories-p filter)
                  nil)
+                ((catch 'found-parent
+                   (while (org-up-heading-safe)
+                     (when (zp/org-task-in-categories-p filter)
+                       (throw 'found-parent t))))
+                 next-headline)
                 ((let ((re (zp/org-property-format-re-matcher
-                            "CATEGORY"
-                            include)))
+                            "CATEGORY" include)))
                    (catch 'found-next
-                     (goto-char next-headline)
                      (while (re-search-forward re nil t)
                        (when (zp/org-task-in-categories-p filter)
                          (throw 'found-next t)))))
