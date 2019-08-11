@@ -435,30 +435,42 @@ POM is a point or a marker."
                matched-pos)
            (not matched-neg)))))
 
-(defun zp/skip-tasks-not-in-categories (filters)
+(defun zp/org-property-format-re-matcher (property filter)
+  "Format a regex to find PROPERTY set to any value in FILTER.
+
+PROPERTY should be the name of property as a string.
+
+FILTER should be a list of string-values to match."
+  (concat "^:"
+          property
+          ":.*"
+          "\\("
+          (mapconcat (lambda (elem)
+                       (concat "\\b" elem "\\b"))
+                     filter
+                     "\\|")
+          "\\)"
+          ".*$"))
+
+(defun zp/skip-tasks-not-in-categories (filter)
   "Skip tasks which arent in a category matched by FILTERS."
-  (when filters
+  (when filter
     (save-restriction
       (widen)
       (let* ((category (zp/org-get-category))
-             (include (car filters))
+             (include (car filter))
              (next-headline (save-excursion
                               (or (outline-next-heading)
                                   (point-max)))))
         (save-excursion
-          (cond ((zp/org-task-in-categories-p filters)
+          (cond ((zp/org-task-in-categories-p filter)
                  nil)
-                ((let ((re (concat "^:CATEGORY:.*"
-                                   "\\("
-                                   (mapconcat (lambda (category)
-                                                (concat "\\b" category "\\b"))
-                                              include
-                                              "\\|")
-                                   "\\)"
-                                   ".*$")))
+                ((let ((re (zp/org-property-format-re-matcher
+                            "CATEGORY"
+                            include)))
                    (catch 'found-next
                      (while (re-search-forward re nil t)
-                       (when (zp/org-task-in-categories-p filters)
+                       (when (zp/org-task-in-categories-p filter)
                          (throw 'found-next t)))))
                  (outline-previous-heading))
                 (t
