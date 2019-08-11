@@ -337,24 +337,6 @@ agenda-group."
                ("" "Filter has been reset.")
                (_ (concat "New filter has been set: " arg))))))
 
-(defun zp/org-agenda-groups-format-re-matcher (list)
-  "Format a regexp to match agenda-groups in LIST."
-  (let* ((property zp/org-agenda-groups-property)
-         (groups (mapconcat #'identity
-                            list
-                            "\\|")))
-    (concat "^:"
-            property
-            ":.*"
-            (when list
-              (concat "\\b"
-                      "\\("
-                      groups
-                      "\\)"
-                      "\\b"
-                      ".*"))
-            "$")))
-
 (defun zp/ivy-org-agenda-groups-set-extra-filters (arg)
   "Set extra filters for the current org-agenda view."
   (interactive "p")
@@ -564,7 +546,8 @@ For more information on formatting, see
              (next-headline (save-excursion
                               (or (outline-next-heading)
                                   (point-max))))
-             (groups-re (zp/org-agenda-groups-format-re-matcher include)))
+             (property zp/org-agenda-groups-property)
+             (groups-re (zp/org-property-format-re-matcher property include)))
         (save-excursion
           (cond
             ((or (not compound-filter)
