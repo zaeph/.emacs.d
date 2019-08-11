@@ -489,6 +489,36 @@ least one org-agenda group with it."
   "Filter used for matching properties in custom agenda views.
 For more information, see ‘zp/skip-tasks-not-in-categories’.")
 
+(defun zp/ivy-org-agenda-set-category-filter (arg)
+  "Set category filter for the current org-agenda view."
+  (interactive "p")
+  (pcase arg
+    (4 (progn
+         (zp/set-agenda-local 'zp/org-agenda-category-filter nil)
+         (org-agenda-redo)
+         (message "Cleared extra filters.")))
+    (_ (let* ((group-filters (append
+                              (zp/get-agenda-local
+                               'zp/org-agenda-groups-filters)
+                              (zp/get-agenda-local
+                               'zp/org-agenda-groups-extra-filters)))
+              (related (zp/org-get-related-categories group-filters))
+              (filter
+               (ivy-read "Filters: " related
+                         :preselect (when-let ((marker (get-text-property
+                                                        (point)
+                                                        'org-hd-marker)))
+                                      (zp/org-get-category marker))))
+              (filter
+               (if (string= "" filter) nil
+                 (zp/org-agenda-groups-read-group-filter-string filter))))
+         (zp/set-agenda-local 'zp/org-agenda-category-filter filter)
+         (org-agenda-redo)
+         ;; (message "Applied extra filters: %s."
+         ;;          (zp/org-agenda-groups-format-filters
+         ;;           filter))
+         (message "Applied extra filters.")))))
+
 ;;----------------------------------------------------------------------------
 ;; Skip functions
 ;;----------------------------------------------------------------------------
