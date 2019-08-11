@@ -421,12 +421,12 @@ POM is a point or a marker."
                  "CATEGORY"
                  t))
 
-(defun zp/org-task-in-categories-p (filters)
+(defun zp/org-task-in-categories-p (filter)
   "Test whether task is in a catefory matched by FILTERS."
-  (when filters
+  (when filter
     (let* ((task-category (zp/org-get-category))
-           (include (pop filters))
-           (exclude (pop filters))
+           (include (pop filter))
+           (exclude (pop filter))
            (matched-pos (and include
                              (member task-category include)))
            (matched-neg (and exclude
