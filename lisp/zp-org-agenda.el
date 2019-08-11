@@ -154,6 +154,24 @@ With a prefix argument, do so in all agenda buffers."
 ;;----------------------------------------------------------------------------
 ;; Calendar interaction
 ;;----------------------------------------------------------------------------
+(defun zp/org-agenda-block-agenda-calendar (header date)
+  "Create an agenda-view to be opened on the current agenda day."
+  `(agenda ""
+           ((org-agenda-overriding-header
+             (zp/org-agenda-format-header-main ,header))
+            ,@(if (bound-and-true-p file)
+                  `((org-agenda-files ',file)))
+            (org-agenda-span 'day)
+            (org-agenda-skip-function
+             '(or (zp/skip-tasks-not-in-agenda-groups-with-extra-filters nil)
+               (zp/skip-tasks-not-matched-by-category-filter)
+               (zp/skip-routine-cond)))
+            (org-agenda-start-day ,date)
+            (org-super-agenda-groups
+             '((:name "Grid"
+                :time-grid t)
+               ,@(zp/org-super-agenda-groups-all))))))
+
 (defun zp/org-agenda-goto-calendar ()
   "Open the Emacs calendar with the date at the cursor.
 If the cursor isn’t on a date-line, use the first one in the
