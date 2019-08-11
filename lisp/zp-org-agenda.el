@@ -365,29 +365,6 @@ agenda-group."
                       ".*"))
             "$")))
 
-(defun zp/org-agenda-groups-get-related-groups (filters)
-  "Get org-agenda related groups from FILTERS.
-
-A group is considered to be related to another if they share at
-least one group.
-
-The function will exclude the base groups in FILTERS."
-  (let (related)
-    (dolist (file org-agenda-files related)
-      (with-current-buffer (get-file-buffer file)
-        (save-restriction
-          (widen)
-          (save-excursion
-            (let* ((include (and filters
-                                 (mapcan #'car (copy-tree filters))))
-                   (re (zp/org-agenda-groups-format-re-matcher include)))
-              (goto-char (point-min))
-              (while (re-search-forward re nil t)
-                (let ((groups (zp/org-get-agenda-groups)))
-                  (setq related (push (car groups) related))))
-              (delete-dups related)
-              (setq related (sort related #'string-lessp)))))))))
-
 (defun zp/ivy-org-agenda-groups-set-extra-filters (arg)
   "Set extra filters for the current org-agenda view."
   (interactive "p")
@@ -478,6 +455,35 @@ FILTER should be a list of string-values to match."
                  (outline-previous-heading))
                 (t
                  (goto-char (point-max)))))))))
+
+(defun zp/org-get-related-categories (filters)
+  "Get categories related to org-agenda groups matched by FILTER.
+
+A category is considered to be related to another if it shares at
+least one org-agenda group with it."
+  (let (related)
+    (dolist (file org-agenda-files related)
+      (with-current-buffer (get-file-buffer file)
+        (save-restriction
+          (widen)
+          (save-excursion
+            (goto-char (point-min))
+            (let* ((group-include (mapcan #'car (copy-tree filters)))
+                   (group-property zp/org-agenda-groups-property)
+                   (group-re (zp/org-property-format-re-matcher group-property
+                                                                group-include))
+                   (cat-re (zp/org-property-format-re-matcher "CATEGORY")))
+              (while (re-search-forward group-re nil t)
+                (when (apply #'zp/org-task-in-agenda-groups-p filters)
+                  (outline-previous-heading)
+                  (let ((subtree-end (save-excursion
+                                       (org-end-of-subtree))))
+                    (while (re-search-forward cat-re subtree-end t)
+                      (when-let ((category (zp/org-get-category)))
+                        (push category related)))
+                    (goto-char subtree-end))))
+              (delete-dups related)
+              (setq related (sort related #'string-lessp)))))))))
 
 (defvar zp/org-agenda-category-filter nil
   "Filter used for matching properties in custom agenda views.
