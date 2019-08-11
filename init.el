@@ -2979,6 +2979,7 @@ indirect-buffers."
       '(
         ;; Life
         ("^inbox$" "~/org/svg/icons/gmail.svg" nil nil :ascent center)
+        ("^life$" "~/org/svg/icons/aperture-blue.svg" nil nil :ascent center)
         ("^curios$" "~/org/svg/icons/question.svg" nil nil :ascent center)
         ("^style$" "~/org/svg/icons/suit.svg" nil nil :ascent center)
         ("^nicolas$" "~/org/svg/icons/leaf.svg" nil nil :ascent center)
