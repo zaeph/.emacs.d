@@ -456,6 +456,13 @@ FILTER should be a list of string-values to match."
                 (t
                  (goto-char (point-max)))))))))
 
+(defun zp/skip-tasks-not-matched-by-category-filter ()
+  "Skip tasks which arent in a category matched current filter.
+For more information, see ‘zp/org-agenda-category-filter’ and
+‘zp/skip-tasks-not-in-categories’."
+  (let ((filter zp/org-agenda-category-filter))
+    (zp/skip-tasks-not-in-categories filter)))
+
 (defun zp/org-get-related-categories (filters)
   "Get categories related to org-agenda groups matched by FILTER.
 A category is considered to be related to another if it shares at
@@ -1046,10 +1053,11 @@ agenda settings after them."
             (org-agenda-span 'day)
             (org-agenda-skip-function
              '(or (zp/skip-tasks-not-in-agenda-groups-with-extra-filters nil)
-                  (zp/skip-routine-cond)))
+               (zp/skip-tasks-not-matched-by-category-filter)
+               (zp/skip-routine-cond)))
             (org-super-agenda-groups
              '((:name "Grid"
-                      :time-grid t)
+                :time-grid t)
                ,@(zp/org-super-agenda-groups-all))))))
 
 (defun zp/org-agenda-block-agenda (header &optional file)
@@ -1081,8 +1089,9 @@ agenda settings after them."
              (zp/set-agenda-local 'zp/org-agenda-groups-filters
                                   ',(copy-tree filters)))
             (org-agenda-skip-function
-             '(zp/skip-tasks-not-in-agenda-groups-with-extra-filters
-               ',filters))
+             '(or (zp/skip-tasks-not-in-agenda-groups-with-extra-filters
+                   ',filters)
+               (zp/skip-tasks-not-matched-by-category-filter)))
             (org-agenda-span 'day))))
 
 (defun zp/org-agenda-block-agenda-with-group-filter (header filters &optional file)
@@ -1094,7 +1103,8 @@ agenda settings after them."
             (org-agenda-skip-function
              '(or (zp/skip-tasks-not-in-agenda-groups
                    ',filters)
-                  (zp/skip-routine-cond)))
+               (zp/skip-tasks-not-matched-by-category-filter)
+               (zp/skip-routine-cond)))
             (org-agenda-span 'day))))
 
 (defun zp/org-agenda-block-agenda-week-with-group-filter (header filters &optional file)
@@ -1108,7 +1118,8 @@ agenda settings after them."
             (org-agenda-skip-function
              '(or (zp/skip-tasks-not-in-agenda-groups-with-extra-filters
                    ',filters)
-                  (zp/skip-routine-cond)))
+               (zp/skip-tasks-not-matched-by-category-filter)
+               (zp/skip-routine-cond)))
             (org-agenda-dim-blocked-tasks 'dimmed)
             (org-deadline-warning-days 0))))
 
@@ -1121,8 +1132,9 @@ agenda settings after them."
             (org-agenda-span 'week)
             (org-deadline-warning-days 0)
             (org-agenda-skip-function
-             '(or (zp/skip-routine-cond)
-                  (org-agenda-skip-entry-if 'todo '("CXLD"))))
+             '(or (zp/skip-tasks-not-matched-by-category-filter)
+               (zp/skip-routine-cond)
+               (org-agenda-skip-entry-if 'todo '("CXLD"))))
             (org-agenda-entry-types '(:deadline :timestamp :sexp))
             (org-agenda-dim-blocked-tasks 'dimmed))))
 
@@ -1141,10 +1153,11 @@ agenda settings after them."
                (org-agenda-skip-function
                 '(or (zp/skip-tasks-not-in-agenda-groups-with-extra-filters
                       ',filters)
-                     (zp/skip-routine-cond)
-                     (zp/skip-non-tasks)
-                     (zp/skip-waiting)
-                     (zp/skip-future-non-waiting-timestamped-tasks-cond)))
+                  (zp/skip-tasks-not-matched-by-category-filter)
+                  (zp/skip-routine-cond)
+                  (zp/skip-non-tasks)
+                  (zp/skip-waiting)
+                  (zp/skip-future-non-waiting-timestamped-tasks-cond)))
                (org-super-agenda-groups
                 ',(cond (by-groups
                          (zp/org-super-agenda-groups-all))
@@ -1161,9 +1174,10 @@ agenda settings after them."
                (org-agenda-skip-function
                 '(or (zp/skip-tasks-not-in-agenda-groups-with-extra-filters
                       ',filters)
-                     (zp/skip-non-projects-cond)
-                     (zp/skip-waiting)
-                     (zp/skip-future-non-waiting-timestamped-tasks-cond)))
+                  (zp/skip-tasks-not-matched-by-category-filter)
+                  (zp/skip-non-projects-cond)
+                  (zp/skip-waiting)
+                  (zp/skip-future-non-waiting-timestamped-tasks-cond)))
                (org-agenda-sorting-strategy
                 '(user-defined-down
                   category-keep))
