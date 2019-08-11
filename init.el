@@ -2885,7 +2885,7 @@ indirect-buffers."
           ("C-c C-x d" . zp/org-agenda-delete-property)
           ("C-c C-x s" . zp/org-agenda-wipe-local-config)
           (">" . zp/org-agenda-date-prompt-and-update-appt)
-          ("<" . zp/ivy-org-agenda-groups-set-extra-filters)
+          ("<" . zp/ivy-org-agenda-set-category-filter)
           ("C-c C-s" . zp/org-agenda-schedule-and-update-appt)
           ("C-c C-S-w" . zp/org-agenda-refile-with-paths)
           ("Z" . org-resolve-clocks)
