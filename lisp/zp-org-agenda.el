@@ -506,10 +506,11 @@ elements."
               (related (zp/org-get-related-categories group-filters))
               (filter
                (ivy-read "Filters: " (append related '("nil"))
-                         :preselect (when-let ((marker (get-text-property
-                                                        (point)
-                                                        'org-hd-marker)))
-                                      (zp/org-get-category marker))))
+                         :preselect (or (when-let ((marker (get-text-property
+                                                            (point)
+                                                            'org-hd-marker)))
+                                          (zp/org-get-category marker))
+                                        "nil")))
               (filter
                (if (or (string= "" filter)
                        (string= "nil" filter))
