@@ -515,8 +515,10 @@ elements."
                  (zp/org-agenda-groups-read-group-filter-string filter))))
          (zp/set-agenda-local 'zp/org-agenda-category-filter filter)
          (org-agenda-redo)
-         (message "Filter categories: %s."
-                  (zp/org-category-format-filter filter))))))
+         (if filter
+             (message "Filtering categories: %s."
+                      (zp/org-category-format-filter filter))
+           (message "Category filter has been cleared."))))))
 
 ;;----------------------------------------------------------------------------
 ;; Skip functions
