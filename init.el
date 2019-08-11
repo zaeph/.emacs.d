@@ -2888,7 +2888,7 @@ indirect-buffers."
           ("<" . zp/ivy-org-agenda-set-category-filter)
           ("C-c C-s" . zp/org-agenda-schedule-and-update-appt)
           ("C-c C-S-w" . zp/org-agenda-refile-with-paths)
-          ("Z" . org-resolve-clocks)
+          ("Z" . zp/org-resolve-clocks)
           ("C-<return>" . org-agenda-switch-to)
           ("<return>" . zp/org-agenda-tree-to-indirect-buffer-without-grabbing-focus)
           ("S-<return>" . zp/org-agenda-tree-to-indirect-buffer)

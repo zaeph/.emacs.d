@@ -138,6 +138,17 @@ With a prefix argument, do so in all agenda buffers."
         (message "%d entries marked for bulk action"
                  (length org-agenda-bulk-marked-entries))))))
 
+(defun zp/org-resolve-clocks ()
+  "Resolve all curently open Org clocks.
+Wrapper to refresh agenda after resolving clocks."
+  (interactive)
+  (let ((clocking-before (org-clocking-p)))
+    (org-resolve-clocks)
+    ;; Has the clocking state changed?
+    (unless (eq clocking-before
+                (org-clocking-p))
+      (org-agenda-redo))))
+
 ;;----------------------------------------------------------------------------
 ;; Group filters
 ;;----------------------------------------------------------------------------
