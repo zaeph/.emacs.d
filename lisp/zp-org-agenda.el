@@ -464,6 +464,10 @@ POM is a point or a marker."
                 (t
                  (goto-char (point-max)))))))))
 
+(defvar zp/org-agenda-category-filter nil
+  "Filter used for matching properties in custom agenda views.
+For more information, see ‘zp/skip-tasks-not-in-categories’.")
+
 ;;----------------------------------------------------------------------------
 ;; Skip functions
 ;;----------------------------------------------------------------------------
