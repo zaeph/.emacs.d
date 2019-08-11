@@ -470,7 +470,6 @@ For more information, see ‘zp/skip-tasks-not-in-categories’.")
 
 (defun zp/org-category-format-filter (filter)
   "Format a list-formatted FILTER into a string.
-
 This function creates human-readable filters to be used in UI
 elements."
   (let* ((include (car filter))
