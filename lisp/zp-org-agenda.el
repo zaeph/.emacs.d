@@ -141,12 +141,15 @@ With a prefix argument, do so in all agenda buffers."
 (defun zp/org-resolve-clocks ()
   "Resolve all curently open Org clocks and conditionally refresh."
   (interactive)
-  (let ((clocking-before (org-clocking-p)))
+  (let ((marker (org-get-at-bol 'org-marker))
+        (hdmarker (or (org-get-at-bol 'org-hd-marker) marker))
+        newhead)
     (org-resolve-clocks)
-    ;; Has the clocking state changed?
-    (unless (eq clocking-before
-                (org-clocking-p))
-      (org-agenda-redo))))
+    ;; Update faces
+    (org-agenda-unmark-clocking-task)
+    (org-with-point-at marker
+      (setq newhead (org-get-heading)))
+    (org-agenda-change-all-lines newhead hdmarker)))
 
 ;;----------------------------------------------------------------------------
 ;; Group filters
