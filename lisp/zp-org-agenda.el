@@ -413,10 +413,18 @@ The function will exclude the base groups in FILTERS."
 ;;----------------------------------------------------------------------------
 ;; Categories
 ;;----------------------------------------------------------------------------
+(defun zp/org-get-category (&optional pom)
+  "Get category of tree at point or at POM.
+POM is a point or a marker."
+  (org-entry-get (or pom
+                     (point))
+                 "CATEGORY"
+                 t))
+
 (defun zp/org-task-in-categories-p (filters)
   "Test whether task is in a catefory matched by FILTERS."
   (when filters
-    (let* ((task-category (org-entry-get (point) "CATEGORY" t))
+    (let* ((task-category (zp/org-get-category))
            (include (pop filters))
            (exclude (pop filters))
            (matched-pos (and include
