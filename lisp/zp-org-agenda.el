@@ -956,7 +956,7 @@ afterwards."
          (header-formatted
           (zp/org-agenda-format-header-align
            (concat flanking-symbol " " header " " flanking-symbol)))
-         (extra-filters zp/org-agenda-groups-extra-filters)
+         (category-filter zp/org-agenda-category-filter)
          word-list)
     (unless org-agenda-include-deadlines
       (add-to-list 'word-list "-deadlines" t))
@@ -977,10 +977,9 @@ afterwards."
           (setq word-list-formatted (concat " " "(" word-list-formatted ")")))
       (concat
        header-formatted word-list-formatted "\n"
-       (when extra-filters
-         (concat "Extra filters: "
-                 (zp/org-agenda-groups-format-filters extra-filters)
-                 "\n"))))))
+       (when category-filter
+         (concat "Filtering categories: "
+                 (zp/org-category-format-filter category-filter)))))))
 
 (defun zp/org-agenda-format-header-block (header)
   "Format header blocks in org-agenda."
