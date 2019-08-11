@@ -493,35 +493,36 @@ elements."
 (defun zp/ivy-org-agenda-set-category-filter (arg)
   "Set category filter for the current org-agenda view."
   (interactive "p")
-  (pcase arg
-    (4 (progn
-         (zp/set-agenda-local 'zp/org-agenda-category-filter nil)
-         (org-agenda-redo)
-         (message "Cleared extra filters.")))
-    (_ (let* ((group-filters (append
-                              (zp/get-agenda-local
-                               'zp/org-agenda-groups-filters)
-                              (zp/get-agenda-local
-                               'zp/org-agenda-groups-extra-filters)))
-              (related (zp/org-get-related-categories group-filters))
-              (filter
-               (ivy-read "Filters: " (append related '("nil"))
-                         :preselect (or (when-let ((marker (get-text-property
-                                                            (point)
-                                                            'org-hd-marker)))
-                                          (zp/org-get-category marker))
-                                        "nil")))
-              (filter
-               (if (or (string= "" filter)
-                       (string= "nil" filter))
-                   nil
-                 (zp/org-agenda-groups-read-group-filter-string filter))))
-         (zp/set-agenda-local 'zp/org-agenda-category-filter filter)
-         (org-agenda-redo)
-         (if filter
-             (message "Filtering categories: %s."
-                      (zp/org-category-format-filter filter))
-           (message "Category filter has been cleared."))))))
+  (cond
+    ((eq arg 4)
+     (progn
+       (zp/set-agenda-local 'zp/org-agenda-category-filter nil)
+       (org-agenda-redo)
+       (message "Cleared extra filters.")))
+    (t
+     (let* ((group-filters (append
+                            (zp/get-agenda-local
+                             'zp/org-agenda-groups-filters)
+                            (zp/get-agenda-local
+                             'zp/org-agenda-groups-extra-filters)))
+            (related (zp/org-get-related-categories group-filters))
+            (filter
+             (ivy-read "Filters: " (append '("nil") related)
+                       :preselect (when-let ((marker (get-text-property
+                                                      (point)
+                                                      'org-hd-marker)))
+                                    (zp/org-get-category marker))))
+            (filter
+             (if (or (string= "" filter)
+                     (string= "nil" filter))
+                 nil
+               (zp/org-agenda-groups-read-group-filter-string filter))))
+       (zp/set-agenda-local 'zp/org-agenda-category-filter filter)
+       (org-agenda-redo)
+       (if filter
+           (message "Filtering categories: %s."
+                    (zp/org-category-format-filter filter))
+         (message "Category filter has been cleared."))))))
 
 ;;----------------------------------------------------------------------------
 ;; Skip functions
