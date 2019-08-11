@@ -435,7 +435,7 @@ POM is a point or a marker."
                matched-pos)
            (not matched-neg)))))
 
-(defun zp/org-property-format-re-matcher (property filter)
+(defun zp/org-property-format-re-matcher (property &optional filter)
   "Format a regex to find PROPERTY set to any value in FILTER.
 
 PROPERTY should be the name of property as a string.
@@ -444,13 +444,16 @@ FILTER should be a list of string-values to match."
   (concat "^:"
           property
           ":.*"
-          "\\("
-          (mapconcat (lambda (elem)
-                       (concat "\\b" elem "\\b"))
-                     filter
-                     "\\|")
-          "\\)"
-          ".*$"))
+          (when filter
+            (concat
+             "\\("
+             (mapconcat (lambda (elem)
+                          (concat "\\b" elem "\\b"))
+                        filter
+                        "\\|")
+             "\\)"
+             ".*"))
+          "$"))
 
 (defun zp/skip-tasks-not-in-categories (filter)
   "Skip tasks which arent in a category matched by FILTERS."
