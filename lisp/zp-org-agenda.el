@@ -458,7 +458,6 @@ FILTER should be a list of string-values to match."
 
 (defun zp/org-get-related-categories (filters)
   "Get categories related to org-agenda groups matched by FILTER.
-
 A category is considered to be related to another if it shares at
 least one org-agenda group with it."
   (let (related)
