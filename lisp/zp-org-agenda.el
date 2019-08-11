@@ -413,8 +413,13 @@ The function will exclude the base groups in FILTERS."
 ;;----------------------------------------------------------------------------
 ;; Categories
 ;;----------------------------------------------------------------------------
-
-
+(defun zp/org-task-in-categories-p (filters)
+  "Test whether task is in a catefory matched by FILTERS."
+  (let ((task-category (org-entry-get (point) "CATEGORY" t))
+        (include (pop filters))
+        (exclude (pop filters)))
+    (and (member task-category include)
+         (not (member task-category exclude)))))
 
 ;;----------------------------------------------------------------------------
 ;; Skip functions
