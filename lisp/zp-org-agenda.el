@@ -154,6 +154,16 @@ With a prefix argument, do so in all agenda buffers."
 ;;----------------------------------------------------------------------------
 ;; Calendar interaction
 ;;----------------------------------------------------------------------------
+(defun zp/org-agenda-goto-calendar ()
+  "Open the Emacs calendar with the date at the cursor.
+If the cursor isn’t on a date-line, use the first one in the
+buffer."
+  (interactive)
+  (unless (looking-at-p "^\\S-")
+    (goto-char (point-min))
+    (org-agenda-next-date-line))
+  (org-agenda-goto-calendar))
+
 (defun zp/org-calendar-goto-agenda ()
   "Open the Emacs calendar with the date at the cursor.
 Wrapper to use our own agenda-view."
