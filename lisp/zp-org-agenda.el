@@ -494,19 +494,19 @@ For more information on formatting, see
              (groups-re (zp/org-agenda-groups-format-re-matcher include)))
         (save-excursion
           (cond
-           ((or (not compound-filter)
-                (zp/org-task-in-agenda-groups-p compound-filter))
-            nil)
-           ((catch 'found-next
-              (goto-char next-headline)
-              (while (re-search-forward
-                      groups-re
-                      nil t)
-                (if (zp/org-task-in-agenda-groups-p compound-filter)
-                    (throw 'found-next 't))))
-            (outline-previous-heading))
-           (t
-            (goto-char (point-max)))))))))
+            ((or (not compound-filter)
+                 (zp/org-task-in-agenda-groups-p compound-filter))
+             nil)
+            ((catch 'found-next
+               (goto-char next-headline)
+               (while (re-search-forward
+                       groups-re
+                       nil t)
+                 (if (zp/org-task-in-agenda-groups-p compound-filter)
+                     (throw 'found-next 't))))
+             (outline-previous-heading))
+            (t
+             (goto-char (point-max)))))))))
 
 (defvar zp/org-agenda-groups-extra-filters nil
   "Extra filters to use for filtering org-agenda groups.
