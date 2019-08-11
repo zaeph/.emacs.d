@@ -496,6 +496,29 @@ least one org-agenda group with it."
   "Filter used for matching properties in custom agenda views.
 For more information, see ‘zp/skip-tasks-not-in-categories’.")
 
+(defun zp/org-category-format-filter (filter)
+  "Format a list-formatted FILTER into a string.
+
+This function creates human-readable filters to be used in UI
+elements."
+  (let* ((include (car filter))
+         (exclude (cadr filter))
+         (format (lambda (symbol list)
+                   (mapconcat (lambda (elem)
+                                (concat symbol elem))
+                              list " ")))
+         (include-fmt (when (car include)
+                        (funcall format "+" include)))
+         (exclude-fmt (when (car exclude)
+                        (funcall format "-" exclude)))
+         (list (delete nil
+                       (list include-fmt
+                             exclude-fmt))))
+    (concat "{" (mapconcat #'identity
+                           list
+                           " ")
+            "}")))
+
 (defun zp/ivy-org-agenda-set-category-filter (arg)
   "Set category filter for the current org-agenda view."
   (interactive "p")
@@ -521,10 +544,8 @@ For more information, see ‘zp/skip-tasks-not-in-categories’.")
                  (zp/org-agenda-groups-read-group-filter-string filter))))
          (zp/set-agenda-local 'zp/org-agenda-category-filter filter)
          (org-agenda-redo)
-         ;; (message "Applied extra filters: %s."
-         ;;          (zp/org-agenda-groups-format-filters
-         ;;           filter))
-         (message "Applied extra filters.")))))
+         (message "Filter categories: %s."
+                  (zp/org-category-format-filter filter))))))
 
 ;;----------------------------------------------------------------------------
 ;; Skip functions
