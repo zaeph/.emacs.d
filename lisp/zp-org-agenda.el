@@ -139,8 +139,7 @@ With a prefix argument, do so in all agenda buffers."
                  (length org-agenda-bulk-marked-entries))))))
 
 (defun zp/org-resolve-clocks ()
-  "Resolve all curently open Org clocks.
-Wrapper to refresh agenda after resolving clocks."
+  "Resolve all curently open Org clocks and conditionally refresh."
   (interactive)
   (let ((clocking-before (org-clocking-p)))
     (org-resolve-clocks)
