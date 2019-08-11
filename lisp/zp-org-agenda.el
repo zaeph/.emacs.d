@@ -154,6 +154,28 @@ With a prefix argument, do so in all agenda buffers."
 ;;----------------------------------------------------------------------------
 ;; Calendar interaction
 ;;----------------------------------------------------------------------------
+(defun zp/org-calendar-goto-agenda ()
+  "Open the Emacs calendar with the date at the cursor.
+Wrapper to use our own agenda-view."
+  (interactive)
+  (let* ((calendar-window (selected-window))
+         (date (destructuring-bind (month day year)
+                   (calendar-cursor-to-date)
+                 (format "%d-%02d-%02d" year month day))))
+    (other-window 1)
+    (cond ((and (derived-mode-p 'org-agenda-mode)
+                (member (zp/org-agenda-get-key)
+                        (list "n" "k" "K")))
+           (zp/org-agenda-goto-date date))
+          (t
+           (let ((org-agenda-sticky nil)
+                 (org-agenda-custom-commands
+                  `(("calendar" "Testing"
+                                (,(zp/org-agenda-block-agenda-calendar
+                                   "Agenda: Calendar" date))))))
+             (org-agenda nil "calendar"))))
+    (calendar-exit)))
+
 (defun zp/org-agenda-goto-date (date)
   "Jump to DATE in agenda."
   (interactive "P")
