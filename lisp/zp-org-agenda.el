@@ -149,15 +149,9 @@ With a prefix argument, do so in all agenda buffers."
   (let* ((pos (or pom
                   (point)))
          (property zp/org-agenda-groups-property)
-         (groups (org-entry-get pos property t))
-         (category (org-entry-get pos "CATEGORY" t))
-         ;; Combine groups and category
-         (string (mapconcat #'identity
-                            (list category
-                                  groups)
-                            ", ")))
-    (when string
-      (let ((list (split-string string ", ?")))
+         (groups (org-entry-get pos property t)))
+    (when groups
+      (let ((list (split-string groups ", ?")))
         (delete-dups list)
         (delete "" list)))))
 
@@ -345,16 +339,12 @@ agenda-group."
 
 (defun zp/org-agenda-groups-format-re-matcher (list)
   "Format a regexp to match agenda-groups in LIST."
-  (let* ((property-groups zp/org-agenda-groups-property)
-         (property-category "CATEGORY")
+  (let* ((property zp/org-agenda-groups-property)
          (groups (mapconcat #'identity
                             list
                             "\\|")))
-    (concat "^:\\("
-            property-groups
-            "\\|"
-            property-category
-            "\\)"
+    (concat "^:"
+            property
             ":.*"
             (when list
               (concat "\\b"
