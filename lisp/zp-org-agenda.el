@@ -435,6 +435,15 @@ POM is a point or a marker."
                matched-pos)
            (not matched-neg)))))
 
+(defun zp/skip-tasks-not-in-categories (filters)
+  "Skip tasks which arent in a category matched by FILTERS."
+  (save-restriction
+    (widen)
+    (let* ((category (zp/org-get-category)))
+      (unless (zp/org-task-in-categories-p filters)
+        (save-excursion
+          (org-end-of-subtree))))))
+
 ;;----------------------------------------------------------------------------
 ;; Skip functions
 ;;----------------------------------------------------------------------------
