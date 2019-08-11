@@ -2930,6 +2930,7 @@ indirect-buffers."
            zp/org-agenda-include-waiting t
            zp/org-agenda-include-projects t
            zp/org-agenda-groups-extra-filters nil
+           zp/org-agenda-category-filter nil
 
            org-habit-show-habits t
            zp/org-agenda-include-routine t
