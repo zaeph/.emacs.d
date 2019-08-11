@@ -1037,7 +1037,7 @@ agenda settings after them."
 
 (defun zp/org-agenda-hi-lock ()
   (highlight-regexp "([-+].*?)" 'zp/org-agenda-block-info-face)
-  (highlight-regexp "F.:{.*?}" 'zp/org-agenda-block-info-face)
+  (highlight-regexp "{.*?}" 'zp/org-agenda-block-info-face)
   ;; (highlight-regexp "^[[:space:]]*? \\[ Stuck Projects \\]" 'zp/org-agenda-block-warning-face)
   (highlight-regexp "^~~.*~~$" 'font-lock-comment-face))
 
