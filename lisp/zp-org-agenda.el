@@ -383,10 +383,7 @@ agenda-group."
 (defun zp/org-get-category (&optional pom)
   "Get category of tree at point or at POM.
 POM is a point or a marker."
-  (org-entry-get (or pom
-                     (point))
-                 "CATEGORY"
-                 t))
+  (org-entry-get (or pom (point)) "CATEGORY" t))
 
 (defun zp/org-task-in-categories-p (filter)
   "Test whether task is in a catefory matched by FILTERS."
