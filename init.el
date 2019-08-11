@@ -2651,6 +2651,7 @@ along with effort estimates and total time."
          ("M-s M-s" . helm-occur)
          ("C-x r b" . helm-bookmarks)
          ("C-h C-SPC" . helm-all-mark-rings)
+         ("C-h a" . helm-apropos)
          :map helm-map
          ("C-S-o" . helm-previous-source)
          :map zp/helm-map
@@ -2662,7 +2663,6 @@ along with effort estimates and total time."
           ("c" . helm-colors)
           ("M-:" . helm-eval-expression-with-eldoc)
           ("i" . helm-semantic-or-imenu)
-          ("a" . helm-apropos)
           ("/" . helm-find)
           ("<tab>" . helm-lisp-completion-at-point)
           ("p" . helm-projectile)))
