@@ -328,6 +328,7 @@ time is displayed."
 ;;----------------------------------------------------------------------------
 (define-minor-mode print-circle-mode
     "Mode for toggling ‘print-circle’ globally."
+  :lighter " crcl"
   :global t
   (if print-circle-mode
       (setq print-circle t)
