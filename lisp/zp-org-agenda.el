@@ -1440,9 +1440,9 @@ It creates 4 blocks:
                                   (not (zp/get-agenda-local
                                         'zp/org-agenda-include-routine)))
         (org-agenda-redo))
-      (message "Displaying habits & routine tasks.")
+      (message "Showing routine tasks.")
     (org-agenda-redo)
-    (message "Hiding habits & routine tasks.")))
+    (message "Hiding routine tasks.")))
 
 (defun zp/toggle-org-habit-show-all-today ()
   "Toggle the display of habits between showing only the habits
