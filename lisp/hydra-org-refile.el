@@ -55,16 +55,17 @@ When JUMP is non-nil, jump to that other heading instead."
     (when (and (not in-agenda)
                (org-before-first-heading-p))
       (outline-next-heading))
-    (save-window-excursion
+    (let ((buffer (current-buffer)))
       (when in-agenda
         (org-goto-marker-or-bmk (or (get-text-property (point) 'org-marker)
                                     (get-text-property (point) 'org-hd-marker))))
       (org-refile (if jump '(4) t))
       (setq file (buffer-file-name))
-      (setq pos (point-marker)))
-    (zp/org-refile-to file pos print-message jump)
-    (set-marker pos nil)
-    (setq target (point))))
+      (setq pos (point-marker))
+      (switch-to-buffer buffer)
+      (zp/org-refile-to file pos print-message jump)
+      (set-marker pos nil)
+      (setq target (point)))))
 
 (defun zp/org-jump (&optional print-message)
   "Jump to another heading."
