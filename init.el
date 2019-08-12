@@ -2947,7 +2947,7 @@ indirect-buffers."
         zp/org-agenda-extra-local-config
         '(("k" ((zp/org-agenda-include-routine . nil)))
           ("K" ((zp/org-agenda-include-routine . nil)))
-          ("a" ((zp/org-agenda-include-routine . nil))))
+          ("calendar" ((zp/org-agenda-include-routine . nil))))
 
         ;; View setup
         org-agenda-hide-tags-regexp "recurring\\|waiting\\|standby"
