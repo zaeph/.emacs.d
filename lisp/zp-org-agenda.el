@@ -638,8 +638,6 @@ the former should be preferred.
 For more information on formatting, see
 ‘zp/org-agenda-groups-is-group-filter-p’ and
 ‘zp/org-agenda-groups-read-group-filter-string’."
-  (when zp/org-agenda-skip-functions-debug
-    (message "STNG: %s" (org-entry-get (point) "ITEM")))
   (when filters
     (save-restriction
       (widen)
