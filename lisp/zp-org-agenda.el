@@ -802,19 +802,17 @@ todo-keyword)."
 
 (defun zp/skip-future-non-waiting-timestamped-tasks ()
   "Skip non-waiting tasks with a future timestamp."
-  (when-let ((ts (org-entry-get (point) "TIMESTAMP" nil)))
-    (save-restriction
-      (widen)
-      (let* ((entry-day (org-time-string-to-absolute ts))
-             (today (org-today))
-             (future (1+ today))
-             (in-future (>= entry-day future)))
-        (if (and ts
-                 in-future
-                 (not (zp/is-waiting-p)))
-            (save-excursion
-              (org-end-of-subtree))
-          nil)))))
+  (save-restriction
+    (widen)
+    (when-let ((ts (org-entry-get (point) "TIMESTAMP" nil)))
+      (save-excursion
+        (let* ((entry-day (org-time-string-to-absolute ts))
+               (today (org-today))
+               (future (1+ today))
+               (in-future (>= entry-day future)))
+          (when (and in-future
+                     (not (zp/is-waiting-p)))
+            (org-end-of-subtree)))))))
 
 (defun zp/skip-future-non-waiting-timestamped-tasks-cond ()
   "Cond. skip non-waiting tasks with a future timestamp."
