@@ -2975,6 +2975,8 @@ indirect-buffers."
         zp/org-agenda-extra-local-config
         '(("k" ((zp/org-agenda-include-routine . nil)))
           ("K" ((zp/org-agenda-include-routine . nil)))
+          ("x" ((zp/org-agenda-todo-ignore-future . nil)
+                (org-agenda-todo-ignore-scheduled . nil)))
           ("calendar" ((zp/org-agenda-include-routine . nil))))
 
         ;; View setup
