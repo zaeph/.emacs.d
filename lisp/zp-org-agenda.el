@@ -193,15 +193,14 @@ Wrapper to use our own agenda-view."
     (other-window 1)
     (cond ((and (derived-mode-p 'org-agenda-mode)
                 (member (zp/org-agenda-get-key)
-                        (list "n" "k" "K")))
-           (zp/org-agenda-goto-date date))
+                        (list "n" "k" "K"))))
           (t
-           (let ((org-agenda-sticky nil)
-                 (org-agenda-custom-commands
+           (let ((org-agenda-custom-commands
                   `(("calendar" "Testing"
                                 (,(zp/org-agenda-block-agenda-calendar
                                    "Agenda: Calendar" date))))))
              (org-agenda nil "calendar"))))
+    (zp/org-agenda-goto-date date)
     (calendar-exit)))
 
 (defun zp/org-agenda-goto-date (date)
