@@ -520,6 +520,7 @@ FILTER should be a list of string-values to match."
                 ((catch 'found-next
                    (let ((re (zp/org-property-format-re-matcher
                               "CATEGORY" include)))
+                     (goto-char next-headline)
                      (while (re-search-forward re nil t)
                        (when (zp/org-task-in-categories-p filter)
                          (throw 'found-next t)))))
@@ -637,8 +638,6 @@ the former should be preferred.
 For more information on formatting, see
 ‘zp/org-agenda-groups-is-group-filter-p’ and
 ‘zp/org-agenda-groups-read-group-filter-string’."
-  (when zp/org-agenda-skip-functions-debug
-    (message "STNG: %s" (org-entry-get (point) "ITEM")))
   (when filters
     (save-restriction
       (widen)
@@ -648,21 +647,24 @@ For more information on formatting, see
              (include (apply #'append (car compound-filter)))
              (next-headline (save-excursion
                               (or (outline-next-heading)
-                                  (point-max))))
-             (property zp/org-agenda-groups-property)
-             (groups-re (zp/org-property-format-re-matcher property include)))
+                                  (point-max)))))
         (save-excursion
           (cond
             ((or (not compound-filter)
                  (zp/org-task-in-agenda-groups-p compound-filter))
              nil)
+            ((catch 'found-ancestor
+               (while (org-up-heading-safe)
+                 (when (zp/org-task-in-agenda-groups-p compound-filter)
+                   (throw 'found-ancestor t))))
+             next-headline)
             ((catch 'found-next
-               (goto-char next-headline)
-               (while (re-search-forward
-                       groups-re
-                       nil t)
-                 (if (zp/org-task-in-agenda-groups-p compound-filter)
-                     (throw 'found-next 't))))
+               (let* ((property zp/org-agenda-groups-property)
+                      (re (zp/org-property-format-re-matcher property include)))
+                 (goto-char next-headline)
+                 (while (re-search-forward re nil t)
+                   (when (zp/org-task-in-agenda-groups-p compound-filter)
+                     (throw 'found-next t)))))
              (outline-previous-heading))
             (t
              (goto-char (point-max)))))))))
