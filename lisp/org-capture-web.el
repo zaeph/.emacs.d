@@ -92,7 +92,8 @@ URL is the url to the Letterboxd page of the film."
 :MEDIA_LINK: [[%s][Letterboxd]]
 :MEDIA_DIRECTOR: %s
 :MEDIA_YEAR: %s
-:MEDIA_DURATION: %s")
+:MEDIA_DURATION: %s
+:END:")
          (duration-str (if (string= duration "")
                            "???"
                          (zp/convert-m-to-hm duration)))
