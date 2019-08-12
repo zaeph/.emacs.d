@@ -182,6 +182,13 @@ buffer."
     (org-agenda-next-date-line))
   (org-agenda-goto-calendar))
 
+(defvar zp/org-agenda-seekable-agendas-list nil
+  "List of agendas to consider as seekable.
+A seekable agenda is an agenda that can show meaningful
+information when jumping to a date.  This is used by
+‘zp/org-calendar-goto-agenda’ to check whether to use the current
+agenda view or to spawn a new one.")
+
 (defun zp/org-calendar-goto-agenda ()
   "Open the Emacs calendar with the date at the cursor.
 Wrapper to use our own agenda-view."
@@ -193,7 +200,7 @@ Wrapper to use our own agenda-view."
     (other-window 1)
     (cond ((and (derived-mode-p 'org-agenda-mode)
                 (member (zp/org-agenda-get-key)
-                        (list "n" "k" "K"))))
+                        zp/org-agenda-seekable-agendas-list)))
           (t
            (let ((org-agenda-custom-commands
                   `(("calendar" "Testing"

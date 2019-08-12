@@ -3055,6 +3055,8 @@ indirect-buffers."
 
   (setq zp/org-agenda-default-agendas-list '("n" "N" "k" "l"))
 
+  (setq zp/org-agenda-seekable-agendas-list '("n" "N" "k" "K"))
+
   (setq org-agenda-custom-commands
         `(("n" "Agenda"
            (,(zp/org-agenda-block-agenda-main "Agenda" org-agenda-files)))
