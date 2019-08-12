@@ -198,15 +198,14 @@ Wrapper to use our own agenda-view."
                    (calendar-cursor-to-date)
                  (format "%d-%02d-%02d" year month day))))
     (other-window 1)
-    (cond ((and (derived-mode-p 'org-agenda-mode)
-                (member (zp/org-agenda-get-key)
-                        zp/org-agenda-seekable-agendas-list)))
-          (t
-           (let ((org-agenda-custom-commands
+    (unless (and (derived-mode-p 'org-agenda-mode)
+                 (member (zp/org-agenda-get-key)
+                         zp/org-agenda-seekable-agendas-list))
+      (let ((org-agenda-custom-commands
                   `(("calendar" "Testing"
                                 (,(zp/org-agenda-block-agenda-calendar
                                    "Agenda: Calendar" date))))))
-             (org-agenda nil "calendar"))))
+        (org-agenda nil "calendar")))
     (zp/org-agenda-goto-date date)
     (calendar-exit)))
 
