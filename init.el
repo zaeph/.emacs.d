@@ -2893,7 +2893,11 @@ indirect-buffers."
           ("<return>" . zp/org-agenda-tree-to-indirect-buffer-without-grabbing-focus)
           ("S-<return>" . zp/org-agenda-tree-to-indirect-buffer)
           ("M-<return>" . zp/org-agenda-tree-to-indirect-buffer-maximise)
-          ("<backspace>" . zp/org-kill-spawned-ibuf-and-window)))
+          ("<backspace>" . zp/org-kill-spawned-ibuf-and-window)
+          ("c" . zp/org-agenda-goto-calendar))
+         :map calendar-mode-map
+         (("c" . zp/org-calendar-goto-agenda)
+          ("<RET>" . zp/org-calendar-goto-agenda)))
   :config
   (setq org-agenda-show-future-repeats t
         org-agenda-skip-scheduled-if-done 1
@@ -2941,7 +2945,9 @@ indirect-buffers."
            zp/org-agenda-sort-by-rev-fifo nil))
 
         zp/org-agenda-extra-local-config
-        '(("k" ((zp/org-agenda-include-routine . nil))))
+        '(("k" ((zp/org-agenda-include-routine . nil)))
+          ("K" ((zp/org-agenda-include-routine . nil)))
+          ("a" ((zp/org-agenda-include-routine . nil))))
 
         ;; View setup
         org-agenda-hide-tags-regexp "recurring\\|waiting\\|standby"
