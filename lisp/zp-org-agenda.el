@@ -520,6 +520,7 @@ FILTER should be a list of string-values to match."
                 ((catch 'found-next
                    (let ((re (zp/org-property-format-re-matcher
                               "CATEGORY" include)))
+                     (goto-char next-headline)
                      (while (re-search-forward re nil t)
                        (when (zp/org-task-in-categories-p filter)
                          (throw 'found-next t)))))
@@ -662,6 +663,7 @@ For more information on formatting, see
             ((catch 'found-next
                (let* ((property zp/org-agenda-groups-property)
                       (re (zp/org-property-format-re-matcher property include)))
+                 (goto-char next-headline)
                  (while (re-search-forward re nil t)
                    (when (zp/org-task-in-agenda-groups-p compound-filter)
                      (throw 'found-next t)))))
