@@ -3083,7 +3083,7 @@ indirect-buffers."
 
         (".*" '(space . (:width (24))) nil nil :ascent center)))
 
-  (setq zp/org-agenda-default-agendas-list '("n" "N" "k" "l"))
+  (setq zp/org-agenda-default-agendas-list '("n" "l"))
 
   (setq zp/org-agenda-seekable-agendas-list '("n" "N" "k" "K"))
 
