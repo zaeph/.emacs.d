@@ -4624,7 +4624,7 @@ mouse-1: Previous buffer\nmouse-3: Next buffer")
          ("C-c T" . zp/switch-emacs-theme)
          :map zp/toggle-map
          (("t" . zp/switch-emacs-theme)
-          ("C" . zp/helm-select-font-dwim)))
+          ("y" . zp/helm-select-font-dwim)))
   :config
   ;; Fonts
   (zp/set-font "sarasa")
