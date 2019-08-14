@@ -3424,7 +3424,8 @@ indirect-buffers."
   (use-package org
     :bind (:map org-mode-map
                 ("C-c C-j" . zp/org-jump-dwim )
-                ("C-c C-w" . zp/org-refile-dwim )))
+                ("C-c C-w" . zp/org-refile-dwim ))
+    :hook (org-mode . visual-line-mode))
 
   (use-package org-agenda
     :bind (:map org-agenda-mode-map
