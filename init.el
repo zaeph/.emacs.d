@@ -488,9 +488,18 @@ time is displayed."
   ;; (add-to-list 'load-path "<path where use-package is installed>")
   (require 'use-package))
 
-;; Change indent-function to common-lisp’s
-(setq lisp-indent-function 'common-lisp-indent-function)
-;; (setq lisp-indent-function 'lisp-indent-function) ;Default
+(use-package slime)
+
+(use-package slime-cl-indent
+  :config
+  (setq lisp-indent-function #'lisp-indent-function) ;Default
+
+  ;; Change indent style for CL
+  (setq common-lisp-style "sbcl")
+
+  ;; Way to override indent for some functions
+  ;; (put 'use-package 'common-lisp-indent-function 1)
+  )
 
 (use-package package
   :bind ("C-c P" . package-list-packages))
