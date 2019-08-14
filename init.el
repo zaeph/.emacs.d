@@ -1987,6 +1987,10 @@ return `nil'."
 
   (global-set-key (kbd "C-c c") 'calendar))
 
+(use-package org-id
+    :config
+  (setq org-id-link-to-org-use-id 'create-if-interactive-and-no-custom-id))
+
 (use-package org-habit
   :config
   (add-to-list 'org-modules 'org-habit)
