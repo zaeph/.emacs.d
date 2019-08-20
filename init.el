@@ -1640,6 +1640,7 @@ The language should be the name of a valid Ispell dictionary.")
                ("C-c <C-backspace>" . zp/LaTeX-remove-macro)
                ("C-c <M-backspace>" . zp/LaTeX-remove-environment)
                ("C-c C-t C-v" . zp/tex-view-program-switch)))
+  :hook (LaTeX-mode . visual-line-mode)
   :config
   ;; Set default library
   (setq-default TeX-engine 'luatex
