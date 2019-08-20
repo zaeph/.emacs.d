@@ -153,8 +153,9 @@ end-of-buffer signals; pass the rest to the default handler."
 (setq enable-recursive-minibuffers t)
 
 ;; Make M-U equivalent to C-u
-(global-set-key (kbd "M-U") 'universal-argument)
-(define-key universal-argument-map "\M-U" 'universal-argument-more)
+;; Commented out because I can’t remember why it was necessary
+;; (global-set-key (kbd "M-U") 'universal-argument)
+;; (define-key universal-argument-map "\M-U" 'universal-argument-more)
 
 ;; Prevent newlines insertion when moving past the end of the file
 (setq next-line-add-newlines nil)
