@@ -356,6 +356,7 @@ time is displayed."
 (global-set-key (kbd "C-c s") #'scroll-bar-mode)
 (global-set-key (kbd "C-c H") #'global-hl-line-mode)
 (global-set-key (kbd "C-c g") #'display-line-numbers-mode)
+(global-set-key (kbd "M-U") #'visual-line-mode)
 
 ;; Exit Emacs with ‘C-x r q’, and kill the current frame with ‘C-x C-c’
 (global-set-key (kbd "C-x r q") #'save-buffers-kill-terminal)
