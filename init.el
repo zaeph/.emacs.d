@@ -1732,6 +1732,30 @@ entry in `TeX-view-program-list-builtin'."
 
   (setq TeX-view-pdf-tools-keep-focus t)
 
+  (defun TeX-brace-count-line ()
+    "Count number of open/closed braces.
+Patched to also indent content in square brackets."
+    (save-excursion
+      (let ((count 0) (limit (line-end-position)) char)
+        (while (progn
+                 (skip-chars-forward "^{}[]\\\\" limit)
+                 (when (and (< (point) limit) (not (TeX-in-comment)))
+                   (setq char (char-after))
+                   (forward-char)
+                   (cond ((eq char ?\{)
+                          (setq count (+ count TeX-brace-indent-level)))
+                         ((eq char ?\})
+                          (setq count (- count TeX-brace-indent-level)))
+                         ((eq char ?\[)
+                          (setq count (+ count TeX-brace-indent-level)))
+                         ((eq char ?\])
+                          (setq count (- count TeX-brace-indent-level)))
+                         ((eq char ?\\)
+                          (when (< (point) limit)
+                            (forward-char)
+                            t))))))
+        count)))
+
   (defun zp/tex-view-program-set-pdf-tools ()
     (setq TeX-view-program-selection
           '((output-pdf "PDF Tools"))
