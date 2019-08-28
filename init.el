@@ -1467,6 +1467,8 @@ based on ‘zp/message-mode-ispell-alist’."
           ("C-c C-z" . zp/message-kill-to-signature))
          :map notmuch-show-mode-map
          (("C-c C-o" . goto-address-at-point)))
+  :hook ((notmuch-hello-refresh . zp/color-inbox)
+         (notmuch-hello-refresh . zp/color-inbox-pro))
   :config
   (setq notmuch-always-prompt-for-sender t
         notmuch-search-oldest-first nil)
@@ -1526,6 +1528,46 @@ The language should be the name of a valid Ispell dictionary.")
     (interactive "P")
     (if (y-or-n-p "Ready to send? ")
         (notmuch-mua-send-and-exit arg)))
+
+  ;;------------------------------------------------
+  ;; Highlight inbox if it contains unread messages
+  ;;------------------------------------------------
+
+  (defun zp/color-inbox-if-unread (inbox &optional search)
+    "Color INBOX if SEARCH matches any unread message in inbox.
+
+INBOX is the name of the saved search to highlight.
+
+SEARCH is a string to be interpreted by notmuch-search."
+    (interactive)
+    (save-excursion
+      (goto-char (point-min))
+      (let* ((query-base "tag:inbox and tag:unread")
+             (query (if search
+                        (concat "\("
+                                search
+                                "\)"
+                                " and "
+                                "\("
+                                query-base
+                                "\)")
+                      query-base))
+             (cnt (car (process-lines "notmuch" "count" query))))
+        cnt
+        (when (> (string-to-number cnt) 0)
+          (when (search-forward inbox (point-max) t)
+            (let* ((overlays (overlays-in (match-beginning 0) (match-end 0)))
+                   (overlay (car overlays)))
+              (when overlay
+                (overlay-put overlay 'face '((:inherit bold)
+                                             (:foreground "red")
+                                             (:underline t))))))))))
+
+  (defun zp/color-inbox ()
+    (zp/color-inbox-if-unread "inbox"))
+
+  (defun zp/color-inbox-pro ()
+    (zp/color-inbox-if-unread "inbox (pro)" "tag:pro"))
 
   ;;----------------------
   ;; Switching to notmuch
