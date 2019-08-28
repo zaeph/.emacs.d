@@ -1196,6 +1196,9 @@ LANGUAGE should be the name of an Ispell dictionary."
   (defvar zp/email-work (zp/get-string-from-file "~/org/pp/work/email")
     "Email used for work-related communications.")
 
+  (defvar zp/email-work-pro (zp/get-string-from-file "~/org/pp/work-pro/email")
+    "Email used for work-related communications.")
+
   (defun zp/get-email-with-alias (email alias &optional regex)
     "Create email alias from EMAIL and ALIAS.
 
@@ -1386,6 +1389,7 @@ of lines before the signature intact."
   (setq zp/message-ispell-alist
         `((,zp/email-private . "french")
           (,zp/email-work . "french")
+          (,zp/email-work-pro . "french")
           (,zp/email-org . "british")
           (,zp/email-dev . "british")))
 
@@ -1472,6 +1476,8 @@ based on ‘zp/message-mode-ispell-alist’."
            "private/sent -inbox +sent -unread")
           (,(regexp-quote zp/email-work) .
            "work/sent -inbox +sent -unread")
+          (,(regexp-quote zp/email-work-pro) .
+           "work-pro/sent -inbox +sent -unread")
           (,(regexp-quote zp/email-org) .
            "work/sent -inbox +sent -unread +org")
           (,(regexp-quote zp/email-dev) .
