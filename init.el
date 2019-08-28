@@ -1518,6 +1518,8 @@ based on ‘zp/message-mode-ispell-alist’."
           (:name "archive (last week)" :query "* date:\"7d..today\"" :key "a")
           (:name "sent" :query "tag:sent" :key "S")
           (:name "archive" :query "*" :key "A")
+          (:name "pro (last week)" :query "tag:pro date:\"7d..today\"" :key "p")
+          (:name "pro" :query "tag:pro" :key "P")
           (:name "trash" :query "tag:deleted" :key "t")))
 
   (defvar zp/message-ispell-alist nil
