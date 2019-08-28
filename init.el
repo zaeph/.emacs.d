@@ -1508,6 +1508,7 @@ based on ‘zp/message-mode-ispell-alist’."
 
   (setq notmuch-saved-searches
         '((:name "inbox" :query "tag:inbox" :key "i")
+          (:name "inbox (pro)" :query "tag:pro and tag:inbox" :key "p")
           (:name "unread" :query "tag:unread and not tag:inbox" :key "u")
           (:name "flagged" :query "tag:flagged" :key "f")
           (:name "drafts" :query "tag:draft" :key "d")
