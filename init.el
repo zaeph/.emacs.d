@@ -2176,6 +2176,7 @@ return `nil'."
           ("assignment" . org-tag-important)
           ("exam" . org-tag-important)
           ("important" . org-tag-important)
+          ("more" . org-tag-important)
           ("curios" . org-tag-curios)
           ("french" . org-tag-french)))
 
