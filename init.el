@@ -1167,7 +1167,7 @@ LANGUAGE should be the name of an Ispell dictionary."
   (defun zp/get-message-signature ()
     (let* ((signature-override
             (concat (file-name-as-directory "~/org/sig")
-                    (message-sendmail-envelope-from)))
+                    (downcase (message-sendmail-envelope-from))))
            (signature-file
             (if (file-readable-p signature-override)
                 signature-override
@@ -1398,7 +1398,7 @@ of lines before the signature intact."
 
 Looks for the email in the ‘From:’ field and chooses a language
 based on ‘zp/message-mode-ispell-alist’."
-    (let* ((sender (message-sendmail-envelope-from))
+    (let* ((sender (downcase (message-sendmail-envelope-from)))
            (language (cdr (assoc sender zp/message-ispell-alist))))
       (zp/ispell-switch-dictionary language)))
 
