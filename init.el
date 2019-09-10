@@ -3106,6 +3106,7 @@ indirect-buffers."
 
         ;; Research
         ("^research$" "~/org/svg/icons/research.svg" nil nil :ascent center)
+        ("^d&p$" "~/org/svg/icons/university.svg" nil nil :ascent center)
         ("^cs$" "~/org/svg/icons/computer-science.svg" nil nil :ascent center)
         ("^maths$" "~/org/svg/icons/pi.svg" nil nil :ascent center)
         ("^phil$" "~/org/svg/icons/philosophy.svg" nil nil :ascent center)
@@ -3562,6 +3563,7 @@ indirect-buffers."
   ^Research^
  ^^---------------------
   _._: Root
+  _d_: D&P
   _c_: Computer Science
   _m_: Mathematics
   _p_: Philosophy
@@ -3570,6 +3572,7 @@ indirect-buffers."
   _t_: Typography
 "
     (("." "~/org/life.org" "Research")
+     ("d" "~/org/life.org" "Didactics & Pedagogy")
      ("c" "~/org/life.org" "Computer Science")
      ("m" "~/org/life.org" "Mathematics")
      ("p" "~/org/life.org" "Philosophy")
