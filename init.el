@@ -3587,10 +3587,29 @@ indirect-buffers."
   _._: Root
   _s_: School
   _u_: University
+  _c_/_C_: Classes
 "
     (("." "~/org/life.org" "Professional")
      ("s" "~/org/life.org" "School")
-     ("u" "~/org/life.org" "University")))
+     ("u" "~/org/life.org" "University")
+     ("C" "~/org/life.org" "Classes"))
+    (("c" classes)))
+
+  (zp/create-hydra-org-refile classes
+      "
+  ^Classes^
+ ^^---------------
+  _._: Root
+  _1_: 2nde 3&4
+  _2_: 2nde 1&2
+  _3_: 1ère 3&4
+  _4_: 1ère ST2S 1&2
+"
+    (("." "~/org/life.org" "Classes")
+     ("1" "~/org/life.org" "Classes" "2nde" "LPOLJ-2019-2020 - 2nde 3&4")
+     ("2" "~/org/life.org" "Classes" "2nde" "LPOLJ-2019-2020 - 2nde 1&2")
+     ("3" "~/org/life.org" "Classes" "1ère" "LPOLJ-2019-2020 - 1ère 3&4")
+     ("4" "~/org/life.org" "Classes" "1ère" "LPOLJ-2019-2020 - 1ère ST2S 1&2")))
 
   (zp/create-hydra-org-refile hack
       "
