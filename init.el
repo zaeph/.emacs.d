@@ -340,7 +340,6 @@ time is displayed."
 (define-minor-mode always-centred-mode
   "Mode for keeping the cursor vertically centred."
   :lighter " ctr"
-  ;; :global t
   (let* ((settings '((scroll-preserve-screen-position nil t)
                      (scroll-conservatively 0 0)
                      (maximum-scroll-margin 0.25 0.5)
