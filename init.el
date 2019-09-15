@@ -337,6 +337,25 @@ time is displayed."
 
 (print-circle-mode)
 
+(define-minor-mode always-centred-mode
+  "Mode for keeping the cursor vertically centred."
+  :lighter " ctr"
+  ;; :global t
+  (let* ((settings '((scroll-preserve-screen-position nil t)
+                     (scroll-conservatively 0 0)
+                     (maximum-scroll-margin 0.25 0.5)
+                     (scroll-margin 0 99999)))
+         (toggle (lambda (mode)
+                   (dolist (data settings)
+                     (cl-destructuring-bind (setting default new) data
+                       (set (make-local-variable setting)
+                            (if (eq mode 'on)
+                                new
+                              default)))))))
+    (if always-centred-mode
+        (funcall toggle 'on)
+      (funcall toggle 'off))))
+
 ;;----------------------------------------------------------------------------
 ;; Keys
 ;;----------------------------------------------------------------------------
