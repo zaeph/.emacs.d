@@ -2292,7 +2292,8 @@ return `nil'."
                                '((R . t)
                                  (python . t)
                                  (latex . t)
-                                 (ledger . t)))
+                                 (ledger . t)
+                                 (shell . t)))
 
   ;; Show images after executing a src-block that generated one
   ;; TODO: Limit the scope of the hook by testing if the block actually
