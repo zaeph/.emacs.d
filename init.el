@@ -2827,6 +2827,7 @@ along with effort estimates and total time."
 (use-package counsel
   :after swiper
   :bind (("C-s" . zp/counsel-grep-or-swiper)
+         ("C-r" . counsel-grep-or-swiper-backward)
          ;; Commented because I use the Helm equivalents
          ;; ("M-x" . counsel-M-x)
          ;; ("<menu>" . counsel-M-x)
