@@ -4371,7 +4371,7 @@ buffer, thereby propagating the indirectness."
 ;; helm-bibtex
 ;;----------------------------------------------------------------------------
 (use-package helm-bibtex
-  :bind (("H-y" . zp/helm-bibtex-with-local-bibliograph)
+  :bind (("H-y" . zp/helm-bibtex-with-local-bibliography)
          ("H-M-y" . zp/helm-bibtex-select-bib)
          ("C-c D" . zp/bibtex-completion-message-key-last))
   :config
