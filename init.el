@@ -813,12 +813,18 @@ Modifies ‘diff-command’ and ‘diff-switches’ to use ‘git diff’."
          (format "evince -i %s \"%s\"" current-page current-file))))
     (message "Sent to Evince"))
 
+  (defun zp/pdf-view-show-current-page ()
+    "Show the current page."
+    (interactive)
+    (message "Page: %s" (pdf-view-current-page)))
+
   (define-key pdf-view-mode-map (kbd "m") 'pdf-view-midnight-minor-mode)
   (define-key pdf-view-mode-map (kbd "s") 'zp/toggle-pdf-view-auto-slice-minor-mode)
   (define-key pdf-view-mode-map (kbd "M") 'pdf-view-set-slice-using-mouse)
   (define-key pdf-view-mode-map (kbd "c") 'zp/pdf-view-continuous-toggle)
   (define-key pdf-view-mode-map (kbd "w") 'pdf-view-fit-width-to-window)
   (define-key pdf-view-mode-map (kbd "RET") 'zp/pdf-view-open-in-evince)
+  (define-key pdf-view-mode-map (kbd ".") 'zp/pdf-view-show-current-page)
 
   (define-key pdf-annot-edit-contents-minor-mode-map (kbd "C-c C-k") 'pdf-annot-edit-contents-abort)
 
