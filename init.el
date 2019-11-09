@@ -803,11 +803,20 @@ Modifies ‘diff-command’ and ‘diff-switches’ to use ‘git diff’."
            (setq pdf-view-continuous nil)
            (message "Page scrolling: Constrained"))))
 
+  (defun zp/pdf-view-open-externally ()
+    "Open the visited PDF in the default external program.
+
+Based on ‘helm-open-file-externally’."
+    (interactive)
+    (helm-open-file-externally (buffer-file-name))
+    (message "Opened externally"))
+
   (define-key pdf-view-mode-map (kbd "m") 'pdf-view-midnight-minor-mode)
   (define-key pdf-view-mode-map (kbd "s") 'zp/toggle-pdf-view-auto-slice-minor-mode)
   (define-key pdf-view-mode-map (kbd "M") 'pdf-view-set-slice-using-mouse)
   (define-key pdf-view-mode-map (kbd "c") 'zp/pdf-view-continuous-toggle)
   (define-key pdf-view-mode-map (kbd "w") 'pdf-view-fit-width-to-window)
+  (define-key pdf-view-mode-map (kbd "RET") 'zp/pdf-view-open-externally)
 
   (define-prefix-command 'slice-map)
   (define-key pdf-view-mode-map (kbd "S") 'slice-map)
