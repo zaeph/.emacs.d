@@ -820,6 +820,8 @@ Modifies ‘diff-command’ and ‘diff-switches’ to use ‘git diff’."
   (define-key pdf-view-mode-map (kbd "w") 'pdf-view-fit-width-to-window)
   (define-key pdf-view-mode-map (kbd "RET") 'zp/pdf-view-open-in-evince)
 
+  (define-key pdf-annot-edit-contents-minor-mode-map (kbd "C-c C-k") 'pdf-annot-edit-contents-abort)
+
   (define-prefix-command 'slice-map)
   (define-key pdf-view-mode-map (kbd "S") 'slice-map)
   (define-key pdf-view-mode-map (kbd "S b") 'pdf-view-set-slice-from-bounding-box)
