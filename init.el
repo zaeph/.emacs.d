@@ -794,6 +794,15 @@ Modifies ‘diff-command’ and ‘diff-switches’ to use ‘git diff’."
   ;; I prefer to explicitly turn pages
   (setq pdf-view-continuous nil)
 
+  ;; Save after creating an annotation
+  (defun zp/pdf-view-save-buffer ()
+    "Save buffer and preserve midnight state."
+    (save-buffer)
+    (pdf-view-midnight-minor-mode 'toggle)
+    (pdf-view-midnight-minor-mode 'toggle))
+
+  (advice-add #'pdf-annot-edit-contents-commit :after 'zp/pdf-view-save-buffer)
+
   (defun zp/pdf-view-continuous-toggle ()
     (interactive)
     (cond ((not pdf-view-continuous)
