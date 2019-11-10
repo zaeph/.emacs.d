@@ -843,6 +843,60 @@ Modifies ‘diff-command’ and ‘diff-switches’ to use ‘git diff’."
     (interactive)
     (message "Page: %s" (pdf-view-current-page)))
 
+  ;;--------------------
+  ;; Custom annotations
+  ;;--------------------
+
+  (defun zp/pdf-annot-add-custom-text-annotation (icon color)
+    "Add custom annotation with ICON and COLOR."
+    (let* ((icon (or icon "Note"))
+           (color (or color zp/pdf-annot-default-annotation-color))
+           (pdf-annot-default-annotation-properties
+            `((t (label . ,user-full-name))
+              (text (icon . ,icon) (color . ,color)))))
+      (call-interactively #'pdf-annot-add-text-annotation)))
+
+  (defvar zp/pdf-custom-annot-list nil
+    "List of custom annotations and their settings.
+
+Each element in list must be a list with the following elements:
+- Name of the function to create
+- Key binding
+- Name of the icon to use
+- Color to use")
+
+  (defun zp/pdf-custom-annot-init ()
+    (seq-do (lambda (settings)
+              (cl-destructuring-bind (name key icon color) settings
+                (let* ((root "zp/pdf-annot-add-text-annotation-")
+                       (fun (intern (concat root name))))
+                  (defalias fun
+                    `(lambda ()
+                       (interactive)
+                       (zp/pdf-annot-add-custom-text-annotation ,icon ,color))
+                    (format "Insert a note of type ‘%s’." name))
+                  (define-key pdf-view-mode-map
+                    (kbd key)
+                    `,fun))))
+            zp/pdf-custom-annot-list))
+  (define-prefix-command 'zp/pdf-custom-annot-map)
+
+  (define-key pdf-view-mode-map "a" 'zp/pdf-custom-annot-map)
+
+  (setq zp/pdf-custom-annot-list
+        `(("note-yellow" "T" "Insert" "#F1F23B")
+          ("insert" "ai" "Insert" "#913BF2")
+          ("comment" "c" "Comment" ,zp/pdf-annot-default-annotation-color)
+          ("comment-red" "ac" "Comment" "#FF483E")
+          ("circle" "ay" "Circle" "#38E691")
+          ("cross" "an" "Cross" "#FF483E")))
+
+  (zp/pdf-custom-annot-init)
+
+  ;;----------
+  ;; Bindings
+  ;;----------
+
   (define-key pdf-view-mode-map (kbd "m") 'pdf-view-midnight-minor-mode)
   (define-key pdf-view-mode-map (kbd "s") 'zp/toggle-pdf-view-auto-slice-minor-mode)
   (define-key pdf-view-mode-map (kbd "M") 'pdf-view-set-slice-using-mouse)
