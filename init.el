@@ -782,6 +782,17 @@ Modifies ‘diff-command’ and ‘diff-switches’ to use ‘git diff’."
 
 (use-package pdf-view
   :config
+  (defvar zp/pdf-annot-default-annotation-color "#389BE6"
+    "Default color to use for annotations.")
+
+  (setq pdf-annot-default-annotation-properties
+        `((t (label . ,user-full-name))
+          (text (icon . "Note") (color . zp/pdf-annot-default-annotation-color))
+          (highlight (color . "yellow"))
+          (squiggly (color . "orange"))
+          (strike-out (color . "red"))
+          (underline (color . "blue"))))
+
   (defun zp/toggle-pdf-view-auto-slice-minor-mode ()
     "Toggle ‘pdf-view-auto-slice-minor-mode’ and reset slice."
     (interactive)
