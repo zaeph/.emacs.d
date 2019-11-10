@@ -794,6 +794,9 @@ Modifies ‘diff-command’ and ‘diff-switches’ to use ‘git diff’."
   ;; I prefer to explicitly turn pages
   (setq pdf-view-continuous nil)
 
+  ;; Automatically activate annotation when they’re created
+  (setq pdf-annot-activate-created-annotations t)
+
   ;; Save after creating an annotation
   (defun zp/pdf-view-save-buffer ()
     "Save buffer and preserve midnight state."
