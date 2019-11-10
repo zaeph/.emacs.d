@@ -825,6 +825,10 @@ Modifies ‘diff-command’ and ‘diff-switches’ to use ‘git diff’."
   (define-key pdf-view-mode-map (kbd "w") 'pdf-view-fit-width-to-window)
   (define-key pdf-view-mode-map (kbd "RET") 'zp/pdf-view-open-in-evince)
   (define-key pdf-view-mode-map (kbd ".") 'zp/pdf-view-show-current-page)
+  (define-key pdf-view-mode-map (kbd "t") 'pdf-annot-add-text-annotation)
+  (define-key pdf-view-mode-map (kbd "h") 'pdf-annot-add-highlight-markup-annotation)
+  (define-key pdf-view-mode-map (kbd "l") 'pdf-annot-list-annotations)
+  (define-key pdf-view-mode-map (kbd "D") 'pdf-annot-delete)
 
   (define-key pdf-annot-edit-contents-minor-mode-map (kbd "C-c C-k") 'pdf-annot-edit-contents-abort)
 
