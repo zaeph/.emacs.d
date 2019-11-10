@@ -884,7 +884,8 @@ Each element in list must be a list with the following elements:
   (define-key pdf-view-mode-map "a" 'zp/pdf-custom-annot-map)
 
   (setq zp/pdf-custom-annot-list
-        `(("note-yellow" "T" "Insert" "#F1F23B")
+        `(("note" "T" "Note" ,zp/pdf-annot-default-annotation-color)
+          ("note-yellow" "T" "Note" "#F1F23B")
           ("insert" "ai" "Insert" "#913BF2")
           ("comment" "c" "Comment" ,zp/pdf-annot-default-annotation-color)
           ("comment-red" "ac" "Comment" "#FF483E")
