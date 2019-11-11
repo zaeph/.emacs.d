@@ -869,29 +869,6 @@ Modifies ‘diff-command’ and ‘diff-switches’ to use ‘git diff’."
                             ('text #'pdf-annot-add-text-annotation)
                             ('highlight #'pdf-annot-add-highlight-markup-annotation)))))
 
-  (defun zp/pdf-annot-add-highlight-markup-annotation (arg &optional activate)
-    "Add highlight markup annotation.
-
-This wrapper includes presets which can be accessed with
-numerical arguments."
-    (interactive "P")
-    (let ((pdf-annot-activate-created-annotations (when activate t)))
-      (pcase arg
-        (1 (zp/pdf-annot-add-text-annotation-hl-red))
-        (2 (zp/pdf-annot-add-text-annotation-hl-blue))
-        (3 (zp/pdf-annot-add-text-annotation-hl-green))
-        (4 (zp/pdf-annot-add-text-annotation-hl-purple))
-        (5 (zp/pdf-annot-add-text-annotation-hl-orange))
-        (_ (call-interactively #'pdf-annot-add-highlight-markup-annotation)))))
-
-  (defun zp/pdf-annot-add-highlight-markup-annotation-and-activate (arg &optional activate)
-    "Add highlight markup annotation and activate it.
-
-This wrapper includes presets which can be accessed with
-numerical arguments."
-    (interactive "P")
-    (zp/pdf-annot-add-highlight-markup-annotation arg t))
-
   (defvar zp/pdf-custom-annot-list nil
     "List of custom annotations and their settings.
 
@@ -930,11 +907,34 @@ Each element in list must be a list with the following elements:
           ("circle" 'text "ay" "Circle" "#38E691")
           ("cross" 'text "an" "Cross" "#FF483E")
 
-          ("hl-red" 'highlight "H" nil "#FF7F7F")
-          ("hl-blue" 'highlight "J" nil "#7FDFFF")
-          ("hl-green" 'highlight "K" nil "#7FFF7F")
-          ("hl-purple" 'highlight "G" nil "#967FFF")
-          ("hl-orange" 'highlight "Y" nil "#FFBF7F")))
+          ("hl-red" 'highlight nil nil "#FF7F7F")
+          ("hl-blue" 'highlight nil nil "#7FDFFF")
+          ("hl-green" 'highlight nil nil "#7FFF7F")
+          ("hl-purple" 'highlight nil nil "#967FFF")
+          ("hl-orange" 'highlight nil nil "#FFBF7F")))
+
+  (defun zp/pdf-annot-add-highlight-markup-annotation (arg &optional activate)
+    "Add highlight markup annotation.
+
+This wrapper includes presets which can be accessed with
+numerical arguments."
+    (interactive "P")
+    (let ((pdf-annot-activate-created-annotations (when activate t)))
+      (pcase arg
+        (1 (zp/pdf-annot-add-text-annotation-hl-red))
+        (2 (zp/pdf-annot-add-text-annotation-hl-blue))
+        (3 (zp/pdf-annot-add-text-annotation-hl-green))
+        (4 (zp/pdf-annot-add-text-annotation-hl-purple))
+        (5 (zp/pdf-annot-add-text-annotation-hl-orange))
+        (_ (call-interactively #'pdf-annot-add-highlight-markup-annotation)))))
+
+  (defun zp/pdf-annot-add-highlight-markup-annotation-and-activate (arg &optional activate)
+    "Add highlight markup annotation and activate it.
+
+This wrapper includes presets which can be accessed with
+numerical arguments."
+    (interactive "P")
+    (zp/pdf-annot-add-highlight-markup-annotation arg t))
 
   (zp/pdf-custom-annot-init)
 
