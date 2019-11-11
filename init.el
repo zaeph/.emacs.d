@@ -920,6 +920,7 @@ Each element in list must be a list with the following elements:
   (define-key pdf-view-mode-map (kbd "h") 'pdf-annot-add-highlight-markup-annotation)
   (define-key pdf-view-mode-map (kbd "l") 'pdf-annot-list-annotations)
   (define-key pdf-view-mode-map (kbd "D") 'pdf-annot-delete)
+  (define-key pdf-view-mode-map (kbd "O") 'org-noter-create-skeleton)
 
   (define-key pdf-annot-edit-contents-minor-mode-map (kbd "C-c C-k") 'pdf-annot-edit-contents-abort)
 
