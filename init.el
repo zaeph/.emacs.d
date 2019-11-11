@@ -856,7 +856,7 @@ Modifies ‘diff-command’ and ‘diff-switches’ to use ‘git diff’."
   ;; Custom annotations
   ;;--------------------
 
-  (defun zp/pdf-annot-add-custom-text-annotation (type color &optional icon)
+  (defun zp/pdf-annot-add-custom-annotation (type color &optional icon)
     "Add custom annotation with ICON and COLOR."
     (let* ((icon (or icon "Note"))
            (color (or color zp/pdf-annot-default-annotation-color))
@@ -887,7 +887,7 @@ Each element in list must be a list with the following elements:
            (defalias fun
              `(lambda ()
                 (interactive)
-                (zp/pdf-annot-add-custom-text-annotation ,type ,color ,icon))
+                (zp/pdf-annot-add-custom-annotation ,type ,color ,icon))
              (format "Insert a note of type ‘%s’." name))
            (when key
              (define-key pdf-view-mode-map
