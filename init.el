@@ -790,7 +790,7 @@ Modifies ‘diff-command’ and ‘diff-switches’ to use ‘git diff’."
   (setq pdf-annot-default-annotation-properties
         `((t (label . ,user-full-name))
           (text (icon . "Note") (color . ,zp/pdf-annot-default-annotation-color))
-          (highlight (color . "yellow"))
+          (highlight (color . "#FFFF7F")) ;Lighter yellow
           (squiggly (color . "orange"))
           (strike-out (color . "red"))
           (underline (color . "blue"))))
