@@ -909,7 +909,9 @@ Each element in list must be a list with the following elements:
 
           ("hl-red" 'highlight "H" nil "#FF7F7F")
           ("hl-blue" 'highlight "J" nil "#7FDFFF")
-          ("hl-green" 'highlight "K" nil "#7FFF7F")))
+          ("hl-green" 'highlight "K" nil "#7FFF7F")
+          ("hl-purple" 'highlight "G" nil "#967FFF")
+          ("hl-orange" 'highlight "Y" nil "#FFBF7F")))
 
   (zp/pdf-custom-annot-init)
 
