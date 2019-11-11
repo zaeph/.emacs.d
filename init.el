@@ -869,6 +869,20 @@ Modifies ‘diff-command’ and ‘diff-switches’ to use ‘git diff’."
                             ('text #'pdf-annot-add-text-annotation)
                             ('highlight #'pdf-annot-add-highlight-markup-annotation)))))
 
+  (defun zp/pdf-annot-add-highlight-markup-annotation (arg)
+    "Add highlight markup annotation.
+
+This wrapper includes presets which can be accessed with
+numerical arguments."
+    (interactive "P")
+    (pcase arg
+      (1 (zp/pdf-annot-add-text-annotation-hl-red))
+      (2 (zp/pdf-annot-add-text-annotation-hl-blue))
+      (3 (zp/pdf-annot-add-text-annotation-hl-green))
+      (4 (zp/pdf-annot-add-text-annotation-hl-purple))
+      (5 (zp/pdf-annot-add-text-annotation-hl-orange))
+      (_ (call-interactively #'pdf-annot-add-highlight-markup-annotation))))
+
   (defvar zp/pdf-custom-annot-list nil
     "List of custom annotations and their settings.
 
@@ -933,7 +947,7 @@ Each element in list must be a list with the following elements:
   (define-key pdf-view-mode-map [(shift return)] 'zp/pdf-view-open-in-xournalpp)
   (define-key pdf-view-mode-map (kbd ".") 'zp/pdf-view-show-current-page)
   (define-key pdf-view-mode-map (kbd "t") 'pdf-annot-add-text-annotation)
-  (define-key pdf-view-mode-map (kbd "h") 'pdf-annot-add-highlight-markup-annotation)
+  (define-key pdf-view-mode-map (kbd "h") 'zp/pdf-annot-add-highlight-markup-annotation)
   (define-key pdf-view-mode-map (kbd "l") 'pdf-annot-list-annotations)
   (define-key pdf-view-mode-map (kbd "D") 'pdf-annot-delete)
   (define-key pdf-view-mode-map (kbd "O") 'org-noter-create-skeleton)
