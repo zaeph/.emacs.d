@@ -875,19 +875,20 @@ Each element in list must be a list with the following elements:
 - Color to use")
 
   (defun zp/pdf-custom-annot-init ()
-    (seq-do (lambda (settings)
-              (cl-destructuring-bind (name key icon color) settings
-                (let* ((root "zp/pdf-annot-add-text-annotation-")
-                       (fun (intern (concat root name))))
-                  (defalias fun
-                    `(lambda ()
-                       (interactive)
-                       (zp/pdf-annot-add-custom-text-annotation ,icon ,color))
-                    (format "Insert a note of type ‘%s’." name))
-                  (define-key pdf-view-mode-map
-                    (kbd key)
-                    `,fun))))
-            zp/pdf-custom-annot-list))
+    (seq-do
+     (lambda (settings)
+       (cl-destructuring-bind (name key icon color) settings
+         (let* ((root "zp/pdf-annot-add-text-annotation-")
+                (fun (intern (concat root name))))
+           (defalias fun
+             `(lambda ()
+                (interactive)
+                (zp/pdf-annot-add-custom-text-annotation ,icon ,color))
+             (format "Insert a note of type ‘%s’." name))
+           (define-key pdf-view-mode-map
+             (kbd key)
+             `,fun))))
+     zp/pdf-custom-annot-list))
   (define-prefix-command 'zp/pdf-custom-annot-map)
 
   (define-key pdf-view-mode-map "a" 'zp/pdf-custom-annot-map)
