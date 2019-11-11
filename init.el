@@ -924,6 +924,9 @@ Each element in list must be a list with the following elements:
           ("hl-purple" 'highlight nil nil "#967FFF")
           ("hl-orange" 'highlight nil nil "#FFBF7F")))
 
+  (setq pdf-annot-color-history
+        '("#FF7F7F" "#7FDFFF" "#7FFF7F" "#967FFF" "#FFBF7F"))
+
   (defun zp/pdf-annot-add-highlight-markup-annotation (arg &optional activate)
     "Add highlight markup annotation.
 
