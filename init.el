@@ -856,14 +856,18 @@ Modifies ‘diff-command’ and ‘diff-switches’ to use ‘git diff’."
   ;; Custom annotations
   ;;--------------------
 
-  (defun zp/pdf-annot-add-custom-text-annotation (icon color)
+  (defun zp/pdf-annot-add-custom-text-annotation (type color &optional icon)
     "Add custom annotation with ICON and COLOR."
     (let* ((icon (or icon "Note"))
            (color (or color zp/pdf-annot-default-annotation-color))
            (pdf-annot-default-annotation-properties
             `((t (label . ,user-full-name))
-              (text (icon . ,icon) (color . ,color)))))
-      (call-interactively #'pdf-annot-add-text-annotation)))
+              ,(pcase type
+                 ('text `(text (icon . ,icon) (color . ,color)))
+                 ('highlight `(highlight (color . ,color)))))))
+      (call-interactively (pcase type
+                            ('text #'pdf-annot-add-text-annotation)
+                            ('highlight #'pdf-annot-add-highlight-markup-annotation)))))
 
   (defvar zp/pdf-custom-annot-list nil
     "List of custom annotations and their settings.
@@ -877,30 +881,34 @@ Each element in list must be a list with the following elements:
   (defun zp/pdf-custom-annot-init ()
     (seq-do
      (lambda (settings)
-       (cl-destructuring-bind (name key icon color) settings
+       (cl-destructuring-bind (name type key icon color) settings
          (let* ((root "zp/pdf-annot-add-text-annotation-")
                 (fun (intern (concat root name))))
            (defalias fun
              `(lambda ()
                 (interactive)
-                (zp/pdf-annot-add-custom-text-annotation ,icon ,color))
+                (zp/pdf-annot-add-custom-text-annotation ,type ,color ,icon))
              (format "Insert a note of type ‘%s’." name))
-           (define-key pdf-view-mode-map
-             (kbd key)
-             `,fun))))
+           (when key
+             (define-key pdf-view-mode-map
+               (kbd key)
+               `,fun)))))
      zp/pdf-custom-annot-list))
   (define-prefix-command 'zp/pdf-custom-annot-map)
 
   (define-key pdf-view-mode-map "a" 'zp/pdf-custom-annot-map)
 
   (setq zp/pdf-custom-annot-list
-        `(("note" "t" "Note" ,zp/pdf-annot-default-annotation-color)
-          ("note-blue" "T" "Note" "#389BE6")
-          ("insert" "ai" "Insert" "#913BF2")
-          ("comment" "c" "Comment" "#389BE6")
-          ("comment-red" "ac" "Comment" "#FF483E")
-          ("circle" "ay" "Circle" "#38E691")
-          ("cross" "an" "Cross" "#FF483E")))
+        `(("note" 'text "t" "Note" ,zp/pdf-annot-default-annotation-color)
+          ("note-blue" 'text "T" "Note" "#389BE6")
+          ("insert" 'text "ai" "Insert" "#913BF2")
+          ("comment" 'text "c" "Comment" "#389BE6")
+          ("comment-red" 'text "ac" "Comment" "#FF483E")
+          ("circle" 'text "ay" "Circle" "#38E691")
+          ("cross" 'text "an" "Cross" "#FF483E")
+
+          ("hl-red" 'highlight "H" nil "#FF7F7F")
+          ("hl-blue" 'highlight "J" nil "#7FDFFF")))
 
   (zp/pdf-custom-annot-init)
 
