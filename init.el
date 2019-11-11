@@ -4439,13 +4439,13 @@ chronos’s main buffer for adding a new timer."
     "Enable visual-line-mode in ‘org-noter’ notes.
 
 Workaround to counter race conditions with the margins."
-    (let ((refresh (lambda ()
-                     (with-selected-window (if org-noter-notes-mode
-                                               (selected-window)
-                                             (next-window))
+    (let ((parent (current-buffer))
+          (refresh (lambda (parent)
+                     (with-current-buffer parent
                        (visual-line-mode 'toggle)
                        (visual-line-mode 'toggle)))))
-      (run-at-time "1 sec" nil refresh)))
+      (run-at-time "1 sec" nil refresh parent)
+      (run-at-time "5 sec" nil refresh parent)))
 
   (add-hook 'org-noter-notes-mode-hook #'zp/org-noter-visual-line-mode)
 
