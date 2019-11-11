@@ -908,6 +908,7 @@ Each element in list must be a list with the following elements:
   ;;----------
 
   (define-key pdf-view-mode-map (kbd "m") 'pdf-view-midnight-minor-mode)
+  (define-key pdf-view-mode-map (kbd "P") 'pdf-view-printer-minor-mode)
   (define-key pdf-view-mode-map (kbd "s") 'zp/toggle-pdf-view-auto-slice-minor-mode)
   (define-key pdf-view-mode-map (kbd "M") 'pdf-view-set-slice-using-mouse)
   (define-key pdf-view-mode-map (kbd "C") 'zp/pdf-view-continuous-toggle)
