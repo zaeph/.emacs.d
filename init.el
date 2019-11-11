@@ -782,10 +782,10 @@ Modifies ‘diff-command’ and ‘diff-switches’ to use ‘git diff’."
 
 (use-package pdf-view
   :config
-  (defvar zp/pdf-annot-default-annotation-color "#389BE6"
+  (defvar zp/pdf-annot-default-annotation-color "#F1F23B"
     "Default color to use for annotations.")
 
-  (setq zp/pdf-annot-default-annotation-color "#389BE6")
+  (setq zp/pdf-annot-default-annotation-color "#F1F23B")
 
   (setq pdf-annot-default-annotation-properties
         `((t (label . ,user-full-name))
@@ -893,10 +893,10 @@ Each element in list must be a list with the following elements:
   (define-key pdf-view-mode-map "a" 'zp/pdf-custom-annot-map)
 
   (setq zp/pdf-custom-annot-list
-        `(("note" "T" "Note" ,zp/pdf-annot-default-annotation-color)
-          ("note-yellow" "T" "Note" "#F1F23B")
+        `(("note" "t" "Note" ,zp/pdf-annot-default-annotation-color)
+          ("note-blue" "T" "Note" "#389BE6")
           ("insert" "ai" "Insert" "#913BF2")
-          ("comment" "c" "Comment" ,zp/pdf-annot-default-annotation-color)
+          ("comment" "c" "Comment" "#389BE6")
           ("comment-red" "ac" "Comment" "#FF483E")
           ("circle" "ay" "Circle" "#38E691")
           ("cross" "an" "Cross" "#FF483E")))
