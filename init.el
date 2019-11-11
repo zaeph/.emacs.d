@@ -926,7 +926,9 @@ numerical arguments."
         (3 (zp/pdf-annot-add-text-annotation-hl-green))
         (4 (zp/pdf-annot-add-text-annotation-hl-purple))
         (5 (zp/pdf-annot-add-text-annotation-hl-orange))
-        (_ (call-interactively #'pdf-annot-add-highlight-markup-annotation)))))
+        (_ (call-interactively #'pdf-annot-add-highlight-markup-annotation))))
+    (unless activate
+      (zp/pdf-view-save-buffer)))
 
   (defun zp/pdf-annot-add-highlight-markup-annotation-and-activate (arg &optional activate)
     "Add highlight markup annotation and activate it.
