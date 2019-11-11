@@ -964,8 +964,6 @@ numerical arguments."
   (define-key pdf-view-mode-map (kbd "D") 'pdf-annot-delete)
   (define-key pdf-view-mode-map (kbd "O") 'org-noter-create-skeleton)
 
-  (define-key pdf-annot-edit-contents-minor-mode-map (kbd "C-c C-k") 'pdf-annot-edit-contents-abort)
-
   (define-prefix-command 'slice-map)
   (define-key pdf-view-mode-map (kbd "S") 'slice-map)
   (define-key pdf-view-mode-map (kbd "S b") 'pdf-view-set-slice-from-bounding-box)
@@ -974,6 +972,10 @@ numerical arguments."
 
   (add-hook 'pdf-view-mode-hook #'pdf-view-midnight-minor-mode)
   (add-hook 'pdf-view-mode-hook #'pdf-view-auto-slice-minor-mode))
+
+(use-package pdf-annot
+  :config
+  (define-key pdf-annot-edit-contents-minor-mode-map (kbd "C-c C-k") 'pdf-annot-edit-contents-abort))
 
 (use-package pdf-links
   :config
