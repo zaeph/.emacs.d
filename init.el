@@ -908,6 +908,10 @@ Each element in list must be a list with the following elements:
   ;; Bindings
   ;;----------
 
+  ;; Use normal isearch
+  (define-key pdf-view-mode-map (kbd "C-s") 'isearch-forward)
+  (define-key pdf-view-mode-map (kbd "C-r") 'isearch-backward)
+
   (define-key pdf-view-mode-map (kbd "m") 'pdf-view-midnight-minor-mode)
   (define-key pdf-view-mode-map (kbd "P") 'pdf-view-printer-minor-mode)
   (define-key pdf-view-mode-map (kbd "s") 'zp/toggle-pdf-view-auto-slice-minor-mode)
