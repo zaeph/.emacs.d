@@ -908,7 +908,8 @@ Each element in list must be a list with the following elements:
           ("cross" 'text "an" "Cross" "#FF483E")
 
           ("hl-red" 'highlight "H" nil "#FF7F7F")
-          ("hl-blue" 'highlight "J" nil "#7FDFFF")))
+          ("hl-blue" 'highlight "J" nil "#7FDFFF")
+          ("hl-green" 'highlight "K" nil "#7FFF7F")))
 
   (zp/pdf-custom-annot-init)
 
