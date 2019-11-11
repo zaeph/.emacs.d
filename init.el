@@ -792,7 +792,7 @@ Modifies ‘diff-command’ and ‘diff-switches’ to use ‘git diff’."
   (setq pdf-annot-default-annotation-properties
         `((t (label . ,user-full-name))
           (text (icon . "Note") (color . ,zp/pdf-annot-default-annotation-color))
-          (highlight (color . "#FFFF7F")) ;Lighter yellow
+          (highlight (color . "#FFFF4D")) ;Lighter yellow
           (squiggly (color . "orange"))
           (strike-out (color . "red"))
           (underline (color . "blue"))))
@@ -927,7 +927,7 @@ Each element in list must be a list with the following elements:
           ("hl-orange" 'highlight nil nil "#FFBF7F")))
 
   (setq pdf-annot-color-history
-        '("#FFFF7F" "#FF7F7F" "#7FDFFF" "#7FFF7F" "#967FFF" "#FFBF7F"))
+        '("#FFFF4D" "#FF7F7F" "#7FDFFF" "#7FFF7F" "#967FFF" "#FFBF7F"))
 
   (defun zp/pdf-annot-add-highlight-markup-annotation (arg &optional activate)
     "Add highlight markup annotation.
