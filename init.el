@@ -11,6 +11,8 @@
 (setq inhibit-startup-screen 1)
 (setq initial-scratch-message ";; Emacs Scratch\n\n")
 
+(setq user-full-name "Leo Vivier")
+
 ;; (toggle-debug-on)
 ;; (toggle-debug-on-quit)
 ;; (setq garbage-collection-messages t)
@@ -1700,8 +1702,7 @@ based on ‘zp/message-mode-ispell-alist’."
   (define-key notmuch-hello-mode-map "q" #'zp/notmuch-hello-quit)
   (define-key notmuch-search-mode-map "g" #'notmuch-refresh-this-buffer)
 
-  (setq user-full-name "Leo Vivier"
-        mail-host-address "hidden")
+  (setq mail-host-address "hidden")
 
   (setq notmuch-saved-searches
         '((:name "inbox" :query "tag:inbox" :key "i")
