@@ -810,14 +810,25 @@ Modifies ‘diff-command’ and ‘diff-switches’ to use ‘git diff’."
   ;; Automatically activate annotation when they’re created
   (setq pdf-annot-activate-created-annotations t)
 
+  (defvar zp/pdf-view-save-after-annotation nil
+    "When non-nil, save the PDF after an annotation is created.")
+
+  (setq zp/pdf-view-save-after-annotation nil)
+
   ;; Save after creating an annotation
   (defun zp/pdf-view-save-buffer ()
     "Save buffer and preserve midnight state."
-    (save-buffer)
+    (interactive)
+    (call-interactively #'save-buffer)
     (pdf-view-midnight-minor-mode 'toggle)
     (pdf-view-midnight-minor-mode 'toggle))
 
-  (advice-add #'pdf-annot-edit-contents-commit :after 'zp/pdf-view-save-buffer)
+  (defun zp/pdf-view-save-buffer-maybe ()
+    "Save buffer and preserve midnight state."
+    (when zp/pdf-view-save-after-annotation
+      (zp/pdf-view-save-buffer)))
+
+  (advice-add #'pdf-annot-edit-contents-commit :after 'zp/pdf-view-save-buffer-maybe)
 
   (defun zp/pdf-view-continuous-toggle ()
     (interactive)
@@ -856,14 +867,18 @@ Modifies ‘diff-command’ and ‘diff-switches’ to use ‘git diff’."
   ;; Custom annotations
   ;;--------------------
 
-  (defun zp/pdf-annot-add-custom-text-annotation (icon color)
+  (defun zp/pdf-annot-add-custom-annotation (type color &optional icon)
     "Add custom annotation with ICON and COLOR."
     (let* ((icon (or icon "Note"))
            (color (or color zp/pdf-annot-default-annotation-color))
            (pdf-annot-default-annotation-properties
             `((t (label . ,user-full-name))
-              (text (icon . ,icon) (color . ,color)))))
-      (call-interactively #'pdf-annot-add-text-annotation)))
+              ,(pcase type
+                 ('text `(text (icon . ,icon) (color . ,color)))
+                 ('highlight `(highlight (color . ,color)))))))
+      (call-interactively (pcase type
+                            ('text #'pdf-annot-add-text-annotation)
+                            ('highlight #'pdf-annot-add-highlight-markup-annotation)))))
 
   (defvar zp/pdf-custom-annot-list nil
     "List of custom annotations and their settings.
@@ -877,30 +892,62 @@ Each element in list must be a list with the following elements:
   (defun zp/pdf-custom-annot-init ()
     (seq-do
      (lambda (settings)
-       (cl-destructuring-bind (name key icon color) settings
+       (cl-destructuring-bind (name type key icon color) settings
          (let* ((root "zp/pdf-annot-add-text-annotation-")
                 (fun (intern (concat root name))))
            (defalias fun
              `(lambda ()
                 (interactive)
-                (zp/pdf-annot-add-custom-text-annotation ,icon ,color))
+                (zp/pdf-annot-add-custom-annotation ,type ,color ,icon))
              (format "Insert a note of type ‘%s’." name))
-           (define-key pdf-view-mode-map
-             (kbd key)
-             `,fun))))
+           (when key
+             (define-key pdf-view-mode-map
+               (kbd key)
+               `,fun)))))
      zp/pdf-custom-annot-list))
   (define-prefix-command 'zp/pdf-custom-annot-map)
 
   (define-key pdf-view-mode-map "a" 'zp/pdf-custom-annot-map)
 
   (setq zp/pdf-custom-annot-list
-        `(("note" "t" "Note" ,zp/pdf-annot-default-annotation-color)
-          ("note-blue" "T" "Note" "#389BE6")
-          ("insert" "ai" "Insert" "#913BF2")
-          ("comment" "c" "Comment" "#389BE6")
-          ("comment-red" "ac" "Comment" "#FF483E")
-          ("circle" "ay" "Circle" "#38E691")
-          ("cross" "an" "Cross" "#FF483E")))
+        `(("note" 'text "t" "Note" ,zp/pdf-annot-default-annotation-color)
+          ("note-blue" 'text "T" "Note" "#389BE6")
+          ("insert" 'text "ai" "Insert" "#913BF2")
+          ("comment" 'text "c" "Comment" "#389BE6")
+          ("comment-red" 'text "ac" "Comment" "#FF483E")
+          ("circle" 'text "ay" "Circle" "#38E691")
+          ("cross" 'text "an" "Cross" "#FF483E")
+
+          ("hl-red" 'highlight nil nil "#FF7F7F")
+          ("hl-blue" 'highlight nil nil "#7FDFFF")
+          ("hl-green" 'highlight nil nil "#7FFF7F")
+          ("hl-purple" 'highlight nil nil "#967FFF")
+          ("hl-orange" 'highlight nil nil "#FFBF7F")))
+
+  (defun zp/pdf-annot-add-highlight-markup-annotation (arg &optional activate)
+    "Add highlight markup annotation.
+
+This wrapper includes presets which can be accessed with
+numerical arguments."
+    (interactive "P")
+    (let ((pdf-annot-activate-created-annotations (when activate t)))
+      (pcase arg
+        (1 (zp/pdf-annot-add-text-annotation-hl-red))
+        (2 (zp/pdf-annot-add-text-annotation-hl-blue))
+        (3 (zp/pdf-annot-add-text-annotation-hl-green))
+        (4 (zp/pdf-annot-add-text-annotation-hl-purple))
+        (5 (zp/pdf-annot-add-text-annotation-hl-orange))
+        (_ (call-interactively #'pdf-annot-add-highlight-markup-annotation))))
+    (unless activate
+      (zp/pdf-view-save-buffer-maybe)))
+
+  (defun zp/pdf-annot-add-highlight-markup-annotation-and-activate (arg &optional activate)
+    "Add highlight markup annotation and activate it.
+
+This wrapper includes presets which can be accessed with
+numerical arguments."
+    (interactive "P")
+    (zp/pdf-annot-add-highlight-markup-annotation arg t))
 
   (zp/pdf-custom-annot-init)
 
@@ -912,6 +959,8 @@ Each element in list must be a list with the following elements:
   (define-key pdf-view-mode-map (kbd "C-s") 'isearch-forward)
   (define-key pdf-view-mode-map (kbd "C-r") 'isearch-backward)
 
+  (define-key pdf-view-mode-map (kbd "C-x C-s") 'zp/pdf-view-save-buffer)
+
   (define-key pdf-view-mode-map (kbd "m") 'pdf-view-midnight-minor-mode)
   (define-key pdf-view-mode-map (kbd "P") 'pdf-view-printer-minor-mode)
   (define-key pdf-view-mode-map (kbd "s") 'zp/toggle-pdf-view-auto-slice-minor-mode)
@@ -922,12 +971,11 @@ Each element in list must be a list with the following elements:
   (define-key pdf-view-mode-map [(shift return)] 'zp/pdf-view-open-in-xournalpp)
   (define-key pdf-view-mode-map (kbd ".") 'zp/pdf-view-show-current-page)
   (define-key pdf-view-mode-map (kbd "t") 'pdf-annot-add-text-annotation)
-  (define-key pdf-view-mode-map (kbd "h") 'pdf-annot-add-highlight-markup-annotation)
+  (define-key pdf-view-mode-map (kbd "h") 'zp/pdf-annot-add-highlight-markup-annotation)
+  (define-key pdf-view-mode-map (kbd "H") 'zp/pdf-annot-add-highlight-markup-annotation-and-activate)
   (define-key pdf-view-mode-map (kbd "l") 'pdf-annot-list-annotations)
   (define-key pdf-view-mode-map (kbd "D") 'pdf-annot-delete)
   (define-key pdf-view-mode-map (kbd "O") 'org-noter-create-skeleton)
-
-  (define-key pdf-annot-edit-contents-minor-mode-map (kbd "C-c C-k") 'pdf-annot-edit-contents-abort)
 
   (define-prefix-command 'slice-map)
   (define-key pdf-view-mode-map (kbd "S") 'slice-map)
@@ -937,6 +985,10 @@ Each element in list must be a list with the following elements:
 
   (add-hook 'pdf-view-mode-hook #'pdf-view-midnight-minor-mode)
   (add-hook 'pdf-view-mode-hook #'pdf-view-auto-slice-minor-mode))
+
+(use-package pdf-annot
+  :config
+  (define-key pdf-annot-edit-contents-minor-mode-map (kbd "C-c C-k") 'pdf-annot-edit-contents-abort))
 
 (use-package pdf-links
   :config
