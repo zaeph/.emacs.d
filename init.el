@@ -838,6 +838,15 @@ Modifies ‘diff-command’ and ‘diff-switches’ to use ‘git diff’."
          (format "evince -i %s \"%s\"" current-page current-file))))
     (message "Sent to Evince"))
 
+  (defun zp/pdf-view-open-in-xournalpp ()
+    "Open the current PDF with ‘xournalpp’."
+    (interactive)
+    (save-window-excursion
+      (let ((current-file (buffer-file-name)))
+        (async-shell-command
+         (format "xournalpp \"%s\"" current-file))))
+    (message "Sent to Xournal++"))
+
   (defun zp/pdf-view-show-current-page ()
     "Show the current page."
     (interactive)
@@ -904,6 +913,7 @@ Each element in list must be a list with the following elements:
   (define-key pdf-view-mode-map (kbd "C") 'zp/pdf-view-continuous-toggle)
   (define-key pdf-view-mode-map (kbd "w") 'pdf-view-fit-width-to-window)
   (define-key pdf-view-mode-map (kbd "RET") 'zp/pdf-view-open-in-evince)
+  (define-key pdf-view-mode-map [(shift return)] 'zp/pdf-view-open-in-xournalpp)
   (define-key pdf-view-mode-map (kbd ".") 'zp/pdf-view-show-current-page)
   (define-key pdf-view-mode-map (kbd "t") 'pdf-annot-add-text-annotation)
   (define-key pdf-view-mode-map (kbd "h") 'pdf-annot-add-highlight-markup-annotation)
