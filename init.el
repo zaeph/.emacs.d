@@ -4435,7 +4435,19 @@ chronos’s main buffer for adding a new timer."
         org-noter-auto-save-last-location t
         org-noter-doc-split-fraction '(0.59 0.41))
 
-  (add-hook 'org-noter-notes-mode-hook #'visual-line-mode)
+  (defun zp/org-noter-visual-line-mode ()
+    "Enable visual-line-mode in ‘org-noter’ notes.
+
+Workaround to counter race conditions with the margins."
+    (let ((refresh (lambda ()
+                     (with-selected-window (if org-noter-notes-mode
+                                               (selected-window)
+                                             (next-window))
+                       (visual-line-mode 'toggle)
+                       (visual-line-mode 'toggle)))))
+      (run-at-time "1 sec" nil refresh)))
+
+  (add-hook 'org-noter-notes-mode-hook #'zp/org-noter-visual-line-mode)
 
   ;; Fix for hiding truncation
   (defun org-noter--set-notes-scroll (window &rest ignored)
