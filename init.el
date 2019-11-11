@@ -810,14 +810,25 @@ Modifies ‘diff-command’ and ‘diff-switches’ to use ‘git diff’."
   ;; Automatically activate annotation when they’re created
   (setq pdf-annot-activate-created-annotations t)
 
+  (defvar zp/pdf-view-save-after-annotation nil
+    "When non-nil, save the PDF after an annotation is created.")
+
+  (setq zp/pdf-view-save-after-annotation nil)
+
   ;; Save after creating an annotation
   (defun zp/pdf-view-save-buffer ()
     "Save buffer and preserve midnight state."
-    (save-buffer)
+    (interactive)
+    (call-interactively #'save-buffer)
     (pdf-view-midnight-minor-mode 'toggle)
     (pdf-view-midnight-minor-mode 'toggle))
 
-  (advice-add #'pdf-annot-edit-contents-commit :after 'zp/pdf-view-save-buffer)
+  (defun zp/pdf-view-save-buffer-maybe ()
+    "Save buffer and preserve midnight state."
+    (when zp/pdf-view-save-after-annotation
+      (zp/pdf-view-save-buffer)))
+
+  (advice-add #'pdf-annot-edit-contents-commit :after 'zp/pdf-view-save-buffer-maybe)
 
   (defun zp/pdf-view-continuous-toggle ()
     (interactive)
@@ -928,7 +939,7 @@ numerical arguments."
         (5 (zp/pdf-annot-add-text-annotation-hl-orange))
         (_ (call-interactively #'pdf-annot-add-highlight-markup-annotation))))
     (unless activate
-      (zp/pdf-view-save-buffer)))
+      (zp/pdf-view-save-buffer-maybe)))
 
   (defun zp/pdf-annot-add-highlight-markup-annotation-and-activate (arg &optional activate)
     "Add highlight markup annotation and activate it.
@@ -947,6 +958,8 @@ numerical arguments."
   ;; Use normal isearch
   (define-key pdf-view-mode-map (kbd "C-s") 'isearch-forward)
   (define-key pdf-view-mode-map (kbd "C-r") 'isearch-backward)
+
+  (define-key pdf-view-mode-map (kbd "C-x C-s") 'zp/pdf-view-save-buffer)
 
   (define-key pdf-view-mode-map (kbd "m") 'pdf-view-midnight-minor-mode)
   (define-key pdf-view-mode-map (kbd "P") 'pdf-view-printer-minor-mode)
