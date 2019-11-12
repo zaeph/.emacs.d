@@ -2293,6 +2293,8 @@ return `nil'."
               ("M-*" . zp/org-toggle-fontifications)
               ("C-c C-x C-l" . zp/org-latex-preview-dwim)
               ("C-c R" . org-display-inline-images))
+  :hook ((org-mode . org-indent-mode)
+         (org-mode . visual-line-mode))
   :config
   (setq org-agenda-inhibit-startup nil
         org-log-into-drawer "LOGBOOK-NOTES"
