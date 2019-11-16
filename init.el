@@ -4931,7 +4931,7 @@ mouse-1: Previous buffer\nmouse-3: Next buffer")
   :config
   ;; Fonts
   (zp/set-font "sarasa")
-  (zp/set-font-variable "equity")
+  (zp/set-font-variable "guyot")
 
   ;; Day/night cycle
   (setq zp/time-of-day-sections '("06:00" "08:00" "16:00" "20:00" "00:00"))
