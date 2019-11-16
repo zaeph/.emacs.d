@@ -988,8 +988,7 @@ numerical arguments."
   (define-key pdf-view-mode-map (kbd "S m") 'pdf-view-set-slice-using-mouse)
   (define-key pdf-view-mode-map (kbd "S r") 'pdf-view-reset-slice)
 
-  (add-hook 'pdf-view-mode-hook #'pdf-view-midnight-minor-mode)
-  (add-hook 'pdf-view-mode-hook #'pdf-view-auto-slice-minor-mode))
+  (add-hook 'pdf-view-mode-hook #'pdf-view-midnight-minor-mode))
 
 (use-package pdf-annot
   :config
