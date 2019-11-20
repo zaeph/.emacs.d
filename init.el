@@ -3184,6 +3184,7 @@ indirect-buffers."
           ("C-c C-s" . zp/org-agenda-schedule-and-update-appt)
           ("C-c C-S-w" . zp/org-agenda-refile-with-paths)
           ("Z" . zp/org-resolve-clocks)
+          ("V" . org-agenda-clockreport-mode)
           ("C-<return>" . org-agenda-switch-to)
           ("<return>" . zp/org-agenda-tree-to-indirect-buffer-without-grabbing-focus)
           ("S-<return>" . zp/org-agenda-tree-to-indirect-buffer)
