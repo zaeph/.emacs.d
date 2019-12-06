@@ -1656,6 +1656,7 @@ based on ‘zp/message-mode-ispell-alist’."
          ("g" . notmuch-refresh-this-buffer)
          :map notmuch-message-mode-map
          (("C-c C-c" . zp/notmuch-confirm-before-sending)
+          ("C-c C-s" . zp/notmuch-confirm-before-sending)
           ("C-c C-b" . zp/message-goto-body)
           ("C-c C-." . zp/message-goto-body-end)
           ("M-<" . zp/message-goto-top)
