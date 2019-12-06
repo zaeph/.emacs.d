@@ -2363,6 +2363,7 @@ return `nil'."
         ;; Custom faces for specific tags
         org-tag-faces
         '(("@home" . org-tag-context)
+          ("@nicolas" . org-tag-context)
           ("@work" . org-tag-context)
           ("@town" . org-tag-context)
           ("standby" . org-tag-standby)
