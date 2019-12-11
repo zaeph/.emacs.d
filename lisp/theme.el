@@ -54,6 +54,7 @@
   (set-face-attribute 'secondary-selection nil :background "#3B3273")
   (set-face-attribute 'org-column nil :background "#1F1F1F")
   (set-face-attribute 'org-block nil :foreground nil :inherit 'default :background "#1F1F1F")
+  (set-face-attribute 'org-drawer nil :foreground "#4790C9")
 
   (set-face-attribute 'org-agenda-structure nil
                       :foreground "DodgerBlue1"
@@ -141,6 +142,7 @@
   (set-face-attribute 'secondary-selection nil :background "#d3ccff")
   (set-face-attribute 'org-column nil :background "#F0E4BE")
   (set-face-attribute 'org-block nil :foreground nil :inherit 'default :background "#F0E6BE")
+  (set-face-attribute 'org-drawer nil :foreground "#4790C9")
 
   (set-face-attribute 'org-agenda-structure nil
                       :foreground "DodgerBlue1"
