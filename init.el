@@ -1172,7 +1172,7 @@ With numeric prefix arg DEC, decrement the integer by DEC amount."
         ;; ("l f" . "~/org/ledger/french-house.ledger.gpg")
 
         ;; Research
-        ("p T" . "~/org/projects/university/research/thesis/thesis.tex")
+        ("p T" . "/home/zaeph/org/projects/university/research/monty-python/meef2/1-academic/proposal/proposal.tex")
         ;; ("p T" . "~/org/projects/university/research/presentation/presentation.tex")
         ("p b" . "~/org/bib/monty-python.bib")
         ("p B" . "~/org/projects/university/research/thesis/bibliography/bibliography.tex")
