@@ -972,6 +972,7 @@ numerical arguments."
   (define-key pdf-view-mode-map (kbd "M") 'pdf-view-set-slice-using-mouse)
   (define-key pdf-view-mode-map (kbd "C") 'zp/pdf-view-continuous-toggle)
   (define-key pdf-view-mode-map (kbd "w") 'pdf-view-fit-width-to-window)
+  (define-key pdf-view-mode-map (kbd "f") 'pdf-view-fit-height-to-window)
   (define-key pdf-view-mode-map (kbd "RET") 'zp/pdf-view-open-in-evince)
   (define-key pdf-view-mode-map [(shift return)] 'zp/pdf-view-open-in-xournalpp)
   (define-key pdf-view-mode-map (kbd ".") 'zp/pdf-view-show-current-page)
