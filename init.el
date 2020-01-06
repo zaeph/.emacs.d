@@ -3298,6 +3298,8 @@ indirect-buffers."
         ("^psy$" "~/org/svg/icons/solution.svg" nil nil :ascent center)
         ("^anki$" "~/org/svg/icons/anki-2-p.svg" nil nil :ascent center)
         ("^plan$" "~/org/svg/icons/planning-p.svg" nil nil :ascent center)
+        ("^guitar$" "~/org/svg/icons/electric-guitar.svg" nil nil :ascent center)
+        ("^piano$" "~/org/svg/icons/piano.svg" nil nil :ascent center)
         ("^typography$" "~/org/svg/icons/typography.svg" nil nil :ascent center)
 
         ;; Activism
