@@ -4556,6 +4556,7 @@ buffer, thereby propagating the indirectness."
 (use-package feedback-sounds
   :hook ((org-clock-in-prepare . zp/play-sound-clock-in)
          (org-clock-out . zp/play-sound-clock-out)
+         (org-clock-cancel . zp/play-sound-clock-out)
          (org-after-todo-state-change . zp/play-sound-reward)
          (org-capture-mode . zp/play-sound-start-capture)
          (org-capture-after-finalize . zp/play-sound-after-capture)
