@@ -3404,7 +3404,8 @@ indirect-buffers."
                ("P" "Activism" ("act"))
                ("m" "Media" ("media"))
                ("f" "Film" ("film"))
-               ("g" "Groupless" ("nil"))))
+               ("g" "Groupless" ("nil"))
+               ("X" "Testing ground" ("+test"))))
 
           ("j" "Journal entries"
            (,(zp/org-agenda-block-journal))
