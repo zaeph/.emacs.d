@@ -961,8 +961,12 @@ PROPERTY can either be:
                                     (scheduled-str (pop data))
                                     (timestamp-str (pop data))
                                     (scheduled (and scheduled-str
-                                                    (org-time-string-to-seconds
-                                                     scheduled-str)))
+                                                    ;; Round off seconds to beginning of day
+                                                    (* 86400 (- (org-time-string-to-absolute scheduled-str)
+                                                                (calendar-absolute-from-gregorian '(1 1 1970))))
+                                                    ;; (org-time-string-to-seconds
+                                                    ;;  scheduled-str)
+                                                    ))
                                     (timestamp (and timestamp-str
                                                     (org-time-string-to-seconds
                                                      timestamp-str))))
