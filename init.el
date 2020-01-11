@@ -4310,6 +4310,8 @@ With a ‘C-u’ prefix argument, amend the last commit instead."
           "Break                  30/Back to it"
           "Charge Phone           30/Unplug Phone"
           "Charge Tablet          30/Unplug Tablet"
+          "Charge Headphones      15/Unplug Headphones"
+          "Charge Battery        120/Unplug Battery"
           ))
 
   ;;---------------------
