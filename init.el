@@ -3713,7 +3713,7 @@ indirect-buffers."
   _k_: Curiosities    _m_/_M_: Media
   _s_: Social         _h_/_H_: Hacking
   _n_: Nicolas        _a_/_A_: Activism
-  _S_: Swimming
+  _S_: Swimming       _t_/_T_: Musicology
   _R_: Running        _c_/_C_: Calendars
 "
     (("i" "~/org/life.org" "Inbox")
@@ -3731,7 +3731,7 @@ indirect-buffers."
      ("M" "~/org/life.org" "Media")
      ("H" "~/org/life.org" "Hacking")
      ("A" "~/org/life.org" "Activism")
-
+     ("T" "~/org/life.org" "Musicology")
      ("C" "~/org/life.org" "Life" "Calendar"))
     (("x" mx)
      ("p" pro)
@@ -3739,6 +3739,7 @@ indirect-buffers."
      ("m" media)
      ("h" hack)
      ("a" activism)
+     ("t" musicology)
      ("c" calendars)))
 
   (zp/create-hydra-org-refile mx
@@ -3851,6 +3852,18 @@ indirect-buffers."
      ;; ("c" "~/org/life.org" "Contributing")
      ;; ("b" "~/org/life.org" "Troubleshooting")
      ))
+
+  (zp/create-hydra-org-refile musicology
+      "
+  ^Musicology^
+ ^^----------
+  _._: Root
+  _p_: Piano
+  _g_: Guitar
+"
+    (("." "~/org/life.org" "Musicology")
+     ("p" "~/org/life.org" "Piano")
+     ("g" "~/org/life.org" "Guitar")))
 
   (zp/create-hydra-org-refile activism
       "
