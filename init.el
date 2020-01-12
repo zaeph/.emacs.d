@@ -3916,17 +3916,23 @@ indirect-buffers."
   _n_: News    _f_/_F_: Film
              ^^_s_/_S_: Series
              ^^_m_/_M_: Music
+             ^^_g_/_g_: Manga
+             ^^_a_/_a_: Anime
 "
     (("." "~/org/life.org" "Media")
      ("B" "~/org/life.org" "Books")
      ("n" "~/org/life.org" "News")
-     ("M" "~/org/life.org" "Music")
      ("F" "~/org/life.org" "Film")
-     ("S" "~/org/life.org" "Series"))
+     ("S" "~/org/life.org" "Series")
+     ("M" "~/org/life.org" "Music")
+     ("G" "~/org/life.org" "Manga")
+     ("A" "~/org/life.org" "Anime"))
     (("b" books)
      ("f" film)
      ("s" series)
-     ("m" music)))
+     ("m" music)
+     ("g" manga)
+     ("a" anime)))
 
   (zp/create-hydra-org-refile books
       "
@@ -3983,6 +3989,34 @@ indirect-buffers."
      ("c" "~/org/life.org" "Music" "List of classical pieces")
      ("j" "~/org/life.org" "Music" "List of jazz pieces")
      ("o" "~/org/life.org" "Music" "List of other genres"))
+    nil
+    media)
+
+  (zp/create-hydra-org-refile manga
+      "
+  ^Manga^
+ ^^------------
+  _._: Root
+  _l_: List
+  _d_: Read
+"
+    (("." "~/org/life.org" "Manga")
+     ("l" "~/org/life.org" "Manga" "List")
+     ("d" "~/org/life.org" "Manga" "Read"))
+    nil
+    media)
+
+  (zp/create-hydra-org-refile anime
+      "
+  ^Anime^
+ ^^------------
+  _._: Root
+  _l_: List
+  _d_: Watched
+"
+    (("." "~/org/life.org" "Anime")
+     ("l" "~/org/life.org" "Anime" "List")
+     ("d" "~/org/life.org" "Anime" "Watched"))
     nil
     media))
 
