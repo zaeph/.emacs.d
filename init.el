@@ -3343,6 +3343,9 @@ indirect-buffers."
         ("^trackers$" "~/org/svg/icons/share.svg" nil nil :ascent center)
         ("^music$" "~/org/svg/icons/compact-disc.svg" nil nil :ascent center)
         ("^film$" "~/org/svg/icons/film.svg" nil nil :ascent center)
+        ("^series$" "~/org/svg/icons/film-b.svg" nil nil :ascent center)
+        ("^anime$" "~/org/svg/icons/film-c.svg" nil nil :ascent center)
+        ("^manga$" "~/org/svg/icons/book-2b.svg" nil nil :ascent center)
 
         ;; Maintenance
         ("^mx$" "~/org/svg/icons/recycle.svg" nil nil :ascent center)
