@@ -3508,7 +3508,7 @@ indirect-buffers."
           ("j" "Journal")
           ("jj" "Journal" entry (file+olp "~/org/journal.org" "Life")
            "* %^{Title|Entry}\n%T\n\n%?" :full-frame t)
-          ("ja" "Awakening" entry (file+olp "~/org/journal.org" "Awakening")
+          ("jw" "Awakening" entry (file+olp "~/org/journal.org" "Awakening")
            "* %^{Title|Entry}\n%T\n\n%?" :full-frame t)
           ("jp" "Psychotherapy" entry (file+olp "~/org/journal.org" "Psychotherapy")
            "* %^{Title|Entry}\n%T\n\n%?" :full-frame t)
@@ -3537,7 +3537,7 @@ indirect-buffers."
 ** What did you start struggling with psychologically?
 ** What thoughts came up in association with that struggle?")
 
-          ("a" "Meditation session" entry (file+headline "~/org/projects/awakening/awakening.org.gpg" "Sessions")
+          ("w" "Meditation session" entry (file+headline "~/org/projects/awakening/awakening.org.gpg" "Sessions")
            "* DONE Session%^{SESSION_DURATION}p\n%t" :immediate-finish t)
 
           ("WF" "S: Flat" entry (file+headline "~/org/life.org" "Inbox")
@@ -3714,7 +3714,8 @@ indirect-buffers."
   _s_: Social         _h_/_H_: Hacking
   _n_: Nicolas        _a_/_A_: Activism
   _S_: Swimming       _t_/_T_: Musicology
-  _R_: Running        _c_/_C_: Calendars
+  _R_: Running
+  _w_: Awakening      _c_/_C_: Calendars
 "
     (("i" "~/org/life.org" "Inbox")
      ("l" "~/org/life.org" "Life")
@@ -3724,6 +3725,7 @@ indirect-buffers."
      ("n" "~/org/life.org" "Nicolas")
      ("S" "~/org/life.org" "Swimming")
      ("R" "~/org/life.org" "Running")
+     ("w" "~/org/life.org" "Awakening")
 
      ("X" "~/org/life.org" "Maintenance")
      ("P" "~/org/life.org" "Professional")
