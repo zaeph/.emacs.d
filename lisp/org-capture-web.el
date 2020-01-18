@@ -53,14 +53,18 @@ information.")
 (defun zp/org-capture-web (action title url &optional curios)
   "Capture the website based on the info provided by org-capture-web.sh.
 
-ACTION is the action-verb to use for the task.
+ACTION is the action-verb to use for the task.  When nil, use
+a note template instead.
 
 TITLE and URL are those of the captured webpage.
 
 When CURIOS is non-nil, add the :curios: tag to the task."
-  (let* ((org-capture-templates
+  (let* ((prefix (if action
+                     (format "TODO %s" action)
+                   "Notes on"))
+         (org-capture-templates
           (zp/org-capture-web-create-template nil
-            (format "* TODO %s [[%%?%s][%s]]" action url title)
+            (format "* %s [[%%?%s][%s]]" prefix url title)
             :add-created t)))
     (zp/org-capture-with-dummy-template)
     (org-toggle-tag "online" 'on)
