@@ -336,7 +336,8 @@ See ‘zp/time-of-day-sections’ for more info."
   "Update pdf-view’s colour theme."
   (dolist (buffer (buffer-list))
     (with-current-buffer buffer
-      (when (derived-mode-p 'pdf-view-mode)
+      (when (and (derived-mode-p 'pdf-view-mode)
+                 (buffer-file-name buffer))
         (pdf-view-midnight-minor-mode)))))
 
 ;;----------------------------------------------------------------------------
