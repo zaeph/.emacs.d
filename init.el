@@ -3305,6 +3305,7 @@ indirect-buffers."
 
         ;; Activism
         ("^pol$" "~/org/svg/icons/fist.svg" nil nil :ascent center)
+        ("^union$" "~/org/svg/icons/fist.svg" nil nil :ascent center)
 
         ;; Professional
         ("^university$" "~/org/svg/icons/aperture-yellow.svg" nil nil :ascent center)
@@ -3718,6 +3719,7 @@ indirect-buffers."
   _n_: Nicolas        _a_/_A_: Activism
   _S_: Swimming       _t_/_T_: Musicology
   _R_: Running
+  _u_: Union
   _w_: Awakening      _c_/_C_: Calendars
 "
     (("i" "~/org/life.org" "Inbox")
@@ -3729,6 +3731,7 @@ indirect-buffers."
      ("S" "~/org/life.org" "Swimming")
      ("R" "~/org/life.org" "Running")
      ("w" "~/org/life.org" "Awakening")
+     ("u" "~/org/life.org" "Union")
 
      ("X" "~/org/life.org" "Maintenance")
      ("P" "~/org/life.org" "Professional")
