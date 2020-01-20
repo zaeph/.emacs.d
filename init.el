@@ -4999,7 +4999,7 @@ mouse-1: Previous buffer\nmouse-3: Next buffer")
   (zp/set-font-variable "equity")
 
   ;; Day/night cycle
-  (setq zp/time-of-day-sections '("06:00" "08:00" "16:00" "20:00" "00:00"))
+  (setq zp/time-of-day-sections '("05:00" "08:00" "16:00" "20:00" "00:00"))
   (zp/switch-theme-auto))
 
 ;;----------------------------------------------------------------------------
