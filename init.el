@@ -4368,6 +4368,10 @@ With a ‘C-u’ prefix argument, amend the last commit instead."
           "Charge Tablet          30/Unplug Tablet"
           "Charge Headphones      15/Unplug Headphones"
           "Charge Battery        120/Unplug Battery"
+          "Class: Very Short       1/End"
+          "Class: Short            5/End"
+          "Class: Medium          10/End"
+          "Class: Long            15/End"
           ))
 
   ;;---------------------
