@@ -63,6 +63,17 @@ Custom variable to hold the content when the icons are toggled
 off.")
 
 ;;----------------------------------------------------------------------------
+;; Hooks
+;;----------------------------------------------------------------------------
+(defvar zp/org-agenda-new-day-hook ()
+  "Hook that is run when a new day starts.")
+
+(defun zp/org-agenda-new-day-routine ()
+  (run-hooks 'zp/org-agenda-new-day-hook))
+
+(run-at-time "04:00" 86400 #'zp/org-agenda-new-day-routine)
+
+;;----------------------------------------------------------------------------
 ;; Commands
 ;;----------------------------------------------------------------------------
 (defun zp/org-agenda-benchmark (&optional arg)
@@ -94,7 +105,7 @@ With a prefix argument, do so in all agenda buffers."
         (when (derived-mode-p 'org-agenda-mode)
           (org-agenda-maybe-redo))))))
 
-(run-at-time "06:00" 86400 #'zp/org-agenda-redo-all)
+(add-hook 'zp/org-agenda-new-day-hook #'zp/org-agenda-redo-all)
 
 ;; Idle timer for rebuilding all the agenda views
 ;; Disabled for review
@@ -109,8 +120,7 @@ With a prefix argument, do so in all agenda buffers."
                 (zp/set-agenda-local 'org-habit-show-habits t agenda))))
           zp/org-agenda-local-config))
 
-;; Force habits to be shown if they’ve been disabled the previous day
-(run-at-time "06:00" 86400 #'zp/org-habit-show-habits-force)
+(add-hook 'zp/org-agenda-new-day-hook #'zp/org-habit-show-habits-force)
 
 ;; Change face of the arrow for ‘org-agenda-bulk-mark’
 (defun org-agenda-bulk-mark (&optional arg)
