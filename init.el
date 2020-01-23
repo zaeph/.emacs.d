@@ -778,7 +778,8 @@ Modifies ‘diff-command’ and ‘diff-switches’ to use ‘git diff’."
   (setq linum-format " %d "))
 
 (use-package pdf-tools
-  :magic ("%PDF" . pdf-view-mode)
+  ;; :magic ("%PDF" . pdf-view-mode)
+  :demand
   :config
   (pdf-tools-install :no-query))
 
