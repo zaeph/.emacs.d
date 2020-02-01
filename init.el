@@ -2306,6 +2306,7 @@ return `nil'."
         org-log-done 'time
         org-enforce-todo-dependencies nil
         org-adapt-indentation nil
+        org-loop-over-headlines-in-active-region 'start-level
 
         org-clock-report-include-clocking-task t
         org-clock-out-remove-zero-time-clocks t
