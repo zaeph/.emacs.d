@@ -92,7 +92,7 @@
   (zp/org-todo-format-face 'normal 'org-todo-wait "Skyblue4")
   (zp/org-todo-format-face 'normal 'org-todo-cxld "turquoise")
 
-  (set-face-attribute 'org-priority-face-a nil :foreground "white" :background "darkred")
+  (set-face-attribute 'org-priority-face-a nil :foreground "purple")
   (set-face-attribute 'org-priority-face-b nil :foreground "darkred")
   (set-face-attribute 'org-priority-face-c nil :foreground "yellow")
   (set-face-attribute 'org-priority-face-d nil :foreground "ForestGreen")
@@ -180,7 +180,7 @@
   (zp/org-todo-format-face 'normal 'org-todo-wait "Skyblue4")
   (zp/org-todo-format-face 'normal 'org-todo-cxld "turquoise")
 
-  (set-face-attribute 'org-priority-face-a nil :foreground "white" :background "red")
+  (set-face-attribute 'org-priority-face-a nil :foreground "purple")
   (set-face-attribute 'org-priority-face-b nil :foreground "red")
   (set-face-attribute 'org-priority-face-c nil :foreground "gold3")
   (set-face-attribute 'org-priority-face-d nil :foreground "ForestGreen")
