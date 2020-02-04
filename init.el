@@ -5131,12 +5131,7 @@ See ‘~/.bin/terminator-dwim’ for more info."
     (slime highlight-indent-guides dracula-theme use-package org-brain racket-mode wgrep fountain-mode org-mind-map org org-ref orgalist ws-butler minions backup-walker bug-hunter org-plus-contrib messages-are-flowing notmuch forge go-mode company-anaconda anaconda-mode company realgud ace-link ivy-hydra counsel dumb-jump lua-mode fish-mode exwm el-patch diminish circe-notifications circe ob-async nov eyebrowse diff-hl recentf-ext flycheck-pos-tip helm-projectile clean-aindent-mode volatile-highlights duplicate-thing org-noter hydra highlight mu4e-alert writeroom-mode anzu flycheck spaceline helm-chronos chronos multiple-cursors expand-region ace-window auto-minor-mode ledger-mode sublimity auctex smooth-scrolling yasnippet pdf-tools htmlize helm-bibtex free-keys evil color-theme base16-theme)))
  '(safe-local-variable-values
    (quote
-    ((eval add-hook
-           (quote after-save-hook)
-           (function org-hugo-export-wim-to-md-after-save)
-           :append :local)
-     nil
-     (org-confirm-babel-evaluate)
+    ((org-confirm-babel-evaluate)
      (after-save-hook . org-html-export-to-html))))
  '(send-mail-function (quote mailclient-send-it))
  '(size-indication-mode t)
