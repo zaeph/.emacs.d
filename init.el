@@ -2256,8 +2256,11 @@ return `nil'."
   :config
   (add-to-list 'org-modules 'org-habit)
 
+  (setq org-habit-preceding-days 6
+        org-habit-following-days 7)
+
   ;; Length of the habit graph
-  (setq org-habit-graph-column 50))
+  (setq org-habit-graph-column 65))
 
 (use-package org
   :bind (:map org-mode-map
