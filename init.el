@@ -3203,6 +3203,7 @@ indirect-buffers."
          :map calendar-mode-map
          (("c" . zp/org-calendar-goto-agenda)
           ("<RET>" . zp/org-calendar-goto-agenda)))
+  :hook ((org-agenda-finalize . zp/org-font-lock-add-energy-faces))
   :config
   (setq org-agenda-show-future-repeats t
         org-agenda-skip-scheduled-if-done 1
@@ -3283,10 +3284,10 @@ indirect-buffers."
                         :no-end-time-face nil
                         :long-face nil
                         :short-face nil)
-        org-agenda-prefix-format '((agenda . " %i %-12:c%?-12t% s")
+        org-agenda-prefix-format '((agenda . " %i %-12:c%(zp/org-agenda-format-energy-level-cookie)%?-12t%s")
                                    (timeline . "  % s")
-                                   (todo . " %i %-12:c")
-                                   (tags . " %i %-12:c")
+                                   (todo . " %i %-12:c%(zp/org-agenda-format-energy-level-cookie)")
+                                   (tags . " %i %-12:c%(zp/org-agenda-format-energy-level-cookie)")
                                    (search . " %i %-12:c")))
 
   (setq zp/org-agenda-category-icon-alist

@@ -2045,5 +2045,34 @@ With a ‘C-u’ prefix, make a separate frame for this tree."
     (with-current-buffer other
       (zp/org-kill-spawned-ibuf))))
 
+;;----------------------------------------------------------------------------
+;; Energy levels
+;;----------------------------------------------------------------------------
+(defun zp/org-agenda-format-energy-level-cookie ()
+  "Format the energy-level cookie in the agenda."
+  (let* ((energy (org-entry-get (point) "ENERGY" t)))
+    (if energy
+        (format "[≈%s] " energy)
+      ""
+      ;; (format "⚡%s " "?")
+      )))
+
+(defun zp/org-font-lock-add-energy-faces ()
+  "Add the special energy faces."
+  (while (re-search-forward "\\(\\[\\(≈\\(.\\)\\)\\]\\)" nil t)
+    ;; (add-text-properties
+    ;;  (match-beginning 1) (match-end 1)
+    ;;  (list 'face 'org-priority-face-e)
+    ;;  )
+    (add-text-properties
+     (match-beginning 1) (match-end 1)
+     (pcase (match-string 3)
+       ("A" (list 'face 'org-priority-face-c))
+       ("B" (list 'face 'org-priority-face-d))
+       ("C" (list 'face 'org-priority-face-e)))
+     ;; (list 'face (org-get-priority-face (string-to-char (match-string 3)))
+     ;;       'font-lock-fontified t)
+     )))
+
 (provide 'zp-org-agenda)
 ;;; zp-org-agenda.el ends here
