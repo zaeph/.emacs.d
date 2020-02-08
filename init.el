@@ -4703,7 +4703,8 @@ buffer, thereby propagating the indirectness."
   (setq zp/bibtex-completion-bib-data-alist
         '(("Monty Python" . "~/org/bib/monty-python.bib")
           ;; ("Monty Python - Extra" . "~/org/bib/monty-python-extra.bib")
-          ("FromSoftware" . "~/org/bib/fromsoftware.bib")))
+          ("FromSoftware" . "~/org/bib/fromsoftware.bib")
+          ("Writing" . "~/org/bib/writing.bib")))
 
   (zp/bibtex-select-bib-init)
 
