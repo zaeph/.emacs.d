@@ -2397,6 +2397,7 @@ return `nil'."
   ;; Global values for properties
   (setq org-global-properties (quote (("Effort_ALL" . "0:05 0:10 0:15 0:30 0:45 1:00 1:30 2:00 2:30 3:00 3:30 4:00 4:30 5:00 5:30 6:00 0:00")
                                       ("STYLE_ALL" . "habit")
+                                      ("ENERGY_ALL" . "A B C")
                                       ("APPT_WARNTIME_ALL" . "0 5 10 15 20 25 30 35 40 45 50 55 60 none")
                                       ("SESSION_DURATION_ALL" . "0:45 0:15 0:20 0:30 1:00"))))
 
