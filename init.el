@@ -4704,7 +4704,8 @@ buffer, thereby propagating the indirectness."
         '(("Monty Python" . "~/org/bib/monty-python.bib")
           ;; ("Monty Python - Extra" . "~/org/bib/monty-python-extra.bib")
           ("FromSoftware" . "~/org/bib/fromsoftware.bib")
-          ("Writing" . "~/org/bib/writing.bib")))
+          ("Writing" . "~/org/bib/writing.bib")
+          ("Processing" . "~/org/bib/processing.bib")))
 
   (zp/bibtex-select-bib-init)
 
