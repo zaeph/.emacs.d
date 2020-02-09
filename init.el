@@ -5092,7 +5092,8 @@ See ‘~/.bin/terminator-dwim’ for more info."
  '(global-hl-line-mode t)
  '(helm-external-programs-associations
    (quote
-    (("xlsx" . "localc")
+    (("epub" . "ebook-viewer")
+     ("xlsx" . "localc")
      ("docx" . "lowriter")
      ("gpg" . "evince")
      ("mp4" . "smplayer")
