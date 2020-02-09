@@ -1019,7 +1019,6 @@ numerical arguments."
 ;; But they can also be added via file-fariables or minor-modes
 ;; TODO: Adapt this block
 (add-to-list 'auto-minor-mode-alist '("edit-in-emacs.txt" . visual-line-mode))
-(add-to-list 'auto-minor-mode-alist '("edit-in-emacs.txt" . olivetti-mode))
 (add-to-list 'auto-minor-mode-alist '("edit-in-emacs.txt" . flyspell-mode))
 (add-to-list 'auto-minor-mode-alist '("edit-in-emacs.txt" . save-silently-mode))
 
