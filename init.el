@@ -4041,7 +4041,10 @@ indirect-buffers."
   :config
   (setq org-ref-bibliography-notes "~/org/bib/notes.org"
         reftex-default-bibliography '("~/org/bib/monty-python.bib")
-        org-ref-default-bibliography '("~/org/bib/monty-python.bib")
+        org-ref-default-bibliography '("~/org/bib/monty-python.bib"
+                                       "~/org/bib/fromsoftware.bib"
+                                       "~/org/bib/writing.bib"
+                                       "~/org/bib/processing.bib")
         org-ref-pdf-directory "~/org/bib/pdf"))
 
 ;;----------------------------------------------------------------------------
