@@ -1896,8 +1896,6 @@ SEARCH is a string to be interpreted by notmuch-search."
                 TeX-parse-self t
                 TeX-auto-save t
                 LaTeX-includegraphics-read-file 'LaTeX-includegraphics-read-file-relative)
-  (setq reftex-default-bibliography '("~/org/bib/monty-python.bib"))
-  ;; (setq reftex-default-bibliography nil)
   (setq warning-suppress-types nil)
   (add-to-list 'warning-suppress-types '(yasnippet backquote-change))
 
