@@ -4043,6 +4043,7 @@ indirect-buffers."
         reftex-default-bibliography '("~/org/bib/monty-python.bib")
         org-ref-default-bibliography '("~/org/bib/monty-python.bib"
                                        "~/org/bib/fromsoftware.bib"
+                                       "~/org/bib/visual.bib"
                                        "~/org/bib/writing.bib"
                                        "~/org/bib/processing.bib")
         org-ref-pdf-directory "~/org/bib/pdf"))
@@ -4705,6 +4706,7 @@ buffer, thereby propagating the indirectness."
         '(("Monty Python" . "~/org/bib/monty-python.bib")
           ;; ("Monty Python - Extra" . "~/org/bib/monty-python-extra.bib")
           ("FromSoftware" . "~/org/bib/fromsoftware.bib")
+          ("Visual" . "~/org/bib/visual.bib")
           ("Writing" . "~/org/bib/writing.bib")
           ("Processing" . "~/org/bib/processing.bib")))
 
