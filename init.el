@@ -788,7 +788,8 @@ Modifies ‘diff-command’ and ‘diff-switches’ to use ‘git diff’."
   (defvar zp/pdf-annot-default-annotation-color "#F1F23B"
     "Default color to use for annotations.")
 
-  (setq zp/pdf-annot-default-annotation-color "#F1F23B")
+  (setq zp/pdf-annot-default-annotation-color "#F1F23B"
+        zp/pdf-view-save-after-annotation t)
 
   (setq pdf-annot-default-annotation-properties
         `((t (label . ,user-full-name))
