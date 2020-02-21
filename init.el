@@ -3320,6 +3320,7 @@ indirect-buffers."
         ;; Research
         ("^research$" "~/org/svg/icons/research.svg" nil nil :ascent center)
         ("^d&p$" "~/org/svg/icons/university.svg" nil nil :ascent center)
+        ("^lit$" "~/org/svg/icons/book-2.svg" nil nil :ascent center)
         ("^cs$" "~/org/svg/icons/computer-science.svg" nil nil :ascent center)
         ("^maths$" "~/org/svg/icons/pi.svg" nil nil :ascent center)
         ("^phil$" "~/org/svg/icons/philosophy.svg" nil nil :ascent center)
@@ -3726,6 +3727,7 @@ indirect-buffers."
   _S_: Swimming       _t_/_T_: Musicology
   _R_: Running
   _u_: Union
+  _b_: Psychotherapy
   _w_: Awakening      _c_/_C_: Calendars
 "
     (("i" "~/org/life.org" "Inbox")
@@ -3736,8 +3738,9 @@ indirect-buffers."
      ("n" "~/org/life.org" "Nicolas")
      ("S" "~/org/life.org" "Swimming")
      ("R" "~/org/life.org" "Running")
-     ("w" "~/org/life.org" "Awakening")
      ("u" "~/org/life.org" "Union")
+     ("b" "~/org/life.org" "Psychotherapy")
+     ("w" "~/org/life.org" "Awakening")
 
      ("X" "~/org/life.org" "Maintenance")
      ("P" "~/org/life.org" "Professional")
@@ -3789,7 +3792,8 @@ indirect-buffers."
   _c_: Computer Science
   _m_: Mathematics
   _p_: Philosophy
-  _l_: Linguistics
+  _l_: Literature
+  _g_: Linguistics
   _h_: History
   _t_: Typography
 "
@@ -3798,7 +3802,8 @@ indirect-buffers."
      ("c" "~/org/life.org" "Computer Science")
      ("m" "~/org/life.org" "Mathematics")
      ("p" "~/org/life.org" "Philosophy")
-     ("l" "~/org/life.org" "Linguistics")
+     ("l" "~/org/life.org" "Literature")
+     ("g" "~/org/life.org" "Linguistics")
      ("h" "~/org/life.org" "History")
      ("t" "~/org/life.org" "Typography")))
 
