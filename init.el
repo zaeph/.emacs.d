@@ -4046,7 +4046,8 @@ indirect-buffers."
                                        "~/org/bib/visual.bib"
                                        "~/org/bib/writing.bib"
                                        "~/org/bib/processing.bib")
-        org-ref-pdf-directory "~/org/bib/pdf"))
+        org-ref-pdf-directory "~/org/bib/pdf"
+        org-ref-show-broken-links nil))
 
 ;;----------------------------------------------------------------------------
 ;; org-brain
