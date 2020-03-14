@@ -3935,8 +3935,8 @@ indirect-buffers."
   _n_: News    _f_/_F_: Film
              ^^_s_/_S_: Series
              ^^_m_/_M_: Music
-             ^^_g_/_g_: Manga
-             ^^_a_/_a_: Anime
+             ^^_g_/_G_: Manga
+             ^^_a_/_A_: Anime
 "
     (("." "~/org/life.org" "Media")
      ("B" "~/org/life.org" "Books")
