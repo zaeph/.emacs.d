@@ -1166,6 +1166,7 @@ With numeric prefix arg DEC, decrement the integer by DEC amount."
         ("e" . "~/.emacs.d/init.el")
         ("I" . "~/org/info.org.gpg")
         ("p d" . "/ssh:asus:~/Downloads/Sharing/dl.org")
+        ("p s" . "~/org/projects/hacking/snippets.org.gpg")
 
         ;; Ledger
         ("l l" . "~/org/ledger/main.ledger.gpg")
