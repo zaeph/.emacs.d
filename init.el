@@ -3725,7 +3725,7 @@ indirect-buffers."
   _s_: Social         _h_/_H_: Hacking
   _n_: Nicolas        _a_/_A_: Activism
   _S_: Swimming       _t_/_T_: Musicology
-  _R_: Running
+  _j_: Running
   _u_: Union
   _b_: Psychotherapy
   _w_: Awakening      _c_/_C_: Calendars
@@ -3737,7 +3737,7 @@ indirect-buffers."
      ("s" "~/org/life.org" "Social")
      ("n" "~/org/life.org" "Nicolas")
      ("S" "~/org/life.org" "Swimming")
-     ("R" "~/org/life.org" "Running")
+     ("j" "~/org/life.org" "Running")
      ("u" "~/org/life.org" "Union")
      ("b" "~/org/life.org" "Psychotherapy")
      ("w" "~/org/life.org" "Awakening")
