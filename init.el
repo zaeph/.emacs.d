@@ -788,8 +788,7 @@ Modifies ‘diff-command’ and ‘diff-switches’ to use ‘git diff’."
   (defvar zp/pdf-annot-default-annotation-color "#F1F23B"
     "Default color to use for annotations.")
 
-  (setq zp/pdf-annot-default-annotation-color "#F1F23B"
-        zp/pdf-view-save-after-annotation t)
+  (setq zp/pdf-annot-default-annotation-color "#F1F23B")
 
   (setq pdf-annot-default-annotation-properties
         `((t (label . ,user-full-name))
@@ -817,7 +816,7 @@ Modifies ‘diff-command’ and ‘diff-switches’ to use ‘git diff’."
   (defvar zp/pdf-view-save-after-annotation nil
     "When non-nil, save the PDF after an annotation is created.")
 
-  (setq zp/pdf-view-save-after-annotation nil)
+  (setq zp/pdf-view-save-after-annotation t)
 
   ;; Save after creating an annotation
   (defun zp/pdf-view-save-buffer ()
