@@ -3900,7 +3900,6 @@ indirect-buffers."
  ^^------------------
   _o_: Life
   _s_: Social
-  _n_: Nicolas
   _x_: Maintenance
   _f_: Finances
   _a_: Animals
@@ -3914,7 +3913,6 @@ indirect-buffers."
 "
     (("o" "~/org/life.org" "Life" "Calendar")
      ("s" "~/org/life.org" "Social" "Calendar")
-     ("n" "~/org/life.org" "Nicolas" "Calendar")
      ("x" "~/org/life.org" "Maintenance" "Calendar")
      ("f" "~/org/life.org" "Finances" "Calendar")
      ("a" "~/org/life.org" "Animals" "Calendar")
