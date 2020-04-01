@@ -162,6 +162,9 @@ end-of-buffer signals; pass the rest to the default handler."
 ;; Prevent newlines insertion when moving past the end of the file
 (setq next-line-add-newlines nil)
 
+;; Prefer horizontal splits with edif
+(setq ediff-split-window-function 'split-window-horizontally)
+
 ;;----------------------------------------------------------------------------
 ;; Helper functions & macros
 ;;----------------------------------------------------------------------------
