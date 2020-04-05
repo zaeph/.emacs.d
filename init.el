@@ -3796,6 +3796,7 @@ indirect-buffers."
   _m_: Mathematics
   _p_: Philosophy
   _l_: Literature
+  _f_: Film studies
   _g_: Linguistics
   _h_: History
   _t_: Typography
@@ -3806,6 +3807,7 @@ indirect-buffers."
      ("m" "~/org/life.org" "Mathematics")
      ("p" "~/org/life.org" "Philosophy")
      ("l" "~/org/life.org" "Literature")
+     ("f" "~/org/life.org" "Film studies")
      ("g" "~/org/life.org" "Linguistics")
      ("h" "~/org/life.org" "History")
      ("t" "~/org/life.org" "Typography")))
