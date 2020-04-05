@@ -388,6 +388,7 @@ time is displayed."
 (global-set-key (kbd "C-x C-c") #'delete-frame)
 
 ;; Actions
+(global-set-key (kbd "C-x b") #'ibuffer)
 (global-set-key (kbd "M-SPC") #'delete-horizontal-space)
 (global-set-key (kbd "M-S-SPC") #'just-one-space)
 (global-set-key (kbd "H-.") #'zp/echo-buffer-name)
@@ -2950,7 +2951,6 @@ along with effort estimates and total time."
   :bind (("M-x" . helm-M-x)
          ("<menu>" . helm-M-x)
          ("M-y" . helm-show-kill-ring)
-         ("C-x b" . helm-mini)
          ("C-x C-b" . helm-mini)
          ("C-x C-f" . helm-find-files)
          ("M-s M-s" . helm-occur)
