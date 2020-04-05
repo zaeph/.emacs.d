@@ -3351,12 +3351,13 @@ indirect-buffers."
         ("^media$" "~/org/svg/icons/library.svg" nil nil :ascent center)
         ("^news$" "~/org/svg/icons/world.svg" nil nil :ascent center)
         ("^books$" "~/org/svg/icons/book-2.svg" nil nil :ascent center)
-        ("^trackers$" "~/org/svg/icons/share.svg" nil nil :ascent center)
+        ("^theatre$" "~/org/svg/icons/theatre.svg" nil nil :ascent center)
         ("^music$" "~/org/svg/icons/compact-disc.svg" nil nil :ascent center)
         ("^film$" "~/org/svg/icons/film.svg" nil nil :ascent center)
         ("^series$" "~/org/svg/icons/film-b.svg" nil nil :ascent center)
         ("^anime$" "~/org/svg/icons/film-c.svg" nil nil :ascent center)
         ("^manga$" "~/org/svg/icons/book-2b.svg" nil nil :ascent center)
+        ("^trackers$" "~/org/svg/icons/share.svg" nil nil :ascent center)
 
         ;; Maintenance
         ("^mx$" "~/org/svg/icons/recycle.svg" nil nil :ascent center)
@@ -3936,14 +3937,16 @@ indirect-buffers."
  ^^^^^^------------------------
   _._: Root    _b_/_B_: Books
   _n_: News    _f_/_F_: Film
+             ^^_t_/_T_: Theatre
              ^^_s_/_S_: Series
              ^^_m_/_M_: Music
              ^^_g_/_G_: Manga
              ^^_a_/_A_: Anime
 "
     (("." "~/org/life.org" "Media")
-     ("B" "~/org/life.org" "Books")
      ("n" "~/org/life.org" "News")
+     ("B" "~/org/life.org" "Books")
+     ("T" "~/org/life.org" "Theatre")
      ("F" "~/org/life.org" "Film")
      ("S" "~/org/life.org" "Series")
      ("M" "~/org/life.org" "Music")
@@ -3951,6 +3954,7 @@ indirect-buffers."
      ("A" "~/org/life.org" "Anime"))
     (("b" books)
      ("f" film)
+     ("t" theatre)
      ("s" series)
      ("m" music)
      ("g" manga)
@@ -3981,6 +3985,20 @@ indirect-buffers."
     (("." "~/org/life.org" "Film")
      ("l" "~/org/life.org" "Film" "List")
      ("d" "~/org/life.org" "Film" "Watched"))
+    nil
+    media)
+
+  (zp/create-hydra-org-refile theatre
+      "
+  ^Film^
+ ^^------------
+  _._: Root
+  _l_: List
+  _d_: Watched
+"
+    (("." "~/org/life.org" "Theatre")
+     ("l" "~/org/life.org" "Theatre" "List")
+     ("d" "~/org/life.org" "Theatre" "Watched"))
     nil
     media)
 
