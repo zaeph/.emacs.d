@@ -4074,7 +4074,50 @@ indirect-buffers."
                                        "~/org/bib/writing.bib"
                                        "~/org/bib/processing.bib")
         org-ref-pdf-directory "~/org/bib/pdf"
-        org-ref-show-broken-links nil))
+        org-ref-show-broken-links nil)
+
+  (defun org-ref-get-bibtex-entry-md (key)
+    "Return a md string for the bibliography entry corresponding to KEY."
+    ;; We create an anchor to the key that we can jump to, and provide a jump back
+    ;; link with the md5 of the key.
+    (let ((org-ref-formatted-citation-backend "md"))
+      (format "<a id=\"%s\"></a>%s [↩](#%s)"
+              key
+              (org-ref-format-entry key)
+              (md5 key))))
+
+  (setq org-ref-formatted-citation-formats
+        '(("text"
+           ("article" . "${author}, ${title}, ${journal}, ${volume}(${number}), ${pages} (${year}). ${doi}")
+           ("inproceedings" . "${author}, ${title}, In ${editor}, ${booktitle} (pp. ${pages}) (${year}). ${address}: ${publisher}.")
+           ("book" . "${author}, ${title} (${year}), ${address}: ${publisher}.") ("phdthesis"
+                                                                                  . "${author}, ${title} (Doctoral dissertation) (${year}). ${school}, ${address}.")
+           ("inbook" . "${author}, ${title}, In ${editor} (Eds.), ${booktitle} (pp. ${pages}) (${year}). ${address}: ${publisher}.")
+           ("incollection" . "${author}, ${title}, In ${editor} (Eds.), ${booktitle} (pp. ${pages}) (${year}). ${address}: ${publisher}.")
+           ("proceedings" . "${editor} (Eds.), ${booktitle} (${year}). ${address}: ${publisher}.")
+           ("unpublished" . "${author}, ${title} (${year}). Unpublished manuscript.") (nil
+                                                                                       . "${author}, ${title} (${year})."))
+          ("org"
+           ("article" . "${author}, /${title}/, ${journal}, *${volume}(${number})*, ${pages} (${year}). ${doi}")
+           ("inproceedings" . "${author}, /${title}/, In ${editor}, ${booktitle} (pp. ${pages}) (${year}). ${address}: ${publisher}.")
+           ("book" . "${author}, /${title}/ (${year}), ${address}: ${publisher}.") ("phdthesis"
+                                                                                    . "${author}, /${title}/ (Doctoral dissertation) (${year}). ${school}, ${address}.")
+           ("inbook" . "${author}, /${title}/, In ${editor} (Eds.), ${booktitle} (pp. ${pages}) (${year}). ${address}: ${publisher}.")
+           ("incollection" . "${author}, /${title}/, In ${editor} (Eds.), ${booktitle} (pp. ${pages}) (${year}). ${address}: ${publisher}.")
+           ("proceedings" . "${editor} (Eds.), _${booktitle}_ (${year}). ${address}: ${publisher}.")
+           ("unpublished" . "${author}, /${title}/ (${year}). Unpublished manuscript.")
+           (nil . "${author}, /${title}/ (${year})."))
+
+          ("md"
+           ("article" . "${author}, *${title}*, ${journal}, *${volume}(${number})*, ${pages} (${year}). ${doi}")
+           ("inproceedings" . "${author}, *${title}*, In ${editor}, ${booktitle} (pp. ${pages}) (${year}). ${address}: ${publisher}.")
+           ("book" . "${author}, *${title}* (${date}), ${location}: ${publisher}.")
+           ("phdthesis" . "${author}, *${title}* (Doctoral dissertation) (${year}). ${school}, ${address}.")
+           ("inbook" . "${author}, *${title}*, In ${editor} (Eds.), ${booktitle} (pp. ${pages}) (${year}). ${address}: ${publisher}.")
+           ("incollection" . "${author}, *${title}*, In ${editor} (Eds.), ${booktitle} (pp. ${pages}) (${year}). ${address}: ${publisher}.")
+           ("proceedings" . "${editor} (Eds.), _${booktitle}_ (${year}). ${address}: ${publisher}.")
+           ("unpublished" . "${author}, *${title}* (${year}). Unpublished manuscript.")
+           (nil . "${author}, *${title}* (${year}).")))))
 
 ;;----------------------------------------------------------------------------
 ;; org-brain
