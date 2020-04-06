@@ -3471,7 +3471,7 @@ indirect-buffers."
          :map org-agenda-mode-map
          ("k" . zp/org-agenda-capture))
   :hook ((org-capture-mode . zp/org-capture-make-full-frame)
-         (org-capture-prepare-finalize . zp/org-set-created-property))
+         (org-capture-prepare-finalize . zp/org-capture-set-created-property))
   :config
   (setq org-default-notes-file "~/org/life.org")
 
@@ -3648,12 +3648,15 @@ indirect-buffers."
 
   (defun zp/org-capture-set-created-property ()
     "Conditionally set the CREATED property on captured trees."
-    (let ((add-created (plist-get org-capture-plist :add-created)))
-      (unless (buffer-narrowed-p)
-        (error "Buffer is not narrowed"))
-      (save-excursion
-        (goto-char (point-min))
-        (zp/org-set-created-property))))
+    (let ((add-created (plist-get org-capture-plist :add-created))
+          (type (plist-get org-capture-plist :type)))
+      (when (and (eq type 'entry)
+                 add-created)
+        (unless (buffer-narrowed-p)
+          (error "Buffer is not narrowed"))
+        (save-excursion
+          (goto-char (point-min))
+          (zp/org-set-created-property)))))
 
   (use-package appt
     :hook (org-capture-mode . zp/org-capture-set-appt-warntime-if-timestamp)
