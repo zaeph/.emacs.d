@@ -3418,8 +3418,11 @@ indirect-buffers."
                ("e" "Emacs" ("emacs"))
                ("O" "OPSEC" ("opsec"))
                ("P" "Activism" ("act"))
-               ("m" "Media" ("media"))
-               ("f" "Film" ("film"))
+               ("M" "Media" ("media"))
+               ("mb" "Books" ("books"))
+               ("mt" "Theatre" ("theatre"))
+               ("mf" "Film" ("film"))
+               ("ms" "Series" ("series"))
                ("g" "Groupless" ("nil"))
                ("X" "Testing ground" ("+test"))))
 
