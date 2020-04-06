@@ -3717,7 +3717,7 @@ indirect-buffers."
            (function org-roam-capture--get-point)
            "%?"
            :file-name "%<%Y%m%d%H%M%S>-${slug}"
-           :head "#+TITLE: ${title}\n"
+           :head "#+TITLE: ${title}\n#+CREATED: %U\n"
            :unnarrowed t))))
 
 ;;----------------------------------------------------------------------------
