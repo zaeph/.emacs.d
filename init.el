@@ -4027,7 +4027,7 @@ indirect-buffers."
 
   (zp/create-hydra-org-refile theatre
       "
-  ^Film^
+  ^Theatre^
  ^^------------
   _._: Root
   _l_: List
