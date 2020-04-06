@@ -636,7 +636,14 @@ time is displayed."
 (use-package ox
   :config
   (setq org-export-in-background t
-        org-export-with-sub-superscripts nil))
+        org-export-with-sub-superscripts nil)
+
+  (defun zp/html2org-clipboard ()
+    "Convert clipboard contents from HTML to Org and then paste (yank)."
+    (interactive)
+    (kill-new (shell-command-to-string "xclip -o -t text/html | pandoc -f html -t org"))
+    (yank)
+    (zp/unfill-region)))
 
 (use-package ox-org)
 
