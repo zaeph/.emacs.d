@@ -725,6 +725,7 @@ time is displayed."
   (add-hook 'emacs-lisp-mode-hook #'lispy-mode))
 
 (use-package nov
+  :hook (nov-mode . zp/variable-pitch-mode)
   :mode ("\\.\\(epub\\|mobi\\)\\'" . nov-mode))
 
 (use-package olivetti
