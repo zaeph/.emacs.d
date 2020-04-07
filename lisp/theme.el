@@ -486,11 +486,11 @@ FONT is a preset."
         ("equity"
          (set-face-attribute 'variable-pitch nil
                              :font "Equity Text A" :height 158)
-         (setq zp/line-spacing-variable nil))
+         (setq zp/line-spacing-variable 0.3))
         ("guyot"
          (set-face-attribute 'variable-pitch nil
                              :font "Guyot Text" :height 152)
-         (setq zp/line-spacing-variable 0.3))
+         (setq zp/line-spacing-variable 0.5))
         ("bliss"
          (set-face-attribute 'variable-pitch nil
                              :font "Bliss Pro Prog" :height 158)
