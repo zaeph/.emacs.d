@@ -3724,7 +3724,17 @@ indirect-buffers."
            "%?"
            :file-name "%<%Y%m%d%H%M%S>-${slug}"
            :head "#+TITLE: ${title}\n#+CREATED: %U\n"
-           :unnarrowed t))))
+           :unnarrowed t)))
+
+  ;; Patch function because of bug
+  (defun org-roam--find-file-hook-function ()
+    "Called by `find-file-hook' when mode `org-roam-mode' is on."
+    (when (org-roam--org-roam-file-p)
+      (setq org-roam-last-window (get-buffer-window))
+      (add-hook 'post-command-hook #'org-roam--maybe-update-buffer nil t)
+      (add-hook 'after-save-hook #'org-roam-db--update-file nil t)
+      ;; (org-link-set-parameters "file" :face 'org-roam--roam-link-face)
+      (org-roam--maybe-update-buffer :redisplay nil))))
 
 ;;----------------------------------------------------------------------------
 ;; hydra-org-refile
