@@ -4172,6 +4172,7 @@ indirect-buffers."
           ("FromSoftware" . "~/org/bib/fromsoftware.bib")
           ("Visual" . "~/org/bib/visual.bib")
           ("Writing" . "~/org/bib/writing.bib")
+          ("Metaphor" . "~/org/bib/metaphor.bib")
           ("Processing" . "~/org/bib/processing.bib")))
 
   (zp/bibtex-select-bib-init)
