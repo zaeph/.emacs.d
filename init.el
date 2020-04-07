@@ -2839,6 +2839,9 @@ subsequent calls.")
     (setq header-line-format
           "Spawned indirect buffer.  Kill with ‘C-c C-k’, dedicate with ‘C-u C-c C-k’.")))
 
+(use-package org-refile
+  :requires org)
+
 (use-package org-footnote
   :config
   (setq org-footnote-define-inline 1))
