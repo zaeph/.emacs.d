@@ -4316,13 +4316,13 @@ commas and space."
   :config
   (setq org-ref-bibliography-notes "~/org/bib/notes.org"
         reftex-default-bibliography '("~/org/bib/monty-python.bib")
-        org-ref-default-bibliography '("~/org/bib/monty-python.bib"
-                                       "~/org/bib/fromsoftware.bib"
-                                       "~/org/bib/visual.bib"
-                                       "~/org/bib/writing.bib"
-                                       "~/org/bib/processing.bib")
         org-ref-pdf-directory "~/org/bib/pdf"
         org-ref-show-broken-links nil)
+
+  ;; Use helm-bibtex data the default bibliography
+  (setq org-ref-default-bibliography
+        (mapcar #'cdr zp/bibtex-completion-bib-data-alist))
+
 
   (defun org-ref-get-bibtex-entry-md (key)
     "Return a md string for the bibliography entry corresponding to KEY."
