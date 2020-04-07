@@ -485,16 +485,16 @@ FONT is a preset."
       (pcase font
         ("equity"
          (set-face-attribute 'variable-pitch nil
-                             :font "Equity Text A" :height 158)
-         (setq zp/line-spacing-variable 0.3))
+                             :font "Equity Text A" :height 187)
+         (setq zp/line-spacing-variable 0.2))
         ("guyot"
          (set-face-attribute 'variable-pitch nil
-                             :font "Guyot Text" :height 152)
+                             :font "Guyot Text" :height 187)
          (setq zp/line-spacing-variable 0.5))
         ("bliss"
          (set-face-attribute 'variable-pitch nil
-                             :font "Bliss Pro Prog" :height 158)
-         (setq zp/line-spacing-variable nil))
+                             :font "Bliss Pro Prog" :height 195)
+         (setq zp/line-spacing-variable 0.2))
         ("typewriter"
          (set-face-attribute 'variable-pitch nil
                              :font "ITC American Typewriter Std" :height 158)
