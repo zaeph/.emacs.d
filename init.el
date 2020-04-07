@@ -4622,6 +4622,8 @@ chronos’s main buffer for adding a new timer."
 ;; org-noter
 ;;----------------------------------------------------------------------------
 (use-package org-noter
+  :bind (:map org-noter-doc-mode-map
+              (("M-i" . zp/org-noter-insert-precise-note-dwim)))
   :config
   (setq org-noter-hide-other t
         org-noter-auto-save-last-location t
@@ -4688,6 +4690,17 @@ buffer, thereby propagating the indirectness."
             (org-set-tags (push "noter" tags)))))
       (unless in-agenda
         (set-marker marker nil))))
+
+  (defun zp/org-noter-insert-precise-note-dwim (force-mouse)
+    "Insert note associated with a specific location.
+
+If in nov-mode, use point rather than the mouse to target the
+position."
+    (interactive "P")
+    (if (and (derived-mode-p 'nov-mode)
+             (not force-mouse))
+        (org-noter-insert-note (point))
+      (org-noter-insert-precise-note)))
 
   (define-key org-noter-doc-mode-map (kbd "j") 'pdf-view-next-line-or-next-page)
   (define-key org-noter-doc-mode-map (kbd "k") 'pdf-view-previous-line-or-previous-page)
