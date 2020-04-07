@@ -3507,6 +3507,9 @@ indirect-buffers."
           ("e" "Date + Context" entry (file+headline "~/org/life.org" "Calendar")
            "* %?\n%a" :add-created t)
 
+          ("p" "Process notes" entry (file+headline "~/org/life.org" "Inbox")
+           "* TODO Process notes: %a%?" :add-created t)
+
           ;; ("D" "Date + Reminder" entry (file+headline "~/org/life.org" "Calendar")
           ;;  "* %?\n%^T\n\n%^{APPT_WARNTIME}p")
           ;; ("R" "Reminder" entry (file+headline "~/org/life.org" "Inbox")
