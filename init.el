@@ -3072,7 +3072,7 @@ indirect-buffers."
 ;; org-super-agenda
 ;;----------------------------------------------------------------------------
 (use-package org-super-agenda
-  :load-path "~/projects/forks/org-super-agenda/"
+  :load-path "~/projects/org-super-agenda/"
   :after org-agenda
   :config
   (org-super-agenda-mode)
