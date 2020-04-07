@@ -2259,7 +2259,7 @@ return `nil'."
 
 (use-package org-id
     :config
-  (setq org-id-link-to-org-use-id 'create-if-interactive-and-no-custom-id))
+  (setq org-id-link-to-org-use-id 'use-existing))
 
 (use-package org-habit
   :config
