@@ -344,8 +344,6 @@ surrounding paragraph."
       (setq print-circle t)
     (setq print-circle nil)))
 
-(print-circle-mode)
-
 (define-minor-mode always-centred-mode
   "Mode for keeping the cursor vertically centred."
   :lighter " ctr"
