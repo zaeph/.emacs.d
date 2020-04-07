@@ -3117,10 +3117,7 @@ indirect-buffers."
         (zp/is-subtask-p))))
 
   (defun zp/org-super-agenda-scheduled ()
-    '((:name "Past appointments"
-             :face (:foreground "red")
-             :timestamp past)
-      (:name "Overdue"
+    '((:name "Overdue"
              :face (:foreground "red")
              :scheduled past)
       (:name "Waiting"
@@ -3128,18 +3125,15 @@ indirect-buffers."
                         :scheduled nil)
              :and (:tag "waiting"
                         :scheduled today))
-      (:name "Appointments"
-             :timestamp today)
       (:name "Scheduled"
              :scheduled today)
       (:name "Subtasks"
              :and (:scheduled nil
-                              :timestamp nil
                               :pred (lambda (item)
                                       (when zp/org-agenda-split-subtasks
                                         (zp/org-super-agenda-subtask-p item)))))
       (:name "Current"
-             :and (:not (:scheduled t :timestamp t)
+             :and (:not (:scheduled t)
                         :not (:tag "waiting")))
       (:name "Later"
              :anything)))
