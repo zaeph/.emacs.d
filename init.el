@@ -729,7 +729,6 @@ time is displayed."
   :mode ("\\.\\(epub\\|mobi\\)\\'" . nov-mode))
 
 (use-package olivetti
-  :hook (nov-mode . olivetti-mode)
   :bind ("M-O" . olivetti-mode)
   :config
   (setq-default olivetti-body-width 0.6
