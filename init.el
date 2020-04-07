@@ -4125,9 +4125,10 @@ indirect-buffers."
 
   (defun zp/bibtex-completion-bib-data-format ()
     (interactive)
-    (setq zp/bibtex-completion-bib-data zp/bibtex-completion-bib-data-alist)
-    (map-put zp/bibtex-completion-bib-data
-             "All entries" (list (mapcar 'cdr zp/bibtex-completion-bib-data))))
+    (let* ((alist zp/bibtex-completion-bib-data-alist)
+           (all-bib (mapcar 'cdr alist)))
+      (setq zp/bibtex-completion-bib-data
+            (list (cons "All entries" (list all-bib)) alist))))
 
   (defun zp/bibtex-select-bib-init ()
     (zp/bibtex-completion-bib-data-format)
