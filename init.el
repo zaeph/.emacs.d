@@ -3512,8 +3512,6 @@ indirect-buffers."
           ;; ("R" "Reminder" entry (file+headline "~/org/life.org" "Inbox")
           ;;  "* %?\n%^T%^{APPT_WARNTIME}p")
 
-          ("p" "Phone-call" entry (file+headline "~/org/life.org" "Inbox")
-           "* TODO Phone-call with %^{Interlocutor|Nicolas|Mum}%?\n:STATES:\n- State \"TODO\"       from              %U\n:END:" :clock-in t)
           ("m" "Meeting" entry (file+headline "~/org/life.org" "Inbox")
            "* TODO Meeting with %^{Meeting with}%?" :clock-in t)
 
@@ -3766,9 +3764,8 @@ indirect-buffers."
   _o_: Planning       _r_/_R_: Research
   _k_: Curiosities    _m_/_M_: Media
   _s_: Social         _h_/_H_: Hacking
-  _n_: Nicolas        _a_/_A_: Activism
-  _S_: Swimming       _t_/_T_: Musicology
-  _j_: Running
+  _S_: Swimming       _a_/_A_: Activism
+  _j_: Running        _t_/_T_: Musicology
   _u_: Union
   _b_: Psychotherapy
   _w_: Awakening      _c_/_C_: Calendars
@@ -3778,7 +3775,6 @@ indirect-buffers."
      ("o" "~/org/life.org" "Planning")
      ("k" "~/org/life.org" "Curiosities")
      ("s" "~/org/life.org" "Social")
-     ("n" "~/org/life.org" "Nicolas")
      ("S" "~/org/life.org" "Swimming")
      ("j" "~/org/life.org" "Running")
      ("u" "~/org/life.org" "Union")
