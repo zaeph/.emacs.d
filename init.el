@@ -314,7 +314,11 @@ time is displayed."
   (let ((fill-column (point-max)))
     (fill-region (region-beginning) (region-end) nil)))
 
-(defun zp/unfill-context ()
+(defun zp/unfill-dwim ()
+  "Contextually unfill text.
+
+If region is active, unfill it.  Otherwise, unfill the
+surrounding paragraph."
   (interactive)
   (if (region-active-p)
       (zp/unfill-region)
@@ -393,7 +397,7 @@ time is displayed."
 (global-set-key (kbd "M-S-SPC") #'just-one-space)
 (global-set-key (kbd "H-.") #'zp/echo-buffer-name)
 (global-set-key (kbd "C-x F") #'zp/unfill-document)
-(global-set-key (kbd "M-Q") #'zp/unfill-context)
+(global-set-key (kbd "M-Q") #'zp/unfill-dwim)
 (global-set-key (kbd "C-x B") #'rename-buffer)
 (global-set-key (kbd "M-o") #'mode-line-other-buffer)
 (global-set-key (kbd "H-j") #'other-window-reverse)
