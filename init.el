@@ -3511,7 +3511,7 @@ indirect-buffers."
            "* %?\n%a" :add-created t)
 
           ("p" "Process notes" entry (file+headline "~/org/life.org" "Inbox")
-           "* TODO Process notes: %a%?" :add-created t)
+           "* TODO Process notes: %a%?\nDEADLINE: <%(org-read-date nil nil \"+2d\")>" :add-created t)
 
           ;; ("D" "Date + Reminder" entry (file+headline "~/org/life.org" "Calendar")
           ;;  "* %?\n%^T\n\n%^{APPT_WARNTIME}p")
