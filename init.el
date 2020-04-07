@@ -4833,7 +4833,9 @@ chronos’s main buffer for adding a new timer."
 ;; org-noter
 ;;----------------------------------------------------------------------------
 (use-package org-noter
-  :bind (:map org-noter-doc-mode-map
+  :bind (:map org-mode-map
+              (("C-c N" . zp/org-noter-dwim))
+              :map org-noter-doc-mode-map
               (("M-i" . zp/org-noter-insert-precise-note-dwim)))
   :config
   (setq org-noter-hide-other t
@@ -4914,10 +4916,7 @@ position."
       (org-noter-insert-precise-note)))
 
   (define-key org-noter-doc-mode-map (kbd "j") 'pdf-view-next-line-or-next-page)
-  (define-key org-noter-doc-mode-map (kbd "k") 'pdf-view-previous-line-or-previous-page)
-
-  ;; TODO: Use ‘org-agenda-keymap’ instead of setting it globally
-  (global-set-key (kbd "C-c N") 'zp/org-noter-dwim))
+  (define-key org-noter-doc-mode-map (kbd "k") 'pdf-view-previous-line-or-previous-page))
 
 ;;----------------------------------------------------------------------------
 ;; Psychotherapy
