@@ -2543,9 +2543,12 @@ When ANYWHERE is non-nil, search beyond the preamble."
         (when (re-search-forward "^#\\+LAST_MODIFIED:"
                                  (if anywhere nil first-heading)
                                  t)
+          (if (looking-at-p " ")
+              (forward-char)
+            (insert " "))
           (delete-region (point) (line-end-position))
           (let* ((now (format-time-string "[%Y-%m-%d %a %H:%M]")))
-            (insert (format " %s" now)))))))
+            (insert now))))))
 
   ;;------------------------
   ;; Narrowing & Movements
