@@ -2260,7 +2260,7 @@ return `nil'."
   (global-set-key (kbd "C-c c") 'calendar))
 
 (use-package org-id
-    :config
+  :config
   (setq org-id-link-to-org-use-id 'use-existing))
 
 (use-package org-habit
