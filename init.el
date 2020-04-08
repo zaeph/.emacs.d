@@ -4944,7 +4944,10 @@ position."
     (interactive "P")
     (if (and (derived-mode-p 'nov-mode)
              (not force-mouse))
-        (org-noter-insert-note (point))
+        (let ((pos (if (region-active-p)
+                       (min (region-beginning) (point))
+                     (point))))
+          (org-noter-insert-note pos))
       (org-noter-insert-precise-note)))
 
   (define-key org-noter-doc-mode-map (kbd "j") 'pdf-view-next-line-or-next-page)
