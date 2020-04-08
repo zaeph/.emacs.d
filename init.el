@@ -2311,7 +2311,7 @@ return `nil'."
               ("C-c R" . org-display-inline-images))
   :hook ((org-mode . org-indent-mode)
          (org-mode . visual-line-mode)
-         (after-save . zp/org-update-last-modified))
+         (before-save . zp/org-update-last-modified))
   :config
   (setq org-agenda-inhibit-startup nil
         org-log-into-drawer "LOGBOOK-NOTES"
