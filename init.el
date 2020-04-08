@@ -2324,7 +2324,7 @@ return `nil'."
               ("C-c R" . org-display-inline-images))
   :hook ((org-mode . org-indent-mode)
          (org-mode . visual-line-mode)
-         (before-save . zp/org-update-last-modified))
+         (before-save . zp/org-set-last-modified))
   :config
   (setq org-agenda-inhibit-startup nil
         org-log-into-drawer "LOGBOOK-NOTES"
@@ -2567,7 +2567,7 @@ When ANYWHERE is non-nil, search beyond the preamble."
     "Set the CREATED file property in the preamble."
     (zp/org-set-time-file-property "CREATED"))
 
-  (defun zp/org-update-last-modified ()
+  (defun zp/org-set-last-modified ()
     "Update the LAST_MODIFIED file property in the preamble."
     (zp/org-set-time-file-property "LAST_MODIFIED"))
 
