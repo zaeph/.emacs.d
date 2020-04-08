@@ -2326,8 +2326,7 @@ return `nil'."
               ("C-c R" . org-display-inline-images))
   :hook ((org-mode . org-indent-mode)
          (org-mode . visual-line-mode)
-         (before-save . zp/org-set-last-modified)
-         (find-file . zp/org-set-created-add-local-hook))
+         (before-save . zp/org-set-last-modified))
   :config
   (setq org-agenda-inhibit-startup nil
         org-log-into-drawer "LOGBOOK-NOTES"
@@ -2596,21 +2595,6 @@ it can be passed in POS."
   (defun zp/org-set-last-modified ()
     "Update the LAST_MODIFIED file property in the preamble."
     (zp/org-set-time-file-property "LAST_MODIFIED"))
-
-  (defun zp/org-set-created ()
-    "Set the CREATED file property in the preamble."
-    (let* ((property "CREATED")
-           (pos (zp/org-find-time-file-property property)))
-      (when (eq -1 (zp/org-has-time-file-property-p property))
-        (zp/org-set-time-file-property property nil pos))))
-
-  (defun zp/org-set-created-and-remove-local-hook ()
-    (zp/org-set-created)
-    (remove-hook 'before-save-hook #'zp/org-set-created-and-remove-local-hook t))
-
-  (defun zp/org-set-created-add-local-hook ()
-    (when (derived-mode-p 'org-mode)
-      (add-hook 'before-save-hook #'zp/org-set-created-and-remove-local-hook nil t)))
 
   ;;------------------------
   ;; Narrowing & Movements
