@@ -4885,7 +4885,7 @@ chronos’s main buffer for adding a new timer."
   :config
   (setq org-noter-hide-other t
         org-noter-auto-save-last-location t
-        org-noter-doc-split-fraction '(0.59 0.41))
+        org-noter-doc-split-fraction '(0.57 0.43))
 
   (defun zp/org-noter-visual-line-mode ()
     "Enable visual-line-mode in ‘org-noter’ notes.
