@@ -2310,7 +2310,8 @@ return `nil'."
               ("C-c C-x C-l" . zp/org-latex-preview-dwim)
               ("C-c R" . org-display-inline-images))
   :hook ((org-mode . org-indent-mode)
-         (org-mode . visual-line-mode))
+         (org-mode . visual-line-mode)
+         (after-save . zp/org-update-last-modified))
   :config
   (setq org-agenda-inhibit-startup nil
         org-log-into-drawer "LOGBOOK-NOTES"
@@ -2525,6 +2526,26 @@ If the function sets CREATED, it returns its value."
       (unless (org-entry-get (point) created nil)
         (org-set-property created now)
         now)))
+
+  ;;--------------------------
+  ;; Handling ‘LAST_MODIFIED’
+  ;;--------------------------
+
+  (defun zp/org-update-last-modified (&optional anywhere)
+    "Update the LAST_MODIFIED file property in the preamble.
+
+When ANYWHERE is non-nil, search beyond the preamble."
+    (save-excursion
+      (goto-char (point-min))
+      (let ((first-heading
+             (save-excursion
+               (re-search-forward org-outline-regexp-bol nil t))))
+        (when (re-search-forward "^#\\+LAST_MODIFIED:"
+                                 (if anywhere nil first-heading)
+                                 t)
+          (delete-region (point) (line-end-position))
+          (let* ((now (format-time-string "[%Y-%m-%d %a %H:%M]")))
+            (insert (format " %s" now)))))))
 
   ;;------------------------
   ;; Narrowing & Movements
