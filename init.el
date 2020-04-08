@@ -2541,11 +2541,11 @@ If the function sets CREATED, it returns its value."
         now)))
 
   ;;--------------------------
-  ;; Handling ‘LAST_MODIFIED’
+  ;; Handling file properties for ‘CREATED’ & ‘LAST_MODIFIED’
   ;;--------------------------
 
-  (defun zp/org-update-last-modified (&optional anywhere)
-    "Update the LAST_MODIFIED file property in the preamble.
+  (defun zp/org-set-time-file-property (property &optional anywhere)
+    "Set the time file PROPERTY in the preamble.
 
 When ANYWHERE is non-nil, search beyond the preamble."
     (save-excursion
@@ -2553,7 +2553,7 @@ When ANYWHERE is non-nil, search beyond the preamble."
       (let ((first-heading
              (save-excursion
                (re-search-forward org-outline-regexp-bol nil t))))
-        (when (re-search-forward "^#\\+LAST_MODIFIED:"
+        (when (re-search-forward (format "^#\\+%s:" property)
                                  (if anywhere nil first-heading)
                                  t)
           (if (looking-at-p " ")
@@ -2562,6 +2562,14 @@ When ANYWHERE is non-nil, search beyond the preamble."
           (delete-region (point) (line-end-position))
           (let* ((now (format-time-string "[%Y-%m-%d %a %H:%M]")))
             (insert now))))))
+
+  (defun zp/org-set-created ()
+    "Set the CREATED file property in the preamble."
+    (zp/org-set-time-file-property "CREATED"))
+
+  (defun zp/org-update-last-modified ()
+    "Update the LAST_MODIFIED file property in the preamble."
+    (zp/org-set-time-file-property "LAST_MODIFIED"))
 
   ;;------------------------
   ;; Narrowing & Movements
