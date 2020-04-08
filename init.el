@@ -640,7 +640,20 @@ surrounding paragraph."
   (setq org-export-in-background t
         org-export-with-sub-superscripts nil)
 
-  (defun zp/html2org-clipboard ()
+  (defun zp/ox-pandoc-convert-region-html-to-org ()
+    "Convert region from html to org."
+    (interactive)
+    (shell-command-on-region (region-beginning) (region-end) "pandoc -f html -t org" nil t))
+
+  (defun zp/ox-pandoc-zotero-convert-citation ()
+    "Convert Zotero citation from html to org."
+    (interactive)
+    (zp/ox-pandoc-convert-region-html-to-org)
+    (zp/unfill-region)
+    (query-replace-regexp "\\. \\([^\s-]\\)" ".  \\1"
+                          nil (region-beginning) (region-end)))
+
+  (defun zp/ox-pandoc-convert-clipboard-html-to-org ()
     "Convert clipboard contents from HTML to Org and then paste (yank)."
     (interactive)
     (kill-new (shell-command-to-string "xclip -o -t text/html | pandoc -f html -t org"))
