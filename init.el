@@ -2325,7 +2325,7 @@ return `nil'."
   :hook ((org-mode . org-indent-mode)
          (org-mode . visual-line-mode)
          (before-save . zp/org-set-last-modified)
-         (find-file . zp/org-set-created))
+         (find-file . zp/org-set-created-add-local-hook))
   :config
   (setq org-agenda-inhibit-startup nil
         org-log-into-drawer "LOGBOOK-NOTES"
@@ -2546,7 +2546,7 @@ If the function sets CREATED, it returns its value."
   ;;--------------------------
 
   (defun zp/org-find-time-file-property (property &optional anywhere)
-    "Find the time file property in the preamble.
+    "Return the position the time file PROPERTY if it exists.
 
 When ANYWHERE is non-nil, search beyond the preamble."
     (save-excursion
@@ -2558,6 +2558,20 @@ When ANYWHERE is non-nil, search beyond the preamble."
                                  (if anywhere nil first-heading)
                                  t)
           (point)))))
+
+  (defun zp/org-has-time-file-property-p (property &optional anywhere)
+    "Return the position of time file PROPERTY if it is defined.
+
+As a special case, return -1 if the time file PROPERTY exists but
+is not defined."
+    (when-let ((pos (zp/org-find-time-file-property property anywhere)))
+      (save-excursion
+        (goto-char pos)
+        (if (and (looking-at-p " ")
+                 (progn (forward-char)
+                        (org-at-timestamp-p 'lax)))
+            pos
+          -1))))
 
   (defun zp/org-set-time-file-property (property &optional anywhere pos)
     "Set the time file PROPERTY in the preamble.
@@ -2577,20 +2591,24 @@ it can be passed in POS."
         (let* ((now (format-time-string "[%Y-%m-%d %a %H:%M]")))
           (insert now)))))
 
+  (defun zp/org-set-last-modified ()
+    "Update the LAST_MODIFIED file property in the preamble."
+    (zp/org-set-time-file-property "LAST_MODIFIED"))
+
   (defun zp/org-set-created ()
     "Set the CREATED file property in the preamble."
     (let* ((property "CREATED")
            (pos (zp/org-find-time-file-property property)))
-      (save-excursion
-        (when (and pos
-                   (not (save-excursion
-                          (goto-char pos)
-                          (org-at-timestamp-p 'lax)))))
-        (zp/org-set-time-file-property "CREATED" nil pos))))
+      (when (eq -1 (zp/org-has-time-file-property-p property))
+        (zp/org-set-time-file-property property nil pos))))
 
-  (defun zp/org-set-last-modified ()
-    "Update the LAST_MODIFIED file property in the preamble."
-    (zp/org-set-time-file-property "LAST_MODIFIED"))
+  (defun zp/org-set-created-and-remove-local-hook ()
+    (zp/org-set-created)
+    (remove-hook 'before-save-hook #'zp/org-set-created-and-remove-local-hook t))
+
+  (defun zp/org-set-created-add-local-hook ()
+    (when (derived-mode-p 'org-mode)
+      (add-hook 'before-save-hook #'zp/org-set-created-and-remove-local-hook nil t)))
 
   ;;------------------------
   ;; Narrowing & Movements
