@@ -4204,7 +4204,7 @@ indirect-buffers."
   (setq helm-bibtex-notes-path "~/org/lit/")
 
   (setq bibtex-completion-notes-template-multiple-files
-        "#+TITLE: ${author-or-editor} (${year}): ${title}\n#+CREATED: \n#+LAST_MODIFIED: \n\n")
+        "#+TITLE: ${author-or-editor} (${year}): ${title}\n#+CREATED: %U\n#+LAST_MODIFIED: %U\n\n")
 
   ;; TODO: Modernise
   ;; A lot of this code is baby Elisp.
