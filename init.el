@@ -2324,7 +2324,8 @@ return `nil'."
               ("C-c R" . org-display-inline-images))
   :hook ((org-mode . org-indent-mode)
          (org-mode . visual-line-mode)
-         (before-save . zp/org-set-last-modified))
+         (before-save . zp/org-set-last-modified)
+         (find-file . zp/org-set-created))
   :config
   (setq org-agenda-inhibit-startup nil
         org-log-into-drawer "LOGBOOK-NOTES"
@@ -2544,8 +2545,8 @@ If the function sets CREATED, it returns its value."
   ;; Handling file properties for ‘CREATED’ & ‘LAST_MODIFIED’
   ;;--------------------------
 
-  (defun zp/org-set-time-file-property (property &optional anywhere)
-    "Set the time file PROPERTY in the preamble.
+  (defun zp/org-find-time-file-property (property &optional anywhere)
+    "Find the time file property in the preamble.
 
 When ANYWHERE is non-nil, search beyond the preamble."
     (save-excursion
@@ -2556,16 +2557,36 @@ When ANYWHERE is non-nil, search beyond the preamble."
         (when (re-search-forward (format "^#\\+%s:" property)
                                  (if anywhere nil first-heading)
                                  t)
-          (if (looking-at-p " ")
-              (forward-char)
-            (insert " "))
-          (delete-region (point) (line-end-position))
-          (let* ((now (format-time-string "[%Y-%m-%d %a %H:%M]")))
-            (insert now))))))
+          (point)))))
+
+  (defun zp/org-set-time-file-property (property &optional anywhere pos)
+    "Set the time file PROPERTY in the preamble.
+
+When ANYWHERE is non-nil, search beyond the preamble.
+
+If the position of the file PROPERTY has already been computed,
+it can be passed in POS."
+    (when-let ((pos (or pos
+                        (zp/org-find-time-file-property property))))
+      (save-excursion
+        (goto-char pos)
+        (if (looking-at-p " ")
+            (forward-char)
+          (insert " "))
+        (delete-region (point) (line-end-position))
+        (let* ((now (format-time-string "[%Y-%m-%d %a %H:%M]")))
+          (insert now)))))
 
   (defun zp/org-set-created ()
     "Set the CREATED file property in the preamble."
-    (zp/org-set-time-file-property "CREATED"))
+    (let* ((property "CREATED")
+           (pos (zp/org-find-time-file-property property)))
+      (save-excursion
+        (when (and pos
+                   (not (save-excursion
+                          (goto-char pos)
+                          (org-at-timestamp-p 'lax)))))
+        (zp/org-set-time-file-property "CREATED" nil pos))))
 
   (defun zp/org-set-last-modified ()
     "Update the LAST_MODIFIED file property in the preamble."
@@ -4163,7 +4184,7 @@ indirect-buffers."
   (setq helm-bibtex-notes-path "~/org/lit/")
 
   (setq bibtex-completion-notes-template-multiple-files
-        "#+TITLE: ${author-or-editor} (${year}): ${title}\n\n")
+        "#+TITLE: ${author-or-editor} (${year}): ${title}\n#+CREATED: \n#+LAST_MODIFIED: \n\n")
 
   ;; TODO: Modernise
   ;; A lot of this code is baby Elisp.
