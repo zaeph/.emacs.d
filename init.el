@@ -629,7 +629,9 @@ surrounding paragraph."
 
 (use-package lilypond-mode)
 
-(use-package el-patch)
+(use-package el-patch
+  :config
+  (setq el-patch-enable-use-package-integration t))
 
 (use-package ol
   :config
