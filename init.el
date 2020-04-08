@@ -4152,6 +4152,11 @@ indirect-buffers."
          ("H-M-y" . zp/helm-bibtex-select-bib)
          ("C-c D" . zp/bibtex-completion-message-key-last))
   :config
+  (setq helm-bibtex-notes-path "~/org/lit/")
+
+  (setq bibtex-completion-notes-template-multiple-files
+        "#+TITLE: ${author-or-editor} (${year}): ${title}\n\n")
+
   ;; TODO: Modernise
   ;; A lot of this code is baby Elisp.
 
