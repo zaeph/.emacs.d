@@ -3772,8 +3772,8 @@ indirect-buffers."
 ;; org-roam
 ;;----------------------------------------------------------------------------
 (use-package org-roam
-  :hook
-  (after-init . org-roam-mode)
+  :hook ((after-init . org-roam-mode)
+         (find-file . zp/org-roam-set-local-find-file-current-window))
   :custom
   (org-roam-directory "~/org/wiki/")
   :bind (:map org-roam-mode-map
@@ -3792,7 +3792,7 @@ indirect-buffers."
       (add-hook 'post-command-hook #'org-roam--maybe-update-buffer nil t)
       (add-hook 'after-save-hook #'org-roam-db--update-file nil t)
       (el-patch-remove
-       (org-link-set-parameters "file" :face 'org-roam--roam-link-face))
+        (org-link-set-parameters "file" :face 'org-roam--roam-link-face))
       (org-roam--maybe-update-buffer :redisplay nil)))
   :config
   (setq org-roam-capture-templates
@@ -3801,7 +3801,22 @@ indirect-buffers."
            "%?"
            :file-name "%<%Y%m%d%H%M%S>-${slug}"
            :head "#+TITLE: ${title}\n#+CREATED: %U\n#+LAST_MODIFIED: %U\n\n"
-           :unnarrowed t))))
+           :unnarrowed t)))
+
+  (defun zp/org-link-set-local-find-file-current-window ()
+    "Make org-link open file in the same window locally."
+    (let* ((default (copy-alist org-link-frame-setup))
+           (modified (progn
+                       (setf (alist-get 'file default) 'find-file)
+                       default)))
+      (setq-local org-link-frame-setup modified)))
+
+  (defun zp/org-roam-set-local-find-file-current-window ()
+    "Make org-link open file in the same window locally.
+
+This function is intended to be run with ‘find-file-hook’."
+    (when (org-roam--org-roam-file-p)
+      (zp/org-link-set-local-find-file-current-window))))
 
 ;;----------------------------------------------------------------------------
 ;; hydra-org-refile
