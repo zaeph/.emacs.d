@@ -3783,15 +3783,7 @@ indirect-buffers."
                ("C-c m g" . org-roam-graph-show))
               :map org-mode-map
               (("C-c m i" . org-roam-insert)))
-  :config
-  (setq org-roam-capture-templates
-        '(("d" "default" plain
-           (function org-roam-capture--get-point)
-           "%?"
-           :file-name "%<%Y%m%d%H%M%S>-${slug}"
-           :head "#+TITLE: ${title}\n#+CREATED: %U\n#+LAST_MODIFIED: %U\n\n"
-           :unnarrowed t)))
-
+  :config/el-patch
   ;; Patch function because of bug
   (defun org-roam--find-file-hook-function ()
     "Called by `find-file-hook' when mode `org-roam-mode' is on."
@@ -3799,8 +3791,17 @@ indirect-buffers."
       (setq org-roam-last-window (get-buffer-window))
       (add-hook 'post-command-hook #'org-roam--maybe-update-buffer nil t)
       (add-hook 'after-save-hook #'org-roam-db--update-file nil t)
-      ;; (org-link-set-parameters "file" :face 'org-roam--roam-link-face)
-      (org-roam--maybe-update-buffer :redisplay nil))))
+      (el-patch-remove
+       (org-link-set-parameters "file" :face 'org-roam--roam-link-face))
+      (org-roam--maybe-update-buffer :redisplay nil)))
+  :config
+  (setq org-roam-capture-templates
+        '(("d" "default" plain
+           (function org-roam-capture--get-point)
+           "%?"
+           :file-name "%<%Y%m%d%H%M%S>-${slug}"
+           :head "#+TITLE: ${title}\n#+CREATED: %U\n#+LAST_MODIFIED: %U\n\n"
+           :unnarrowed t))))
 
 ;;----------------------------------------------------------------------------
 ;; hydra-org-refile
