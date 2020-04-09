@@ -4197,60 +4197,10 @@ This function is intended to be run with ‘find-file-hook’."
 ;; helm-bibtex
 ;;----------------------------------------------------------------------------
 (use-package helm-bibtex
+  :load-path "~/projects/helm-bibtex/"
   :bind (("H-y" . zp/helm-bibtex-with-local-bibliography)
          ("H-M-y" . zp/helm-bibtex-select-bib)
          ("C-c D" . zp/bibtex-completion-message-key-last))
-  :config/el-patch
-  ;; Submitted patch:
-  ;; https://github.com/tmalsburg/helm-bibtex/pull/309
-  (defun bibtex-completion-edit-notes (keys)
-    "Open the notes associated with the selected entries using `find-file'."
-    (dolist (key keys)
-      (let* ((entry (bibtex-completion-get-entry key))
-             (year (or (bibtex-completion-get-value "year" entry)
-                       (car (split-string (bibtex-completion-get-value "date" entry "") "-"))))
-             (entry (push (cons "year" year) entry)))
-        (if (and bibtex-completion-notes-path
-                 (f-directory? bibtex-completion-notes-path))
-                                        ; One notes file per publication:
-            (let* ((path (f-join bibtex-completion-notes-path
-                                 (s-concat key bibtex-completion-notes-extension))))
-              (find-file path)
-              (unless (f-exists? path)
-                (insert (el-patch-wrap 2 0
-                          (org-capture-fill-template
-                           (concat
-                            (s-format bibtex-completion-notes-template-multiple-files
-                                      'bibtex-completion-apa-get-value
-                                      entry)
-                            "%s"))))
-                (el-patch-add (delete-region (point-max) (- (point-max) 3)))))
-                                        ; One file for all notes:
-          (unless (and buffer-file-name
-                       (f-same? bibtex-completion-notes-path buffer-file-name))
-            (find-file-other-window bibtex-completion-notes-path))
-          (widen)
-          (outline-show-all)
-          (goto-char (point-min))
-          (if (re-search-forward (format bibtex-completion-notes-key-pattern (regexp-quote key)) nil t)
-                                        ; Existing entry found:
-              (when (eq major-mode 'org-mode)
-                (org-narrow-to-subtree)
-                (re-search-backward "^\*+ " nil t)
-                (org-cycle-hide-drawers nil)
-                (bibtex-completion-notes-mode 1))
-                                        ; Create a new entry:
-            (goto-char (point-max))
-            (save-excursion (insert (s-format bibtex-completion-notes-template-one-file
-                                              'bibtex-completion-apa-get-value
-                                              entry)))
-            (re-search-forward "^*+ " nil t))
-          (when (eq major-mode 'org-mode)
-            (org-narrow-to-subtree)
-            (re-search-backward "^\*+ " nil t)
-            (org-cycle-hide-drawers nil)
-            (goto-char (point-max))
-            (bibtex-completion-notes-mode 1))))))
   :config
   (setq helm-bibtex-notes-path "~/org/lit/")
 
