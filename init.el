@@ -3817,6 +3817,8 @@ indirect-buffers."
            :head "#+TITLE: ${title}\n#+ROAM_KEY: ${ref}\n#+CREATED: %U\n#+LAST_MODIFIED: %U\n\n"
            :unnarrowed t)))
 
+  (setq org-roam-title-include-subdirs t)
+
   (defun zp/org-link-set-local-find-file-current-window ()
     "Make org-link open file in the same window locally."
     (let* ((default (copy-alist org-link-frame-setup))
