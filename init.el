@@ -3785,7 +3785,7 @@ indirect-buffers."
               (("C-c m l" . org-roam)
                ("C-c m f" . org-roam-find-file)
                ("C-c m r" . org-roam-find-ref)
-               ("C-c m d" . zp/org-roam-find-directory)
+               ("C-c m d" . org-roam-find-directory)
                ("C-c m b" . org-roam-switch-to-buffer)
                ("C-c m g" . org-roam-graph-show))
               :map org-mode-map
@@ -3802,11 +3802,6 @@ indirect-buffers."
         (org-link-set-parameters "file" :face 'org-roam--roam-link-face))
       (org-roam--maybe-update-buffer :redisplay nil)))
   :config
-  (defun zp/org-roam-find-directory ()
-    "Go to the ‘org-roam-directory’."
-    (interactive)
-    (find-file org-roam-directory))
-
   (setq org-roam-capture-templates
         '(("d" "default" plain
            (function org-roam-capture--get-point)
