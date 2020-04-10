@@ -3779,6 +3779,7 @@ indirect-buffers."
   :bind (:map org-roam-mode-map
               (("C-c m l" . org-roam)
                ("C-c m f" . org-roam-find-file)
+               ("C-c m r" . org-roam-find-ref)
                ("C-c m b" . org-roam-switch-to-buffer)
                ("C-c m g" . org-roam-graph-show))
               :map org-mode-map
