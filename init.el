@@ -4219,7 +4219,7 @@ This function is intended to be run with ‘find-file-hook’."
   (setq helm-bibtex-notes-path "~/org/lit/")
 
   (setq bibtex-completion-notes-template-multiple-files
-        "#+TITLE: ${author-or-editor} (${year}): ${title}\n#+CREATED: %U\n#+LAST_MODIFIED: %U\n\n")
+        "#+TITLE: ${=key=}\n#+CREATED: %U\n#+LAST_MODIFIED: %U\n\nLiterature notes for cite:${=key=}.\n\n")
 
   ;; TODO: Modernise
   ;; A lot of this code is baby Elisp.
