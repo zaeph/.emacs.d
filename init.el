@@ -3777,6 +3777,8 @@ indirect-buffers."
 ;; org-roam
 ;;----------------------------------------------------------------------------
 (use-package org-roam
+  :load-path ("~/projects/org-roam/"
+              "~/projects/org-roam/contrib/lisp")
   :hook ((after-init . org-roam-mode)
          (find-file . zp/org-roam-set-local-find-file-current-window))
   :custom
@@ -3802,6 +3804,7 @@ indirect-buffers."
         (org-link-set-parameters "file" :face 'org-roam--roam-link-face))
       (org-roam--maybe-update-buffer :redisplay nil)))
   :config
+  (use-package org-roam-helm-bibtex)
   (setq org-roam-capture-templates
         '(("d" "default" plain
            (function org-roam-capture--get-point)
@@ -3813,7 +3816,7 @@ indirect-buffers."
         '(("r" "ref" plain
            (function org-roam-capture--get-point)
            ""
-           :file-name "${slug}"
+           :file-name "refs/${slug}"
            :head "#+TITLE: ${title}\n#+ROAM_KEY: ${ref}\n#+CREATED: %U\n#+LAST_MODIFIED: %U\n\n"
            :unnarrowed t)))
 
