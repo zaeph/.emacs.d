@@ -3384,6 +3384,7 @@ indirect-buffers."
       '(
         ;; Life
         ("^inbox$" "~/org/svg/icons/gmail.svg" nil nil :ascent center)
+        ("^notes$" "~/org/svg/icons/research.svg" nil nil :ascent center)
         ("^life$" "~/org/svg/icons/aperture-blue.svg" nil nil :ascent center)
         ("^curios$" "~/org/svg/icons/question.svg" nil nil :ascent center)
         ("^style$" "~/org/svg/icons/suit.svg" nil nil :ascent center)
@@ -3883,17 +3884,19 @@ This function is intended to be run with ‘find-file-hook’."
  ^^^^^^------------------------------------
   _i_: Inbox          _x_/_X_: Maintenance
   _l_: Life           _p_/_P_: Pro
-  _o_: Planning       _r_/_R_: Research
-  _k_: Curiosities    _m_/_M_: Media
-  _s_: Social         _h_/_H_: Hacking
-  _S_: Swimming       _a_/_A_: Activism
-  _j_: Running        _t_/_T_: Musicology
+  _n_: Notes          _r_/_R_: Research
+  _o_: Planning       _m_/_M_: Media
+  _k_: Curiosities    _h_/_H_: Hacking
+  _s_: Social         _a_/_A_: Activism
+  _S_: Swimming       _t_/_T_: Musicology
+  _j_: Running
   _u_: Union
   _b_: Psychotherapy
   _w_: Awakening      _c_/_C_: Calendars
 "
     (("i" "~/org/life.org" "Inbox")
      ("l" "~/org/life.org" "Life")
+     ("n" "~/org/life.org" "Notes")
      ("o" "~/org/life.org" "Planning")
      ("k" "~/org/life.org" "Curiosities")
      ("s" "~/org/life.org" "Social")
