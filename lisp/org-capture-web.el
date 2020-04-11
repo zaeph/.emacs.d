@@ -81,6 +81,24 @@ When CURIOS is non-nil, add the :curios: tag to the task."
       (org-toggle-tag "curios" 'on))
     (message (concat "Link added to template: " url))))
 
+(defun zp/org-capture-web-notes (title url &optional curios)
+  "Capture notes on the website based on the info provided by org-capture-web.sh.
+
+TITLE and URL are those of the captured webpage.
+
+When CURIOS is non-nil, add the :curios: tag to the task."
+  (let* ((template "* Notes on [[%%?%s][%s]]")
+         (target '(file+headline "~/org/life.org" "Notes"))
+         (org-capture-templates
+          (zp/org-capture-web-create-template target
+            (format template url title)
+            :add-created t)))
+    (zp/org-capture-with-dummy-template)
+    (org-toggle-tag "online" 'on)
+    (when curios
+      (org-toggle-tag "curios" 'on))
+    (message (concat "Link added to template: " url))))
+
 (defun zp/org-capture-web-kill (title url)
   "Make website the latest kill in the kill ring.
 
