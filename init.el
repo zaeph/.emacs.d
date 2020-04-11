@@ -3562,7 +3562,7 @@ indirect-buffers."
   ;;-----------
 
   (setq org-capture-templates
-        `(("n" "Note" entry (file+headline "~/org/life.org" "Inbox")
+        `(("n" "Note" entry (file+headline "~/org/life.org" "Notes")
            "* %?" :add-created t)
           ("f" "Todo" entry (file+headline "~/org/life.org" "Inbox")
            "* TODO %?" :add-created t)
