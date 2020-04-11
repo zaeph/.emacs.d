@@ -30,7 +30,6 @@
 (setq-default fill-column 78)
 
 ;; Add folders to load-path
-(add-to-list 'load-path "~/.emacs.d/old-lisp")
 (add-to-list 'load-path "~/.emacs.d/lisp")
 (add-to-list 'load-path "/usr/share/emacs/site-lisp")
 
