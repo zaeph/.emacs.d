@@ -165,6 +165,33 @@ end-of-buffer signals; pass the rest to the default handler."
 (setq ediff-split-window-function 'split-window-horizontally)
 
 ;;----------------------------------------------------------------------------
+;; Scratch directories
+;;----------------------------------------------------------------------------
+(defun scratch-dir-path (name)
+  "Format a new scratch dir-path based on NAME and timestamp."
+  (concat "~/scratch.d/scratch-"
+          (format-time-string "%Y-%m-%d_%s")
+          (when (not (string= name ""))
+            (concat "--" name))
+          "/"))
+
+(defun scratch-dir (&optional use-git name)
+  "Create an ad-hoc working directory and open it in dired.
+
+Prefix argument initializes the Git repository."
+  (interactive "P\nMName: ")
+  (let ((directory (expand-file-name (scratch-dir-path name))))
+    (make-directory directory t)
+    (when (file-symlink-p "~/scratch")
+      (delete-file "~/scratch"))
+    (make-symbolic-link directory "~/scratch" t)
+    (when (car use-git)
+      (require 'vc-git)
+      (let ((default-directory directory))
+        (vc-git-create-repo)))
+    (find-file directory)))
+
+;;----------------------------------------------------------------------------
 ;; Helper functions & macros
 ;;----------------------------------------------------------------------------
 (defun zp/get-string-from-file (file-path)
