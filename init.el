@@ -4303,7 +4303,8 @@ This function is intended to be run with ‘find-file-hook’."
           ("Writing" . "~/org/bib/writing.bib")
           ("Metaphor" . "~/org/bib/metaphor.bib")
           ("Processing" . "~/org/bib/processing.bib")
-          ("Emacs" . "~/org/bib/emacs.bib")))
+          ("Emacs" . "~/org/bib/emacs.bib")
+          ("Git" . "~/org/bib/git.bib")))
 
   (zp/bibtex-select-bib-init)
 
