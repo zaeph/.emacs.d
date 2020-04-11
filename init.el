@@ -3788,7 +3788,7 @@ indirect-buffers."
   :hook ((after-init . org-roam-mode)
          (find-file . zp/org-roam-set-local-find-file-current-window))
   :custom
-  (org-roam-directory "~/org/wiki/")
+  (org-roam-directory "~/org/slip-box/")
   :bind (:map org-roam-mode-map
               (("C-c m l" . org-roam)
                ("C-c m f" . org-roam-find-file)
@@ -5394,7 +5394,6 @@ See ‘~/.bin/terminator-dwim’ for more info."
      ("\\.mm\\'" . default)
      ("\\.x?html?\\'" . default)
      ("\\.pdf\\'" . default))))
- '(org-roam-directory "~/org/wiki/")
  '(package-selected-packages
    (quote
     (helm-org-rifle org-roam slime highlight-indent-guides dracula-theme use-package org-brain racket-mode wgrep fountain-mode org-mind-map org org-ref orgalist ws-butler minions backup-walker bug-hunter org-plus-contrib messages-are-flowing notmuch forge go-mode company-anaconda anaconda-mode company realgud ace-link ivy-hydra counsel dumb-jump lua-mode fish-mode exwm el-patch diminish circe-notifications circe ob-async nov eyebrowse diff-hl recentf-ext flycheck-pos-tip helm-projectile clean-aindent-mode volatile-highlights duplicate-thing org-noter hydra highlight mu4e-alert writeroom-mode anzu flycheck spaceline helm-chronos chronos multiple-cursors expand-region ace-window auto-minor-mode ledger-mode sublimity auctex smooth-scrolling yasnippet pdf-tools htmlize helm-bibtex free-keys evil color-theme base16-theme)))
