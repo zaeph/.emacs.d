@@ -3068,6 +3068,22 @@ along with effort estimates and total time."
             (lambda ()
               (setq org-ditaa-jar-path "/usr/share/java/ditaa/ditaa-0.11.jar"))))
 
+;;------------
+;; Projectile
+;;------------
+(use-package projectile
+  :bind (:map projectile-mode-map
+              ("C-c p" . projectile-command-map))
+  :custom
+  (projectile-project-search-path '("~/projects/"))
+  :config
+  (projectile-mode))
+
+(use-package counsel-projectile
+  :bind (("H-p" . counsel-projectile))
+  :config
+  (counsel-projectile-mode))
+
 ;;----------------------------------------------------------------------------
 ;; Helm
 ;;----------------------------------------------------------------------------
@@ -5434,7 +5450,7 @@ See ‘~/.bin/terminator-dwim’ for more info."
  '(org-roam-directory "~/org/slip-box/")
  '(package-selected-packages
    (quote
-    (rg helm-org-rifle org-roam slime highlight-indent-guides dracula-theme use-package org-brain racket-mode wgrep fountain-mode org-mind-map org org-ref orgalist ws-butler minions backup-walker bug-hunter org-plus-contrib messages-are-flowing notmuch forge go-mode company-anaconda anaconda-mode company realgud ace-link ivy-hydra counsel dumb-jump lua-mode fish-mode exwm el-patch diminish circe-notifications circe ob-async nov eyebrowse diff-hl recentf-ext flycheck-pos-tip helm-projectile clean-aindent-mode volatile-highlights duplicate-thing org-noter hydra highlight mu4e-alert writeroom-mode anzu flycheck spaceline helm-chronos chronos multiple-cursors expand-region ace-window auto-minor-mode ledger-mode sublimity auctex smooth-scrolling yasnippet pdf-tools htmlize helm-bibtex free-keys evil color-theme base16-theme)))
+    (counsel-projectile rg helm-org-rifle org-roam slime highlight-indent-guides dracula-theme use-package org-brain racket-mode wgrep fountain-mode org-mind-map org org-ref orgalist ws-butler minions backup-walker bug-hunter org-plus-contrib messages-are-flowing notmuch forge go-mode company-anaconda anaconda-mode company realgud ace-link ivy-hydra counsel dumb-jump lua-mode fish-mode exwm el-patch diminish circe-notifications circe ob-async nov eyebrowse diff-hl recentf-ext flycheck-pos-tip helm-projectile clean-aindent-mode volatile-highlights duplicate-thing org-noter hydra highlight mu4e-alert writeroom-mode anzu flycheck spaceline helm-chronos chronos multiple-cursors expand-region ace-window auto-minor-mode ledger-mode sublimity auctex smooth-scrolling yasnippet pdf-tools htmlize helm-bibtex free-keys evil color-theme base16-theme)))
  '(safe-local-variable-values
    (quote
     ((org-confirm-babel-evaluate)
