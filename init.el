@@ -3075,7 +3075,8 @@ along with effort estimates and total time."
   :bind (:map projectile-mode-map
               ("C-c p" . projectile-command-map))
   :custom
-  (projectile-project-search-path '("~/projects/"))
+  (projectile-project-search-path '("~/.emacs.d/"
+                                    "~/projects/"))
   :config
   (projectile-mode))
 
