@@ -5351,7 +5351,9 @@ See ‘~/.bin/terminator-dwim’ for more info."
            (tramp-regex "/sudo:root@.*?:")
            (path (replace-regexp-in-string
                   tramp-regex "" path-emacs)))
-      (shell-command
+      (start-process-shell-command
+       "terminator"
+       nil
        (concat "terminator --working-dir \"" path "\""
                (if arg (concat " " arg)))))))
 
