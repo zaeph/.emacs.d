@@ -64,12 +64,14 @@ When CURIOS is non-nil, add the :curios: tag to the task."
          (prefix (if action
                      (format "%s %s" todo action)
                    "Notes on"))
+         waiting
          (template (pcase todo
-                     ("WAIT" "* %s [[%%?%s][%s]]
+                     ("WAIT" (progn (setq waiting t)
+                                    "* %s [[%%?%s][%s]]
 :LOGBOOK-NOTES:
 - State \"WAIT\"       from              %%U
 :END:
-")
+"))
                      (_ "* %s [[%%?%s][%s]]")))
          (org-capture-templates
           (zp/org-capture-web-create-template nil
@@ -77,6 +79,8 @@ When CURIOS is non-nil, add the :curios: tag to the task."
             :add-created t)))
     (zp/org-capture-with-dummy-template)
     (org-toggle-tag "online" 'on)
+    (when waiting
+      (org-toggle-tag "waiting" 'on))
     (when curios
       (org-toggle-tag "curios" 'on))
     (message (concat "Link added to template: " url))))
