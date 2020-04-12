@@ -3125,7 +3125,7 @@ along with effort estimates and total time."
 (use-package ivy
   :config
   (ivy-mode 1)
-  (setq ivy-height 10                   ;Default
+  (setq ivy-height 10
         ivy-use-virtual-buffers t
         ivy-count-format "(%d/%d) ")
 
