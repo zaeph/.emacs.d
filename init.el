@@ -3148,6 +3148,10 @@ along with effort estimates and total time."
   (global-set-key (kbd "C-c C-r") 'ivy-resume)
   (global-set-key (kbd "<f6>") 'ivy-resume)
 
+  (use-package hydra
+    :config
+    (setq ivy-read-action-function 'ivy-hydra-read-action))
+
   ;; Commented because I use Helm for those commands
   ;; (global-set-key (kbd "C-x C-b") 'ivy-switch-buffer)
   )
