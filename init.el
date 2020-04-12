@@ -4816,7 +4816,7 @@ With a ‘C-u’ prefix argument, amend the last commit instead."
               (("a" . 'helm-chronos-add-timer)
                ("A" . (lambda ()
                         (interactive)
-                        (let ((zp/helm-chronos-add-relatively t))
+                        (let ((helm-chronos-add-relatively t))
                           (helm-chronos-add-timer))))
                ("q" . zp/chronos-quit)
 
