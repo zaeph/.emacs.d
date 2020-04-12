@@ -4926,7 +4926,8 @@ running."
           (quit-window 1)
         (quit-window)))))
 
-(use-package helm-chronos-patched
+(use-package helm-chronos
+  :load-path "~/projects/helm-chronos"
   :bind (("H-;" . zp/switch-to-chronos-dwim)
          ("H-M-;" . zp/helm-chronos-add))
   :after chronos
