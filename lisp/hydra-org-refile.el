@@ -277,6 +277,13 @@ When JUMP is non-nil, jump to that destination instead."
        nil
        zp/hydra-org-jump-dedicated-buffer
        t))
+    (when (and (buffer-narrowed-p)
+               (eq (point)
+                   (point-max))
+               (eq (line-beginning-position)
+                   (line-end-position)))
+      (delete-char -1)
+      (org-back-to-heading))
     (when print-message
       (run-hooks 'zp/org-after-refile-hook)
       (if jump
