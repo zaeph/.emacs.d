@@ -595,7 +595,8 @@ surrounding paragraph."
 (use-package rg
   :ensure t
   :commands rg
-  :bind ("M-s ," . rg-dwim))
+  :bind (("M-s ," . rg-dwim)
+         ("H-SPC" . rg)))
 
 ;; For handling encryption
 (use-package epa-file
