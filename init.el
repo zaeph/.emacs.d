@@ -3082,6 +3082,7 @@ along with effort estimates and total time."
   (projectile-mode))
 
 (use-package counsel-projectile
+  :requires projectile
   :bind (("H-p" . counsel-projectile))
   :config
   (counsel-projectile-mode))
