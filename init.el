@@ -3073,6 +3073,7 @@ along with effort estimates and total time."
 ;; Projectile
 ;;------------
 (use-package projectile
+  :ensure t
   :bind (:map projectile-mode-map
               ("C-c p" . projectile-command-map))
   :custom
@@ -3082,7 +3083,7 @@ along with effort estimates and total time."
   (projectile-mode))
 
 (use-package counsel-projectile
-  :requires projectile
+  :ensure t
   :bind (("H-p" . counsel-projectile))
   :config
   (counsel-projectile-mode))
