@@ -5338,7 +5338,7 @@ mouse-1: Previous buffer\nmouse-3: Next buffer")
 ;;----------------------------------------------------------------------------
 ;; Interaction with terminal emulators
 ;;----------------------------------------------------------------------------
-(defun zp/terminator-dwim (&optional arg)
+(defun zp/term-dwim (&optional arg)
   "Run terminator in the CWD.
 
 Trim unnecessary TRAMP information from the path (e.g. /sudo:…),
@@ -5353,10 +5353,12 @@ See ‘~/.bin/terminator-dwim’ for more info."
            (path (replace-regexp-in-string
                   tramp-regex "" path-emacs)))
       (start-process-shell-command
-       "terminator"
+       "term"
        nil
-       (concat "terminator --working-dir \"" path "\""
-               (if arg (concat " " arg)))))))
+       (let (str)
+         (setq str (concat "cd \"" path "\" && kitty"
+                           (if arg (concat " " arg))))
+         (message str))))))
 
 ;;----------------------------------------------------------------------------
 ;; Late packages
