@@ -3078,6 +3078,8 @@ along with effort estimates and total time."
               ("C-c p" . projectile-command-map))
   :custom
   (projectile-project-search-path '("~/.emacs.d/"
+                                    "~/.bin/"
+                                    "~/.dotfiles/"
                                     "~/projects/"))
   :config
   (projectile-mode))
