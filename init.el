@@ -3845,8 +3845,7 @@ indirect-buffers."
 ;; org-roam
 ;;----------------------------------------------------------------------------
 (use-package org-roam
-  :load-path ("~/projects/org-roam/"
-              "~/projects/org-roam/contrib/lisp")
+  :load-path ("~/projects/org-roam/")
   :hook ((after-init . org-roam-mode)
          (find-file . zp/org-roam-set-local-find-file-current-window))
   :custom
@@ -3872,7 +3871,6 @@ indirect-buffers."
         (org-link-set-parameters "file" :face 'org-roam--roam-link-face))
       (org-roam--maybe-update-buffer :redisplay nil)))
   :config
-  (use-package org-roam-helm-bibtex)
   (setq org-roam-capture-templates
         '(("d" "default" plain
            (function org-roam-capture--get-point)
@@ -3904,6 +3902,9 @@ indirect-buffers."
 This function is intended to be run with ‘find-file-hook’."
     (when (org-roam--org-roam-file-p)
       (zp/org-link-set-local-find-file-current-window))))
+
+(use-package org-roam-bibtex
+  :load-path "~/projects/org-roam-bibtex/")
 
 ;;----------------------------------------------------------------------------
 ;; hydra-org-refile
