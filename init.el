@@ -3907,7 +3907,17 @@ This function is intended to be run with ‘find-file-hook’."
       (zp/org-link-set-local-find-file-current-window))))
 
 (use-package org-roam-bibtex
-  :load-path "~/projects/org-roam-bibtex/")
+  :load-path "~/projects/org-roam-bibtex/"
+  :custom
+  (org-roam-bibtex-template
+   '(("r" "ref" plain
+      (function org-roam-capture--get-point)
+      ""
+      :file-name "refs/${slug}"
+      :head "#+TITLE: ${=key=}: ${title}\n#+ROAM_KEY: ${ref}\n#+CREATED: %U\n#+LAST_MODIFIED: %U\n\n"
+      :unnarrowed t)))
+  :config
+  (org-roam-bibtex))
 
 ;;----------------------------------------------------------------------------
 ;; hydra-org-refile
