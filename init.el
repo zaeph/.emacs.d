@@ -3917,7 +3917,7 @@ This function is intended to be run with ‘find-file-hook’."
       :head "#+TITLE: ${=key=}: ${title}\n#+ROAM_KEY: ${ref}\n#+CREATED: %U\n#+LAST_MODIFIED: %U\n\n"
       :unnarrowed t)))
   :config
-  (org-roam-bibtex))
+  (org-roam-bibtex-mode))
 
 ;;----------------------------------------------------------------------------
 ;; hydra-org-refile
