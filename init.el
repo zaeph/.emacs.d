@@ -3497,6 +3497,7 @@ indirect-buffers."
         ("^tex$" "~/org/svg/icons/file-2-p.svg" nil nil :ascent center)
         ("^linux$" "~/org/svg/icons/nixos.svg" nil nil :ascent center)
         ("^nixos$" "~/org/svg/icons/nixos.svg" nil nil :ascent center)
+        ("^gentoo$" "~/org/svg/icons/gentoo.svg" nil nil :ascent center)
         ("^opsec$" "~/org/svg/icons/cyber-security-b.svg" nil nil :ascent center)
         ("^ranger$" "~/org/svg/icons/ranger.svg" nil nil :ascent center)
         ("^git$" "~/org/svg/icons/git.svg" nil nil :ascent center)
@@ -4091,6 +4092,7 @@ This function is intended to be run with ‘find-file-hook’."
   _r_: Ranger
   _t_: LaTeX
   _l_: Linux
+  _G_: Gentoo
   _n_: NixOS
   _g_: Git
   _p_: Python
@@ -4104,6 +4106,7 @@ This function is intended to be run with ‘find-file-hook’."
      ("r" "~/org/life.org" "Ranger")
      ("t" "~/org/life.org" "LaTeX")
      ("l" "~/org/life.org" "Linux")
+     ("G" "~/org/life.org" "Gentoo")
      ("n" "~/org/life.org" "NixOS")
      ("g" "~/org/life.org" "Git")
      ("p" "~/org/life.org" "Python")
