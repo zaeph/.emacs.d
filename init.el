@@ -5371,8 +5371,9 @@ See ‘~/.bin/terminator-dwim’ for more info."
   (with-current-buffer (window-buffer (selected-window))
     (let* ((path-emacs default-directory)
            (tramp-regex "/sudo:root@.*?:")
-           (path (replace-regexp-in-string
-                  tramp-regex "" path-emacs)))
+           (path (expand-file-name
+                  (replace-regexp-in-string
+                   tramp-regex "" path-emacs))))
       (start-process-shell-command
        "term"
        nil
