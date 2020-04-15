@@ -584,6 +584,7 @@ surrounding paragraph."
 ;; Packages
 ;;----------------------------------------------------------------------------
 (use-package gif-screencast
+  :load-path ("~/src/gif-screencast/")
   :commands (gif-screencast)
   :load-path "~/projects/emacs-gif-screencast/"
   :bind (("<f8>" . gif-screencast-toggle-pause)
