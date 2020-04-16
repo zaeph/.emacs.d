@@ -412,9 +412,9 @@ surrounding paragraph."
 (define-key zp/toggle-map (kbd "l") #'display-line-numbers-mode)
 (define-key zp/toggle-map (kbd "h") #'global-hl-line-mode)
 (define-key zp/toggle-map (kbd "p") #'print-circle-mode)
+(define-key zp/toggle-map (kbd "s") #'scroll-bar-mode)
 
 ;; Modes
-(global-set-key (kbd "C-c s") #'scroll-bar-mode)
 (global-set-key (kbd "C-c H") #'global-hl-line-mode)
 (global-set-key (kbd "C-c g") #'display-line-numbers-mode)
 (global-set-key (kbd "M-U") #'visual-line-mode)
