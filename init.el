@@ -856,6 +856,17 @@ Modifies ‘diff-command’ and ‘diff-switches’ to use ‘git diff’."
   ;Add spaces before and after
   (setq linum-format " %d "))
 
+(use-package git-link
+  :bind ("C-c g" . zp/git-link-dwim)
+  :config
+  (defun zp/git-link-dwim (arg)
+    "Create a URL pointing to current line/region on the branch.
+With a C-u argument, point on the commit instead."
+    (interactive "P")
+    (let ((git-link-use-commit (if arg t nil))
+          (current-prefix-arg nil))
+      (call-interactively #'git-link))))
+
 (use-package pdf-tools
   ;; :magic ("%PDF" . pdf-view-mode)
   :demand
