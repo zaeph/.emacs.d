@@ -1227,6 +1227,15 @@ With numeric prefix arg DEC, decrement the integer by DEC amount."
 ;; (define-prefix-command 'activism-map)
 ;; (global-set-key (kbd "C-c p a") 'activism-map)
 
+(setq init-file-user "~/.emacs.d/init.el")
+
+(defun zp/find-init-file ()
+  "Find the init-file."
+  (interactive)
+  (find-file init-file-user))
+
+(global-set-key (kbd "C-c e") #'zp/find-init-file)
+
 (defun zp/set-shortcuts (alist)
   (mapc
    (lambda (x)
