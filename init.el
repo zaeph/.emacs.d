@@ -416,7 +416,6 @@ surrounding paragraph."
 
 ;; Modes
 (global-set-key (kbd "C-c H") #'global-hl-line-mode)
-(global-set-key (kbd "C-c g") #'display-line-numbers-mode)
 (global-set-key (kbd "M-U") #'visual-line-mode)
 
 ;; Exit Emacs with ‘C-x r q’, and kill the current frame with ‘C-x C-c’
