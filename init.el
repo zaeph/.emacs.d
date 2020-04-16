@@ -3134,7 +3134,7 @@ indirect-buffers."
 (use-package zp-hydra-shortcuts
   :bind ("C-c s" . zp/hydra-shortcuts/body)
   :config
-  (zp/hydra-shortcut-make-hydra
+  (zp/hydra-shortcuts-make-hydra
    ;; Misc
    ("e" "~/.emacs.d/init.el")
    ("I" "~/org/info.org.gpg")
