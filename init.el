@@ -616,6 +616,8 @@ surrounding paragraph."
 
 (use-package ox-hugo)
 
+(use-package edit-indirect)
+
 (use-package package-lint)
 
 (use-package duplicate-thing
