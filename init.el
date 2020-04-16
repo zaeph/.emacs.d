@@ -1227,104 +1227,14 @@ With numeric prefix arg DEC, decrement the integer by DEC amount."
 ;; (define-prefix-command 'activism-map)
 ;; (global-set-key (kbd "C-c p a") 'activism-map)
 
-(defun zp/set-shortcuts (alist)
-  (mapc
-   (lambda (x)
-     (let ((file-shortcut (car x))
-           (file-path (cdr x)))
-       (global-set-key (kbd (concat "C-c " file-shortcut))
-                       `(lambda ()
-                          (interactive)
-                          (find-file ',file-path)))))
-   alist))
+(setq init-file-user "~/.emacs.d/init.el")
 
+(defun zp/find-init-file ()
+  "Find the init-file."
+  (interactive)
+  (find-file init-file-user))
 
-(setq zp/shortcuts-alist
-      '(
-        ;; Misc
-        ("e" . "~/.emacs.d/init.el")
-        ("I" . "~/org/info.org.gpg")
-        ("p d" . "/ssh:asus:~/Downloads/Sharing/dl.org")
-        ("p s" . "~/org/projects/hacking/snippets.org.gpg")
-
-        ;; Ledger
-        ("l l" . "~/org/ledger/main.ledger.gpg")
-        ("l s" . "~/org/ledger/main-schedule.ledger.gpg")
-        ;; ("l f" . "~/org/ledger/french-house.ledger.gpg")
-
-        ;; Research
-        ("p T" . "/home/zaeph/org/projects/university/research/monty-python/meef2/1-academic/proposal/proposal.tex")
-        ;; ("p T" . "~/org/projects/university/research/presentation/presentation.tex")
-        ("p b" . "~/org/bib/monty-python.bib")
-        ("p B" . "~/org/projects/university/research/thesis/bibliography/bibliography.tex")
-        ;; ("p c" . "~/org/projects/university/research/sty/zaeph.sty")
-        ;; ("p C" . "~/org/projects/university/research/sty/presentation.sty")
-        ;; ("p d" . "/tmp/asus~/Downloads/Sharing/dl.org")
-
-        ;; Journal
-        ("j" . "~/org/journal.org")
-
-        ;; Projects
-        ("p w" . "~/org/projects/writing/writing.org.gpg")
-        ;; ("p t" . "~/org/projects/tavocat/tavocat.org.gpg")
-        ;; ("p k". "~/org/projects/kendeskiñ/kendeskiñ.org.gpg")
-        ("p t" . "~/org/projects/typography/typography.org.gpg")
-
-        ;; University
-        ("p u" . "~/org/projects/university/university.org.gpg")
-        ("p r" . "~/org/projects/university/research/research.org.gpg")
-        ;; ("p c l"     . "~/org/projects/university/classes/university/ling/ling.org.gpg")
-        ;; ("p c u"     . "~/org/projects/university/classes/university/civ-us/civ-us.org.gpg")
-        ;; ("p c g"     . "~/org/projects/university/classes/university/civ-gb/civ-gb.org.gpg")
-        ;; ("p c s"     . "~/org/projects/university/classes/university/space/space.org.gpg")
-        ;; ("p c i"     . "~/org/projects/university/classes/university/lit/lit.org.gpg")
-        ;; ("p c s"     . "~/org/projects/university/classes/university/syn/syn.org.gpg")
-        ;; ("p c t"     . "~/org/projects/university/classes/espe/tronc-commun.org.gpg")
-
-        ;; Languages
-        ("p j" . "~/org/projects/lang/ja/ja.org.gpg")
-        ("p g" . "~/org/projects/lang/de/de.org.gpg")
-
-        ;; Activism
-        ("p a" . "~/org/projects/activism/politics/politics.org.gpg")
-        ;; ("p a d"  . "[DATA EXPUNGED]")
-        ;; ("p a s"  . "[DATA EXPUNGED]")
-        ;; ("p a c"  . "[DATA EXPUNGED]")
-        ;; ("p a m"  . "[DATA EXPUNGED]")
-
-        ;; Media
-        ("p n" . "~/org/projects/media/news/news.org.gpg")
-
-        ;; Music
-        ("p P" "~/org/piano.org.gpg")
-
-        ;; Awakening
-        ("p A" . "~/org/projects/awakening/awakening.org.gpg")
-
-        ;; Psychotherapy
-        ("p p" . "~/org/projects/psychotherapy/psychotherapy.org.gpg")
-        ;; Sports
-        ("p S" . "~/org/sports/swimming/swimming.org.gpg")
-        ("p R" . "~/org/sports/running/running.org.gpg")
-
-        ;; Hacking
-        ("p h e" . "~/org/projects/hacking/emacs/emacs.org.gpg")
-        ("p h l" . "~/org/projects/hacking/linux/linux.org.gpg")
-        ("p h n" . "~/org/projects/hacking/linux/nixos.org")
-        ("p h o" . "~/org/projects/hacking/opsec/opsec.org.gpg")
-        ("p h h" . "~/org/projects/hacking/hacking.org.gpg")
-        ("p h p" . "~/org/projects/hacking/python/python.org.gpg")
-
-        ;; Media
-        ("b" . "~/org/media.org.gpg")
-
-        ;; Life
-        ("o" . "~/org/life.org")))
-
-(defun zp/set-shortcuts-all ()
-  (zp/set-shortcuts zp/shortcuts-alist))
-
-(zp/set-shortcuts-all)
+(global-set-key (kbd "C-c e") #'zp/find-init-file)
 
 ;;----------------------------------------------------------------------------
 ;; ispell
@@ -3217,6 +3127,92 @@ indirect-buffers."
 
 (use-package hydra-org-priority
   :requires (org hydra))
+
+;;----------------------------------------------------------------------------
+;; Hydra shortcuts
+;;----------------------------------------------------------------------------
+(use-package zp-hydra-shortcuts
+  :config
+  (zp/hydra-shortcut-make-hydra
+   ;; Misc
+   ("e" "~/.emacs.d/init.el")
+   ("I" "~/org/info.org.gpg")
+   ("p d" "/ssh:asus:~/Downloads/Sharing/dl.org")
+   ("p s" "~/org/projects/hacking/snippets.org.gpg")
+
+   ;; Ledger
+   ("l l" "~/org/ledger/main.ledger.gpg")
+   ("l s" "~/org/ledger/main-schedule.ledger.gpg")
+   ;; ("l f" "~/org/ledger/french-house.ledger.gpg")
+
+   ;; Research
+   ("p T" "/home/zaeph/org/projects/university/research/monty-python/meef2/1-academic/proposal/proposal.tex")
+   ;; ("p T" "~/org/projects/university/research/presentation/presentation.tex")
+   ("p b" "~/org/bib/monty-python.bib")
+   ("p B" "~/org/projects/university/research/thesis/bibliography/bibliography.tex")
+   ;; ("p c" "~/org/projects/university/research/sty/zaeph.sty")
+   ;; ("p C" "~/org/projects/university/research/sty/presentation.sty")
+   ;; ("p d" "/tmp/asus~/Downloads/Sharing/dl.org")
+
+   ;; Journal
+   ("j" "~/org/journal.org")
+
+   ;; Projects
+   ("p w" "~/org/projects/writing/writing.org.gpg")
+   ;; ("p t" "~/org/projects/tavocat/tavocat.org.gpg")
+   ;; ("p k""~/org/projects/kendeskiñ/kendeskiñ.org.gpg")
+   ("p t" "~/org/projects/typography/typography.org.gpg")
+
+   ;; University
+   ("p u" "~/org/projects/university/university.org.gpg")
+   ("p r" "~/org/projects/university/research/research.org.gpg")
+   ;; ("p c l"     "~/org/projects/university/classes/university/ling/ling.org.gpg")
+   ;; ("p c u"     "~/org/projects/university/classes/university/civ-us/civ-us.org.gpg")
+   ;; ("p c g"     "~/org/projects/university/classes/university/civ-gb/civ-gb.org.gpg")
+   ;; ("p c s"     "~/org/projects/university/classes/university/space/space.org.gpg")
+   ;; ("p c i"     "~/org/projects/university/classes/university/lit/lit.org.gpg")
+   ;; ("p c s"     "~/org/projects/university/classes/university/syn/syn.org.gpg")
+   ;; ("p c t"     "~/org/projects/university/classes/espe/tronc-commun.org.gpg")
+
+   ;; Languages
+   ("p j" "~/org/projects/lang/ja/ja.org.gpg")
+   ("p g" "~/org/projects/lang/de/de.org.gpg")
+
+   ;; Activism
+   ("p a" "~/org/projects/activism/politics/politics.org.gpg")
+   ;; ("p a d"  "[DATA EXPUNGED]")
+   ;; ("p a s"  "[DATA EXPUNGED]")
+   ;; ("p a c"  "[DATA EXPUNGED]")
+   ;; ("p a m"  "[DATA EXPUNGED]")
+
+   ;; Media
+   ("p n" "~/org/projects/media/news/news.org.gpg")
+
+   ;; Music
+   ("p P" "~/org/piano.org.gpg")
+
+   ;; Awakening
+   ("p A" "~/org/projects/awakening/awakening.org.gpg")
+
+   ;; Psychotherapy
+   ("p p" "~/org/projects/psychotherapy/psychotherapy.org.gpg")
+   ;; Sports
+   ("p S" "~/org/sports/swimming/swimming.org.gpg")
+   ("p R" "~/org/sports/running/running.org.gpg")
+
+   ;; Hacking
+   ("p h e" "~/org/projects/hacking/emacs/emacs.org.gpg")
+   ("p h l" "~/org/projects/hacking/linux/linux.org.gpg")
+   ("p h n" "~/org/projects/hacking/linux/nixos.org")
+   ("p h o" "~/org/projects/hacking/opsec/opsec.org.gpg")
+   ("p h h" "~/org/projects/hacking/hacking.org.gpg")
+   ("p h p" "~/org/projects/hacking/python/python.org.gpg")
+
+   ;; Media
+   ("b" "~/org/media.org.gpg")
+
+   ;; Life
+   ("o" "~/org/life.org")))
 
 ;;----------------------------------------------------------------------------
 ;; org-super-agenda
