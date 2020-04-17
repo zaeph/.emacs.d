@@ -3001,9 +3001,7 @@ along with effort estimates and total time."
 ;; Projectile
 ;;------------
 (use-package projectile
-  :ensure t
-  :bind (:map projectile-mode-map
-              ("C-c p" . projectile-command-map))
+  :bind-keymap ("C-c p" . projectile-command-map)
   :custom
   (projectile-project-search-path '("~/.emacs.d/"
                                     "~/.bin/"
@@ -3015,7 +3013,7 @@ along with effort estimates and total time."
 (use-package counsel-projectile
   :ensure t
   :bind (("H-p" . counsel-projectile))
-  :config
+  :init
   (counsel-projectile-mode))
 
 ;;----------------------------------------------------------------------------
