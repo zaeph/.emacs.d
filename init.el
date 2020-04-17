@@ -3497,6 +3497,7 @@ indirect-buffers."
         ("^research$" "~/org/svg/icons/research.svg" nil nil :ascent center)
         ("^d&p$" "~/org/svg/icons/university.svg" nil nil :ascent center)
         ("^lit$" "~/org/svg/icons/book-2.svg" nil nil :ascent center)
+        ("^visual$" "~/org/svg/icons/eye-2.svg" nil nil :ascent center)
         ("^cs$" "~/org/svg/icons/computer-science.svg" nil nil :ascent center)
         ("^maths$" "~/org/svg/icons/pi.svg" nil nil :ascent center)
         ("^phil$" "~/org/svg/icons/philosophy.svg" nil nil :ascent center)
@@ -4054,6 +4055,7 @@ This function is intended to be run with ‘find-file-hook’."
   _p_: Philosophy
   _l_: Literature
   _f_: Film studies
+  _v_: Visual studies
   _g_: Linguistics
   _h_: History
   _t_: Typography
@@ -4065,6 +4067,7 @@ This function is intended to be run with ‘find-file-hook’."
      ("p" "~/org/life.org" "Philosophy")
      ("l" "~/org/life.org" "Literature")
      ("f" "~/org/life.org" "Film studies")
+     ("v" "~/org/life.org" "Visual studies")
      ("g" "~/org/life.org" "Linguistics")
      ("h" "~/org/life.org" "History")
      ("t" "~/org/life.org" "Typography")))
