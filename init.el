@@ -660,7 +660,9 @@ surrounding paragraph."
 (use-package recentf-ext)
 
 (use-package dired
-  :hook (dired-mode . turn-on-gnus-dired-mode))
+  :hook (dired-mode . turn-on-gnus-dired-mode)
+  :custom
+  (dired-dwim-target t))
 
 (use-package diff-hl
   :hook ((dired-mode . diff-hl-dired-mode)
