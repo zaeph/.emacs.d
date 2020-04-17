@@ -136,7 +136,7 @@
   (set-face-attribute 'org-meta-line nil :foreground "DodgerBlue3")
   (set-face-attribute 'helm-selection nil :background "SteelBlue1")
   (set-face-attribute 'helm-visible-mark nil :background "goldenrod1")
-  (set-face-attribute 'header-line nil :foreground "#ccc")
+  (set-face-attribute 'header-line nil :foreground "#666")
   (set-face-attribute 'line-number nil :foreground "#636663" :background "#d4cdaa")
   ;; (set-face-attribute 'line-number-current-line nil :foreground "#707370" :background "#ccc6a4")
   (set-face-attribute 'secondary-selection nil :background "#d3ccff")
@@ -229,7 +229,7 @@
 
 (defun zp/mode-line-light-theme ()
   (set-face-attribute 'mode-line nil
-                      :background "#948e76"
+                      :background "#d4c692"
                       :foreground "#333"
                       :weight 'bold)
   (set-face-attribute 'mode-line-inactive nil
@@ -237,7 +237,7 @@
                       :foreground "#666"
                       :weight 'bold)
   (set-face-attribute 'mode-line-buffer-id nil
-                      :foreground "#d98e2d"
+                      :foreground "#3650ff"
                       :weight 'bold)
   (set-face-attribute 'mode-line-buffer-id-inactive nil
                       :foreground "#948e76"
