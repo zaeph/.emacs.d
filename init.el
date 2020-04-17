@@ -4865,6 +4865,9 @@ With a ‘C-u’ prefix argument, amend the last commit instead."
       (4 (magit-commit-amend))
       (_ (magit-commit-create)))))
 
+(use-package forge
+  :after magit)
+
 ;;----------------------------------------------------------------------------
 ;; chronos
 ;;----------------------------------------------------------------------------
