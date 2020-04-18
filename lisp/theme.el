@@ -223,9 +223,10 @@
   (set-face-attribute 'mode-line-buffer-id nil
                       :foreground "DarkGoldenrod2"
                       :weight 'bold)
-  (set-face-attribute 'mode-line-buffer-id-inactive nil
-                      :foreground "#888"
-                      :weight 'bold))
+  (with-eval-after-load 'moody
+    (set-face-attribute 'mode-line-buffer-id-inactive nil
+                        :foreground "#888"
+                        :weight 'bold)))
 
 (defun zp/mode-line-light-theme ()
   (set-face-attribute 'mode-line nil
@@ -239,9 +240,10 @@
   (set-face-attribute 'mode-line-buffer-id nil
                       :foreground "#3650ff"
                       :weight 'bold)
-  (set-face-attribute 'mode-line-buffer-id-inactive nil
-                      :foreground "#948e76"
-                      :weight 'bold))
+  (with-eval-after-load 'moody
+    (set-face-attribute 'mode-line-buffer-id-inactive nil
+                        :foreground "#948e76"
+                        :weight 'bold)))
 
 ;;----------------------------------------------------------------------------
 ;; Day/night cycle

@@ -3130,15 +3130,6 @@ indirect-buffers."
         (counsel-grep-or-swiper)))))
 
 ;;----------------------------------------------------------------------------
-;; Doom modeline
-;;----------------------------------------------------------------------------
-(use-package doom-modeline
-  :ensure t
-  :init (doom-modeline-mode 1))
-
-(use-package all-the-icons)
-
-;;----------------------------------------------------------------------------
 ;; Hydra
 ;;----------------------------------------------------------------------------
 (use-package hydra)
@@ -5240,11 +5231,19 @@ the beginning of the line."
 ;;----------------------------------------------------------------------------
 ;; Mode-line
 ;;----------------------------------------------------------------------------
+(use-package doom-modeline
+  :ensure t
+  :init (doom-modeline-mode 1))
+
+(use-package all-the-icons)
+
 (use-package minions
+  :disabled
   :config
   (minions-mode 1))
 
 (use-package moody
+  :disabled
   :config
   (setq moody-mode-line-height 40)
 
@@ -5253,102 +5252,6 @@ the beginning of the line."
 
   (moody-replace-mode-line-buffer-identification)
   (moody-replace-vc-mode))
-
-(defvar ml-selected-window nil
-  "Current selected window.")
-
-(defun ml-record-selected-window ()
-  (setq ml-selected-window (selected-window)))
-
-(defun ml-update-all ()
-  (force-mode-line-update t))
-
-(add-hook 'post-command-hook 'ml-record-selected-window)
-
-(add-hook 'buffer-list-update-hook 'ml-update-all)
-
-(defface mode-line-buffer-id-inactive
-  '((t :inherit modeline-buffer-id))
-  "Face used for inactive buffer identification parts of the mode line.")
-
-(defun zp/propertized-buffer-identification (fmt)
-  "Return a list suitable for `mode-line-buffer-identification'.
-FMT is a format specifier such as \"%12b\".  This function adds
-text properties for face, help-echo, and local-map to it."
-  (list (propertize fmt
-                    'face (if (eq ml-selected-window (selected-window))
-                              'mode-line-buffer-id
-                            'mode-line-buffer-id-inactive)
-                    'help-echo
-                    (purecopy "Buffer name
-mouse-1: Previous buffer\nmouse-3: Next buffer")
-                    'mouse-face 'mode-line-highlight
-                    'local-map mode-line-buffer-identification-keymap)))
-
-(defun simple-mode-line-render (left right)
-  "Return a string of `window-width' length containing LEFT, and RIGHT aligned respectively."
-  (let* ((available-width
-          (-
-           (window-total-width)
-           (+
-            (length
-             (format-mode-line left))
-            (length
-             (format-mode-line right))))))
-    (append left (list (format (format "%%%ds" available-width) "")) right)))
-
-(setq-default mode-line-format
-              '((:eval
-                 (simple-mode-line-render
-                  ;; Left
-                  '("%e"
-                    mode-line-front-space
-                    ;; (:propertize mode-line-mule-info face (:foreground "#777"))
-                    mode-line-mule-info
-                    mode-line-client
-                    mode-line-modified
-                    mode-line-remote
-                    mode-line-frame-identification
-                    ;; (:eval
-                    ;;  (if (eq ml-selected-window (selected-window))
-                    ;;      "OK "
-                    ;;    "NO "))
-                    ;; (:eval (propertize "%b  " 'face 'org-tag-important
-                    ;;                    'help-echo (buffer-file-name)))
-                    ;; (:eval (propertize "" 'face '(:foreground "red"
-                    ;;                                          :background nil)
-                    ;;                    'help-echo (buffer-file-name)))
-                    "   "
-                    ;; mode-line-buffer-identification
-                    (:eval (moody-tab
-                            (format-mode-line
-                             (zp/propertized-buffer-identification "%b"))
-                            20 'down))
-                    ;; (:propertize " [%*]" face (:foreground "#49B05C"))
-                    " [%*]"
-                    " "
-                    ;; (:eval (propertize "test" 'face '(:foreground "red" :weight 'bold)
-                    ;;                    'help-echo "buffer is read-only!!!"))
-                    ;; mode-line-buffer-identification
-                    ;; (:propertize minions-mode-line-modes face (:foreground "#777"))
-                    minions-mode-line-modes
-                    minor-mode-alist
-                    ;; minions-mode-line-modes
-                    ;; " %l : %c"
-                    evil-mode-line-tag)
-                  ;; Right
-                  '(;; (:propertize "%p" face mode-line-buffer-id)
-                    ;; (:propertize " | " face (:foreground "#777"))
-                    "%p | %l : %c "
-                    ;; mode-line-position
-                    ;; (vc-mode vc-mode)
-                    (vc-mode moody-vc-mode)
-                    " "
-                    ;; (:eval (moody-tab (substring vc-mode 1) 20 'up))
-                    ;; mode-line-modes
-                    mode-line-misc-info
-                    "  "
-                    mode-line-end-spaces)))))
 
 ;;----------------------------------------------------------------------------
 ;; Theme
