@@ -2371,7 +2371,6 @@ return `nil'."
         ;; Custom faces for specific tags
         org-tag-faces
         '(("@home" . org-tag-context)
-          ("@nicolas" . org-tag-context)
           ("@work" . org-tag-context)
           ("@town" . org-tag-context)
           ("standby" . org-tag-standby)
@@ -3472,7 +3471,6 @@ indirect-buffers."
         ("^life$" "~/org/svg/icons/aperture-blue.svg" nil nil :ascent center)
         ("^curios$" "~/org/svg/icons/question.svg" nil nil :ascent center)
         ("^style$" "~/org/svg/icons/suit.svg" nil nil :ascent center)
-        ("^nicolas$" "~/org/svg/icons/leaf.svg" nil nil :ascent center)
         ("^swim$" "~/org/svg/icons/wave.svg" nil nil :ascent center)
         ("^run$" "~/org/svg/icons/running.svg" nil nil :ascent center)
         ("^awakening$" "~/org/svg/icons/aperture-green.svg" nil nil :ascent center)
