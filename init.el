@@ -922,7 +922,7 @@ With a C-u argument, point on the commit instead."
     (when zp/pdf-view-save-after-annotation
       (zp/pdf-view-save-buffer)))
 
-  (advice-add #'pdf-annot-edit-contents-commit :after 'zp/pdf-view-save-buffer-maybe)
+  (advice-add 'pdf-annot-edit-contents-commit :after 'zp/pdf-view-save-buffer-maybe)
 
   (defun zp/pdf-view-continuous-toggle ()
     (interactive)
@@ -1280,7 +1280,7 @@ With numeric prefix arg DEC, decrement the integer by DEC amount."
     (cons (replace-regexp-in-string
            "’" "'" (car args))
           (cdr args)))
-  (advice-add #'ispell-send-string :filter-args
+  (advice-add 'ispell-send-string :filter-args
               #'endless/replace-apostrophe)
 
   ;; Convert ' back to ’ from the subprocess.
@@ -1290,7 +1290,7 @@ With numeric prefix arg DEC, decrement the integer by DEC amount."
       (cons (replace-regexp-in-string
              "'" "’" (car args))
             (cdr args))))
-  (advice-add #'ispell-parse-output :filter-args
+  (advice-add 'ispell-parse-output :filter-args
               #'endless/replace-quote)
 
   ;; Helm-Ispell
