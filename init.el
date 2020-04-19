@@ -3595,6 +3595,7 @@ indirect-buffers."
                ("h" "Hacking" ("hack"))
                ("o" "Org" ("org"))
                ("e" "Emacs" ("emacs"))
+               ("R" "Org-roam" ("roam"))
                ("O" "OPSEC" ("opsec"))
                ("P" "Activism" ("act"))
                ("M" "Media" ("media"))
