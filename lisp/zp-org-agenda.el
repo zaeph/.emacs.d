@@ -765,7 +765,7 @@ condition is not true:
   action is underway.
 
 - The project is waiting (i.e. it has a WAIT todo-keyword) but
-  none of its subtasks (direct or indirect) is waiting..  This is
+  none of its subtasks (direct or indirect) is waiting.  This is
   to ensure that a project marked as waiting is actually waiting
   for something."
   (when (zp/is-project-p)
