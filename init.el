@@ -8,7 +8,7 @@
 ;; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ;; Change default face to prevent flashing
-(set-face-attribute 'default nil :foreground "#BCAF8E" :background "#141414")
+(set-face-attribute 'default nil :foreground "#bcaf8e" :background "#141414")
 
 (setq default-directory "~")
 (setq inhibit-startup-screen 1)
