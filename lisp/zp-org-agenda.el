@@ -766,24 +766,25 @@ condition is not true:
   none of its subtasks (direct or indirect) is waiting..  This is
   to ensure that a project marked as waiting is actually waiting
   for something."
-  (save-restriction
-    (widen)
-    (when zp/org-agenda-skip-functions-debug
-      (message "SNSP: %s" (org-entry-get (point) "ITEM")))
-    (let ((subtree-end (save-excursion (org-end-of-subtree t)))
-          (is-waiting (string= (nth 2 (org-heading-components)) "WAIT"))
-          (has-next))
-      (save-excursion
-        (forward-line 1)
-        (while (and (not has-next)
-                    (< (point) subtree-end)
-                    (if is-waiting
-                        (re-search-forward "^\\*+ \\(WAIT\\) " subtree-end t)
-                      (re-search-forward "^\\*+ \\(NEXT\\|STRT\\) " subtree-end t)))
-          (setq has-next t)))
-      (if has-next
-          nil
-        t))))
+  (when (zp/is-project-p)
+    (save-restriction
+      (widen)
+      (when zp/org-agenda-skip-functions-debug
+        (message "SNSP: %s" (org-entry-get (point) "ITEM")))
+      (let ((subtree-end (save-excursion (org-end-of-subtree t)))
+            (is-waiting (string= (nth 2 (org-heading-components)) "WAIT"))
+            (has-next))
+        (save-excursion
+          (forward-line 1)
+          (while (and (not has-next)
+                      (< (point) subtree-end)
+                      (if is-waiting
+                          (re-search-forward "^\\*+ \\(WAIT\\) " subtree-end t)
+                        (re-search-forward "^\\*+ \\(NEXT\\|STRT\\) " subtree-end t)))
+            (setq has-next t)))
+        (if has-next
+            nil
+          t)))))
 
 (defun zp/is-waiting-p ()
   "Return t if the item/tree at point is waiting for something."
