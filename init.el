@@ -632,8 +632,8 @@ surrounding paragraph."
   (beacon-blink-delay 0.3)
   (beacon-blink-duration 0.3)
   :config
-  (global-hl-line-mode 1)
-  (beacon-mode))
+  (beacon-mode)
+  (global-hl-line-mode 1))
 
 ;; ;; Removed because of conflict with ‘use-hard-newlines’
 ;; (use-package clean-aindent-mode
