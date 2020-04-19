@@ -3497,6 +3497,7 @@ indirect-buffers."
         ("^hack$" "~/org/svg/icons/engineering-2.svg" nil nil :ascent center)
         ("^emacs$" "~/org/svg/icons/spacemacs.svg" nil nil :ascent center)
         ("^org$" "~/org/svg/icons/org-mode-unicorn.svg" nil nil :ascent center)
+        ("^roam$" "~/org/svg/icons/org-roam-bibtex-icon-p.svg" nil nil :ascent center)
         ("^python$" "~/org/svg/icons/python.svg" nil nil :ascent center)
         ("^perl$" "~/org/svg/icons/perl.svg" nil nil :ascent center)
         ("^cl$" "~/org/svg/icons/common-lisp-b.svg" nil nil :ascent center)
@@ -4092,7 +4093,8 @@ This function is intended to be run with ‘find-file-hook’."
   _e_: Emacs
   _i_: Elisp
   _o_: Org
-  _r_: Ranger
+  _r_: Org-roam
+  _R_: Ranger
   _t_: LaTeX
   _l_: Linux
   _G_: Gentoo
@@ -4106,7 +4108,8 @@ This function is intended to be run with ‘find-file-hook’."
      ("e" "~/org/life.org" "Emacs")
      ("i" "~/org/life.org" "Elisp")
      ("o" "~/org/life.org" "Org")
-     ("r" "~/org/life.org" "Ranger")
+     ("r" "~/org/life.org" "Org-roam")
+     ("R" "~/org/life.org" "Ranger")
      ("t" "~/org/life.org" "LaTeX")
      ("l" "~/org/life.org" "Linux")
      ("G" "~/org/life.org" "Gentoo")
