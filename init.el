@@ -5373,7 +5373,10 @@ See ‘~/.bin/terminator-dwim’ for more info."
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(auth-source-save-behavior nil)
+ '(debug-on-error t)
  '(dired-dwim-target t)
+ '(doom-modeline-height 25)
+ '(doom-modeline-mode t)
  '(gdb-many-windows t)
  '(global-hl-line-mode t)
  '(helm-external-programs-associations
