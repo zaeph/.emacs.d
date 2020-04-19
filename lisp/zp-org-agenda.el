@@ -707,6 +707,9 @@ For more information, see ‘zp/skip-tasks-not-in-agenda-groups’."
 When nil, a project with no remaining subtasks will be considered
 stuck.")
 
+(defun zp/not-a-project-prop-p ()
+  (equal (org-entry-get (point) "NOT_A_PROJECT") "t"))
+
 (defun zp/identify-task-type ()
   "Identify the type of the task at point.
 
@@ -723,7 +726,7 @@ a tree can go back-and-forth between being a task and being a project."
     (widen)
     (let ((subtree-end (save-excursion (org-end-of-subtree t)))
           (is-a-task (member (nth 2 (org-heading-components)) org-todo-keywords-1))
-          (not-a-project (equal (org-entry-get (point) "NOT_A_PROJECT") "t"))
+          (not-a-project (zp/not-a-project-prop-p))
           (fluid zp/fluid-project-definition)
           has-subtask)
       (save-excursion
