@@ -3865,7 +3865,7 @@ indirect-buffers."
   (org-roam-directory "~/org/slip-box/")
   :bind (:map org-roam-mode-map
               (("C-c m l" . org-roam)
-               ("C-c m f" . org-roam-find-file)
+               ("C-c m F" . org-roam-find-file)
                ("C-c m r" . org-roam-find-ref)
                ("C-c m d" . org-roam-find-directory)
                ("C-c m b" . org-roam-switch-to-buffer)
@@ -3908,6 +3908,10 @@ This function is intended to be run with ‘find-file-hook’."
 (use-package org-roam-bibtex
   :hook (org-roam-mode . org-roam-bibtex-mode)
   :load-path "~/projects/org-roam-bibtex/"
+  :bind (:map org-roam-bibtex-mode-map
+              (("C-c m f" . org-roam-bibtex-find-non-ref-file))
+              :map org-mode-map
+              (("C-c m t" . org-roam-bibtex-insert-non-ref)))
   :custom
   (org-roam-bibtex-templates
    '(("r" "ref" plain
