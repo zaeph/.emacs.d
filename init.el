@@ -3908,7 +3908,7 @@ This function is intended to be run with ‘find-file-hook’."
 (use-package org-roam-bibtex
   :load-path "~/projects/org-roam-bibtex/"
   :custom
-  (org-roam-bibtex-template
+  (org-roam-bibtex-templates
    '(("r" "ref" plain
       (function org-roam-capture--get-point)
       ""
