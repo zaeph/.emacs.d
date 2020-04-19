@@ -719,26 +719,28 @@ stuck.")
 When ‘zp/fluid-project-definition’ is non-nil, projects with no
 remaining subtasks are considered as tasks.  We say it is ‘fluid’ because
 a tree can go back-and-forth between being a task and being a project."
-  (if (equal (org-entry-get (point) "NOT_A_PROJECT")
-             "t")
-      'task
-    (save-restriction
-      (widen)
-      (let ((subtree-end (save-excursion (org-end-of-subtree t)))
-            (is-a-task (member (nth 2 (org-heading-components)) org-todo-keywords-1))
-            (fluid zp/fluid-project-definition)
-            has-subtask)
-        (save-excursion
-          (forward-line 1)
-          (while (and (< (point) subtree-end)
-                      (re-search-forward "^\*+ " subtree-end t))
-            (when (and (member (org-get-todo-state) org-todo-keywords-1)
-                       (if fluid (not (org-entry-is-done-p)) t))
-              (setq has-subtask t))))
-        (cond ((and is-a-task has-subtask)
-               'project)
-              (is-a-task
-               'task))))))
+  (save-restriction
+    (widen)
+    (let ((subtree-end (save-excursion (org-end-of-subtree t)))
+          (is-a-task (member (nth 2 (org-heading-components)) org-todo-keywords-1))
+          (not-a-project (equal (org-entry-get (point) "NOT_A_PROJECT") "t"))
+          (fluid zp/fluid-project-definition)
+          has-subtask)
+      (save-excursion
+        (forward-line 1)
+        (while (and (not has-subtask)
+                    (< (point) subtree-end)
+                    (re-search-forward "^\*+ " subtree-end t))
+          (when (and (member (org-get-todo-state) org-todo-keywords-1)
+                     (if (or not-a-project
+                             fluid)
+                         (not (org-entry-is-done-p))
+                       t))
+            (setq has-subtask t))))
+      (cond ((and is-a-task has-subtask)
+             'project)
+            (is-a-task
+             'task)))))
 
 (defun zp/is-project-p ()
   "Return t if the tree at point is a project."
