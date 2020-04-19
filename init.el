@@ -446,7 +446,6 @@ surrounding paragraph."
 (scroll-bar-mode -1)
 (blink-cursor-mode -1)
 (show-paren-mode 1)
-(global-hl-line-mode 1)
 (column-number-mode 1)
 
 ;; Set fringe sizes
@@ -633,7 +632,8 @@ surrounding paragraph."
   (beacon-blink-delay 0.3)
   (beacon-blink-duration 0.3)
   :config
-  (beacon-mode +1))
+  (global-hl-line-mode 1)
+  (beacon-mode))
 
 ;; ;; Removed because of conflict with ‘use-hard-newlines’
 ;; (use-package clean-aindent-mode
