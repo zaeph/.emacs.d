@@ -5364,6 +5364,7 @@ See ‘~/.bin/terminator-dwim’ for more info."
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(auth-source-save-behavior nil)
+ '(dired-dwim-target t)
  '(gdb-many-windows t)
  '(global-hl-line-mode t)
  '(helm-external-programs-associations
@@ -5411,6 +5412,16 @@ See ‘~/.bin/terminator-dwim’ for more info."
      ("\\.x?html?\\'" . default)
      ("\\.pdf\\'" . default))))
  '(org-roam-bibtex-template
+   (quote
+    (("r" "ref" plain
+      (function org-roam-capture--get-point)
+      "" :file-name "refs/${slug}" :head "#+TITLE: ${=key=}: ${title}
+#+ROAM_KEY: ${ref}
+#+CREATED: %U
+#+LAST_MODIFIED: %U
+
+" :unnarrowed t))))
+ '(org-roam-bibtex-templates
    (quote
     (("r" "ref" plain
       (function org-roam-capture--get-point)
