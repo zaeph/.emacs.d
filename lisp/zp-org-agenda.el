@@ -724,10 +724,10 @@ a tree can go back-and-forth between being a task and being a project."
       'task
     (save-restriction
       (widen)
-      (let (has-subtask
-            (subtree-end (save-excursion (org-end-of-subtree t)))
+      (let ((subtree-end (save-excursion (org-end-of-subtree t)))
             (is-a-task (member (nth 2 (org-heading-components)) org-todo-keywords-1))
-            (fluid zp/fluid-project-definition))
+            (fluid zp/fluid-project-definition)
+            has-subtask)
         (save-excursion
           (forward-line 1)
           (while (and (< (point) subtree-end)
