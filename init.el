@@ -1249,6 +1249,11 @@ With numeric prefix arg DEC, decrement the integer by DEC amount."
 (global-set-key (kbd "C-c e") #'zp/find-init-file)
 
 ;;----------------------------------------------------------------------------
+;; Testing
+;;----------------------------------------------------------------------------
+(use-package buttercup)
+
+;;----------------------------------------------------------------------------
 ;; ispell
 ;;----------------------------------------------------------------------------
 (use-package ispell
@@ -5418,7 +5423,7 @@ See ‘~/.bin/terminator-dwim’ for more info."
  '(org-roam-directory "~/org/slip-box/")
  '(package-selected-packages
    (quote
-    (doom-modeline git-link bibtex-completion ivy-bibtex edit-indirect package-lint counsel-projectile rg helm-org-rifle org-roam slime highlight-indent-guides dracula-theme use-package org-brain racket-mode wgrep fountain-mode org-mind-map org org-ref orgalist ws-butler minions backup-walker bug-hunter org-plus-contrib messages-are-flowing notmuch forge go-mode company-anaconda anaconda-mode company realgud ace-link ivy-hydra counsel dumb-jump lua-mode fish-mode exwm el-patch diminish circe-notifications circe ob-async nov eyebrowse diff-hl recentf-ext flycheck-pos-tip helm-projectile clean-aindent-mode volatile-highlights duplicate-thing org-noter hydra highlight mu4e-alert writeroom-mode anzu flycheck spaceline helm-chronos chronos multiple-cursors expand-region ace-window auto-minor-mode ledger-mode sublimity auctex smooth-scrolling yasnippet pdf-tools htmlize helm-bibtex free-keys evil color-theme base16-theme)))
+    (buttercup doom-modeline git-link bibtex-completion ivy-bibtex edit-indirect package-lint counsel-projectile rg helm-org-rifle org-roam slime highlight-indent-guides dracula-theme use-package org-brain racket-mode wgrep fountain-mode org-mind-map org org-ref orgalist ws-butler minions backup-walker bug-hunter org-plus-contrib messages-are-flowing notmuch forge go-mode company-anaconda anaconda-mode company realgud ace-link ivy-hydra counsel dumb-jump lua-mode fish-mode exwm el-patch diminish circe-notifications circe ob-async nov eyebrowse diff-hl recentf-ext flycheck-pos-tip helm-projectile clean-aindent-mode volatile-highlights duplicate-thing org-noter hydra highlight mu4e-alert writeroom-mode anzu flycheck spaceline helm-chronos chronos multiple-cursors expand-region ace-window auto-minor-mode ledger-mode sublimity auctex smooth-scrolling yasnippet pdf-tools htmlize helm-bibtex free-keys evil color-theme base16-theme)))
  '(projectile-project-search-path
    (quote
     ("~/.emacs.d/" "~/.bin/" "~/.dotfiles/" "~/projects/")))
