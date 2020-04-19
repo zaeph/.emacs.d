@@ -864,7 +864,7 @@ Modifies ‘diff-command’ and ‘diff-switches’ to use ‘git diff’."
     "Create a URL pointing to current line/region on the branch.
 With a C-u argument, point on the commit instead."
     (interactive "P")
-    (let ((git-link-use-commit (if arg t nil))
+    (let ((git-link-use-commit (if arg nil t))
           (current-prefix-arg nil))
       (call-interactively #'git-link))))
 
