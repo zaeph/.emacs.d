@@ -34,6 +34,9 @@
   (load-theme 'base16-atelier-sulphurpool t)
 
   (set-face-attribute 'default nil :foreground "#BCAF8E" :background "#141414")
+  (set-face-attribute 'cursor nil :background "#c94922")
+  (when (bound-and-true-p beacon-color)
+    (setq beacon-color "#c94922"))
   (set-face-attribute 'org-todo nil :foreground "darkred")
   (set-face-attribute 'org-done nil :foreground "spring green")
   (set-face-attribute 'org-scheduled nil :foreground "#198844")
@@ -121,9 +124,10 @@
   (setq zp/emacs-theme "light")
   (load-theme 'base16-google-light t)
 
-  ;; (set-face-attribute 'org-todo-box nil :inverse-video t :foreground "white" :height 0.8 :weight 'bold :box nil)
-  ;; (set-face-attribute 'default nil :background "cornsilk1") ;fff8dc
   (set-face-attribute 'default nil :foreground "#3c3836" :background "#fbf1c7")
+  (set-face-attribute 'cursor nil :background "#cc342b")
+  (when (bound-and-true-p beacon-color)
+    (setq beacon-color "#cc342b"))
   (set-face-attribute 'fringe nil :background "#e6deb8" :foreground "orangered")
   (set-face-attribute 'org-hide nil :foreground "#fbf1c7")
   (set-face-attribute 'org-agenda-dimmed-todo-face nil :foreground "LightSlateBlue")
