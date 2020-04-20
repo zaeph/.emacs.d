@@ -211,25 +211,6 @@ With a prefix argument, do so in all agenda buffers."
         (org-show-context 'agenda)
         (zp/org-mark-as-non-project print-message)))))
 
-(defun zp/org-agenda-handle-project-dwim (&optional print-message)
-  "Act on entry to make them go between tasks and projects."
-  (interactive "p")
-  (let* ((hdmarker (or (org-get-at-bol 'org-hd-marker)
-                       (org-agenda-error)))
-         (buffer (marker-buffer hdmarker))
-         (pos (marker-position hdmarker)))
-    (org-with-remote-undo buffer
-      (with-current-buffer buffer
-        (widen)
-        (goto-char pos)
-        (org-show-context 'agenda)
-        (cond ((zp/is-confused-project-p)
-               (zp/org-resolve-confused-project print-message))
-              ((zp/is-finished-project-p)
-               (zp/org-mark-as-non-project print-message))
-              (t
-               (message "Nothing to do.")))))))
-
 ;;----------------------------------------------------------------------------
 ;; Calendar interaction
 ;;----------------------------------------------------------------------------
