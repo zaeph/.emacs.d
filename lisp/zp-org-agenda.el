@@ -191,8 +191,8 @@ With a prefix argument, do so in all agenda buffers."
   (interactive "p")
   (unless (not (zp/not-a-project-prop-p))
     (user-error "Item is already marked as not being a project"))
-  (unless (zp/is-stuck-project-p)
-    (user-error "Project is not stuck"))
+  (unless (zp/is-finished-project-p)
+    (user-error "Project has unfinished tasks"))
   (org-set-property "NOT_A_PROJECT" "t")
   (when print-message
     (message "Item has been marked as not being a project.")))
