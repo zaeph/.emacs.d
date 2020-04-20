@@ -359,6 +359,7 @@ time is displayed."
     (fill-paragraph nil)))
 
 (defun zp/unfill-region ()
+  "Unfill current region."
   (interactive)
   (let ((fill-column (point-max)))
     (fill-region (region-beginning) (region-end) nil)))
