@@ -160,6 +160,13 @@ With a prefix argument, do so in all agenda buffers."
       (setq newhead (org-get-heading)))
     (org-agenda-change-all-lines newhead hdmarker)))
 
+(defun zp/org-agenda-apply-stamp (stamp &optional prefix)
+  "Show new stamp via text properties.
+Uses `org-agenda-show-new-time' as its backend."
+  (let* ((marker (or (org-get-at-bol 'org-hd-marker)
+                       (org-agenda-error))))
+    (org-agenda-show-new-time marker stamp prefix)))
+
 (defun zp/org-resolve-confused-project (&optional print-message)
   "Remove the NOT_A_PROJECT property from the current entry."
   (interactive "p")
@@ -211,7 +218,8 @@ With a prefix argument, do so in all agenda buffers."
         (widen)
         (goto-char pos)
         (org-show-context 'agenda)
-        (zp/org-mark-as-non-project print-message)))))
+        (zp/org-mark-as-non-project print-message)))
+    (zp/org-agenda-apply-stamp "Not a project anymore" " P")))
 
 ;;----------------------------------------------------------------------------
 ;; Calendar interaction
