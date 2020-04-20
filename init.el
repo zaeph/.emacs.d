@@ -3412,7 +3412,6 @@ indirect-buffers."
           (tags user-defined-down category-keep)
           (todo user-defined-down category-keep)
           (search category-keep))
-        zp/fluid-project-definition nil
 
         ;; Initialise the list structure for local variables
         zp/org-agenda-local-config
