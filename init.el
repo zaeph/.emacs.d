@@ -1,11 +1,16 @@
 ;;; init.el --- Initialization file for Emacs  -*- fill-column: 78; lexical-binding: t; -*-
-;;; Commentary: Emacs Startup File --- initialization for Emacs
 
 ;; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ;; ===============================  INIT FILE  ===============================
 ;; ==================================== * ====================================
 ;; ===============================  ~ Zaeph ~  ===============================
 ;; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+;;; Commentary:
+
+;; Emacs Startup File --- initialization for Emacs
+
+;;; Code:
 
 ;; Change default face to prevent flashing
 (set-face-attribute 'default nil :foreground "#bcaf8e" :background "#141414")
