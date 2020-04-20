@@ -232,16 +232,15 @@ be the list of commands to advice."
 (defmacro zp/add-hooks (method commands function)
   "Add FUNCTION as a hook to COMMANDS with METHOD.
 See `add-hooks' for details."
-  (let ((where-keyword (intern-soft (concat ":" (symbol-name where)))))
-    `(progn
-       ,@(cond ((string= method 'add)
-                (mapcar (lambda (command)
-                          `(add-hook ',command #',function))
-                        commands))
-               ((string= method 'remove)
-                (mapcar (lambda (command)
-                          `(remove-hook ',command  #',function))
-                        commands))))))
+  `(progn
+     ,@(cond ((string= method 'add)
+              (mapcar (lambda (command)
+                        `(add-hook ',command #',function))
+                      commands))
+             ((string= method 'remove)
+              (mapcar (lambda (command)
+                        `(remove-hook ',command  #',function))
+                      commands)))))
 
 (defun other-window-reverse ()
   "Select the previous window."
