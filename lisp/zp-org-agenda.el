@@ -178,9 +178,7 @@ With a prefix argument, do so in all agenda buffers."
   (let* ((hdmarker (or (org-get-at-bol 'org-hd-marker)
                        (org-agenda-error)))
          (buffer (marker-buffer hdmarker))
-         (pos (marker-position hdmarker))
-         (inhibit-read-only t)
-         newhead)
+         (pos (marker-position hdmarker)))
     (org-with-remote-undo buffer
       (with-current-buffer buffer
         (widen)
