@@ -1123,6 +1123,7 @@ numerical arguments."
 
 ;; TODO: Consider deleting this semi-useless minor-mode
 (defun zp/save-buffers-kill-terminal-silently ()
+  "Save buffer and kill the terminal without printing a message."
   (interactive)
   (save-buffers-kill-terminal t))
 
