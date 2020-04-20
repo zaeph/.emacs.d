@@ -2337,7 +2337,7 @@ return `nil'."
   :hook ((org-mode . org-indent-mode)
          (org-mode . visual-line-mode)
          (before-save . zp/org-set-last-modified)
-         (org-after-todo-state-change . zp/org-comment-logbook-notes))
+         (org-todo-repeat . zp/org-comment-logbook-notes))
   :config
   (setq org-agenda-inhibit-startup nil
         org-log-into-drawer "LOGBOOK-NOTES"
