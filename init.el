@@ -207,7 +207,7 @@ Prefix argument initializes the Git repository."
 ;; Helper functions & macros
 ;;----------------------------------------------------------------------------
 (defun zp/get-string-from-file (file-path)
-  "Read file content from path."
+  "Read file content from FILE-PATH."
   (with-temp-buffer
     (insert-file-contents file-path)
     (buffer-string)))
