@@ -1,11 +1,16 @@
-;;; init.el --- Initialization file for Emacs  -*- fill-column: 78; lexical-binding: t; -*-
-;;; Commentary: Emacs Startup File --- initialization for Emacs
+;;; init.el --- Initialization file for Emacs  -*- fill-column: 78; lexical-binding: t; byte-compile-warnings: (not free-vars) -*-
 
 ;; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ;; ===============================  INIT FILE  ===============================
 ;; ==================================== * ====================================
 ;; ===============================  ~ Zaeph ~  ===============================
 ;; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+;;; Commentary:
+
+;; Emacs Startup File --- initialization for Emacs
+
+;;; Code:
 
 ;; Change default face to prevent flashing
 (set-face-attribute 'default nil :foreground "#bcaf8e" :background "#141414")
@@ -41,6 +46,7 @@
 
 ;; Turn off background when Emacs is run with -nt
 (defun on-after-init ()
+  "Turn off background."
   (unless (display-graphic-p (selected-frame))
     (set-face-background 'default "unspecified-bg" (selected-frame))))
 (add-hook 'window-setup-hook 'on-after-init)
@@ -128,13 +134,16 @@
 
 ;; Suppress bells for reaching beginning and end of buffer
 ;; Source: https://emacs.stackexchange.com/questions/10932/how-do-you-disable-the-buffer-end-beginning-warnings-in-the-minibuffer/20039
-(defun zp/command-error-function (data context caller)
-  "Ignore the buffer-read-only, beginning-of-buffer,
-end-of-buffer signals; pass the rest to the default handler."
+(defun zp/command-error-function (data context signal)
+  "Ignore some errors.
+Ignore the `buffer-read-only', `beginning-of-buffer',
+`end-of-buffer' signals; pass the rest to the default handler.
+For details on DATA, CONTEXT, and SIGNAL, see
+`command-error-function'."
   (when (not (memq (car data) '(buffer-read-only
                                 beginning-of-buffer
                                 end-of-buffer)))
-    (command-error-default-function data context caller)))
+    (command-error-default-function data context signal)))
 
 (setq command-error-function #'zp/command-error-function)
 
@@ -148,9 +157,6 @@ end-of-buffer signals; pass the rest to the default handler."
 ;; Temporary fix for helm delays
 (when (= emacs-major-version 26)
   (setq x-wait-for-event-timeout nil))
-
-;; Path to authentication sources
-(setq auth-sources '("~/.authinfo.gpg" "~/.netrc"))
 
 ;; Enable recursive minibuffers
 ;; Necessary for for some Ivy/Helm commands
@@ -181,6 +187,9 @@ end-of-buffer signals; pass the rest to the default handler."
 (defun scratch-dir (&optional use-git name)
   "Create an ad-hoc working directory and open it in dired.
 
+When USE-GIT is non-nil, init git in the created directory with
+the name NAME.
+
 Prefix argument initializes the Git repository."
   (interactive "P\nMName: ")
   (let ((directory (expand-file-name (scratch-dir-path name))))
@@ -198,13 +207,17 @@ Prefix argument initializes the Git repository."
 ;; Helper functions & macros
 ;;----------------------------------------------------------------------------
 (defun zp/get-string-from-file (file-path)
-  "Read file content from path."
+  "Read file content from FILE-PATH."
   (with-temp-buffer
     (insert-file-contents file-path)
     (buffer-string)))
 
 ;; TODO: Does it need to be macro?
 (defmacro zp/advise-commands (method commands where function)
+  "Macro for advising COMMANDS with FUNCTION.
+
+METHOD and WHERE follows the same syntax as `add-advice'.  COMMANDS should
+be the list of commands to advice."
   (let ((where-keyword (intern-soft (concat ":" (symbol-name where)))))
     `(progn
        ,@(cond ((string= method 'add)
@@ -217,16 +230,17 @@ Prefix argument initializes the Git repository."
                         commands))))))
 
 (defmacro zp/add-hooks (method commands function)
-  (let ((where-keyword (intern-soft (concat ":" (symbol-name where)))))
-    `(progn
-       ,@(cond ((string= method 'add)
-                (mapcar (lambda (command)
-                          `(add-hook ',command #',function))
-                        commands))
-               ((string= method 'remove)
-                (mapcar (lambda (command)
-                          `(remove-hook ',command  #',function))
-                        commands))))))
+  "Add FUNCTION as a hook to COMMANDS with METHOD.
+See `add-hooks' for details."
+  `(progn
+     ,@(cond ((string= method 'add)
+              (mapcar (lambda (command)
+                        `(add-hook ',command #',function))
+                      commands))
+             ((string= method 'remove)
+              (mapcar (lambda (command)
+                        `(remove-hook ',command  #',function))
+                      commands)))))
 
 (defun other-window-reverse ()
   "Select the previous window."
@@ -333,17 +347,19 @@ time is displayed."
 ;; Editing commands
 ;;----------------------------------------------------------------------------
 (defun zp/unfill-document ()
-  "fill individual paragraphs with large fill column"
+  "Fill individual paragraphs with large fill column."
   (interactive)
   (let ((fill-column 100000))
     (fill-individual-paragraphs (point-min) (point-max))))
 
 (defun zp/unfill-paragraph ()
+  "Unfill current paragraph."
   (interactive)
   (let ((fill-column (point-max)))
     (fill-paragraph nil)))
 
 (defun zp/unfill-region ()
+  "Unfill current region."
   (interactive)
   (let ((fill-column (point-max)))
     (fill-region (region-beginning) (region-end) nil)))
@@ -581,6 +597,11 @@ surrounding paragraph."
 ;;----------------------------------------------------------------------------
 ;; Packages
 ;;----------------------------------------------------------------------------
+(use-package auth-source
+  :custom
+  ;; Path to authentication sources
+  (auth-sources '("~/.authinfo.gpg" "~/.netrc")))
+
 (use-package gif-screencast
   :load-path ("~/src/gif-screencast/")
   :commands (gif-screencast)
@@ -1102,6 +1123,7 @@ numerical arguments."
 
 ;; TODO: Consider deleting this semi-useless minor-mode
 (defun zp/save-buffers-kill-terminal-silently ()
+  "Save buffer and kill the terminal without printing a message."
   (interactive)
   (save-buffers-kill-terminal t))
 
@@ -1128,7 +1150,7 @@ numerical arguments."
 (add-to-list 'auto-minor-mode-alist '("edit-in-emacs.html" . save-silently-mode))
 
 (defun zp/kanji-add-furigana ()
-  "Adds furigana to the kanji at point.
+  "Add furigana to the kanji at point.
 If text is selected, adds furigana to the selected kanji instead."
   (interactive)
   (if (not (region-active-p))
@@ -1168,7 +1190,7 @@ If text is selected, adds furigana to the selected kanji instead."
       ;; Skip over digits
       (skip-chars-forward "[[:digit:]]")
       ;; Check for at least one digit
-      (unless (looking-back "[[:digit:]]")
+      (unless (looking-back "[[:digit:]]" nil)
         (error "No integer here"))))
   (put 'integer 'beginning-op 'thing-at-point-goto-end-of-integer)
 
@@ -1181,7 +1203,7 @@ If text is selected, adds furigana to the selected kanji instead."
       (unless (looking-at "[+-]?[[:digit:]]")
         (error "No integer here"))
       ;; Skip backward over optional sign
-      (when (looking-back "[+-]")
+      (when (looking-back "[+-]" nil)
         (backward-char 1))))
   (put 'integer 'beginning-op 'thing-at-point-goto-beginning-of-integer)
 
@@ -2223,7 +2245,8 @@ return `nil'."
       (interactive)
       (let ((case-fold-search nil))
         (goto-char 1)
-        (replace-regexp "\\\\label{sec:org[0-9][^}]*}" "")))
+        (re-search-forward "\\\\label{sec:org[0-9][^}]*}" nil t)
+        (replace-match "")))
 
     (defun zp/org-latex-remove-section-labels (string backend info)
       "Remove section labels generated by org-mode"
@@ -2936,7 +2959,7 @@ along with effort estimates and total time."
                       (format (propertize "[%s] (%s)" 'face 'org-meta-line)
                               (org-duration-from-minutes clocked-time)
                               org-clock-heading-formatted)))))
-      (error "Not currently clocking any task.")))
+      (error "Not currently clocking any task")))
 
   ;;------
   ;; Keys
@@ -3645,8 +3668,6 @@ indirect-buffers."
   (use-package org-super-agenda
     :config
     (setq org-super-agenda-header-map org-agenda-mode-map)))
-
-
 
 ;;----------------------------------------------------------------------------
 ;; org-capture
