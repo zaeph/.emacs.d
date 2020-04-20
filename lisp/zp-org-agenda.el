@@ -787,7 +787,7 @@ a tree can go back-and-forth between being a task and being a project."
 A confused project is a project identified as not being a project with the
 property NOT_A_PROJECT but which has active subtasks."
   (and (zp/not-a-project-prop-p)
-       (eq (zp/identify-task-type) 'project)))
+       (zp/is-project-p)))
 
 (defun zp/is-stuck-project-p ()
   "Return t if the project at point is stuck.
