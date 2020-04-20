@@ -134,13 +134,16 @@
 
 ;; Suppress bells for reaching beginning and end of buffer
 ;; Source: https://emacs.stackexchange.com/questions/10932/how-do-you-disable-the-buffer-end-beginning-warnings-in-the-minibuffer/20039
-(defun zp/command-error-function (data context caller)
-  "Ignore the buffer-read-only, beginning-of-buffer,
-end-of-buffer signals; pass the rest to the default handler."
+(defun zp/command-error-function (data context signal)
+  "Ignore some errors.
+Ignore the `buffer-read-only', `beginning-of-buffer',
+`end-of-buffer' signals; pass the rest to the default handler.
+For details on DATA, CONTEXT, and SIGNAL, see
+`command-error-function'."
   (when (not (memq (car data) '(buffer-read-only
                                 beginning-of-buffer
                                 end-of-buffer)))
-    (command-error-default-function data context caller)))
+    (command-error-default-function data context signal)))
 
 (setq command-error-function #'zp/command-error-function)
 
