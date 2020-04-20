@@ -784,8 +784,7 @@ a tree can go back-and-forth between being a task and being a project."
                     (< (point) subtree-end)
                     (re-search-forward "^\*+ " subtree-end t))
           (when (and (member (org-get-todo-state) org-todo-keywords-1)
-                     (if (or not-a-project
-                             fluid)
+                     (if (or not-a-project fluid)
                          (not (org-entry-is-done-p))
                        t))
             (setq has-subtask t))))
