@@ -772,7 +772,7 @@ surrounding paragraph."
   :bind (:map zp/toggle-map
               ("F" . flycheck-mode))
   :config
-  (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc))
+  ;; (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc))
   (setq flycheck-emacs-lisp-load-path 'inherit
         flycheck-display-errors-delay 0.5))
 
