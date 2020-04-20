@@ -165,7 +165,7 @@ With a prefix argument, do so in all agenda buffers."
   (interactive "p")
   (unless (zp/is-confused-project-p)
     (user-error "Project is not confused"))
-  (unless (and (equal (org-entry-get (point) "NOT_A_PROJECT") "t")
+  (unless (and (zp/not-a-project-prop-p)
                (zp/is-project-p))
     (error "Problem with project, manual intervention required"))
   (org-delete-property "NOT_A_PROJECT")
