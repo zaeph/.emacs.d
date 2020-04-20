@@ -1,4 +1,4 @@
-;;; init.el --- Initialization file for Emacs  -*- fill-column: 78; lexical-binding: t; -*-
+;;; init.el --- Initialization file for Emacs  -*- fill-column: 78; lexical-binding: t; byte-compile-warnings: (not free-vars) -*-
 
 ;; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ;; ===============================  INIT FILE  ===============================
