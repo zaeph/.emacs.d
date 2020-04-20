@@ -160,7 +160,7 @@ With a prefix argument, do so in all agenda buffers."
       (setq newhead (org-get-heading)))
     (org-agenda-change-all-lines newhead hdmarker)))
 
-(defun zp/org-resolve-confused-project (print-message)
+(defun zp/org-resolve-confused-project (&optional print-message)
   "Remove the NOT_A_PROJECT property from the current entry."
   (interactive "p")
   (unless (zp/is-confused-project-p)
@@ -172,7 +172,7 @@ With a prefix argument, do so in all agenda buffers."
   (when print-message
     (message "Project has been brought back to reason.")))
 
-(defun zp/org-agenda-resolve-confused-project (print-message)
+(defun zp/org-agenda-resolve-confused-project (&optional print-message)
   "Remove the NOT_A_PROJECT property from the current agenda entry."
   (interactive "p")
   (let* ((hdmarker (or (org-get-at-bol 'org-hd-marker)
@@ -186,7 +186,7 @@ With a prefix argument, do so in all agenda buffers."
         (org-show-context 'agenda)
         (zp/org-resolve-confused-project print-message)))))
 
-(defun zp/org-mark-as-non-project (print-message)
+(defun zp/org-mark-as-non-project (&optional print-message)
   "Add the NOT_A_PROJECT property to the current entry."
   (interactive "p")
   (unless (not (zp/not-a-project-prop-p))
@@ -197,7 +197,7 @@ With a prefix argument, do so in all agenda buffers."
   (when print-message
     (message "Item has been marked as not being a project.")))
 
-(defun zp/org-agenda-mark-as-non-project (print-message)
+(defun zp/org-agenda-mark-as-non-project (&optional print-message)
   "Add the NOT_A_PROJECT property to the current agenda entry."
   (interactive "p")
   (let* ((hdmarker (or (org-get-at-bol 'org-hd-marker)
@@ -211,7 +211,7 @@ With a prefix argument, do so in all agenda buffers."
         (org-show-context 'agenda)
         (zp/org-mark-as-non-project print-message)))))
 
-(defun zp/org-agenda-handle-project-dwim (print-message)
+(defun zp/org-agenda-handle-project-dwim (&optional print-message)
   "Act on entry to make them go between tasks and projects."
   (interactive "p")
   (let* ((hdmarker (or (org-get-at-bol 'org-hd-marker)
