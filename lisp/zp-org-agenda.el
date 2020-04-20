@@ -189,6 +189,8 @@ With a prefix argument, do so in all agenda buffers."
 (defun zp/org-mark-as-non-project (&optional print-message)
   "Add the NOT_A_PROJECT property to the current entry."
   (interactive "p")
+  (unless (zp/is-project-p)
+    (user-error "Not on a project"))
   (unless (not (zp/not-a-project-prop-p))
     (user-error "Item is already marked as not being a project"))
   (unless (zp/is-finished-project-p)
