@@ -353,6 +353,7 @@ time is displayed."
     (fill-individual-paragraphs (point-min) (point-max))))
 
 (defun zp/unfill-paragraph ()
+  "Unfill current paragraph."
   (interactive)
   (let ((fill-column (point-max)))
     (fill-paragraph nil)))
