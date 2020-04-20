@@ -3319,10 +3319,20 @@ indirect-buffers."
       (org-with-point-at marker
         (zp/is-stuck-project-p))))
 
+  (defun zp/org-super-agenda-confused-project-p (item)
+    (let ((marker (or (get-text-property 0 'org-marker item)
+                      (get-text-property 0 'org-hd-marker item))))
+      (org-with-point-at marker
+        (zp/is-confused-project-p))))
+
   (defun zp/org-super-agenda-projects ()
     '((:name "Group heads"
              :pred (lambda (item)
                      (zp/org-super-agenda-group-heads item)))
+      (:name "Confused"
+             :face (:foreground "purple")
+             :pred (lambda (item)
+                     (zp/org-super-agenda-confused-project-p item)))
       (:name "Stuck"
              :face (:foreground "red")
              :pred (lambda (item)
