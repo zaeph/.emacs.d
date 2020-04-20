@@ -199,12 +199,12 @@ With a prefix argument, do so in all agenda buffers."
             (org-agenda-span 'day)
             (org-agenda-skip-function
              '(or (zp/skip-tasks-not-in-agenda-groups-with-extra-filters nil)
-               (zp/skip-tasks-not-matched-by-category-filter)
-               (zp/skip-routine-cond)))
+                  (zp/skip-tasks-not-matched-by-category-filter)
+                  (zp/skip-routine-cond)))
             (org-agenda-start-day ,date)
             (org-super-agenda-groups
              '((:name "Grid"
-                :time-grid t)
+                      :time-grid t)
                ,@(zp/org-super-agenda-groups-all))))))
 
 (defun zp/org-agenda-goto-calendar ()
