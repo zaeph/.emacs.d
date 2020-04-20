@@ -2336,7 +2336,8 @@ return `nil'."
               ("C-c R" . org-display-inline-images))
   :hook ((org-mode . org-indent-mode)
          (org-mode . visual-line-mode)
-         (before-save . zp/org-set-last-modified))
+         (before-save . zp/org-set-last-modified)
+         (org-todo-repeat . zp/org-comment-logbook-notes))
   :config
   (setq org-agenda-inhibit-startup nil
         org-log-into-drawer "LOGBOOK-NOTES"
@@ -2816,7 +2817,61 @@ With a C-u argument, toggle the link display."
   (setq org-time-stamp-custom-formats
         '("<%d %b %Y>" . "<%d/%m/%y %a %H:%M>"))
 
-  ;;--------------------------
+  ;;---------------------------------------
+  ;; Commenting old lines in LOGBOOK-NOTES
+  ;;---------------------------------------
+
+  (defcustom zp/org-logbook-notes-current-lines 30
+    "Number of lines to keep active in LOGBOOK-NOTES drawers.")
+
+  (defun zp/org-comment-logbook-notes ()
+    "Only keep a certain amount of lines in LOGBOOK-NOTES drawers.
+
+A large amount of lines in LOGBOOK-NOTES slows down state-changes, which is
+why it is a good idea to only keep a set amount of them.
+
+The number of lines to keep is defined in
+`zp/org-logbook-notes-current-lines'."
+    (let* ((logbook-notes-top-re "^[\s]*:LOGBOOK-NOTES:[\s]*\n")
+           (logbook-notes-bottom-re "[\s]*:END:[\s]*$")
+           (logbook-notes-re (concat logbook-notes-top-re
+                                     "\\(?:.*\n\\)*?"
+                                     logbook-notes-bottom-re))
+           (lines-to-keep zp/org-logbook-notes-current-lines)
+           ;; Prevent org-ref from interfering with our affairs
+           (org-ref-labels nil))
+      (save-restriction
+        (widen)
+        (let ((heading-end (save-excursion
+                             (forward-line)
+                             (or (re-search-forward "^\*+ " nil t)
+                                 (point-max)))))
+          (save-excursion
+            (org-back-to-heading)
+            (when-let ((drawer-end (re-search-forward logbook-notes-re
+                                                      heading-end
+                                                      t))
+                       (notes (match-string 0))
+                       (drawer-beg (re-search-backward logbook-notes-top-re nil t))
+                       (notes-beg (save-excursion
+                                    (forward-line)
+                                    (point)))
+                       (notes-end (save-excursion
+                                    (goto-char drawer-end)
+                                    (forward-line -1)
+                                    (point-at-eol))))
+              (when (> (count-lines notes-beg notes-end) lines-to-keep)
+                (let ((current-notes-end (save-excursion
+                                           (forward-line lines-to-keep)
+                                           (point-at-eol))))
+                  (goto-char notes-end)
+                  (while (re-search-backward "^[^#]" current-notes-end t)
+                    (let ((bol (point-at-bol))
+                          (eol (point-at-eol)))
+                      (unless (comment-only-p bol eol)
+                        (comment-region-default bol eol))))))))))))
+
+;;--------------------------
   ;; Spawned indirect buffers
   ;;--------------------------
 
