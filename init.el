@@ -1150,7 +1150,7 @@ numerical arguments."
 (add-to-list 'auto-minor-mode-alist '("edit-in-emacs.html" . save-silently-mode))
 
 (defun zp/kanji-add-furigana ()
-  "Adds furigana to the kanji at point.
+  "Add furigana to the kanji at point.
 If text is selected, adds furigana to the selected kanji instead."
   (interactive)
   (if (not (region-active-p))
