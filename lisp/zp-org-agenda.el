@@ -707,6 +707,9 @@ For more information, see ‘zp/skip-tasks-not-in-agenda-groups’."
 When nil, a project with no remaining subtasks will be considered
 stuck.")
 
+(defun zp/not-a-project-prop-p ()
+  (equal (org-entry-get (point) "NOT_A_PROJECT") "t"))
+
 (defun zp/identify-task-type ()
   "Identify the type of the task at point.
 
@@ -719,26 +722,28 @@ stuck.")
 When ‘zp/fluid-project-definition’ is non-nil, projects with no
 remaining subtasks are considered as tasks.  We say it is ‘fluid’ because
 a tree can go back-and-forth between being a task and being a project."
-  (if (equal (org-entry-get (point) "NOT_A_PROJECT")
-             "t")
-      'task
-    (save-restriction
-      (widen)
-      (let (has-subtask
-            (subtree-end (save-excursion (org-end-of-subtree t)))
-            (is-a-task (member (nth 2 (org-heading-components)) org-todo-keywords-1))
-            (fluid zp/fluid-project-definition))
-        (save-excursion
-          (forward-line 1)
-          (while (and (< (point) subtree-end)
-                      (re-search-forward "^\*+ " subtree-end t))
-            (when (and (member (org-get-todo-state) org-todo-keywords-1)
-                       (if fluid (not (org-entry-is-done-p)) t))
-              (setq has-subtask t))))
-        (cond ((and is-a-task has-subtask)
-               'project)
-              (is-a-task
-               'task))))))
+  (save-restriction
+    (widen)
+    (let ((subtree-end (save-excursion (org-end-of-subtree t)))
+          (is-a-task (member (nth 2 (org-heading-components)) org-todo-keywords-1))
+          (not-a-project (zp/not-a-project-prop-p))
+          (fluid zp/fluid-project-definition)
+          has-subtask)
+      (save-excursion
+        (forward-line 1)
+        (while (and (not has-subtask)
+                    (< (point) subtree-end)
+                    (re-search-forward "^\*+ " subtree-end t))
+          (when (and (member (org-get-todo-state) org-todo-keywords-1)
+                     (if (or not-a-project
+                             fluid)
+                         (not (org-entry-is-done-p))
+                       t))
+            (setq has-subtask t))))
+      (cond ((and is-a-task has-subtask)
+             'project)
+            (is-a-task
+             'task)))))
 
 (defun zp/is-project-p ()
   "Return t if the tree at point is a project."
@@ -747,6 +752,14 @@ a tree can go back-and-forth between being a task and being a project."
 (defun zp/is-task-p ()
   "Return t if the item at point is a task."
   (eq (zp/identify-task-type) 'task))
+
+(defun zp/is-confused-project-p ()
+  "Return t if the project at point is confused.
+
+A confused project is a project identified as not being a project with the
+property NOT_A_PROJECT but which has active subtasks."
+  (and (zp/not-a-project-prop-p)
+       (eq (zp/identify-task-type) 'project)))
 
 (defun zp/is-stuck-project-p ()
   "Return t if the project at point is stuck.
@@ -763,7 +776,7 @@ condition is not true:
   action is underway.
 
 - The project is waiting (i.e. it has a WAIT todo-keyword) but
-  none of its subtasks (direct or indirect) is waiting..  This is
+  none of its subtasks (direct or indirect) is waiting.  This is
   to ensure that a project marked as waiting is actually waiting
   for something."
   (when (zp/is-project-p)
