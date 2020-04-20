@@ -168,7 +168,7 @@ With a prefix argument, do so in all agenda buffers."
   (unless (and (zp/not-a-project-prop-p)
                (zp/is-project-p))
     (error "Problem with project, manual intervention required"))
-  (org-delete-property "NOT_A_PROJECT")
+  (org-entry-delete nil "NOT_A_PROJECT")
   (when print-message
     (message "Project has been brought back to reason.")))
 
