@@ -702,7 +702,7 @@ For more information, see ‘zp/skip-tasks-not-in-agenda-groups’."
     (zp/skip-tasks-not-in-agenda-groups filters)))
 
 (defvar zp/fluid-project-definition t
-  "When t, a project with no remaining subtasks become a task.
+  "When t, a project with no remaining subtasks becomes a task.
 
 When nil, a project with no remaining subtasks will be considered
 stuck.")
