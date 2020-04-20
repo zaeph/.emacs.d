@@ -3816,6 +3816,13 @@ indirect-buffers."
           ("js" "Swimming" entry (file+olp "~/org/journal.org" "Swimming")
            "* %^{Title|Entry}\n%T\n\n%?" :full-frame t)
 
+          ;; Org-protocol templates
+          ("OPr" "Read with Context" entry (file+headline "~/org/life.org" "Inbox")
+           "* TODO Read %a%? :online:\n" :add-created t)
+
+          ("OPr" "Watch with Context" entry (file+headline "~/org/life.org" "Inbox")
+           "* TODO Watch %a%? :online:\n" :add-created t)
+
           ;; Daily Record of Dysfunctional Thoughts
           ("D" "Record Dysfunctional Thoughts" entry (file+headline "~/org/journal.org" "Psychotherapy")
            "* Record of Dysfunctional Thoughts\n%T\n** Situation\n%?\n** Emotions\n** Thoughts")
@@ -4012,6 +4019,8 @@ indirect-buffers."
 This function is intended to be run with ‘find-file-hook’."
     (when (org-roam--org-roam-file-p)
       (zp/org-link-set-local-find-file-current-window))))
+
+(use-package org-roam-protocol)
 
 (use-package org-roam-bibtex
   :hook (org-roam-mode . org-roam-bibtex-mode)
