@@ -201,7 +201,7 @@ Uses `org-agenda-show-new-time' as its backend."
   (unless (not (zp/not-a-project-prop-p))
     (user-error "Item is already marked as not being a project"))
   (unless (zp/is-finished-project-p)
-    (user-error "Project has unfinished tasks"))
+    (user-error "Cannot mark as non-project: Project has unfinished tasks"))
   (org-set-property "NOT_A_PROJECT" "t")
   (when print-message
     (message "Item has been marked as not being a project.")))
