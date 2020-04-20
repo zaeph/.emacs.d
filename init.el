@@ -2959,7 +2959,7 @@ along with effort estimates and total time."
                       (format (propertize "[%s] (%s)" 'face 'org-meta-line)
                               (org-duration-from-minutes clocked-time)
                               org-clock-heading-formatted)))))
-      (error "Not currently clocking any task.")))
+      (error "Not currently clocking any task")))
 
   ;;------
   ;; Keys
