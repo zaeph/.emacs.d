@@ -847,6 +847,28 @@ condition is not true:
             nil
           t)))))
 
+(defun zp/is-finished-project-p ()
+  "Return t if the project at point is finished.
+
+A project is considered to be finished when all of its subtasks
+are done."
+  (when (zp/is-project-p)
+    (save-restriction
+      (widen)
+      (let ((subtree-end (save-excursion (org-end-of-subtree t)))
+            has-unfinished-task)
+        (save-excursion
+          (forward-line 1)
+          (while (and (not has-unfinished-task)
+                      (< (point) subtree-end)
+                      (re-search-forward "^\*+ " subtree-end t))
+            (when (and (member (org-get-todo-state) org-todo-keywords-1)
+                       (not (org-entry-is-done-p)))
+              (setq has-unfinished-task t))))
+        (if has-unfinished-task
+            nil
+          t)))))
+
 (defun zp/is-waiting-p ()
   "Return t if the item/tree at point is waiting for something."
   (member "waiting" (org-get-tags-at)))
