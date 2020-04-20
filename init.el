@@ -2837,7 +2837,9 @@ The number of lines to keep is defined in
            (logbook-notes-re (concat logbook-notes-top-re
                                      "\\(?:.*\n\\)*?"
                                      logbook-notes-bottom-re))
-           (lines-to-keep zp/org-logbook-notes-current-lines))
+           (lines-to-keep zp/org-logbook-notes-current-lines)
+           ;; Prevent org-ref from interfering with our affairs
+           (org-ref-labels nil))
       (save-restriction
         (widen)
         (let ((heading-end (save-excursion
