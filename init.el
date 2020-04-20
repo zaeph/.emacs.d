@@ -3363,6 +3363,7 @@ indirect-buffers."
           ("H" . zp/toggle-org-agenda-include-habits)
           ("E" . zp/toggle-org-agenda-show-all-dates)
           ("Y" . zp/toggle-org-agenda-include-projects)
+          ("C" . zp/org-agenda-resolve-confused-project)
           ("M-d" . zp/toggle-org-deadline-warning-days-range)
           ("r" . zp/org-agenda-benchmark)
           ("R" . zp/org-agenda-garbage-collect)
