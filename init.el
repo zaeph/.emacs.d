@@ -1190,7 +1190,7 @@ If text is selected, adds furigana to the selected kanji instead."
       ;; Skip over digits
       (skip-chars-forward "[[:digit:]]")
       ;; Check for at least one digit
-      (unless (looking-back "[[:digit:]]")
+      (unless (looking-back "[[:digit:]]" nil)
         (error "No integer here"))))
   (put 'integer 'beginning-op 'thing-at-point-goto-end-of-integer)
 
@@ -1203,7 +1203,7 @@ If text is selected, adds furigana to the selected kanji instead."
       (unless (looking-at "[+-]?[[:digit:]]")
         (error "No integer here"))
       ;; Skip backward over optional sign
-      (when (looking-back "[+-]")
+      (when (looking-back "[+-]" nil)
         (backward-char 1))))
   (put 'integer 'beginning-op 'thing-at-point-goto-beginning-of-integer)
 
