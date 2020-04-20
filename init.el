@@ -3992,7 +3992,7 @@ indirect-buffers."
         '(("r" "ref" plain
            (function org-roam-capture--get-point)
            ""
-           :file-name "refs/${slug}"
+           :file-name "caps/${slug}"
            :head "#+TITLE: ${title}\n#+ROAM_KEY: ${ref}\n#+CREATED: %U\n#+LAST_MODIFIED: %U\n\n"
            :unnarrowed t)))
 
