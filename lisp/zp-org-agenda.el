@@ -701,11 +701,11 @@ For more information, see ‘zp/skip-tasks-not-in-agenda-groups’."
                          zp/org-agenda-groups-extra-filters)))
     (zp/skip-tasks-not-in-agenda-groups filters)))
 
-(defvar zp/fluid-project-definition t
+(defvar zp/fluid-project-definition nil
   "When t, a project with no remaining subtasks becomes a task.
 
 When nil, a project with no remaining subtasks will be considered
-stuck.")
+stuck unless it has a NOT_A_PROJECT property set to t.")
 
 (defun zp/not-a-project-prop-p ()
   (equal (org-entry-get (point) "NOT_A_PROJECT") "t"))
