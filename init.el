@@ -230,6 +230,8 @@ be the list of commands to advice."
                         commands))))))
 
 (defmacro zp/add-hooks (method commands function)
+  "Add FUNCTION as a hook to COMMANDS with METHOD.
+See `add-hooks' for details."
   (let ((where-keyword (intern-soft (concat ":" (symbol-name where)))))
     `(progn
        ,@(cond ((string= method 'add)
