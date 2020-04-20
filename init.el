@@ -214,6 +214,10 @@ Prefix argument initializes the Git repository."
 
 ;; TODO: Does it need to be macro?
 (defmacro zp/advise-commands (method commands where function)
+  "Macro for advising COMMANDS with FUNCTION.
+
+METHOD and WHERE follows the same syntax as `add-advice'.  COMMANDS should
+be the list of commands to advice."
   (let ((where-keyword (intern-soft (concat ":" (symbol-name where)))))
     `(progn
        ,@(cond ((string= method 'add)
