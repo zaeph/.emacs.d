@@ -835,7 +835,7 @@ condition is not true:
         (message "SNSP: %s" (org-entry-get (point) "ITEM")))
       (let ((subtree-end (save-excursion (org-end-of-subtree t)))
             (is-waiting (string= (nth 2 (org-heading-components)) "WAIT"))
-            (has-next))
+            has-next)
         (save-excursion
           (forward-line 1)
           (while (and (not has-next)
