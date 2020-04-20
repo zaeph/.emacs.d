@@ -189,8 +189,10 @@ With a prefix argument, do so in all agenda buffers."
 (defun zp/org-mark-as-non-project (print-message)
   "Add the NOT_A_PROJECT property to the current entry."
   (interactive "p")
-  (unless (zp/not-a-project-prop-p)
+  (unless (not (zp/not-a-project-prop-p))
     (user-error "Item is already marked as not being a project"))
+  (unless (zp/is-stuck-project-p)
+    (user-error "Project is not stuck"))
   (org-set-property "NOT_A_PROJECT" "t")
   (when print-message
     (message "Item has been marked as not being a project.")))
@@ -208,6 +210,25 @@ With a prefix argument, do so in all agenda buffers."
         (goto-char pos)
         (org-show-context 'agenda)
         (zp/org-mark-as-non-project print-message)))))
+
+(defun zp/org-agenda-handle-project-dwim (print-message)
+  "Act on entry to make them go between tasks and projects."
+  (interactive "p")
+  (let* ((hdmarker (or (org-get-at-bol 'org-hd-marker)
+                       (org-agenda-error)))
+         (buffer (marker-buffer hdmarker))
+         (pos (marker-position hdmarker)))
+    (org-with-remote-undo buffer
+      (with-current-buffer buffer
+        (widen)
+        (goto-char pos)
+        (org-show-context 'agenda)
+        (cond ((zp/is-confused-project-p)
+               (zp/org-resolve-confused-project print-message))
+              ((zp/is-finished-project-p)
+               (zp/org-mark-as-non-project print-message))
+              (t
+               (message "Nothing to do.")))))))
 
 ;;----------------------------------------------------------------------------
 ;; Calendar interaction
