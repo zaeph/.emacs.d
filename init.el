@@ -46,6 +46,7 @@
 
 ;; Turn off background when Emacs is run with -nt
 (defun on-after-init ()
+  "Turn off background."
   (unless (display-graphic-p (selected-frame))
     (set-face-background 'default "unspecified-bg" (selected-frame))))
 (add-hook 'window-setup-hook 'on-after-init)
