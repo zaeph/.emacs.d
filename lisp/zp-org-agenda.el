@@ -160,6 +160,32 @@ With a prefix argument, do so in all agenda buffers."
       (setq newhead (org-get-heading)))
     (org-agenda-change-all-lines newhead hdmarker)))
 
+(defun zp/org-resolve-confused-project (print-message)
+  "Remove the NOT_A_PROJECT property from the current entry."
+  (interactive "p")
+  (unless (and (equal (org-entry-get (point) "NOT_A_PROJECT") "t")
+               (zp/is-project-p))
+    (error "Problem with project, manual intervention required"))
+  (org-delete-property "NOT_A_PROJECT")
+  (when print-message
+    (message "Project has been brought back to reason.")))
+
+(defun zp/org-agenda-resolve-confused-project (print-message)
+  "Remove the NOT_A_PROJECT property from the current agenda entry."
+  (interactive "p")
+  (let* ((hdmarker (or (org-get-at-bol 'org-hd-marker)
+                       (org-agenda-error)))
+         (buffer (marker-buffer hdmarker))
+         (pos (marker-position hdmarker))
+         (inhibit-read-only t)
+         newhead)
+    (org-with-remote-undo buffer
+      (with-current-buffer buffer
+        (widen)
+        (goto-char pos)
+        (org-show-context 'agenda)
+        (zp/org-resolve-confused-project print-message)))))
+
 ;;----------------------------------------------------------------------------
 ;; Calendar interaction
 ;;----------------------------------------------------------------------------
