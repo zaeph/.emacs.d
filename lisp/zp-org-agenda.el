@@ -163,6 +163,8 @@ With a prefix argument, do so in all agenda buffers."
 (defun zp/org-resolve-confused-project (print-message)
   "Remove the NOT_A_PROJECT property from the current entry."
   (interactive "p")
+  (unless (zp/is-confused-project-p)
+    (user-error "Project is not confused"))
   (unless (and (equal (org-entry-get (point) "NOT_A_PROJECT") "t")
                (zp/is-project-p))
     (error "Problem with project, manual intervention required"))
