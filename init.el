@@ -158,9 +158,6 @@ For details on DATA, CONTEXT, and SIGNAL, see
 (when (= emacs-major-version 26)
   (setq x-wait-for-event-timeout nil))
 
-;; Path to authentication sources
-(setq auth-sources '("~/.authinfo.gpg" "~/.netrc"))
-
 ;; Enable recursive minibuffers
 ;; Necessary for for some Ivy/Helm commands
 (setq enable-recursive-minibuffers t)
@@ -590,6 +587,11 @@ surrounding paragraph."
 ;;----------------------------------------------------------------------------
 ;; Packages
 ;;----------------------------------------------------------------------------
+(use-package auth-source
+  :custom
+  ;; Path to authentication sources
+  (auth-sources '("~/.authinfo.gpg" "~/.netrc")))
+
 (use-package gif-screencast
   :load-path ("~/src/gif-screencast/")
   :commands (gif-screencast)
