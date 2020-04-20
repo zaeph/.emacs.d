@@ -186,6 +186,29 @@ With a prefix argument, do so in all agenda buffers."
         (org-show-context 'agenda)
         (zp/org-resolve-confused-project print-message)))))
 
+(defun zp/org-mark-as-non-project (print-message)
+  "Add the NOT_A_PROJECT property to the current entry."
+  (interactive "p")
+  (unless (zp/not-a-project-prop-p)
+    (user-error "Item is already marked as not being a project"))
+  (org-set-property "NOT_A_PROJECT" "t")
+  (when print-message
+    (message "Item has been marked as not being a project.")))
+
+(defun zp/org-agenda-mark-as-non-project (print-message)
+  "Add the NOT_A_PROJECT property to the current agenda entry."
+  (interactive "p")
+  (let* ((hdmarker (or (org-get-at-bol 'org-hd-marker)
+                       (org-agenda-error)))
+         (buffer (marker-buffer hdmarker))
+         (pos (marker-position hdmarker)))
+    (org-with-remote-undo buffer
+      (with-current-buffer buffer
+        (widen)
+        (goto-char pos)
+        (org-show-context 'agenda)
+        (zp/org-mark-as-non-project print-message)))))
+
 ;;----------------------------------------------------------------------------
 ;; Calendar interaction
 ;;----------------------------------------------------------------------------
