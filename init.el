@@ -187,6 +187,9 @@ For details on DATA, CONTEXT, and SIGNAL, see
 (defun scratch-dir (&optional use-git name)
   "Create an ad-hoc working directory and open it in dired.
 
+When USE-GIT is non-nil, init git in the created directory with
+the name NAME.
+
 Prefix argument initializes the Git repository."
   (interactive "P\nMName: ")
   (let ((directory (expand-file-name (scratch-dir-path name))))
