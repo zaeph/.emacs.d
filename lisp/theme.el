@@ -125,9 +125,9 @@
   (load-theme 'base16-google-light t)
 
   (set-face-attribute 'default nil :foreground "#3c3836" :background "#fbf1c7")
-  (set-face-attribute 'cursor nil :background "#cc342b")
+  (set-face-attribute 'cursor nil :background "#ff4136")
   (when (bound-and-true-p beacon-color)
-    (setq beacon-color "#cc342b"))
+    (setq beacon-color "#ff4136"))
   (set-face-attribute 'fringe nil :background "#e6deb8" :foreground "orangered")
   (set-face-attribute 'org-hide nil :foreground "#fbf1c7")
   (set-face-attribute 'org-agenda-dimmed-todo-face nil :foreground "LightSlateBlue")
