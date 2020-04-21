@@ -3975,7 +3975,7 @@ indirect-buffers."
 (use-package org-roam
   :load-path ("~/projects/org-roam/")
   :hook ((after-init . org-roam-mode)
-         (find-file . zp/org-roam-set-local-find-file-current-window))
+         (org-mode . zp/org-roam-set-local-find-file-current-window))
   :custom
   (org-roam-directory "~/org/slip-box/")
   :bind (:map org-roam-mode-map
