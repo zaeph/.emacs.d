@@ -4498,16 +4498,17 @@ This function is intended to be run with ‘find-file-hook’."
   ;;------------
 
   (setq zp/bibtex-completion-bib-data-alist
-        '(("Monty Python" . "~/org/bib/monty-python.bib")
-          ;; ("Monty Python - Extra" . "~/org/bib/monty-python-extra.bib")
-          ("FromSoftware" . "~/org/bib/fromsoftware.bib")
-          ("Visual" . "~/org/bib/visual.bib")
-          ("Film studies" . "~/org/bib/film-studies.bib")
-          ("Writing" . "~/org/bib/writing.bib")
-          ("Metaphor" . "~/org/bib/metaphor.bib")
-          ("Processing" . "~/org/bib/processing.bib")
-          ("Emacs" . "~/org/bib/emacs.bib")
-          ("Git" . "~/org/bib/git.bib")))
+        '(;; ("Monty Python" . "~/org/bib/monty-python.bib")
+          ;; ;; ("Monty Python - Extra" . "~/org/bib/monty-python-extra.bib")
+          ;; ("FromSoftware" . "~/org/bib/fromsoftware.bib")
+          ;; ("Visual" . "~/org/bib/visual.bib")
+          ;; ("Film studies" . "~/org/bib/film-studies.bib")
+          ;; ("Writing" . "~/org/bib/writing.bib")
+          ;; ("Metaphor" . "~/org/bib/metaphor.bib")
+          ;; ("Processing" . "~/org/bib/processing.bib")
+          ;; ("Emacs" . "~/org/bib/emacs.bib")
+          ;; ("Git" . "~/org/bib/git.bib")
+          ("Library" . "~/org/bib/library.bib")))
 
   (zp/bibtex-select-bib-init)
 
