@@ -2560,7 +2560,7 @@ If the function sets CREATED, it returns its value."
   ;;--------------------------
 
   (defun zp/org-find-time-file-property (property &optional anywhere)
-    "Return the position the time file PROPERTY if it exists.
+    "Return the position of the time file PROPERTY if it exists.
 
 When ANYWHERE is non-nil, search beyond the preamble."
     (save-excursion
