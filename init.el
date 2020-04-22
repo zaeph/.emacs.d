@@ -1165,7 +1165,7 @@ If text is selected, adds furigana to the selected kanji instead."
 
 (use-package recentf
   :config
-  (setq recentf-max-menu-items 100))
+  (setq recentf-max-menu-items 1000))
 
 (use-package tramp
   :config
