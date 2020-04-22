@@ -766,6 +766,7 @@ surrounding paragraph."
   :mode (("\\zshrc\\'" . shell-script-mode)
          ("\\prompt_.*_setup\\'" . shell-script-mode)))
 
+(use-package neotree)
 
 (use-package fish-mode
   :mode "\\.fish\\'")
@@ -5553,13 +5554,47 @@ See ‘~/.bin/terminator-dwim’ for more info."
  '(org-roam-directory "~/org/slip-box/")
  '(package-selected-packages
    (quote
-    (vterm beacon buttercup doom-modeline git-link bibtex-completion ivy-bibtex edit-indirect package-lint counsel-projectile rg helm-org-rifle org-roam slime highlight-indent-guides dracula-theme use-package org-brain racket-mode wgrep fountain-mode org-mind-map org org-ref orgalist ws-butler minions backup-walker bug-hunter org-plus-contrib messages-are-flowing notmuch forge go-mode company-anaconda anaconda-mode company realgud ace-link ivy-hydra counsel dumb-jump lua-mode fish-mode exwm el-patch diminish circe-notifications circe ob-async nov eyebrowse diff-hl recentf-ext flycheck-pos-tip helm-projectile clean-aindent-mode volatile-highlights duplicate-thing org-noter hydra highlight mu4e-alert writeroom-mode anzu flycheck spaceline helm-chronos chronos multiple-cursors expand-region ace-window auto-minor-mode ledger-mode sublimity auctex smooth-scrolling yasnippet pdf-tools htmlize helm-bibtex free-keys evil color-theme base16-theme)))
+    (neotree vterm beacon buttercup doom-modeline git-link bibtex-completion ivy-bibtex edit-indirect package-lint counsel-projectile rg helm-org-rifle org-roam slime highlight-indent-guides dracula-theme use-package org-brain racket-mode wgrep fountain-mode org-mind-map org org-ref orgalist ws-butler minions backup-walker bug-hunter org-plus-contrib messages-are-flowing notmuch forge go-mode company-anaconda anaconda-mode company realgud ace-link ivy-hydra counsel dumb-jump lua-mode fish-mode exwm el-patch diminish circe-notifications circe ob-async nov eyebrowse diff-hl recentf-ext flycheck-pos-tip helm-projectile clean-aindent-mode volatile-highlights duplicate-thing org-noter hydra highlight mu4e-alert writeroom-mode anzu flycheck spaceline helm-chronos chronos multiple-cursors expand-region ace-window auto-minor-mode ledger-mode sublimity auctex smooth-scrolling yasnippet pdf-tools htmlize helm-bibtex free-keys evil color-theme base16-theme)))
  '(projectile-project-search-path
    (quote
     ("~/.emacs.d/" "~/.bin/" "~/.dotfiles/" "~/projects/")))
  '(safe-local-variable-values
    (quote
-    ((org-confirm-babel-evaluate)
+    ((eval when
+           (and
+            (buffer-file-name)
+            (not
+             (file-directory-p
+              (buffer-file-name)))
+            (string-match-p "^[^.]"
+                            (buffer-file-name)))
+           (unless
+               (featurep
+                (quote package-build))
+             (let
+                 ((load-path
+                   (cons "../package-build" load-path)))
+               (require
+                (quote package-build))))
+           (unless
+               (derived-mode-p
+                (quote emacs-lisp-mode))
+             (emacs-lisp-mode))
+           (package-build-minor-mode)
+           (setq-local flycheck-checkers nil)
+           (set
+            (make-local-variable
+             (quote package-build-working-dir))
+            (expand-file-name "../working/"))
+           (set
+            (make-local-variable
+             (quote package-build-archive-dir))
+            (expand-file-name "../packages/"))
+           (set
+            (make-local-variable
+             (quote package-build-recipes-dir))
+            default-directory))
+     (org-confirm-babel-evaluate)
      (after-save-hook . org-html-export-to-html))))
  '(send-mail-function (quote mailclient-send-it))
  '(size-indication-mode t)
