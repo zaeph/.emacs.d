@@ -4963,6 +4963,8 @@ that date.  Leave point on the first amount."
   :bind (("H-m" . magit-status)
          ("H-M-m" . zp/magit-stage-file-and-commit))
   :config
+  (transient-append-suffix 'magit-log "-A"
+  '("-1" "First parent" "--first-parent"))
   (setq magit-diff-refine-hunk 'all)
   (magit-wip-mode)
 
