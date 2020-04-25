@@ -3986,7 +3986,7 @@ indirect-buffers."
                ("C-c m d" . org-roam-find-directory)
                ("C-c m j" . org-roam-find-index)
                ("C-c m b" . org-roam-switch-to-buffer)
-               ("C-c m g" . org-roam-graph-show))
+               ("C-c m g" . org-roam-graph))
               :map org-mode-map
               (("C-c m i" . org-roam-insert)))
   :config
