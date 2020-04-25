@@ -4265,6 +4265,7 @@ commas and space."
          (org-mode . zp/org-roam-set-local-find-file-current-window))
   :custom
   (org-roam-directory "~/org/slip-box/")
+  (org-roam-index-file "index.org")
   :bind (:map org-roam-mode-map
               (("C-c m l" . org-roam)
                ("C-c m F" . org-roam-find-file)
