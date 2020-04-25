@@ -4426,7 +4426,8 @@ This function is intended to be run with ‘find-file-hook’."
 ;;----------------------------------------------------------------------------
 ;; bibtex-completion
 ;;----------------------------------------------------------------------------
-(use-package bibtex-completion)
+(use-package bibtex-completion
+  :load-path "~/projects/helm-bibtex/")
 
 (use-package helm-bibtex
   :load-path "~/projects/helm-bibtex/"
