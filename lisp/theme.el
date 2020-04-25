@@ -43,7 +43,8 @@
   (set-face-attribute 'org-scheduled-today nil :foreground "CadetBlue")
   (set-face-attribute 'org-link nil :underline t)
   (with-eval-after-load 'org-roam
-    (set-face-attribute 'org-roam-link nil :foreground "#9449ff"))
+    (set-face-attribute 'org-roam-link nil :foreground "#9449ff")
+    (set-face-attribute 'org-roam-backlink nil :foreground "#ae005c"))
   (set-face-attribute 'org-hide nil :foreground "#141414")
   (set-face-attribute 'org-agenda-dimmed-todo-face nil :foreground "LightSlateBlue")
   (set-face-attribute 'region nil :background "RoyalBlue4")
@@ -139,7 +140,8 @@
   (set-face-attribute 'org-level-4 nil :foreground "#ed3971")
   (set-face-attribute 'org-link nil :underline t)
   (with-eval-after-load 'org-roam
-    (set-face-attribute 'org-roam-link nil :foreground "#9449ff"))
+    (set-face-attribute 'org-roam-link nil :foreground "#9449ff")
+    (set-face-attribute 'org-roam-backlink nil :foreground "#ae005c"))
   (set-face-attribute 'org-agenda-clocking nil :background "LightBlue2")
   (set-face-attribute 'org-meta-line nil :foreground "DodgerBlue3")
   (set-face-attribute 'helm-selection nil :background "SteelBlue1")
