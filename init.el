@@ -3971,6 +3971,292 @@ indirect-buffers."
         '(file+headline "~/org/life.org" "Inbox")))
 
 ;;----------------------------------------------------------------------------
+;; bibtex-completion
+;;----------------------------------------------------------------------------
+(use-package bibtex-completion
+  :load-path "~/projects/helm-bibtex/")
+
+(use-package helm-bibtex
+  :load-path "~/projects/helm-bibtex/"
+  :bind (("H-y" . zp/helm-bibtex-with-local-bibliography)
+         ("H-M-y" . zp/helm-bibtex-select-bib)
+         ("C-c D" . zp/bibtex-completion-message-key-last))
+  :config
+  (setq helm-bibtex-notes-path "~/org/lit/")
+
+  (setq bibtex-completion-notes-template-multiple-files
+        "#+TITLE: ${=key=}\n#+CREATED: %U\n#+LAST_MODIFIED: %U\n\nLiterature notes for cite:${=key=}.\n\n")
+
+  ;; TODO: Modernise
+  ;; A lot of this code is baby Elisp.
+
+  ;;------------------------
+  ;; helm-bibtex-select-bib
+  ;;------------------------
+
+  (defvar zp/bibtex-completion-bib-data-alist nil
+    "Alist of the bibliography files and their labels.")
+
+  (defvar zp/bibtex-completion-bib-data nil
+    "Processed alist of the bibliography files and their labels,
+  including an entry with all of them.")
+
+  (defun zp/bibtex-completion-bib-data-format ()
+    (interactive)
+    (let* ((alist zp/bibtex-completion-bib-data-alist)
+           (all-bib (mapcar 'cdr alist)))
+      (setq zp/bibtex-completion-bib-data
+            (list (cons "All entries" (list all-bib)) alist))))
+
+  (defun zp/bibtex-select-bib-init ()
+    (zp/bibtex-completion-bib-data-format)
+    (setq bibtex-completion-bibliography
+          (cdr (assoc "All entries" zp/bibtex-completion-bib-data))))
+
+  (defun zp/bibtex-select-bib-select (candidate)
+    (setq bibtex-completion-bibliography candidate
+          reftex-default-bibliography candidate
+          org-ref-default-bibliography (list candidate)))
+
+  (defun zp/bibtex-select-bib-select-open (candidate)
+    (zp/bibtex-select-bib-select candidate)
+    (helm-bibtex))
+
+  (setq zp/bibtex-completion-select-bib-actions
+        '(("Open bibliography" . zp/bibtex-select-bib-select-open)
+          ("Select bibliography" . zp/bibtex-select-bib-select)))
+
+  (setq zp/helm-source-bibtex-select-bib
+        '((name . "*HELM Bibtex - Bibliography selection*")
+          (candidates . zp/bibtex-completion-bib-data)
+          (action . zp/bibtex-completion-select-bib-actions)))
+
+  (defun zp/helm-bibtex-select-bib (&optional arg)
+    (interactive "P")
+    (if (equal arg '(4))
+        (progn
+          ;; Refresh reftex if inside AUCTeX
+          (when (derived-mode-p 'latex-mode)
+            (reftex-reset-mode))
+          ;; Refresh org-ref
+          (setq org-ref-bibliography-files nil)
+          (zp/bibtex-select-bib-init)))
+    (helm :sources '(zp/helm-source-bibtex-select-bib)))
+
+  ;;------------
+  ;; Completion
+  ;;------------
+
+  (setq zp/bibtex-completion-bib-data-alist
+        '(;; ("Monty Python" . "~/org/bib/monty-python.bib")
+          ;; ;; ("Monty Python - Extra" . "~/org/bib/monty-python-extra.bib")
+          ;; ("FromSoftware" . "~/org/bib/fromsoftware.bib")
+          ;; ("Visual" . "~/org/bib/visual.bib")
+          ;; ("Film studies" . "~/org/bib/film-studies.bib")
+          ;; ("Writing" . "~/org/bib/writing.bib")
+          ;; ("Metaphor" . "~/org/bib/metaphor.bib")
+          ;; ("Processing" . "~/org/bib/processing.bib")
+          ;; ("Emacs" . "~/org/bib/emacs.bib")
+          ;; ("Git" . "~/org/bib/git.bib")
+          ("Library" . "~/org/bib/library.bib")))
+
+  (zp/bibtex-select-bib-init)
+
+  ;; Autokey generation
+  (setq bibtex-align-at-equal-sign t
+        bibtex-autokey-name-year-separator ""
+        bibtex-autokey-year-title-separator ""
+        bibtex-autokey-year-length 4
+        bibtex-autokey-titleword-first-ignore '("the" "a" "if" "and" "an")
+        bibtex-autokey-titleword-length 20
+        bibtex-autokey-titlewords-stretch 0
+        bibtex-autokey-titlewords 0)
+
+  (setq bibtex-completion-pdf-field "file")
+
+  (setq bibtex-completion-pdf-symbol "P"
+        bibtex-completion-notes-symbol "N")
+
+  ;; Set default dialect to biblatex
+  (setq bibtex-dialect 'biblatex)
+
+  ;; Additional fields
+  (setq bibtex-user-optional-fields '(("subtitle" "Subtitle")
+                                      ("booksubtitle" "Book subtitle")
+                                      ("langid" "Language to use with BibLaTeX")
+                                      ("library" "Library where the resource is held")
+                                      ("shelf" "Shelf number at the library")
+                                      ("annote" "Personal annotation (ignored)")
+                                      ("keywords" "Personal keywords")
+                                      ("tags" "Personal tags")
+                                      ("file" "Path to file")
+                                      ("url" "URL to reference"))
+
+        helm-bibtex-additional-search-fields '(subtitle booksubtitle keywords tags library))
+
+  (define-key bibtex-mode-map (kbd "C-c M-o") 'bibtex-Online)
+
+  ;; Define which citation function to use on a buffer basis
+  (setq bibtex-completion-format-citation-functions
+        '(;; (org-mode      . org-ref-bibtex-completion-format-org)
+          (org-mode . org-ref-format-citation)
+          (latex-mode . bibtex-completion-format-citation-cite)
+          (bibtex-mode . bibtex-completion-format-citation-cite)
+          (markdown-mode . bibtex-completion-format-citation-pandoc-citeproc)
+          (default . bibtex-completion-format-citation-default)))
+
+  ;; Default citation command
+  (setq bibtex-completion-cite-default-command "autocite")
+
+  ;; PDF open function
+  (setq bibtex-completion-pdf-open-function 'helm-open-file-with-default-tool)
+
+  ;; Helm
+  (defun zp/helm-bibtex-with-local-bibliography (&optional arg)
+    "Search BibTeX entries with local bibliography.
+
+With a prefix ARG the cache is invalidated and the bibliography
+reread."
+    (interactive "P")
+    (let* ((local-bib-org org-ref-bibliography-files)
+           (local-bib (bibtex-completion-find-local-bibliography))
+           (bibtex-completion-bibliography (or local-bib
+                                               bibtex-completion-bibliography)))
+      (helm-bibtex arg local-bib)))
+
+
+
+  ;; Custom action: Select current document
+
+  ;; (defvar zp/current-document)
+  ;; (defun zp/select-current-document ()
+  ;;   (interactive)
+  ;;   (setq zp/current-document
+  ;;      (read-string
+  ;;       (concat "Current document(s)"
+  ;;               (if (bound-and-true-p zp/current-document)
+  ;;                   (concat " [" zp/current-document "]"))
+  ;;               ": "))))
+
+  ;; (defun zp/bibtex-completion-select-current-document (keys)
+  ;;   (setq zp/current-document (s-join ", " keys)))
+  ;; (helm-bibtex-helmify-action zp/bibtex-completion-select-current-document helm-bibtex-select-current-document)
+
+  (defvar zp/bibtex-completion-key-last nil
+    "Last inserted keys.")
+
+  (defun zp/bibtex-completion-format-citation-comma (keys)
+    "Default formatter for keys, separates multiple keys with
+commas."
+    (s-join "," keys))
+
+  (defun zp/bibtex-completion-format-citation-comma-space (keys)
+    "Formatter for keys, separates multiple keys with
+commas and space."
+    (s-join ", " keys))
+
+  (defun zp/bibtex-completion-insert-key (keys)
+    "Insert BibTeX key at point."
+    (let ((current-keys (zp/bibtex-completion-format-citation-comma-space keys)))
+      (insert current-keys)
+      (setq zp/bibtex-completion-key-last keys)))
+
+  (defun zp/bibtex-completion-insert-key-last ()
+    (interactive)
+    (let ((last-keys (zp/bibtex-completion-format-citation-default
+                      zp/bibtex-completion-key-last)))
+      (if (bound-and-true-p last-keys)
+          (insert last-keys)
+        (zp/helm-bibtex-solo-action-insert-key))))
+
+  (defun zp/bibtex-completion-message-key-last ()
+    (interactive)
+    (let ((keys (zp/bibtex-completion-format-citation-comma-space
+                 zp/bibtex-completion-key-last)))
+      (if (bound-and-true-p keys)
+          (message (concat "Last key(s) used: " keys "."))
+        (message "No previous key used."))))
+
+  ;; Add to helm
+  (helm-bibtex-helmify-action zp/bibtex-completion-insert-key zp/helm-bibtex-insert-key)
+  (helm-delete-action-from-source "Insert BibTeX key" helm-source-bibtex)
+  (helm-add-action-to-source "Insert BibTeX key" 'zp/helm-bibtex-insert-key helm-source-bibtex 4)
+
+  ;; Define solo action: Insert BibTeX key
+  (setq zp/helm-source-bibtex-insert-key '(("Insert BibTeX key" . zp/helm-bibtex-insert-key)))
+  (defun zp/helm-bibtex-solo-action-insert-key ()
+    (interactive)
+    (let ((inhibit-message t)
+          (previous-actions (helm-attr 'action helm-source-bibtex))
+          (new-action zp/helm-source-bibtex-insert-key))
+      (helm-attrset 'action new-action helm-source-bibtex)
+      (helm-bibtex)
+      ;; Wrapping with (progn (foo) nil) suppress the output
+      (progn (helm-attrset 'action previous-actions helm-source-bibtex) nil))))
+
+(use-package ivy-bibtex
+  :load-path "~/projects/helm-bibtex/")
+
+;;----------------------------------------------------------------------------
+;; org-ref
+;;----------------------------------------------------------------------------
+(use-package org-ref
+  :requires org
+  :config
+  (setq org-ref-bibliography-notes "~/org/bib/notes.org"
+        reftex-default-bibliography '("~/org/bib/monty-python.bib")
+        org-ref-pdf-directory "~/org/bib/pdf"
+        org-ref-show-broken-links nil)
+
+  ;; Use helm-bibtex data the default bibliography
+  (setq org-ref-default-bibliography
+        (mapcar #'cdr zp/bibtex-completion-bib-data-alist))
+
+
+  (defun org-ref-get-bibtex-entry-md (key)
+    "Return a md string for the bibliography entry corresponding to KEY."
+    ;; We create an anchor to the key that we can jump to, and provide a jump back
+    ;; link with the md5 of the key.
+    (let ((org-ref-formatted-citation-backend "md"))
+      (format "<a id=\"%s\"></a>%s [↩](#%s)"
+              key
+              (org-ref-format-entry key)
+              (md5 key))))
+
+  (setq org-ref-formatted-citation-formats
+        '(("text"
+           ("article" . "${author}, ${title}, ${journal}, ${volume}(${number}), ${pages} (${year}). ${doi}")
+           ("inproceedings" . "${author}, ${title}, In ${editor}, ${booktitle} (pp. ${pages}) (${year}). ${address}: ${publisher}.")
+           ("book" . "${author}, ${title} (${year}), ${address}: ${publisher}.") ("phdthesis"
+                                                                                  . "${author}, ${title} (Doctoral dissertation) (${year}). ${school}, ${address}.")
+           ("inbook" . "${author}, ${title}, In ${editor} (Eds.), ${booktitle} (pp. ${pages}) (${year}). ${address}: ${publisher}.")
+           ("incollection" . "${author}, ${title}, In ${editor} (Eds.), ${booktitle} (pp. ${pages}) (${year}). ${address}: ${publisher}.")
+           ("proceedings" . "${editor} (Eds.), ${booktitle} (${year}). ${address}: ${publisher}.")
+           ("unpublished" . "${author}, ${title} (${year}). Unpublished manuscript.") (nil
+                                                                                       . "${author}, ${title} (${year})."))
+          ("org"
+           ("article" . "${author}, /${title}/, ${journal}, *${volume}(${number})*, ${pages} (${year}). ${doi}")
+           ("inproceedings" . "${author}, /${title}/, In ${editor}, ${booktitle} (pp. ${pages}) (${year}). ${address}: ${publisher}.")
+           ("book" . "${author}, /${title}/ (${year}), ${address}: ${publisher}.") ("phdthesis"
+                                                                                    . "${author}, /${title}/ (Doctoral dissertation) (${year}). ${school}, ${address}.")
+           ("inbook" . "${author}, /${title}/, In ${editor} (Eds.), ${booktitle} (pp. ${pages}) (${year}). ${address}: ${publisher}.")
+           ("incollection" . "${author}, /${title}/, In ${editor} (Eds.), ${booktitle} (pp. ${pages}) (${year}). ${address}: ${publisher}.")
+           ("proceedings" . "${editor} (Eds.), _${booktitle}_ (${year}). ${address}: ${publisher}.")
+           ("unpublished" . "${author}, /${title}/ (${year}). Unpublished manuscript.")
+           (nil . "${author}, /${title}/ (${year})."))
+
+          ("md"
+           ("article" . "${author}, *${title}*, ${journal}, *${volume}(${number})*, ${pages} (${year}). ${doi}")
+           ("inproceedings" . "${author}, *${title}*, In ${editor}, ${booktitle} (pp. ${pages}) (${year}). ${address}: ${publisher}.")
+           ("book" . "${author}, *${title}* (${date}), ${location}: ${publisher}.")
+           ("phdthesis" . "${author}, *${title}* (Doctoral dissertation) (${year}). ${school}, ${address}.")
+           ("inbook" . "${author}, *${title}*, In ${editor} (Eds.), ${booktitle} (pp. ${pages}) (${year}). ${address}: ${publisher}.")
+           ("incollection" . "${author}, *${title}*, In ${editor} (Eds.), ${booktitle} (pp. ${pages}) (${year}). ${address}: ${publisher}.")
+           ("proceedings" . "${editor} (Eds.), _${booktitle}_ (${year}). ${address}: ${publisher}.")
+           ("unpublished" . "${author}, *${title}* (${year}). Unpublished manuscript.")
+           (nil . "${author}, *${title}* (${year}).")))))
+
+;;----------------------------------------------------------------------------
 ;; org-roam
 ;;----------------------------------------------------------------------------
 (use-package org-roam
@@ -4025,6 +4311,7 @@ This function is intended to be run with ‘find-file-hook’."
 (use-package org-roam-protocol)
 
 (use-package org-roam-bibtex
+  :requires bibtex-completion
   :hook (org-roam-mode . org-roam-bibtex-mode)
   :load-path "~/projects/org-roam-bibtex/"
   :bind (:map org-roam-bibtex-mode-map
@@ -4422,292 +4709,6 @@ This function is intended to be run with ‘find-file-hook’."
      ("d" "~/org/life.org" "Anime" "Watched"))
     nil
     media))
-
-;;----------------------------------------------------------------------------
-;; bibtex-completion
-;;----------------------------------------------------------------------------
-(use-package bibtex-completion
-  :load-path "~/projects/helm-bibtex/")
-
-(use-package helm-bibtex
-  :load-path "~/projects/helm-bibtex/"
-  :bind (("H-y" . zp/helm-bibtex-with-local-bibliography)
-         ("H-M-y" . zp/helm-bibtex-select-bib)
-         ("C-c D" . zp/bibtex-completion-message-key-last))
-  :config
-  (setq helm-bibtex-notes-path "~/org/lit/")
-
-  (setq bibtex-completion-notes-template-multiple-files
-        "#+TITLE: ${=key=}\n#+CREATED: %U\n#+LAST_MODIFIED: %U\n\nLiterature notes for cite:${=key=}.\n\n")
-
-  ;; TODO: Modernise
-  ;; A lot of this code is baby Elisp.
-
-  ;;------------------------
-  ;; helm-bibtex-select-bib
-  ;;------------------------
-
-  (defvar zp/bibtex-completion-bib-data-alist nil
-    "Alist of the bibliography files and their labels.")
-
-  (defvar zp/bibtex-completion-bib-data nil
-    "Processed alist of the bibliography files and their labels,
-  including an entry with all of them.")
-
-  (defun zp/bibtex-completion-bib-data-format ()
-    (interactive)
-    (let* ((alist zp/bibtex-completion-bib-data-alist)
-           (all-bib (mapcar 'cdr alist)))
-      (setq zp/bibtex-completion-bib-data
-            (list (cons "All entries" (list all-bib)) alist))))
-
-  (defun zp/bibtex-select-bib-init ()
-    (zp/bibtex-completion-bib-data-format)
-    (setq bibtex-completion-bibliography
-          (cdr (assoc "All entries" zp/bibtex-completion-bib-data))))
-
-  (defun zp/bibtex-select-bib-select (candidate)
-    (setq bibtex-completion-bibliography candidate
-          reftex-default-bibliography candidate
-          org-ref-default-bibliography (list candidate)))
-
-  (defun zp/bibtex-select-bib-select-open (candidate)
-    (zp/bibtex-select-bib-select candidate)
-    (helm-bibtex))
-
-  (setq zp/bibtex-completion-select-bib-actions
-        '(("Open bibliography" . zp/bibtex-select-bib-select-open)
-          ("Select bibliography" . zp/bibtex-select-bib-select)))
-
-  (setq zp/helm-source-bibtex-select-bib
-        '((name . "*HELM Bibtex - Bibliography selection*")
-          (candidates . zp/bibtex-completion-bib-data)
-          (action . zp/bibtex-completion-select-bib-actions)))
-
-  (defun zp/helm-bibtex-select-bib (&optional arg)
-    (interactive "P")
-    (if (equal arg '(4))
-        (progn
-          ;; Refresh reftex if inside AUCTeX
-          (when (derived-mode-p 'latex-mode)
-            (reftex-reset-mode))
-          ;; Refresh org-ref
-          (setq org-ref-bibliography-files nil)
-          (zp/bibtex-select-bib-init)))
-    (helm :sources '(zp/helm-source-bibtex-select-bib)))
-
-  ;;------------
-  ;; Completion
-  ;;------------
-
-  (setq zp/bibtex-completion-bib-data-alist
-        '(;; ("Monty Python" . "~/org/bib/monty-python.bib")
-          ;; ;; ("Monty Python - Extra" . "~/org/bib/monty-python-extra.bib")
-          ;; ("FromSoftware" . "~/org/bib/fromsoftware.bib")
-          ;; ("Visual" . "~/org/bib/visual.bib")
-          ;; ("Film studies" . "~/org/bib/film-studies.bib")
-          ;; ("Writing" . "~/org/bib/writing.bib")
-          ;; ("Metaphor" . "~/org/bib/metaphor.bib")
-          ;; ("Processing" . "~/org/bib/processing.bib")
-          ;; ("Emacs" . "~/org/bib/emacs.bib")
-          ;; ("Git" . "~/org/bib/git.bib")
-          ("Library" . "~/org/bib/library.bib")))
-
-  (zp/bibtex-select-bib-init)
-
-  ;; Autokey generation
-  (setq bibtex-align-at-equal-sign t
-        bibtex-autokey-name-year-separator ""
-        bibtex-autokey-year-title-separator ""
-        bibtex-autokey-year-length 4
-        bibtex-autokey-titleword-first-ignore '("the" "a" "if" "and" "an")
-        bibtex-autokey-titleword-length 20
-        bibtex-autokey-titlewords-stretch 0
-        bibtex-autokey-titlewords 0)
-
-  (setq bibtex-completion-pdf-field "file")
-
-  (setq bibtex-completion-pdf-symbol "P"
-        bibtex-completion-notes-symbol "N")
-
-  ;; Set default dialect to biblatex
-  (setq bibtex-dialect 'biblatex)
-
-  ;; Additional fields
-  (setq bibtex-user-optional-fields '(("subtitle" "Subtitle")
-                                      ("booksubtitle" "Book subtitle")
-                                      ("langid" "Language to use with BibLaTeX")
-                                      ("library" "Library where the resource is held")
-                                      ("shelf" "Shelf number at the library")
-                                      ("annote" "Personal annotation (ignored)")
-                                      ("keywords" "Personal keywords")
-                                      ("tags" "Personal tags")
-                                      ("file" "Path to file")
-                                      ("url" "URL to reference"))
-
-        helm-bibtex-additional-search-fields '(subtitle booksubtitle keywords tags library))
-
-  (define-key bibtex-mode-map (kbd "C-c M-o") 'bibtex-Online)
-
-  ;; Define which citation function to use on a buffer basis
-  (setq bibtex-completion-format-citation-functions
-        '(;; (org-mode      . org-ref-bibtex-completion-format-org)
-          (org-mode . org-ref-format-citation)
-          (latex-mode . bibtex-completion-format-citation-cite)
-          (bibtex-mode . bibtex-completion-format-citation-cite)
-          (markdown-mode . bibtex-completion-format-citation-pandoc-citeproc)
-          (default . bibtex-completion-format-citation-default)))
-
-  ;; Default citation command
-  (setq bibtex-completion-cite-default-command "autocite")
-
-  ;; PDF open function
-  (setq bibtex-completion-pdf-open-function 'helm-open-file-with-default-tool)
-
-  ;; Helm
-  (defun zp/helm-bibtex-with-local-bibliography (&optional arg)
-    "Search BibTeX entries with local bibliography.
-
-With a prefix ARG the cache is invalidated and the bibliography
-reread."
-    (interactive "P")
-    (let* ((local-bib-org org-ref-bibliography-files)
-           (local-bib (bibtex-completion-find-local-bibliography))
-           (bibtex-completion-bibliography (or local-bib
-                                               bibtex-completion-bibliography)))
-      (helm-bibtex arg local-bib)))
-
-
-
-  ;; Custom action: Select current document
-
-  ;; (defvar zp/current-document)
-  ;; (defun zp/select-current-document ()
-  ;;   (interactive)
-  ;;   (setq zp/current-document
-  ;;      (read-string
-  ;;       (concat "Current document(s)"
-  ;;               (if (bound-and-true-p zp/current-document)
-  ;;                   (concat " [" zp/current-document "]"))
-  ;;               ": "))))
-
-  ;; (defun zp/bibtex-completion-select-current-document (keys)
-  ;;   (setq zp/current-document (s-join ", " keys)))
-  ;; (helm-bibtex-helmify-action zp/bibtex-completion-select-current-document helm-bibtex-select-current-document)
-
-  (defvar zp/bibtex-completion-key-last nil
-    "Last inserted keys.")
-
-  (defun zp/bibtex-completion-format-citation-comma (keys)
-    "Default formatter for keys, separates multiple keys with
-commas."
-    (s-join "," keys))
-
-  (defun zp/bibtex-completion-format-citation-comma-space (keys)
-    "Formatter for keys, separates multiple keys with
-commas and space."
-    (s-join ", " keys))
-
-  (defun zp/bibtex-completion-insert-key (keys)
-    "Insert BibTeX key at point."
-    (let ((current-keys (zp/bibtex-completion-format-citation-comma-space keys)))
-      (insert current-keys)
-      (setq zp/bibtex-completion-key-last keys)))
-
-  (defun zp/bibtex-completion-insert-key-last ()
-    (interactive)
-    (let ((last-keys (zp/bibtex-completion-format-citation-default
-                      zp/bibtex-completion-key-last)))
-      (if (bound-and-true-p last-keys)
-          (insert last-keys)
-        (zp/helm-bibtex-solo-action-insert-key))))
-
-  (defun zp/bibtex-completion-message-key-last ()
-    (interactive)
-    (let ((keys (zp/bibtex-completion-format-citation-comma-space
-                 zp/bibtex-completion-key-last)))
-      (if (bound-and-true-p keys)
-          (message (concat "Last key(s) used: " keys "."))
-        (message "No previous key used."))))
-
-  ;; Add to helm
-  (helm-bibtex-helmify-action zp/bibtex-completion-insert-key zp/helm-bibtex-insert-key)
-  (helm-delete-action-from-source "Insert BibTeX key" helm-source-bibtex)
-  (helm-add-action-to-source "Insert BibTeX key" 'zp/helm-bibtex-insert-key helm-source-bibtex 4)
-
-  ;; Define solo action: Insert BibTeX key
-  (setq zp/helm-source-bibtex-insert-key '(("Insert BibTeX key" . zp/helm-bibtex-insert-key)))
-  (defun zp/helm-bibtex-solo-action-insert-key ()
-    (interactive)
-    (let ((inhibit-message t)
-          (previous-actions (helm-attr 'action helm-source-bibtex))
-          (new-action zp/helm-source-bibtex-insert-key))
-      (helm-attrset 'action new-action helm-source-bibtex)
-      (helm-bibtex)
-      ;; Wrapping with (progn (foo) nil) suppress the output
-      (progn (helm-attrset 'action previous-actions helm-source-bibtex) nil))))
-
-(use-package ivy-bibtex
-  :load-path "~/projects/helm-bibtex/")
-
-;;----------------------------------------------------------------------------
-;; org-ref
-;;----------------------------------------------------------------------------
-(use-package org-ref
-  :requires org
-  :config
-  (setq org-ref-bibliography-notes "~/org/bib/notes.org"
-        reftex-default-bibliography '("~/org/bib/monty-python.bib")
-        org-ref-pdf-directory "~/org/bib/pdf"
-        org-ref-show-broken-links nil)
-
-  ;; Use helm-bibtex data the default bibliography
-  (setq org-ref-default-bibliography
-        (mapcar #'cdr zp/bibtex-completion-bib-data-alist))
-
-
-  (defun org-ref-get-bibtex-entry-md (key)
-    "Return a md string for the bibliography entry corresponding to KEY."
-    ;; We create an anchor to the key that we can jump to, and provide a jump back
-    ;; link with the md5 of the key.
-    (let ((org-ref-formatted-citation-backend "md"))
-      (format "<a id=\"%s\"></a>%s [↩](#%s)"
-              key
-              (org-ref-format-entry key)
-              (md5 key))))
-
-  (setq org-ref-formatted-citation-formats
-        '(("text"
-           ("article" . "${author}, ${title}, ${journal}, ${volume}(${number}), ${pages} (${year}). ${doi}")
-           ("inproceedings" . "${author}, ${title}, In ${editor}, ${booktitle} (pp. ${pages}) (${year}). ${address}: ${publisher}.")
-           ("book" . "${author}, ${title} (${year}), ${address}: ${publisher}.") ("phdthesis"
-                                                                                  . "${author}, ${title} (Doctoral dissertation) (${year}). ${school}, ${address}.")
-           ("inbook" . "${author}, ${title}, In ${editor} (Eds.), ${booktitle} (pp. ${pages}) (${year}). ${address}: ${publisher}.")
-           ("incollection" . "${author}, ${title}, In ${editor} (Eds.), ${booktitle} (pp. ${pages}) (${year}). ${address}: ${publisher}.")
-           ("proceedings" . "${editor} (Eds.), ${booktitle} (${year}). ${address}: ${publisher}.")
-           ("unpublished" . "${author}, ${title} (${year}). Unpublished manuscript.") (nil
-                                                                                       . "${author}, ${title} (${year})."))
-          ("org"
-           ("article" . "${author}, /${title}/, ${journal}, *${volume}(${number})*, ${pages} (${year}). ${doi}")
-           ("inproceedings" . "${author}, /${title}/, In ${editor}, ${booktitle} (pp. ${pages}) (${year}). ${address}: ${publisher}.")
-           ("book" . "${author}, /${title}/ (${year}), ${address}: ${publisher}.") ("phdthesis"
-                                                                                    . "${author}, /${title}/ (Doctoral dissertation) (${year}). ${school}, ${address}.")
-           ("inbook" . "${author}, /${title}/, In ${editor} (Eds.), ${booktitle} (pp. ${pages}) (${year}). ${address}: ${publisher}.")
-           ("incollection" . "${author}, /${title}/, In ${editor} (Eds.), ${booktitle} (pp. ${pages}) (${year}). ${address}: ${publisher}.")
-           ("proceedings" . "${editor} (Eds.), _${booktitle}_ (${year}). ${address}: ${publisher}.")
-           ("unpublished" . "${author}, /${title}/ (${year}). Unpublished manuscript.")
-           (nil . "${author}, /${title}/ (${year})."))
-
-          ("md"
-           ("article" . "${author}, *${title}*, ${journal}, *${volume}(${number})*, ${pages} (${year}). ${doi}")
-           ("inproceedings" . "${author}, *${title}*, In ${editor}, ${booktitle} (pp. ${pages}) (${year}). ${address}: ${publisher}.")
-           ("book" . "${author}, *${title}* (${date}), ${location}: ${publisher}.")
-           ("phdthesis" . "${author}, *${title}* (Doctoral dissertation) (${year}). ${school}, ${address}.")
-           ("inbook" . "${author}, *${title}*, In ${editor} (Eds.), ${booktitle} (pp. ${pages}) (${year}). ${address}: ${publisher}.")
-           ("incollection" . "${author}, *${title}*, In ${editor} (Eds.), ${booktitle} (pp. ${pages}) (${year}). ${address}: ${publisher}.")
-           ("proceedings" . "${editor} (Eds.), _${booktitle}_ (${year}). ${address}: ${publisher}.")
-           ("unpublished" . "${author}, *${title}* (${year}). Unpublished manuscript.")
-           (nil . "${author}, *${title}* (${year}).")))))
 
 ;;----------------------------------------------------------------------------
 ;; org-brain
