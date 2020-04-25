@@ -4647,6 +4647,9 @@ commas and space."
       ;; Wrapping with (progn (foo) nil) suppress the output
       (progn (helm-attrset 'action previous-actions helm-source-bibtex) nil))))
 
+(use-package ivy-bibtex
+  :load-path "~/projects/helm-bibtex/")
+
 ;;----------------------------------------------------------------------------
 ;; org-ref
 ;;----------------------------------------------------------------------------
