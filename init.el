@@ -21,7 +21,7 @@
 
 (setq user-full-name "Leo Vivier")
 
-;; (toggle-debug-on)
+;; (toggle-debug-on-error)
 ;; (toggle-debug-on-quit)
 ;; (setq garbage-collection-messages t)
 
