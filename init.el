@@ -4965,7 +4965,13 @@ that date.  Leave point on the first amount."
          ("H-M-m" . zp/magit-stage-file-and-commit))
   :config
   (transient-append-suffix 'magit-log "-A"
-  '("-1" "First parent" "--first-parent"))
+    '("-1" "First parent" "--first-parent"))
+  (transient-append-suffix 'magit-log-refresh "-A"
+    '("-1" "First parent" "--first-parent"))
+  (transient-append-suffix 'magit-log "-f"
+    '("-m" "Hide merges" "--no-merges"))
+  (transient-append-suffix 'magit-log-refresh "-f"
+    '("-m" "Hide merges" "--no-merges"))
   (setq magit-diff-refine-hunk 'all)
   (magit-wip-mode)
 
