@@ -3978,8 +3978,8 @@ indirect-buffers."
 
 (use-package helm-bibtex
   :load-path "~/projects/helm-bibtex/"
-  :bind (("H-y" . zp/helm-bibtex-with-local-bibliography)
-         ("H-M-y" . zp/helm-bibtex-select-bib)
+  :bind (("H-y" . helm-bibtex)
+         ("H-M-y" . helm-bibtex-with-notes)
          ("C-c D" . zp/bibtex-completion-message-key-last))
   :config
   (setq helm-bibtex-notes-path "~/org/lit/")
