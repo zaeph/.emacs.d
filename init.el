@@ -2873,7 +2873,8 @@ The number of lines to keep is defined in
                     (let ((bol (point-at-bol))
                           (eol (point-at-eol)))
                       (unless (comment-only-p bol eol)
-                        (comment-region-default bol eol))))))))))))
+                        (comment-region-default bol eol)
+                        (goto-char (point-at-bol)))))))))))))
 
 ;;--------------------------
   ;; Spawned indirect buffers
