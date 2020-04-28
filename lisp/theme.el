@@ -59,7 +59,9 @@
   (set-face-attribute 'line-number nil :foreground "#969996" :background "#2d2d2d")
   (set-face-attribute 'secondary-selection nil :background "#3B3273")
   (set-face-attribute 'org-column nil :background "#1F1F1F")
-  (set-face-attribute 'org-block nil :foreground nil :inherit 'default :background "#1F1F1F")
+  (set-face-attribute 'org-block-begin-line nil :foreground "DodgerBlue3")
+  ;; (set-face-attribute 'org-block nil :foreground nil :background nil)
+  (set-face-attribute 'org-block-end-line nil :foreground "DodgerBlue3")
   (set-face-attribute 'org-drawer nil :foreground "#4790C9")
 
   (set-face-attribute 'org-agenda-structure nil
@@ -151,7 +153,9 @@
   ;; (set-face-attribute 'line-number-current-line nil :foreground "#707370" :background "#ccc6a4")
   (set-face-attribute 'secondary-selection nil :background "#d3ccff")
   (set-face-attribute 'org-column nil :background "#F0E4BE")
-  (set-face-attribute 'org-block nil :foreground nil :inherit 'default :background "#F0E6BE")
+  (set-face-attribute 'org-block-begin-line nil :foreground "DodgerBlue3")
+  ;; (set-face-attribute 'org-block nil :foreground nil :background nil)
+  (set-face-attribute 'org-block-end-line nil :foreground "DodgerBlue3")
   (set-face-attribute 'org-drawer nil :foreground "#4790C9")
 
   (set-face-attribute 'org-agenda-structure nil
