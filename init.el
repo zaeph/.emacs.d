@@ -1381,7 +1381,9 @@ LANGUAGE should be the name of an Ispell dictionary."
 
 (use-package flyspell
   :bind ("C-c f" . flyspell-mode)
-  :hook (message-setup . flyspell-mode))
+  :hook ((message-setup . flyspell-mode)
+         (org-mode . flyspell-mode)
+         (latex-mode . flyspell-mode)))
 
 ;;----------------------------------------------------------------------------
 ;; Email
