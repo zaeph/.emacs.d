@@ -2343,7 +2343,8 @@ return `nil'."
   :hook ((org-mode . org-indent-mode)
          (org-mode . visual-line-mode)
          (before-save . zp/org-set-last-modified)
-         (org-todo-repeat . zp/org-comment-logbook-notes))
+         (org-todo-repeat . zp/org-comment-logbook-notes)
+         (org-font-lock . zp/org-indent-quotes))
   :config
   (setq org-agenda-inhibit-startup nil
         org-log-into-drawer "LOGBOOK-NOTES"
@@ -2532,6 +2533,22 @@ return `nil'."
 
   ;; Load library required for PlantUML
   (setq org-ditaa-jar-path "/usr/share/java/ditaa/ditaa-0.11.jar")
+
+  ;;-----------------
+  ;; Indented quotes
+  ;;-----------------
+
+  ;; Inspired from https://emacs.stackexchange.com/questions/38570/org-mode-quote-block-indentation-highlighting
+  (defun zp/org-indent-quotes (limit)
+    (let ((case-fold-search t))
+      (while (search-forward-regexp "^[ \t]*#\\+begin_quote" limit t)
+        (let ((beg (1+ (match-end 0))))
+          ;; on purpose, we look further than LIMIT
+          (when (search-forward-regexp "^[ \t]*#\\+end_quote" nil t)
+            (let ((end (1- (match-beginning 0)))
+                  (indent (propertize "    " 'face 'org-hide)))
+              (add-text-properties beg end (list 'line-prefix indent
+                                                 'wrap-prefix indent))))))))
 
   ;;------
   ;; Handling ‘CREATED’
