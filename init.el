@@ -2876,7 +2876,7 @@ The number of lines to keep is defined in
                         (comment-region-default bol eol)
                         (goto-char (point-at-bol)))))))))))))
 
-;;--------------------------
+  ;;--------------------------
   ;; Spawned indirect buffers
   ;;--------------------------
 
