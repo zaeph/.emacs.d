@@ -609,6 +609,10 @@ surrounding paragraph."
   :bind (("<f8>" . gif-screencast-toggle-pause)
          ("<f9>" . gif-screencast-stop)))
 
+(use-package undo-tree
+  :custom
+  (undo-tree-enable-undo-in-region nil))
+
 (use-package evil
   :config
   (evil-mode 0))
