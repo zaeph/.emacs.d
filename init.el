@@ -1758,18 +1758,28 @@ based on ‘zp/message-mode-ispell-alist’."
   (setq mail-host-address "hidden")
 
   (setq notmuch-saved-searches
-        '((:name "inbox" :query "tag:inbox" :key "i")
-          (:name "inbox (pro)" :query "tag:pro and tag:inbox" :key "I")
-          (:name "unread" :query "tag:unread" :key "u")
-          (:name "flagged" :query "tag:flagged" :key "f")
-          (:name "drafts" :query "tag:draft" :key "d")
-          (:name "sent (last week)" :query "tag:sent date:\"7d..today\"" :key "s")
-          (:name "archive (last week)" :query "* date:\"7d..today\"" :key "a")
-          (:name "sent" :query "tag:sent" :key "S")
-          (:name "archive" :query "*" :key "A")
-          (:name "pro (last week)" :query "tag:pro date:\"7d..today\"" :key "p")
-          (:name "pro" :query "tag:pro" :key "P")
-          (:name "trash" :query "tag:deleted" :key "t")))
+        '((:name "inbox" :key "i" :query "tag:inbox and not tag:auto")
+          (:name "unread" :key "u" :query "tag:unread and not tag:auto")
+          (:name "archive-week" :key "a" :query "date:\"7d..today\" and not tag:auto")
+          (:name "archive" :key "A" :query "not tag:auto")
+
+          (:name "pro-inbox" :key "p" :query "tag:pro and tag:inbox")
+          (:name "pro-archive-week" :key "Pa" :query "tag:pro date:\"7d..today\"")
+          (:name "pro-archive" :key "PA" :query "tag:pro")
+
+          (:name "dev-inbox" :key "d" :query "tag:dev and tag:inbox and not tag:auto")
+          (:name "dev-archive-week" :key "Da" :query "tag:dev and date:\"7d..today\" and not tag:auto")
+          (:name "dev-archive" :key "DA" :query "tag:dev and not tag:auto")
+
+          (:name "dev-github-inbox" :key "g" :query "tag:dev and tag:inbox and tag:auto")
+          (:name "dev-github-archive-week" :key "Ga" :query "tag:dev and tag:auto date:\"7d..today\"")
+          (:name "dev-github-archive" :key "GA" :query "tag:dev and tag:auto")
+
+          (:name "flagged" :key "f" :query "tag:flagged")
+          (:name "drafts" :key "x" :query "tag:draft")
+          (:name "sent-week" :key "s" :query "tag:sent date:\"7d..today\"")
+          (:name "sent" :key "S" :query "tag:sent")
+          (:name "trash" :key "t" :query "tag:deleted")))
 
   (defvar zp/message-ispell-alist nil
     "Alist of emails and the language they typically use.
@@ -1793,7 +1803,7 @@ SEARCH is a string to be interpreted by notmuch-search."
     (interactive)
     (save-excursion
       (goto-char (point-min))
-      (let* ((query-base "tag:inbox and tag:unread")
+      (let* ((query-base "tag:inbox and tag:unread and not tag:auto")
              (query (if search
                         (concat "\("
                                 search
@@ -1818,7 +1828,7 @@ SEARCH is a string to be interpreted by notmuch-search."
     (zp/color-inbox-if-unread "inbox"))
 
   (defun zp/color-inbox-pro ()
-    (zp/color-inbox-if-unread "inbox (pro)" "tag:pro"))
+    (zp/color-inbox-if-unread "pro-inbox" "tag:pro"))
 
   ;;----------------------
   ;; Switching to notmuch
