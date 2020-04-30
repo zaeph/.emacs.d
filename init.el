@@ -892,7 +892,8 @@ Modifies ‘diff-command’ and ‘diff-switches’ to use ‘git diff’."
   :ensure t)
 
 (use-package markdown
-  :hook (markdown-mode . visual-line-mode))
+  :hook ((markdown-mode . visual-line-mode)
+         (markdown-mode . flyspell-mode)))
 
 (use-package git-link
   :bind ("C-c g" . zp/git-link-dwim)
