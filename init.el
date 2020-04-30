@@ -4373,8 +4373,8 @@ This function is intended to be run with ‘find-file-hook’."
    '(("r" "ref" plain
       (function org-roam-capture--get-point)
       ""
-      :file-name "refs/${slug}"
-      :head "#+TITLE: ${=key=}: ${title}\n#+ROAM_KEY: ${ref}\n#+CREATED: %U\n#+LAST_MODIFIED: %U\n\n"
+      :file-name "refs/${citekey}"
+      :head "#+TITLE: ${citekey}: ${title}\n#+ROAM_KEY: ${ref}\n#+CREATED: %U\n#+LAST_MODIFIED: %U\n\n"
       :unnarrowed t))))
 
 ;;----------------------------------------------------------------------------
