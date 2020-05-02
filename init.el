@@ -551,8 +551,7 @@ surrounding paragraph."
 
 ;; Disable org’s ELPA packages
 (setq package-load-list '(all
-                          (org nil)
-                          (org-plus-contrib nil)))
+                          (org nil)))
 
 ;; org-elpa
 (add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") t)
