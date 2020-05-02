@@ -4455,7 +4455,10 @@ This function is intended to be run with ‘find-file-hook’."
       ""
       :file-name "refs/${citekey}"
       :head "#+TITLE: ${citekey}: ${title}\n#+ROAM_KEY: ${ref}\n#+CREATED: %U\n#+LAST_MODIFIED: %U\n\n"
-      :unnarrowed t))))
+      :unnarrowed t)))
+  (org-roam-bibtex-preformat-keywords '(("citekey" . "=key=")
+                                        "author-abbrev"
+                                        "author-or-editor")))
 
 ;;----------------------------------------------------------------------------
 ;; hydra-org-refile
