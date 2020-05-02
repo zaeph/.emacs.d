@@ -4485,23 +4485,23 @@ This function is intended to be run with ‘find-file-hook’."
 
 (use-package org-roam-bibtex
   :requires bibtex-completion
-  :hook (org-roam-mode . org-roam-bibtex-mode)
+  :hook (org-roam-mode . orb-minor-mode)
   :load-path "~/projects/org-roam-bibtex/"
-  :bind (:map org-roam-bibtex-mode-map
-         (("C-c m f" . org-roam-bibtex-find-non-ref-file))
+  :bind (:map orb-minor-mode-map
+         (("C-c m f" . orb-find-non-ref-file))
          :map org-mode-map
-         (("C-c m t" . org-roam-bibtex-insert-non-ref)))
+         (("C-c m t" . orb-insert-non-ref)))
   :custom
-  (org-roam-bibtex-templates
+  (orb-templates
    '(("r" "ref" plain
       (function org-roam-capture--get-point)
       ""
       :file-name "refs/${citekey}"
       :head "#+TITLE: ${citekey}: ${title}\n#+ROAM_KEY: ${ref}\n#+CREATED: %U\n#+LAST_MODIFIED: %U\n\n"
       :unnarrowed t)))
-  (org-roam-bibtex-preformat-keywords '(("citekey" . "=key=")
-                                        "author-abbrev"
-                                        "author-or-editor")))
+  (orb-preformat-keywords '(("citekey" . "=key=")
+                            "author-abbrev"
+                            "author-or-editor")))
 
 ;;----------------------------------------------------------------------------
 ;; hydra-org-refile
