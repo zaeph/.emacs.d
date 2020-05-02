@@ -594,6 +594,44 @@ surrounding paragraph."
 ;; (setq use-package-verbose t)
 
 ;;----------------------------------------------------------------------------
+;; magit
+;;----------------------------------------------------------------------------
+(use-package magit
+  :load-path "~/projects/magit/lisp/"
+  :bind (("H-m" . magit-status)
+         ("H-M-m" . zp/magit-stage-file-and-commit))
+  :config
+  (transient-append-suffix 'magit-log "-A"
+    '("-1" "First parent" "--first-parent"))
+  (transient-append-suffix 'magit-log-refresh "-A"
+    '("-1" "First parent" "--first-parent"))
+  (transient-append-suffix 'magit-log "-f"
+    '("-m" "Hide merges" "--no-merges"))
+  (transient-append-suffix 'magit-log-refresh "-f"
+    '("-m" "Hide merges" "--no-merges"))
+  (setq magit-diff-refine-hunk 'all)
+  (magit-wip-mode)
+
+  ;;----------
+  ;; Commands
+  ;;----------
+
+  (defun zp/magit-stage-file-and-commit (&optional arg)
+    "Stage the current file and commit the changes.
+
+With a ‘C-u’ prefix argument, amend the last commit instead."
+    (interactive "p")
+    (when (buffer-modified-p)
+      (save-buffer))
+    (magit-stage-file (magit-file-relative-name))
+    (pcase arg
+      (4 (magit-commit-amend))
+      (_ (magit-commit-create)))))
+
+(use-package forge
+  :after magit)
+
+;;----------------------------------------------------------------------------
 ;; Packages
 ;;----------------------------------------------------------------------------
 (use-package auth-source
@@ -5087,43 +5125,6 @@ that date.  Leave point on the first amount."
     (interactive "d")
     (let ((bounds (ledger-navigate-find-xact-extents pos)))
       (kill-region (car bounds) (cadr bounds)))))
-
-;;----------------------------------------------------------------------------
-;; magit
-;;----------------------------------------------------------------------------
-(use-package magit
-  :bind (("H-m" . magit-status)
-         ("H-M-m" . zp/magit-stage-file-and-commit))
-  :config
-  (transient-append-suffix 'magit-log "-A"
-    '("-1" "First parent" "--first-parent"))
-  (transient-append-suffix 'magit-log-refresh "-A"
-    '("-1" "First parent" "--first-parent"))
-  (transient-append-suffix 'magit-log "-f"
-    '("-m" "Hide merges" "--no-merges"))
-  (transient-append-suffix 'magit-log-refresh "-f"
-    '("-m" "Hide merges" "--no-merges"))
-  (setq magit-diff-refine-hunk 'all)
-  (magit-wip-mode)
-
-  ;;----------
-  ;; Commands
-  ;;----------
-
-  (defun zp/magit-stage-file-and-commit (&optional arg)
-    "Stage the current file and commit the changes.
-
-With a ‘C-u’ prefix argument, amend the last commit instead."
-    (interactive "p")
-    (when (buffer-modified-p)
-      (save-buffer))
-    (magit-stage-file (magit-file-relative-name))
-    (pcase arg
-      (4 (magit-commit-amend))
-      (_ (magit-commit-create)))))
-
-(use-package forge
-  :after magit)
 
 ;;----------------------------------------------------------------------------
 ;; chronos
