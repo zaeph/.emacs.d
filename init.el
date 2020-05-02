@@ -4445,9 +4445,9 @@ This function is intended to be run with ‘find-file-hook’."
   :hook (org-roam-mode . org-roam-bibtex-mode)
   :load-path "~/projects/org-roam-bibtex/"
   :bind (:map org-roam-bibtex-mode-map
-              (("C-c m f" . org-roam-bibtex-find-non-ref-file))
-              :map org-mode-map
-              (("C-c m t" . org-roam-bibtex-insert-non-ref)))
+         (("C-c m f" . org-roam-bibtex-find-non-ref-file))
+         :map org-mode-map
+         (("C-c m t" . org-roam-bibtex-insert-non-ref)))
   :custom
   (org-roam-bibtex-templates
    '(("r" "ref" plain
