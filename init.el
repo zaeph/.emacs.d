@@ -1928,10 +1928,6 @@ SEARCH is a string to be interpreted by notmuch-search."
   ;; Switching to notmuch
   ;;----------------------
 
-  (defun zp/notmuch-check-mail ()
-    "Check email"
-    (start-process-shell-command "notmuch-new" nil "systemctl --user start check-mail.service"))
-
   (defun zp/notmuch-hello-quit ()
     (interactive)
     (notmuch-bury-or-kill-this-buffer)
@@ -1947,6 +1943,13 @@ SEARCH is a string to be interpreted by notmuch-search."
            (setq zp/notmuch-before-config (current-window-configuration))
            (delete-other-windows)
            (notmuch)))))
+
+(use-package zp-notmuch-fetch
+  :bind (:map notmuch-hello-mode-map
+         ("f" . zp/notmuch-fetch-new-mail-inbox)
+         ("F" . zp/notmuch-fetch-new-mail)
+         ("k" . zp/notmuch-fetch-kill)
+         ("DEL" . zp/notmuch-fetch-kill)))
 
 (use-package org-notmuch
   :after (:any org notmuch))
