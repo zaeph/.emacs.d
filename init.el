@@ -1931,7 +1931,6 @@ SEARCH is a string to be interpreted by notmuch-search."
   (defun zp/notmuch-hello-quit ()
     (interactive)
     (notmuch-bury-or-kill-this-buffer)
-    (start-process-shell-command "notmuch-new" nil "systemctl --user start check-mail.service")
     (set-window-configuration zp/notmuch-before-config))
 
   (defun zp/switch-to-notmuch ()
