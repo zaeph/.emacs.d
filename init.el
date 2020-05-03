@@ -1850,25 +1850,50 @@ based on ‘zp/message-mode-ispell-alist’."
 
   (setq mail-host-address "hidden")
 
+  (defcustom zp/notmuch-saved-queries nil
+    "Alist of symbols to queries as strings.")
+
+  (setq zp/notmuch-saved-queries
+        '(("pro"        . "tag:pro and not tag:auto")
+          ("dev"        . "tag:dev and not tag:auto")
+          ("dev-github" . "tag:dev and tag:github and tag:auto")
+          ("dev-forum"  . "tag:dev and tag:forum and tag:auto")))
+
+  (defun zp/notmuch-get-query (query)
+    "Get string-query from QUERY.
+See `zp/notmuch-saved-queries' for details."
+    (cdr (assoc query zp/notmuch-saved-queries)))
+
+  (defun zp/notmuch-format-search (name key)
+    "Format a saved-search from NAME and KEY."
+    `((:name ,(concat name "-inbox") :key ,key
+       :query ,(concat (zp/notmuch-get-query name)
+                       " and tag:inbox"))
+      (:name ,(concat name "-archive-week") :key ,(concat (upcase key) "a")
+       :query ,(concat (zp/notmuch-get-query name)
+                       " and date:\"7d..today\""))
+      (:name ,(concat name "-archive") :key ,(concat (upcase key) "A")
+       :query ,(concat (zp/notmuch-get-query name)))))
+
   (setq notmuch-saved-searches
-        '((:name "inbox" :key "i" :query "tag:inbox and not tag:auto")
+        `((:name "inbox" :key "i" :query "tag:inbox and not tag:auto")
           (:name "unread" :key "u" :query "tag:unread and not tag:auto")
           (:name "archive-week" :key "a" :query "date:\"7d..today\" and not tag:auto")
           (:name "archive" :key "A" :query "not tag:auto")
 
-          (:name "pro-inbox" :key "p" :query "tag:pro and tag:inbox")
-          (:name "pro-archive-week" :key "Pa" :query "tag:pro date:\"7d..today\"")
-          (:name "pro-archive" :key "PA" :query "tag:pro")
+          ;; Pro
+          ,@(zp/notmuch-format-search "pro" "p")
 
-          (:name "dev-inbox" :key "d" :query "tag:dev and tag:inbox and not tag:auto")
-          (:name "dev-archive-week" :key "Da" :query "tag:dev and date:\"7d..today\" and not tag:auto")
-          (:name "dev-archive" :key "DA" :query "tag:dev and not tag:auto")
+          ;; Dev
+          ,@(zp/notmuch-format-search "dev" "d")
 
-          (:name "dev-github-inbox" :key "g" :query "tag:dev and tag:inbox and tag:auto")
-          (:name "dev-github-archive-week" :key "Ga" :query "tag:dev and tag:auto date:\"7d..today\"")
-          (:name "dev-github-archive" :key "GA" :query "tag:dev and tag:auto")
+          ;; GitHub
+          ,@(zp/notmuch-format-search "dev-github" "g")
 
-          (:name "flagged" :key "f" :query "tag:flagged")
+          ;; Discourse
+          ,@(zp/notmuch-format-search "dev-forum" "f")
+
+          (:name "flagged" :key "v" :query "tag:flagged")
           (:name "drafts" :key "x" :query "tag:draft")
           (:name "sent-week" :key "s" :query "tag:sent date:\"7d..today\"")
           (:name "sent" :key "S" :query "tag:sent")
