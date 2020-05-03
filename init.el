@@ -4508,9 +4508,9 @@ This function is intended to be run with ‘find-file-hook’."
 
 (use-package org-roam-bibtex
   :requires bibtex-completion
-  :hook (org-roam-mode . orb-minor-mode)
+  :hook (org-roam-mode . org-roam-bibtex-mode)
   :load-path "~/projects/org-roam-bibtex/"
-  :bind (:map orb-minor-mode-map
+  :bind (:map org-roam-bibtex-mode-map
          (("C-c m f" . orb-find-non-ref-file))
          :map org-mode-map
          (("C-c m t" . orb-insert-non-ref)))
