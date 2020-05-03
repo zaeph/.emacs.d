@@ -1811,8 +1811,7 @@ based on ‘zp/message-mode-ispell-alist’."
           ("C-c C-z" . zp/message-kill-to-signature))
          :map notmuch-show-mode-map
          (("C-c C-o" . goto-address-at-point)))
-  :hook ((notmuch-hello-refresh . zp/color-inbox)
-         (notmuch-hello-refresh . zp/color-inbox-pro))
+  :hook ((notmuch-hello-refresh . zp/color-all-inboxes))
   :config
   (setq notmuch-always-prompt-for-sender t
         notmuch-search-oldest-first nil)
@@ -1897,7 +1896,7 @@ SEARCH is a string to be interpreted by notmuch-search."
     (interactive)
     (save-excursion
       (goto-char (point-min))
-      (let* ((query-base "tag:inbox and tag:unread and not tag:auto")
+      (let* ((query-base "tag:inbox and tag:unread")
              (query (if search
                         (concat "\("
                                 search
@@ -1918,11 +1917,10 @@ SEARCH is a string to be interpreted by notmuch-search."
                                              (:foreground "red")
                                              (:underline t))))))))))
 
-  (defun zp/color-inbox ()
-    (zp/color-inbox-if-unread "inbox"))
-
-  (defun zp/color-inbox-pro ()
-    (zp/color-inbox-if-unread "pro-inbox" "tag:pro"))
+  (defun zp/color-all-inboxes ()
+    (zp/color-inbox-if-unread "inbox" "not tag:auto")
+    (zp/color-inbox-if-unread "pro-inbox" "tag:pro")
+    (zp/color-inbox-if-unread "dev-github-inbox" "tag:dev and tag:auto"))
 
   ;;----------------------
   ;; Switching to notmuch
