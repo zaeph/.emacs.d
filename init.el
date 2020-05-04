@@ -597,7 +597,7 @@ surrounding paragraph."
 ;; magit
 ;;----------------------------------------------------------------------------
 (use-package magit
-  :load-path "~/projects/magit/lisp/"
+  ;; :load-path "~/projects/magit/lisp/"
   :bind (("H-m" . magit-status)
          ("H-M-m" . zp/magit-stage-file-and-commit))
   :config
@@ -4513,15 +4513,31 @@ This function is intended to be run with ‘find-file-hook’."
   :bind (:map org-roam-bibtex-mode-map
          (("C-c m f" . orb-find-non-ref-file))
          :map org-mode-map
-         (("C-c m t" . orb-insert-non-ref)))
+         (("C-c m t" . orb-insert-non-ref)
+          ("C-c m a" . orb-note-actions)))
   :custom
   (orb-templates
-   '(("r" "ref" plain
+   `(("r" "ref" plain
       (function org-roam-capture--get-point)
       ""
       :file-name "refs/${citekey}"
       :head "#+TITLE: ${citekey}: ${title}\n#+ROAM_KEY: ${ref}\n#+CREATED: %U\n#+LAST_MODIFIED: %U\n\n"
-      :unnarrowed t)))
+      :unnarrowed t)
+     ("n" "ref" plain (function org-roam-capture--get-point)
+      ""
+      :file-name "${slug}"
+      :head ,(s-join "\n"
+                     '("#+TITLE: ${citekey}: ${title}"
+                       "#+ROAM_KEY: ${ref}"
+                       ""
+                       "* Notes"
+                       ":PROPERTIES:"
+                       ":Custom_ID: ${citekey}"
+                       ":URL: ${url}"
+                       ":AUTHOR: ${author-or-editor}"
+                       ":NOTER_DOCUMENT: %(orb-process-file-field \"${citekey}\")"
+                       ":NOTER_PAGE:"
+                       ":END:")))))
   (orb-preformat-keywords '(("citekey" . "=key=")
                             "author-abbrev"
                             "author-or-editor")))
@@ -5652,12 +5668,40 @@ See ‘~/.bin/terminator-dwim’ for more info."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(ansi-term-color-vector
+   [unspecified "#ffffff" "#cc342b" "#198844" "#fba922" "#3971ed" "#a36ac7" "#3971ed" "#373b41"] t)
  '(auth-source-save-behavior nil)
  '(auth-sources (quote ("~/.authinfo.gpg" "~/.netrc")))
  '(beacon-blink-delay 0.3)
  '(beacon-blink-duration 0.3)
  '(beacon-color "#cc342b")
  '(beacon-push-mark 10)
+ '(counsel-projectile-switch-project-action
+   (quote
+    (1
+     ("D" counsel-projectile-switch-project-action-dired "open project in dired")
+     ("o" counsel-projectile-switch-project-action "jump to a project buffer or file")
+     ("f" counsel-projectile-switch-project-action-find-file "jump to a project file")
+     ("d" counsel-projectile-switch-project-action-find-dir "jump to a project directory")
+     ("b" counsel-projectile-switch-project-action-switch-to-buffer "jump to a project buffer")
+     ("m" counsel-projectile-switch-project-action-find-file-manually "find file manually from project root")
+     ("S" counsel-projectile-switch-project-action-save-all-buffers "save all project buffers")
+     ("k" counsel-projectile-switch-project-action-kill-buffers "kill all project buffers")
+     ("K" counsel-projectile-switch-project-action-remove-known-project "remove project from known projects")
+     ("c" counsel-projectile-switch-project-action-compile "run project compilation command")
+     ("C" counsel-projectile-switch-project-action-configure "run project configure command")
+     ("E" counsel-projectile-switch-project-action-edit-dir-locals "edit project dir-locals")
+     ("v" counsel-projectile-switch-project-action-vc "open project in vc-dir / magit / monky")
+     ("sg" counsel-projectile-switch-project-action-grep "search project with grep")
+     ("si" counsel-projectile-switch-project-action-git-grep "search project with git grep")
+     ("ss" counsel-projectile-switch-project-action-ag "search project with ag")
+     ("sr" counsel-projectile-switch-project-action-rg "search project with rg")
+     ("xs" counsel-projectile-switch-project-action-run-shell "invoke shell from project root")
+     ("xe" counsel-projectile-switch-project-action-run-eshell "invoke eshell from project root")
+     ("xt" counsel-projectile-switch-project-action-run-term "invoke term from project root")
+     ("xv" counsel-projectile-switch-project-action-run-vterm "invoke vterm from project root")
+     ("Oc" counsel-projectile-switch-project-action-org-capture "capture into project")
+     ("Oa" counsel-projectile-switch-project-action-org-agenda "open project agenda"))))
  '(dired-dwim-target t)
  '(doom-modeline-height 25)
  '(doom-modeline-mode t)
@@ -5685,8 +5729,36 @@ See ‘~/.bin/terminator-dwim’ for more info."
      ("reg" "%(binary) -f %(ledger-file) reg")
      ("payee" "%(binary) -f %(ledger-file) reg @%(payee)")
      ("account" "%(binary) -f %(ledger-file) reg %(account)"))))
+ '(lisp-indent-function (quote zp/lisp-indent-function))
  '(magit-log-arguments (quote ("--graph" "--color" "--decorate" "-n256")))
  '(magit-submodule-arguments (quote ("--recursive")))
+ '(orb-preformat-keywords
+   (quote
+    (("citekey" . "=key=")
+     "author-abbrev" "author-or-editor")))
+ '(orb-templates
+   (quote
+    (("r" "ref" plain
+      (function org-roam-capture--get-point)
+      "" :file-name "refs/${citekey}" :head "#+TITLE: ${citekey}: ${title}
+#+ROAM_KEY: ${ref}
+#+CREATED: %U
+#+LAST_MODIFIED: %U
+
+" :unnarrowed t)
+     ("n" "ref" plain
+      (function org-roam-capture--get-point)
+      "" :file-name "${slug}" :head "#+TITLE: ${citekey}: ${title}
+#+ROAM_KEY: ${ref}
+
+* Notes
+:PROPERTIES:
+:Custom_ID: ${citekey}
+:URL: ${url}
+:AUTHOR: ${author-or-editor}
+:NOTER_DOCUMENT: %(orb-process-file-field \"${citekey}\")
+:NOTER_PAGE:
+:END:"))))
  '(org-emphasis-alist
    (quote
     (("*" bold)
@@ -5728,12 +5800,14 @@ See ‘~/.bin/terminator-dwim’ for more info."
 
 " :unnarrowed t))))
  '(org-roam-directory "~/org/slip-box/")
+ '(org-roam-index-file "index.org")
  '(package-selected-packages
    (quote
-    (selectrum neotree vterm beacon buttercup doom-modeline git-link bibtex-completion ivy-bibtex edit-indirect package-lint counsel-projectile rg helm-org-rifle org-roam slime highlight-indent-guides dracula-theme use-package org-brain racket-mode wgrep fountain-mode org-mind-map org org-ref orgalist ws-butler minions backup-walker bug-hunter org-plus-contrib messages-are-flowing notmuch forge go-mode company-anaconda anaconda-mode company realgud ace-link ivy-hydra counsel dumb-jump lua-mode fish-mode exwm el-patch diminish circe-notifications circe ob-async nov eyebrowse diff-hl recentf-ext flycheck-pos-tip helm-projectile clean-aindent-mode volatile-highlights duplicate-thing org-noter hydra highlight mu4e-alert writeroom-mode anzu flycheck spaceline helm-chronos chronos multiple-cursors expand-region ace-window auto-minor-mode ledger-mode sublimity auctex smooth-scrolling yasnippet pdf-tools htmlize helm-bibtex free-keys evil color-theme base16-theme)))
+    (markdown-mode moody olivetti ox-hugo org-ql org-super-agenda which-key lispy org-roam-bibtex selectrum neotree vterm beacon buttercup doom-modeline git-link bibtex-completion ivy-bibtex edit-indirect package-lint counsel-projectile rg helm-org-rifle org-roam slime highlight-indent-guides dracula-theme use-package org-brain racket-mode wgrep fountain-mode org-mind-map org org-ref orgalist ws-butler minions backup-walker bug-hunter org-plus-contrib messages-are-flowing notmuch forge go-mode company-anaconda anaconda-mode company realgud ace-link ivy-hydra counsel dumb-jump lua-mode fish-mode exwm el-patch diminish circe-notifications circe ob-async nov eyebrowse diff-hl recentf-ext flycheck-pos-tip helm-projectile clean-aindent-mode volatile-highlights duplicate-thing org-noter hydra highlight mu4e-alert writeroom-mode anzu flycheck spaceline helm-chronos chronos multiple-cursors expand-region ace-window auto-minor-mode ledger-mode sublimity auctex smooth-scrolling yasnippet pdf-tools htmlize helm-bibtex free-keys evil color-theme base16-theme)))
  '(projectile-project-search-path
    (quote
     ("~/.emacs.d/" "~/.bin/" "~/.dotfiles/" "~/projects/")))
+ '(projectile-switch-project-action (quote (closure (t) nil (dired "."))))
  '(safe-local-variable-values
    (quote
     ((eval when
@@ -5775,7 +5849,8 @@ See ‘~/.bin/terminator-dwim’ for more info."
  '(send-mail-function (quote mailclient-send-it))
  '(size-indication-mode t)
  '(smtpmail-smtp-server "127.0.0.1")
- '(smtpmail-smtp-service 25))
+ '(smtpmail-smtp-service 25)
+ '(undo-tree-enable-undo-in-region nil))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
