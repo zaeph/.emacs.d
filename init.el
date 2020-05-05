@@ -2767,7 +2767,8 @@ it can be passed in POS."
 
   (defun zp/org-set-last-modified ()
     "Update the LAST_MODIFIED file property in the preamble."
-    (zp/org-set-time-file-property "LAST_MODIFIED"))
+    (when (derived-mode-p 'org-mode)
+      (zp/org-set-time-file-property "LAST_MODIFIED")))
 
   ;;------------------------
   ;; Narrowing & Movements
