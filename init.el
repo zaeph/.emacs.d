@@ -4524,7 +4524,7 @@ This function is intended to be run with ‘find-file-hook’."
       :file-name "refs/${citekey}"
       :head "#+TITLE: ${citekey}: ${title}\n#+ROAM_KEY: ${ref}\n#+CREATED: %U\n#+LAST_MODIFIED: %U\n\n"
       :unnarrowed t)
-     ("n" "ref" plain (function org-roam-capture--get-point)
+     ("n" "ref + noter" plain (function org-roam-capture--get-point)
       ""
       :file-name "${slug}"
       :head ,(s-join "\n"
