@@ -387,7 +387,7 @@ surrounding paragraph."
 ;; Custom modes
 ;;----------------------------------------------------------------------------
 (define-minor-mode print-circle-mode
-    "Mode for toggling ‘print-circle’ globally."
+  "Mode for toggling ‘print-circle’ globally."
   :lighter " crcl"
   :global t
   (if print-circle-mode
@@ -668,7 +668,7 @@ With a ‘C-u’ prefix argument, amend the last commit instead."
 
 (use-package isearch
   :bind (:map isearch-mode-map
-              ("<backspace>" . 'isearch-del-char)))
+         ("<backspace>" . 'isearch-del-char)))
 
 ;; fcitx (IME for CJK)
 ;; Disabled because of slow-downs in combination with visual-line-mode
@@ -723,10 +723,10 @@ With a ‘C-u’ prefix argument, amend the last commit instead."
 
 (use-package info+
   :bind (:map Info-mode-map
-              ("<mouse-4>" . mwheel-scroll)
-              ("<mouse-5>" . mwheel-scroll)
-              ("j" . next-line)
-              ("k" . previous-line)))
+         ("<mouse-4>" . mwheel-scroll)
+         ("<mouse-5>" . mwheel-scroll)
+         ("j" . next-line)
+         ("k" . previous-line)))
 
 (use-package recentf-ext)
 
@@ -748,7 +748,7 @@ With a ‘C-u’ prefix argument, amend the last commit instead."
   :config
   (which-key-mode)
   ;; (setq which-key-idle-delay 1) ;Default
-)
+  )
 
 (use-package lilypond-mode)
 
@@ -833,7 +833,7 @@ With a ‘C-u’ prefix argument, amend the last commit instead."
          ;; (after-init . global-flycheck-mode)
          )
   :bind (:map zp/toggle-map
-              ("F" . flycheck-mode))
+         ("F" . flycheck-mode))
   :config
   ;; (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc))
   (setq flycheck-emacs-lisp-load-path 'inherit
@@ -983,7 +983,7 @@ Modifies ‘diff-command’ and ‘diff-switches’ to use ‘git diff’."
 ;; line-numbers
 (use-package linum
   :disabled
-  ;Add spaces before and after
+                                        ;Add spaces before and after
   (setq linum-format " %d "))
 
 (use-package vterm
@@ -1349,12 +1349,12 @@ With numeric prefix arg DEC, decrement the integer by DEC amount."
     (increment-integer-at-point (- (or dec 1)))))
 
 (use-package highlight-indent-guides
-    :bind (:map zp/toggle-map
-                ("c" . highlight-indent-guides-mode))
-    :hook (prog-mode . highlight-indent-guides-mode)
-    :config
-    (setq highlight-indent-guides-method 'column
-          highlight-indent-guides-auto-character-face-perc 20))
+  :bind (:map zp/toggle-map
+         ("c" . highlight-indent-guides-mode))
+  :hook (prog-mode . highlight-indent-guides-mode)
+  :config
+  (setq highlight-indent-guides-method 'column
+        highlight-indent-guides-auto-character-face-perc 20))
 
 ;;----------------------------------------------------------------------------
 ;; Shortcuts
@@ -1991,8 +1991,8 @@ SEARCH is a string to be interpreted by notmuch-search."
 ;;----------------------------------------------------------------------------
 (use-package cperl-mode
   :bind (:map cperl-mode-map
-              ("M-RET" . zp/perl-eval-buffer)
-              ("<C-return>" . zp/perl-eval-region))
+         ("M-RET" . zp/perl-eval-buffer)
+         ("<C-return>" . zp/perl-eval-region))
   :config
   ;; Use ‘cperl-mode’ instead ‘perl-mode’
   (defalias 'perl-mode 'cperl-mode)
@@ -2021,7 +2021,7 @@ SEARCH is a string to be interpreted by notmuch-search."
 
 (use-package python
   :bind (:map python-mode-map
-              ("M-RET" . zp/python-eval-buffer))
+         ("M-RET" . zp/python-eval-buffer))
   :config
   (defun zp/inferior-python-mode-config ()
     "Modify keymaps for ‘inferior-python-mode’."
@@ -2051,7 +2051,7 @@ SEARCH is a string to be interpreted by notmuch-search."
 
 (use-package racket-mode
   :bind (:map racket-mode-map
-              ("M-RET" . zp/racket-eval-buffer))
+         ("M-RET" . zp/racket-eval-buffer))
   :config
   (defun zp/racket-eval-buffer (arg)
     "Run current buffer as Perl code"
@@ -2068,11 +2068,11 @@ SEARCH is a string to be interpreted by notmuch-search."
 ;;----------------------------------------------------------------------------
 (use-package latex
   :bind (:map LaTeX-mode-map
-              (("C-x n e" . zp/LaTeX-narrow-to-environment)
-               ("C-c DEL" . zp/LaTeX-remove-macro)
-               ("C-c <C-backspace>" . zp/LaTeX-remove-macro)
-               ("C-c <M-backspace>" . zp/LaTeX-remove-environment)
-               ("C-c C-t C-v" . zp/tex-view-program-switch)))
+         (("C-x n e" . zp/LaTeX-narrow-to-environment)
+          ("C-c DEL" . zp/LaTeX-remove-macro)
+          ("C-c <C-backspace>" . zp/LaTeX-remove-macro)
+          ("C-c <M-backspace>" . zp/LaTeX-remove-environment)
+          ("C-c C-t C-v" . zp/tex-view-program-switch)))
   :hook (LaTeX-mode . visual-line-mode)
   :config
   ;; Set default library
@@ -2314,15 +2314,15 @@ return `nil'."
   (setq org-html-postamble nil))
 
 (use-package ox-latex
-    :after (org ox)
-    :config
-    (setq org-latex-default-class "koma-article")
-    (setq org-latex-compiler "luatex")
+  :after (org ox)
+  :config
+  (setq org-latex-default-class "koma-article")
+  (setq org-latex-compiler "luatex")
 
-    ;; Redefine default classes
-    (setq org-latex-classes
-          '(("koma-article"
-             "\\documentclass[
+  ;; Redefine default classes
+  (setq org-latex-classes
+        '(("koma-article"
+           "\\documentclass[
 ,a4paper
 ,DIV=12
 ,12pt
@@ -2339,69 +2339,69 @@ return `nil'."
 ]{zpart}
 
 \\author{Leo Vivier}"
-             ("\\section{%s}" . "\\section*{%s}")
-             ("\\subsection{%s}" . "\\subsection*{%s}")
-             ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-             ("\\paragraph{%s}" . "\\paragraph*{%s}")
-             ("\\subparagraph{%s}" . "\\subparagraph*{%s}"))))
+           ("\\section{%s}" . "\\section*{%s}")
+           ("\\subsection{%s}" . "\\subsection*{%s}")
+           ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+           ("\\paragraph{%s}" . "\\paragraph*{%s}")
+           ("\\subparagraph{%s}" . "\\subparagraph*{%s}"))))
 
-    (setq org-latex-hyperref-template nil)
+  (setq org-latex-hyperref-template nil)
 
-    ;; Use Minted for src-blocks
-    (setq org-latex-listings 'minted)
+  ;; Use Minted for src-blocks
+  (setq org-latex-listings 'minted)
 
-    ;; Disable defaut packages
-    (setq org-latex-default-packages-alist nil)
+  ;; Disable defaut packages
+  (setq org-latex-default-packages-alist nil)
 
-    ;; Legacy code for switching between long and short compilation with XeTeX
-    ;; Not using it anymore because I’ve moved to LuaTeX
-    ;; (defvar zp/org-latex-pdf-process-mode nil
-    ;;     "Current mode for processing org-latex files.
+  ;; Legacy code for switching between long and short compilation with XeTeX
+  ;; Not using it anymore because I’ve moved to LuaTeX
+  ;; (defvar zp/org-latex-pdf-process-mode nil
+  ;;     "Current mode for processing org-latex files.
 
-    ;; See ‘zp/toggle-org-latex-pdf-process’ for more information.")
+  ;; See ‘zp/toggle-org-latex-pdf-process’ for more information.")
 
-    ;;   (defun zp/toggle-org-latex-pdf-process ()
-    ;;     "Toggle the number of steps in the XeTeX PDF process."
-    ;;     (interactive)
-    ;;     (if (or (not (bound-and-true-p zp/org-latex-pdf-process-mode))
-    ;;             (string= zp/org-latex-pdf-process-mode "full"))
-    ;;         (progn (setq org-latex-pdf-process '("xelatex -shell-escape\
-    ;;                                                   -interaction nonstopmode\
-    ;;                                                   -output-directory %o %f")
-    ;;                      org-export-async-init-file "~/.emacs.d/async/main-short.el"
-    ;;                      zp/org-latex-pdf-process-mode 'short)
-    ;;                (message "XeLaTeX process mode: Short"))
-    ;;       (progn (setq org-latex-pdf-process '("xelatex -shell-escape\
-    ;;                                                     -interaction nonstopmode\
-    ;;                                                     -output-directory %o %f"
-    ;;                                            "biber %b"
-    ;;                                            "xelatex -shell-escape\
-    ;;                                                     -interaction nonstopmode\
-    ;;                                                     -output-directory %o %f"
-    ;;                                            "xelatex -shell-escape\
-    ;;                                                     -interaction nonstopmode\
-    ;;                                                     -output-directory %o %f")
-    ;;                    org-export-async-init-file "~/.emacs.d/async/main-full.el"
-    ;;                    zp/org-latex-pdf-process-mode 'full)
-    ;;              (message "XeLaTeX process mode: Full"))))
-    ;;   (zp/toggle-org-latex-pdf-process)
+  ;;   (defun zp/toggle-org-latex-pdf-process ()
+  ;;     "Toggle the number of steps in the XeTeX PDF process."
+  ;;     (interactive)
+  ;;     (if (or (not (bound-and-true-p zp/org-latex-pdf-process-mode))
+  ;;             (string= zp/org-latex-pdf-process-mode "full"))
+  ;;         (progn (setq org-latex-pdf-process '("xelatex -shell-escape\
+  ;;                                                   -interaction nonstopmode\
+  ;;                                                   -output-directory %o %f")
+  ;;                      org-export-async-init-file "~/.emacs.d/async/main-short.el"
+  ;;                      zp/org-latex-pdf-process-mode 'short)
+  ;;                (message "XeLaTeX process mode: Short"))
+  ;;       (progn (setq org-latex-pdf-process '("xelatex -shell-escape\
+  ;;                                                     -interaction nonstopmode\
+  ;;                                                     -output-directory %o %f"
+  ;;                                            "biber %b"
+  ;;                                            "xelatex -shell-escape\
+  ;;                                                     -interaction nonstopmode\
+  ;;                                                     -output-directory %o %f"
+  ;;                                            "xelatex -shell-escape\
+  ;;                                                     -interaction nonstopmode\
+  ;;                                                     -output-directory %o %f")
+  ;;                    org-export-async-init-file "~/.emacs.d/async/main-full.el"
+  ;;                    zp/org-latex-pdf-process-mode 'full)
+  ;;              (message "XeLaTeX process mode: Full"))))
+  ;;   (zp/toggle-org-latex-pdf-process)
 
-    ;; Suppress creation of labels when converting org→tex
-    (defun remove-orgmode-latex-labels ()
-      "Remove labels generated by org-mode"
-      (interactive)
-      (let ((case-fold-search nil))
-        (goto-char 1)
-        (re-search-forward "\\\\label{sec:org[0-9][^}]*}" nil t)
-        (replace-match "")))
+  ;; Suppress creation of labels when converting org→tex
+  (defun remove-orgmode-latex-labels ()
+    "Remove labels generated by org-mode"
+    (interactive)
+    (let ((case-fold-search nil))
+      (goto-char 1)
+      (re-search-forward "\\\\label{sec:org[0-9][^}]*}" nil t)
+      (replace-match "")))
 
-    (defun zp/org-latex-remove-section-labels (string backend info)
-      "Remove section labels generated by org-mode"
-      (when (org-export-derived-backend-p backend 'latex)
-        (replace-regexp-in-string "\\\\label{sec:.*?}" "" string)))
+  (defun zp/org-latex-remove-section-labels (string backend info)
+    "Remove section labels generated by org-mode"
+    (when (org-export-derived-backend-p backend 'latex)
+      (replace-regexp-in-string "\\\\label{sec:.*?}" "" string)))
 
-    (add-to-list #'org-export-filter-final-output-functions
-                 #'zp/org-latex-remove-section-labels))
+  (add-to-list #'org-export-filter-final-output-functions
+               #'zp/org-latex-remove-section-labels))
 
 (use-package bibtex
   :config
@@ -2447,40 +2447,40 @@ return `nil'."
 
 (use-package org
   :bind (:map org-mode-map
-              ("C-c i" . org-indent-mode)
-              ("C-c [" . nil)
-              ("C-c ]" . nil)
-              ("C-c C-q" . counsel-org-tag)
-              ("C-c C-." . org-time-stamp)
-              ("C-c C-x r" . zp/org-set-appt-warntime)
-              ("C-c C-x l" . zp/org-set-location)
-              ("C-c C-x d" . org-delete-property)
-              ("C-c C-x D" . org-insert-drawer)
-              ("C-c C-x b" . zp/org-tree-to-indirect-buffer-folded)
-              ("S-<backspace>" . zp/org-kill-spawned-ibuf)
-              ("C-x n o" . zp/org-overview)
-              ("C-x n a" . zp/org-show-all)
-              ("C-x n u" . zp/org-narrow-up-heading-dwim)
-              ("C-x n y" . zp/org-narrow-previous-heading)
-              ("C-x n s" . zp/org-narrow-to-subtree)
-              ("C-x n f" . zp/org-narrow-forwards)
-              ("C-x n b" . zp/org-narrow-backwards)
-              ("C-x n w" . zp/org-widen)
-              ("C-c ," . zp/hydra-org-priority/body)
-              ("M-p" . org-metaup)
-              ("M-n" . org-metadown)
-              ("M-P" . org-shiftmetaup)
-              ("M-N" . org-shiftmetadown)
-              ("M-[" . org-metaleft)
-              ("M-]" . org-metaright)
-              ("M-{" . org-shiftmetaleft)
-              ("M-}" . org-shiftmetaright)
-              ("C-a" . org-beginning-of-line)
-              ("C-e" . org-end-of-line)
-              ("M-I" . org-indent-mode)
-              ("M-*" . zp/org-toggle-fontifications)
-              ("C-c C-x C-l" . zp/org-latex-preview-dwim)
-              ("C-c R" . org-display-inline-images))
+         ("C-c i" . org-indent-mode)
+         ("C-c [" . nil)
+         ("C-c ]" . nil)
+         ("C-c C-q" . counsel-org-tag)
+         ("C-c C-." . org-time-stamp)
+         ("C-c C-x r" . zp/org-set-appt-warntime)
+         ("C-c C-x l" . zp/org-set-location)
+         ("C-c C-x d" . org-delete-property)
+         ("C-c C-x D" . org-insert-drawer)
+         ("C-c C-x b" . zp/org-tree-to-indirect-buffer-folded)
+         ("S-<backspace>" . zp/org-kill-spawned-ibuf)
+         ("C-x n o" . zp/org-overview)
+         ("C-x n a" . zp/org-show-all)
+         ("C-x n u" . zp/org-narrow-up-heading-dwim)
+         ("C-x n y" . zp/org-narrow-previous-heading)
+         ("C-x n s" . zp/org-narrow-to-subtree)
+         ("C-x n f" . zp/org-narrow-forwards)
+         ("C-x n b" . zp/org-narrow-backwards)
+         ("C-x n w" . zp/org-widen)
+         ("C-c ," . zp/hydra-org-priority/body)
+         ("M-p" . org-metaup)
+         ("M-n" . org-metadown)
+         ("M-P" . org-shiftmetaup)
+         ("M-N" . org-shiftmetadown)
+         ("M-[" . org-metaleft)
+         ("M-]" . org-metaright)
+         ("M-{" . org-shiftmetaleft)
+         ("M-}" . org-shiftmetaright)
+         ("C-a" . org-beginning-of-line)
+         ("C-e" . org-end-of-line)
+         ("M-I" . org-indent-mode)
+         ("M-*" . zp/org-toggle-fontifications)
+         ("C-c C-x C-l" . zp/org-latex-preview-dwim)
+         ("C-c R" . org-display-inline-images))
   :hook ((org-mode . org-indent-mode)
          (org-mode . visual-line-mode)
          (before-save . zp/org-set-last-modified)
@@ -2639,12 +2639,12 @@ return `nil'."
   ;; Formatting options for LaTeX preview-blocks
   (setq org-format-latex-options
         '(:foreground default
-                      :background default
-                      :scale zp/org-format-latex-default-scale
-                      :html-foreground "Black"
-                      :html-background "Transparent"
-                      :html-scale 1.0
-                      :matchers ("begin" "$1" "$" "$$" "\\(" "\\[")))
+          :background default
+          :scale zp/org-format-latex-default-scale
+          :html-foreground "Black"
+          :html-background "Transparent"
+          :html-scale 1.0
+          :matchers ("begin" "$1" "$" "$$" "\\(" "\\[")))
 
   (defun zp/org-latex-preview-dwim (arg)
     "Run org-latex-preview after updating the scale."
@@ -3544,8 +3544,8 @@ indirect-buffers."
   (defun zp/org-super-agenda-groups (header groups)
     "Create org-super-agenda section for GROUPS with HEADER."
     `(:name ,header
-            :pred (lambda (item)
-                    (zp/org-super-agenda-item-in-agenda-groups-p item ',groups))))
+      :pred (lambda (item)
+              (zp/org-super-agenda-item-in-agenda-groups-p item ',groups))))
 
   (defun zp/org-super-agenda-groups-all ()
     `(,(zp/org-super-agenda-groups "Inbox" '("inbox"))
@@ -3566,25 +3566,25 @@ indirect-buffers."
 
   (defun zp/org-super-agenda-scheduled ()
     '((:name "Overdue"
-             :face (:foreground "red")
-             :scheduled past)
+       :face (:foreground "red")
+       :scheduled past)
       (:name "Waiting"
-             :and (:tag "waiting"
-                        :scheduled nil)
-             :and (:tag "waiting"
-                        :scheduled today))
+       :and (:tag "waiting"
+             :scheduled nil)
+       :and (:tag "waiting"
+             :scheduled today))
       (:name "Scheduled"
-             :scheduled today)
+       :scheduled today)
       (:name "Subtasks"
-             :and (:scheduled nil
-                              :pred (lambda (item)
-                                      (when zp/org-agenda-split-subtasks
-                                        (zp/org-super-agenda-subtask-p item)))))
+       :and (:scheduled nil
+             :pred (lambda (item)
+                     (when zp/org-agenda-split-subtasks
+                       (zp/org-super-agenda-subtask-p item)))))
       (:name "Current"
-             :and (:not (:scheduled t)
-                        :not (:tag "waiting")))
+       :and (:not (:scheduled t)
+             :not (:tag "waiting")))
       (:name "Later"
-             :anything)))
+       :anything)))
 
   (defun zp/org-super-agenda-group-heads (item)
     (let ((marker (or (get-text-property 0 'org-marker item)
@@ -3607,20 +3607,20 @@ indirect-buffers."
 
   (defun zp/org-super-agenda-projects ()
     '((:name "Group heads"
-             :pred (lambda (item)
-                     (zp/org-super-agenda-group-heads item)))
+       :pred (lambda (item)
+               (zp/org-super-agenda-group-heads item)))
       (:name "Finished"
-             :face (:foreground "purple")
-             :pred (lambda (item)
-                     (zp/org-super-agenda-finished-project-p item)))
+       :face (:foreground "purple")
+       :pred (lambda (item)
+               (zp/org-super-agenda-finished-project-p item)))
       (:name "Stuck"
-             :face (:foreground "red")
-             :pred (lambda (item)
-                     (zp/org-super-agenda-stuck-project-p item)))
+       :face (:foreground "red")
+       :pred (lambda (item)
+               (zp/org-super-agenda-stuck-project-p item)))
       (:name "Waiting"
-             :tag "waiting")
+       :tag "waiting")
       (:name "Current"
-             :anything))))
+       :anything))))
 
 ;;----------------------------------------------------------------------------
 ;; org-agenda
@@ -3745,14 +3745,14 @@ indirect-buffers."
         '(:link t :narrow 50 :maxlevel 2 :fileskip0 t)
         org-agenda-clock-consistency-checks
         '(:max-duration "10:00"
-                        :min-duration 0
-                        :max-gap "0:05"
-                        :gap-ok-around ("4:00" "12:30" "19:30")
-                        :default-face zp/org-agenda-block-info-face
-                        :gap-face nil
-                        :no-end-time-face nil
-                        :long-face nil
-                        :short-face nil)
+          :min-duration 0
+          :max-gap "0:05"
+          :gap-ok-around ("4:00" "12:30" "19:30")
+          :default-face zp/org-agenda-block-info-face
+          :gap-face nil
+          :no-end-time-face nil
+          :long-face nil
+          :short-face nil)
         org-agenda-prefix-format '((agenda . " %i %-12:c%(zp/org-agenda-format-energy-level-cookie)%?-12t%s")
                                    (timeline . "  % s")
                                    (todo . " %i %-12:c%(zp/org-agenda-format-energy-level-cookie)")
@@ -3760,88 +3760,88 @@ indirect-buffers."
                                    (search . " %i %-12:c")))
 
   (setq zp/org-agenda-category-icon-alist
-      '(
-        ;; Life
-        ("^inbox$" "~/org/svg/icons/gmail.svg" nil nil :ascent center)
-        ("^notes$" "~/org/svg/icons/research.svg" nil nil :ascent center)
-        ("^life$" "~/org/svg/icons/aperture-blue.svg" nil nil :ascent center)
-        ("^curios$" "~/org/svg/icons/question.svg" nil nil :ascent center)
-        ("^style$" "~/org/svg/icons/suit.svg" nil nil :ascent center)
-        ("^swim$" "~/org/svg/icons/wave.svg" nil nil :ascent center)
-        ("^run$" "~/org/svg/icons/running.svg" nil nil :ascent center)
-        ("^awakening$" "~/org/svg/icons/aperture-green.svg" nil nil :ascent center)
-        ("^journal$" "~/org/svg/icons/spellbook-p.svg" nil nil :ascent center)
-        ("^psy$" "~/org/svg/icons/solution.svg" nil nil :ascent center)
-        ("^anki$" "~/org/svg/icons/anki-2-p.svg" nil nil :ascent center)
-        ("^plan$" "~/org/svg/icons/planning-p.svg" nil nil :ascent center)
-        ("^guitar$" "~/org/svg/icons/electric-guitar.svg" nil nil :ascent center)
-        ("^musicology$" "~/org/svg/icons/music-book.svg" nil nil :ascent center)
-        ("^piano$" "~/org/svg/icons/piano.svg" nil nil :ascent center)
-        ("^typography$" "~/org/svg/icons/typography.svg" nil nil :ascent center)
+        '(
+          ;; Life
+          ("^inbox$" "~/org/svg/icons/gmail.svg" nil nil :ascent center)
+          ("^notes$" "~/org/svg/icons/research.svg" nil nil :ascent center)
+          ("^life$" "~/org/svg/icons/aperture-blue.svg" nil nil :ascent center)
+          ("^curios$" "~/org/svg/icons/question.svg" nil nil :ascent center)
+          ("^style$" "~/org/svg/icons/suit.svg" nil nil :ascent center)
+          ("^swim$" "~/org/svg/icons/wave.svg" nil nil :ascent center)
+          ("^run$" "~/org/svg/icons/running.svg" nil nil :ascent center)
+          ("^awakening$" "~/org/svg/icons/aperture-green.svg" nil nil :ascent center)
+          ("^journal$" "~/org/svg/icons/spellbook-p.svg" nil nil :ascent center)
+          ("^psy$" "~/org/svg/icons/solution.svg" nil nil :ascent center)
+          ("^anki$" "~/org/svg/icons/anki-2-p.svg" nil nil :ascent center)
+          ("^plan$" "~/org/svg/icons/planning-p.svg" nil nil :ascent center)
+          ("^guitar$" "~/org/svg/icons/electric-guitar.svg" nil nil :ascent center)
+          ("^musicology$" "~/org/svg/icons/music-book.svg" nil nil :ascent center)
+          ("^piano$" "~/org/svg/icons/piano.svg" nil nil :ascent center)
+          ("^typography$" "~/org/svg/icons/typography.svg" nil nil :ascent center)
 
-        ;; Activism
-        ("^pol$" "~/org/svg/icons/fist.svg" nil nil :ascent center)
-        ("^union$" "~/org/svg/icons/fist.svg" nil nil :ascent center)
+          ;; Activism
+          ("^pol$" "~/org/svg/icons/fist.svg" nil nil :ascent center)
+          ("^union$" "~/org/svg/icons/fist.svg" nil nil :ascent center)
 
-        ;; Professional
-        ("^university$" "~/org/svg/icons/aperture-yellow.svg" nil nil :ascent center)
-        ("^school$" "~/org/svg/icons/university.svg" nil nil :ascent center)
+          ;; Professional
+          ("^university$" "~/org/svg/icons/aperture-yellow.svg" nil nil :ascent center)
+          ("^school$" "~/org/svg/icons/university.svg" nil nil :ascent center)
 
-        ;; Research
-        ("^research$" "~/org/svg/icons/research.svg" nil nil :ascent center)
-        ("^d&p$" "~/org/svg/icons/university.svg" nil nil :ascent center)
-        ("^lit$" "~/org/svg/icons/book-2.svg" nil nil :ascent center)
-        ("^visual$" "~/org/svg/icons/eye-2.svg" nil nil :ascent center)
-        ("^cs$" "~/org/svg/icons/computer-science.svg" nil nil :ascent center)
-        ("^maths$" "~/org/svg/icons/pi.svg" nil nil :ascent center)
-        ("^phil$" "~/org/svg/icons/philosophy.svg" nil nil :ascent center)
-        ("^history$" "~/org/svg/icons/history.svg" nil nil :ascent center)
-        ("^ling$" "~/org/svg/icons/language.svg" nil nil :ascent center)
+          ;; Research
+          ("^research$" "~/org/svg/icons/research.svg" nil nil :ascent center)
+          ("^d&p$" "~/org/svg/icons/university.svg" nil nil :ascent center)
+          ("^lit$" "~/org/svg/icons/book-2.svg" nil nil :ascent center)
+          ("^visual$" "~/org/svg/icons/eye-2.svg" nil nil :ascent center)
+          ("^cs$" "~/org/svg/icons/computer-science.svg" nil nil :ascent center)
+          ("^maths$" "~/org/svg/icons/pi.svg" nil nil :ascent center)
+          ("^phil$" "~/org/svg/icons/philosophy.svg" nil nil :ascent center)
+          ("^history$" "~/org/svg/icons/history.svg" nil nil :ascent center)
+          ("^ling$" "~/org/svg/icons/language.svg" nil nil :ascent center)
 
-        ;; Hacking
-        ("^hack$" "~/org/svg/icons/engineering-2.svg" nil nil :ascent center)
-        ("^emacs$" "~/org/svg/icons/spacemacs.svg" nil nil :ascent center)
-        ("^org$" "~/org/svg/icons/org-mode-unicorn.svg" nil nil :ascent center)
-        ("^roam$" "~/org/svg/icons/org-roam-bibtex-icon-p.svg" nil nil :ascent center)
-        ("^python$" "~/org/svg/icons/python.svg" nil nil :ascent center)
-        ("^perl$" "~/org/svg/icons/perl.svg" nil nil :ascent center)
-        ("^cl$" "~/org/svg/icons/common-lisp-b.svg" nil nil :ascent center)
-        ("^contrib$" "~/org/svg/icons/chill.svg" nil nil :ascent center)
-        ("^bug$" "~/org/svg/icons/cross.svg" nil nil :ascent center)
-        ("^elisp$" "~/org/svg/icons/spacemacs-elisp.svg" nil nil :ascent center)
-        ("^tex$" "~/org/svg/icons/file-2-p.svg" nil nil :ascent center)
-        ("^linux$" "~/org/svg/icons/nixos.svg" nil nil :ascent center)
-        ("^nixos$" "~/org/svg/icons/nixos.svg" nil nil :ascent center)
-        ("^gentoo$" "~/org/svg/icons/gentoo.svg" nil nil :ascent center)
-        ("^opsec$" "~/org/svg/icons/cyber-security-b.svg" nil nil :ascent center)
-        ("^ranger$" "~/org/svg/icons/ranger.svg" nil nil :ascent center)
-        ("^git$" "~/org/svg/icons/git.svg" nil nil :ascent center)
+          ;; Hacking
+          ("^hack$" "~/org/svg/icons/engineering-2.svg" nil nil :ascent center)
+          ("^emacs$" "~/org/svg/icons/spacemacs.svg" nil nil :ascent center)
+          ("^org$" "~/org/svg/icons/org-mode-unicorn.svg" nil nil :ascent center)
+          ("^roam$" "~/org/svg/icons/org-roam-bibtex-icon-p.svg" nil nil :ascent center)
+          ("^python$" "~/org/svg/icons/python.svg" nil nil :ascent center)
+          ("^perl$" "~/org/svg/icons/perl.svg" nil nil :ascent center)
+          ("^cl$" "~/org/svg/icons/common-lisp-b.svg" nil nil :ascent center)
+          ("^contrib$" "~/org/svg/icons/chill.svg" nil nil :ascent center)
+          ("^bug$" "~/org/svg/icons/cross.svg" nil nil :ascent center)
+          ("^elisp$" "~/org/svg/icons/spacemacs-elisp.svg" nil nil :ascent center)
+          ("^tex$" "~/org/svg/icons/file-2-p.svg" nil nil :ascent center)
+          ("^linux$" "~/org/svg/icons/nixos.svg" nil nil :ascent center)
+          ("^nixos$" "~/org/svg/icons/nixos.svg" nil nil :ascent center)
+          ("^gentoo$" "~/org/svg/icons/gentoo.svg" nil nil :ascent center)
+          ("^opsec$" "~/org/svg/icons/cyber-security-b.svg" nil nil :ascent center)
+          ("^ranger$" "~/org/svg/icons/ranger.svg" nil nil :ascent center)
+          ("^git$" "~/org/svg/icons/git.svg" nil nil :ascent center)
 
-        ;; Media
-        ("^media$" "~/org/svg/icons/library.svg" nil nil :ascent center)
-        ("^news$" "~/org/svg/icons/world.svg" nil nil :ascent center)
-        ("^books$" "~/org/svg/icons/book-2.svg" nil nil :ascent center)
-        ("^theatre$" "~/org/svg/icons/theatre.svg" nil nil :ascent center)
-        ("^music$" "~/org/svg/icons/compact-disc.svg" nil nil :ascent center)
-        ("^film$" "~/org/svg/icons/film.svg" nil nil :ascent center)
-        ("^series$" "~/org/svg/icons/film-b.svg" nil nil :ascent center)
-        ("^anime$" "~/org/svg/icons/film-c.svg" nil nil :ascent center)
-        ("^manga$" "~/org/svg/icons/book-2b.svg" nil nil :ascent center)
-        ("^trackers$" "~/org/svg/icons/share.svg" nil nil :ascent center)
+          ;; Media
+          ("^media$" "~/org/svg/icons/library.svg" nil nil :ascent center)
+          ("^news$" "~/org/svg/icons/world.svg" nil nil :ascent center)
+          ("^books$" "~/org/svg/icons/book-2.svg" nil nil :ascent center)
+          ("^theatre$" "~/org/svg/icons/theatre.svg" nil nil :ascent center)
+          ("^music$" "~/org/svg/icons/compact-disc.svg" nil nil :ascent center)
+          ("^film$" "~/org/svg/icons/film.svg" nil nil :ascent center)
+          ("^series$" "~/org/svg/icons/film-b.svg" nil nil :ascent center)
+          ("^anime$" "~/org/svg/icons/film-c.svg" nil nil :ascent center)
+          ("^manga$" "~/org/svg/icons/book-2b.svg" nil nil :ascent center)
+          ("^trackers$" "~/org/svg/icons/share.svg" nil nil :ascent center)
 
-        ;; Maintenance
-        ("^mx$" "~/org/svg/icons/recycle.svg" nil nil :ascent center)
-        ("^fin$" "~/org/svg/icons/money-p.svg" nil nil :ascent center)
-        ("^cooking$" "~/org/svg/icons/salad.svg" nil nil :ascent center)
-        ("^plants$" "~/org/svg/icons/sansevieria.svg" nil nil :ascent center)
-        ("^animals$" "~/org/svg/icons/animals.svg" nil nil :ascent center)
-        ("^health$" "~/org/svg/icons/health.svg" nil nil :ascent center)
-        ("^supplies$" "~/org/svg/icons/box.svg" nil nil :ascent center)
-        ("^social$" "~/org/svg/icons/happy.svg" nil nil :ascent center)
-        ("^grooming$" "~/org/svg/icons/razor.svg" nil nil :ascent center)
-        ("^clean$" "~/org/svg/icons/bucket.svg" nil nil :ascent center)
+          ;; Maintenance
+          ("^mx$" "~/org/svg/icons/recycle.svg" nil nil :ascent center)
+          ("^fin$" "~/org/svg/icons/money-p.svg" nil nil :ascent center)
+          ("^cooking$" "~/org/svg/icons/salad.svg" nil nil :ascent center)
+          ("^plants$" "~/org/svg/icons/sansevieria.svg" nil nil :ascent center)
+          ("^animals$" "~/org/svg/icons/animals.svg" nil nil :ascent center)
+          ("^health$" "~/org/svg/icons/health.svg" nil nil :ascent center)
+          ("^supplies$" "~/org/svg/icons/box.svg" nil nil :ascent center)
+          ("^social$" "~/org/svg/icons/happy.svg" nil nil :ascent center)
+          ("^grooming$" "~/org/svg/icons/razor.svg" nil nil :ascent center)
+          ("^clean$" "~/org/svg/icons/bucket.svg" nil nil :ascent center)
 
-        (".*" '(space . (:width (24))) nil nil :ascent center)))
+          (".*" '(space . (:width (24))) nil nil :ascent center)))
 
   (setq zp/org-agenda-default-agendas-list '("n" "l"))
 
@@ -4463,15 +4463,15 @@ commas and space."
   (org-roam-directory "~/org/slip-box/")
   (org-roam-index-file "index.org")
   :bind (:map org-roam-mode-map
-              (("C-c m l" . org-roam)
-               ("C-c m F" . org-roam-find-file)
-               ("C-c m r" . org-roam-find-ref)
-               ("C-c m d" . org-roam-find-directory)
-               ("C-c m j" . org-roam-find-index)
-               ("C-c m b" . org-roam-switch-to-buffer)
-               ("C-c m g" . org-roam-graph))
-              :map org-mode-map
-              (("C-c m i" . org-roam-insert)))
+         (("C-c m l" . org-roam)
+          ("C-c m F" . org-roam-find-file)
+          ("C-c m r" . org-roam-find-ref)
+          ("C-c m d" . org-roam-find-directory)
+          ("C-c m j" . org-roam-jump-to-index)
+          ("C-c m b" . org-roam-switch-to-buffer)
+          ("C-c m g" . org-roam-graph))
+         :map org-mode-map
+         (("C-c m i" . org-roam-insert)))
   :config
   (setq org-roam-capture-templates
         '(("d" "default" plain
@@ -4558,17 +4558,17 @@ This function is intended to be run with ‘find-file-hook’."
   ;; has been loaded.
   (use-package org
     :bind (:map org-mode-map
-                ("C-c C-j" . zp/org-jump-dwim )
-                ("C-c C-w" . zp/org-refile-dwim ))
+           ("C-c C-j" . zp/org-jump-dwim )
+           ("C-c C-w" . zp/org-refile-dwim ))
     :hook (org-mode . visual-line-mode))
 
   (use-package org-agenda
     :bind (:map org-agenda-mode-map
-                ("C-c C-w" . zp/hydra-org-refile )))
+           ("C-c C-w" . zp/hydra-org-refile )))
 
   (use-package org-capture
     :bind (:map org-capture-mode-map
-                ("C-c C-w" . zp/hydra-org-refile )))
+           ("C-c C-w" . zp/hydra-org-refile )))
   :config
   ;; Exclude separators in all org-refile commands
   (setq org-refile-target-verify-function
@@ -5109,7 +5109,7 @@ advised function and this one."
 ;;----------------------------------------------------------------------------
 (use-package ledger-mode
   :bind (:map ledger-mode-map
-              ("C-c C-d" . ledger-kill-current-transaction))
+         ("C-c C-d" . ledger-kill-current-transaction))
   :config
   (add-to-list 'auto-mode-alist '("\\.ledger$" . ledger-mode))
 
@@ -5175,44 +5175,44 @@ that date.  Leave point on the first amount."
 (use-package chronos
   :demand
   :bind (:map chronos-mode-map
-              (("a" . 'helm-chronos-add-timer)
-               ("A" . (lambda ()
-                        (interactive)
-                        (let ((helm-chronos-add-relatively t))
-                          (helm-chronos-add-timer))))
-               ("q" . zp/chronos-quit)
+         (("a" . 'helm-chronos-add-timer)
+          ("A" . (lambda ()
+                   (interactive)
+                   (let ((helm-chronos-add-relatively t))
+                     (helm-chronos-add-timer))))
+          ("q" . zp/chronos-quit)
 
-               ;; Quick keys
-               ("U" . (lambda ()
-                        (interactive)
-                        (zp/chronos-edit-quick "-0:00:05" "5 s")))
-               ("I" . (lambda ()
-                        (interactive)
-                        (zp/chronos-edit-quick "+0:00:05" "5 s")))
-               ("u" . (lambda ()
-                        (interactive)
-                        (zp/chronos-edit-quick "-0:00:15" "15 s")))
-               ("i" . (lambda ()
-                        (interactive)
-                        (zp/chronos-edit-quick "+0:00:15" "15 s")))
-               ("j" . (lambda ()
-                        (interactive)
-                        (zp/chronos-edit-quick "-0:01:00" "1 min")))
-               ("k" . (lambda ()
-                        (interactive)
-                        (zp/chronos-edit-quick "+0:01:00" "1 min")))
-               ("J" . (lambda ()
-                        (interactive)
-                        (zp/chronos-edit-quick "-0:05:00" "5 min")))
-               ("K" . (lambda ()
-                        (interactive)
-                        (zp/chronos-edit-quick "+0:05:00" "5 min")))
-               ("m" . (lambda ()
-                        (interactive)
-                        (zp/chronos-edit-quick "-0:10:00" "10 min")))
-               ("," . (lambda ()
-                        (interactive)
-                        (zp/chronos-edit-quick "+0:10:00" "10 min")))))
+          ;; Quick keys
+          ("U" . (lambda ()
+                   (interactive)
+                   (zp/chronos-edit-quick "-0:00:05" "5 s")))
+          ("I" . (lambda ()
+                   (interactive)
+                   (zp/chronos-edit-quick "+0:00:05" "5 s")))
+          ("u" . (lambda ()
+                   (interactive)
+                   (zp/chronos-edit-quick "-0:00:15" "15 s")))
+          ("i" . (lambda ()
+                   (interactive)
+                   (zp/chronos-edit-quick "+0:00:15" "15 s")))
+          ("j" . (lambda ()
+                   (interactive)
+                   (zp/chronos-edit-quick "-0:01:00" "1 min")))
+          ("k" . (lambda ()
+                   (interactive)
+                   (zp/chronos-edit-quick "+0:01:00" "1 min")))
+          ("J" . (lambda ()
+                   (interactive)
+                   (zp/chronos-edit-quick "-0:05:00" "5 min")))
+          ("K" . (lambda ()
+                   (interactive)
+                   (zp/chronos-edit-quick "+0:05:00" "5 min")))
+          ("m" . (lambda ()
+                   (interactive)
+                   (zp/chronos-edit-quick "-0:10:00" "10 min")))
+          ("," . (lambda ()
+                   (interactive)
+                   (zp/chronos-edit-quick "+0:10:00" "10 min")))))
   :config
   (setq helm-chronos-recent-timers-limit 100
         helm-chronos-standard-timers
@@ -5363,9 +5363,9 @@ chronos’s main buffer for adding a new timer."
 ;;----------------------------------------------------------------------------
 (use-package org-noter
   :bind (:map org-mode-map
-              (("C-c N" . zp/org-noter-dwim))
-              :map org-noter-doc-mode-map
-              (("M-i" . zp/org-noter-insert-precise-note-dwim)))
+         (("C-c N" . zp/org-noter-dwim))
+         :map org-noter-doc-mode-map
+         (("M-i" . zp/org-noter-insert-precise-note-dwim)))
   :config
   (setq org-noter-hide-other t
         org-noter-auto-save-last-location t
