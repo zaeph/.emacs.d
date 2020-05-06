@@ -851,7 +851,7 @@ With a ‘C-u’ prefix argument, amend the last commit instead."
   (lisp-indent-function #'zp/lisp-indent-function)
   :config
   ;; Taken from https://github.com/CeleritasCelery/emacs.d/blob/master/emacs.org#indent
-  ;; TODO: Use el-patch to upstream catch modifications
+  ;; TODO: Use el-patch to catch upstream modifications
   (defun zp/lisp-indent-function (indent-point state)
     "Override `lisp-indent-function' to properly handle plists. See the original function fo full description"
     (let ((normal-indent (current-column))
