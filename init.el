@@ -1945,7 +1945,8 @@ SEARCH is a string to be interpreted by notmuch-search."
   (defun zp/color-all-inboxes ()
     (zp/color-inbox-if-unread "inbox" "not tag:auto")
     (zp/color-inbox-if-unread "pro-inbox" "tag:pro")
-    (zp/color-inbox-if-unread "dev-github-inbox" "tag:dev and tag:auto"))
+    (zp/color-inbox-if-unread "dev-github-inbox" "tag:github")
+    (zp/color-inbox-if-unread "dev-forum-inbox" "tag:forum"))
 
   ;;----------------------
   ;; Switching to notmuch
