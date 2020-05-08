@@ -3810,6 +3810,8 @@ indirect-buffers."
           ("^contrib$" "~/org/svg/icons/chill.svg" nil nil :ascent center)
           ("^bug$" "~/org/svg/icons/cross.svg" nil nil :ascent center)
           ("^elisp$" "~/org/svg/icons/spacemacs-elisp.svg" nil nil :ascent center)
+          ("^cl$" "~/org/svg/icons/common-lisp-b.svg" nil nil :ascent center)
+          ("^clojure$" "~/org/svg/icons/clojure.svg" nil nil :ascent center)
           ("^tex$" "~/org/svg/icons/file-2-p.svg" nil nil :ascent center)
           ("^linux$" "~/org/svg/icons/nixos.svg" nil nil :ascent center)
           ("^nixos$" "~/org/svg/icons/nixos.svg" nil nil :ascent center)
@@ -4736,7 +4738,8 @@ This function is intended to be run with ‘find-file-hook’."
      ("g" "~/org/life.org" "Git")
      ("p" "~/org/life.org" "Python")
      ("P" "~/org/life.org" "Perl")
-     ("c" "~/org/life.org" "Common Lisp")
+     ("c" "~/org/life.org" "Clojure")
+     ("C" "~/org/life.org" "Common Lisp")
 
      ;; ("c" "~/org/life.org" "Contributing")
      ;; ("b" "~/org/life.org" "Troubleshooting")
