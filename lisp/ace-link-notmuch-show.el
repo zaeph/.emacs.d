@@ -57,6 +57,7 @@ Only works in 'text/plain'"
   (goto-char pt)
   (browse-url-at-point))
 
+;;;###autoload
 (defun ace-link-notmuch-show-plain ()
   "Open a visible link in a `notmuch-show' buffer.
 Only consider the 'text/plain' portion of the buffer."
@@ -90,6 +91,7 @@ Only consider the 'text/plain' portion of the buffer."
   (or (text-property-any (elt link 1) (point-max) (elt link 0) nil)
       (point-max)))
 
+;;;###autoload
 (defun ace-link--notmuch-show-html-collect ()
   "Collect the positions of visible links in current `notmuch-show' buffer."
   (save-excursion
@@ -141,6 +143,7 @@ call at PT."
              (cons (cdr x) #'ace-link--notmuch-show-html-action))
            (ace-link--notmuch-show-html-collect))))
 
+;;;###autoload
 (defun ace-link-notmuch-show ()
   "Open a visible link in `notmuch-show' buffer.
 Consider both the links in 'text/plain' and 'text/html'."
