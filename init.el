@@ -962,8 +962,43 @@ With a ‘C-u’ prefix argument, amend the last commit instead."
          ("C-s-n" . avy-goto-char-timer)))
 
 (use-package ace-link
+  :bind (:map notmuch-show-mode-map
+         ("o" . ace-link-notmuch-show))
   :config
-  (ace-link-setup-default))
+  (ace-link-setup-default)
+
+  ;;---------------------
+  ;; Handler for notmuch
+  ;;---------------------
+
+  ;; Adapted from https://github.com/fuxialexander/doom-emacs-private-xfu/blob/dca32bd4a26b8f17e83e0e057741341663ac929e/modules/app/email/autoload.el
+
+  (defun ace-link--notmuch-show-collect ()
+    "Collect the positions of visible links in `notmuch-show' buffer."
+    (let (candidates pt)
+      (save-excursion
+        (save-restriction
+          (narrow-to-region
+           (window-start)
+           (window-end))
+          (goto-char (point-min))
+          (while (re-search-forward "https?://" nil t)
+            (setq pt (- (point) (length (match-string 0))))
+            (push pt candidates))))
+      (nreverse candidates)))
+
+  (defun ace-link--notmuch-show-action  (pt)
+    (goto-char pt)
+    (browse-url-at-point))
+
+  (defun ace-link-notmuch-show ()
+    "Open a visible link in `notmuch-show' buffer."
+    (interactive)
+    (when-let ((pt (avy-with ace-link-notmuch-show
+                     (avy--process
+                      (ace-link--notmuch-show-collect)
+                      #'avy--overlay-pre))))
+      (ace-link--notmuch-show-action pt))))
 
 ;; (use-package dumb-jump
 ;;   :config
