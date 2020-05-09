@@ -35,7 +35,7 @@ Only works in 'text/plain'"
 Only consider the 'text/plain' portion of the buffer."
   (interactive)
   (when-let ((pt (avy-with ace-link-notmuch-show-plain
-                   (avy--process
+                   (avy-process
                     (ace-link--notmuch-show-plain-collect)
                     #'avy--overlay-pre))))
     (ace-link--notmuch-show-plain-action pt)))
@@ -119,7 +119,7 @@ call at PT."
 Consider both the links in 'text/plain' and 'text/html'."
   (interactive)
   (when-let ((match (avy-with ace-link-notmuch-show
-                      (avy--process
+                      (avy-process
                        (ace-link--notmuch-collect)
                        #'avy--overlay-pre))))
     (let ((pt (car match))
