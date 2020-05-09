@@ -5,6 +5,7 @@
 
 (require 'ace-link)
 (require 'subr-x)
+(require 'shr)
 
 ;;----------------------------------------------------------------------------
 ;; Handler for text/plain
