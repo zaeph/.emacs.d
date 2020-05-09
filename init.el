@@ -950,6 +950,11 @@ With a ‘C-u’ prefix argument, amend the last commit instead."
   :config
   (winner-mode 1))
 
+(use-package ace-link
+  :load-path "~/projects/ace-link/"
+  :init
+  (ace-link-setup-default))
+
 (use-package ace-window
   :bind ("C-s-b" . ace-window)
   :config
@@ -960,14 +965,6 @@ With a ‘C-u’ prefix argument, amend the last commit instead."
   :bind (;; ("C-s-n" . avy-goto-goto-word-1)
          ;; ("C-s-n" . avy-goto-goto-char)
          ("C-s-n" . avy-goto-char-timer)))
-
-(use-package ace-link
-  :config
-  (ace-link-setup-default))
-
-(use-package ace-link-notmuch-show
-  :bind (:map notmuch-show-mode-map
-         ("o" . ace-link-notmuch-show)))
 
 ;; (use-package dumb-jump
 ;;   :config
