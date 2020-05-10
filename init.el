@@ -891,8 +891,7 @@ With a ‘C-u’ prefix argument, amend the last commit instead."
         flycheck-display-errors-delay 0.5))
 
 ;; Minor-mode to show Flycheck error messages in a popup
-(use-package fly-check-pos-tip
-  :disabled
+(use-package flycheck-pos-tip
   :requires flycheck
   :config
   (flycheck-pos-tip-mode))
