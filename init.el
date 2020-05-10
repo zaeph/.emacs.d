@@ -28,6 +28,9 @@
 ;; Alias the longform of ‘y-or-n-p’
 (defalias 'yes-or-no-p 'y-or-n-p)
 
+;; Put customisations in a separate file
+(setq custom-file (concat user-emacs-directory "custom.el"))
+
 ;; Show current filename in titlebar
 (setq frame-title-format "%b")
 

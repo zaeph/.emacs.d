@@ -8,9 +8,10 @@ Whilst most of the code featured in this repository contains informative names, 
 
 ### Goal 🚀
 
-A `1.0` version of this project would be a documented, fully-modularised configuration à la [purcell](https://github.com/purcell/emacs.d), and I am about half-way there.
+A `1.0.0` version of this project would be a documented, fully-modularised configuration à la [purcell](https://github.com/purcell/emacs.d), and I am about half-way there.
 
-In the meantime, feel free to explore the functions I’ve written.  I’ve invested a lot of time on my `org-agenda` config, and you might be interested in checking some of the helper functions I’ve written to organise my custom agenda-views.
+In the meantime, feel free to explore what I’ve written.  I’ve invested a lot of time on my `org-agenda` config, and you might be interested in checking some of the helper functions I’ve written to organise my custom agenda-views.
+Also, a small fraction of the code isn
 
 ### Questions?
 
