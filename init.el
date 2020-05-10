@@ -179,6 +179,7 @@ For details on DATA, CONTEXT, and SIGNAL, see
 ;;----------------------------------------------------------------------------
 ;; Debugging functions
 ;;----------------------------------------------------------------------------
+(require 'cl-lib)
 ;; Taken from https://alphapapa.github.io/emacs-package-dev-handbook/
 (cl-defmacro debug-warn (&rest args)
   "Display a debug warning showing the runtime value of ARGS.
