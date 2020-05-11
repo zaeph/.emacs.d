@@ -176,6 +176,9 @@ For details on DATA, CONTEXT, and SIGNAL, see
 ;; Prefer horizontal splits with edif
 (setq ediff-split-window-function 'split-window-horizontally)
 
+;; Safe local-variables
+(setq safe-local-variable-values '((org-confirm-babel-evaluate)))
+
 ;;----------------------------------------------------------------------------
 ;; Debugging functions
 ;;----------------------------------------------------------------------------
