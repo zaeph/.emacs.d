@@ -1,5 +1,32 @@
-;;; hidpi-fringe-bitmaps.el --- High resolution fringe bitmaps. -*- lexical-binding: t; -*-
+;;; hidpi-fringe-bitmaps.el --- High resolution fringe bitmaps -*- fill-column: 78; lexical-binding: t; -*-
+
+;; Copyright © 2020 Leo Vivier <leo.vivier+dev@gmail.com>
+
+;; Author: Leo Vivier <leo.vivier+dev@gmail.com>
+;; URL: https://github.com/zaeph/.emacs.d
+;; Keywords: emacs, init, init.el, dotfiles
+;; Version: 0.1.0
+
+;; This file is NOT part of GNU Emacs.
+
+;; This program is free software; you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation; either version 3, or (at your option)
+;; any later version.
+;;
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+;;
+;; You should have received a copy of the GNU General Public License
+;; along with GNU Emacs; see the file COPYING.  If not, write to the
+;; Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+;; Boston, MA 02110-1301, USA.
+
 ;;; Commentary:
+;;
+;; This is a library of bitmaps to be used in the fringes for HiDPI monitors.
 
 ;;; Code:
 

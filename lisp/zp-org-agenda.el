@@ -1,5 +1,41 @@
 ;;; zp-org-agenda.el --- Custom config for org-agenda -*- fill-column: 78; lexical-binding: t; -*-
+
+;; Copyright © 2020 Leo Vivier <leo.vivier+dev@gmail.com>
+
+;; Author: Leo Vivier <leo.vivier+dev@gmail.com>
+;; URL: https://github.com/zaeph/.emacs.d
+;; Keywords: emacs, init, init.el, dotfiles
+;; Version: 0.1.0
+
+;; This file is NOT part of GNU Emacs.
+
+;; This program is free software; you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation; either version 3, or (at your option)
+;; any later version.
+;;
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+;;
+;; You should have received a copy of the GNU General Public License
+;; along with GNU Emacs; see the file COPYING.  If not, write to the
+;; Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+;; Boston, MA 02110-1301, USA.
+
 ;;; Commentary:
+;;
+;; This is an advanced configuration of Org-mode’s agendas.  In it, you will
+;; find plenty of helper functions that help me run checks on items when
+;; building my custom views.  You will also find the macros that help me
+;; simplify the configuration at a higher level.
+;;
+;; Please note that, whilst I have gone to great lengths to document the code,
+;; the agenda building-functions are exceedingly intricate, and familiarising
+;; oneself with the process is no easy task.
+;;
+;; Here be dragons, as they say.
 
 ;;; Code:
 
