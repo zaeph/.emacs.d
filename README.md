@@ -12,7 +12,7 @@ The consequence of that is that some of the older functions were written in *Bab
 
 I'm hugely indebted to **Bernt Hansen** and his article on Org-mode: [Organize Your Life In Plain Text!](http://doc.norang.ca/org-mode.html).
 
-It has been a *constant* source of inspiration for the workflows I wanted to implement.
+It has been a *constant* source of inspiration for the workflows I have implemented over the years.
 
 Also, some of the code dates back to a time where I was much less diligent about keeping the sources of the pieces of code I was copy/pasting.  If your code made it into my config without due recognition, please let me know.
 
