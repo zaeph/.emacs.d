@@ -4589,10 +4589,7 @@ This function is intended to be run with ‘find-file-hook’."
                        ":PROPERTIES:"
                        ":NOTER_DOCUMENT: %(orb-process-file-field \"${citekey}\")"
                        ":NOTER_PAGE:"
-                       ":END:")))))
-  (orb-preformat-keywords '(("citekey" . "=key=")
-                            "author-abbrev"
-                            "author-or-editor")))
+                       ":END:"))))))
 
 ;;----------------------------------------------------------------------------
 ;; hydra-org-refile
