@@ -1001,7 +1001,7 @@ With a ‘C-u’ prefix argument, amend the last commit instead."
   (winner-mode 1))
 
 (use-package ace-link
-  :load-path "~/projects/ace-link/"
+  ;; :load-path "~/projects/ace-link/"
   :init
   (ace-link-setup-default))
 
