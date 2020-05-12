@@ -2077,13 +2077,13 @@ SEARCH is a string to be interpreted by notmuch-search."
   (defalias 'perl-mode 'cperl-mode)
 
   (defun zp/perl-eval-region ()
-    "Run selected region as Perl code"
+    "Run selected region as Perl code."
     (interactive)
     (let ((max-mini-window-height nil))
       (call-process (mark) (point) "perl")))
 
   (defun zp/perl-eval-buffer-in-terminator ()
-    "Run selected region as Perl code"
+    "Run selected region as Perl code."
     (interactive)
     (call-process "terminator" (buffer-file-name) nil nil (concat "-x perl"))
     ;; (call-process (concat "terminator -x perl "
@@ -2091,7 +2091,7 @@ SEARCH is a string to be interpreted by notmuch-search."
     )
 
   (defun zp/perl-eval-buffer (arg)
-    "Run current buffer as Perl code"
+    "Run current buffer as Perl code."
     (interactive "P")
     (let (max-mini-window-height)
       (unless arg
@@ -2109,7 +2109,7 @@ SEARCH is a string to be interpreted by notmuch-search."
   (setq inferior-python-mode-hook 'zp/inferior-python-mode-config)
 
   (defun zp/python-eval-buffer (arg)
-    "Run current buffer as Perl code"
+    "Run current buffer as Python code."
     (interactive "P")
     (let (max-mini-window-height)
       (unless arg
