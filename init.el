@@ -2128,6 +2128,18 @@ SEARCH is a string to be interpreted by notmuch-search."
   ;;   (scroll-up-line)))
   )
 
+(use-package elpy
+  :bind (:map elpy-mode-map
+         ("C-M-n" . elpy-nav-forward-block)
+         ("C-M-p" . elpy-nav-backward-block))
+  :hook ((elpy-mode . flycheck-mode)
+         ;; (pyenv-mode . elpy-rpc-restart)
+         )
+  :init
+  (elpy-enable)
+  :config
+  (setq elpy-modules (delq 'elpy-module-flymake elpy-modules)))
+
 (use-package racket-mode
   :bind (:map racket-mode-map
          ("M-RET" . zp/racket-eval-buffer))
