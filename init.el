@@ -201,7 +201,8 @@ For details on DATA, CONTEXT, and SIGNAL, see
 (setq ediff-split-window-function 'split-window-horizontally)
 
 ;; Safe local-variables
-(setq safe-local-variable-values '((org-confirm-babel-evaluate)))
+(setq safe-local-variable-values '((org-confirm-babel-evaluate)
+                                   (require 'org-roam-dev)))
 
 ;;----------------------------------------------------------------------------
 ;; Debugging functions
