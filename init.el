@@ -2053,7 +2053,7 @@ SEARCH is a string to be interpreted by notmuch-search."
          ("k" . zp/notmuch-fetch-kill)
          ("DEL" . zp/notmuch-fetch-kill)))
 
-(use-package org-notmuch
+(use-package ol-notmuch
   :after (:any org notmuch))
 
 (use-package orgalist
@@ -3230,9 +3230,6 @@ subsequent calls.")
     :keymap zp/org-spawned-ibuf-mode-map
     (setq header-line-format
           "Spawned indirect buffer.  Kill with ‘C-c C-k’, dedicate with ‘C-u C-c C-k’.")))
-
-(use-package org-refile
-  :requires org)
 
 (use-package org-footnote
   :config
