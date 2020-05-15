@@ -202,7 +202,7 @@ For details on DATA, CONTEXT, and SIGNAL, see
 
 ;; Safe local-variables
 (setq safe-local-variable-values '((org-confirm-babel-evaluate)
-                                   (require 'org-roam-dev)))
+                                   (eval require 'org-roam-dev)))
 
 ;;----------------------------------------------------------------------------
 ;; Debugging functions
