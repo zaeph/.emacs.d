@@ -1122,8 +1122,6 @@ With a C-u argument, point on the commit instead."
   (defvar zp/pdf-view-save-after-annotation nil
     "When non-nil, save the PDF after an annotation is created.")
 
-  (setq zp/pdf-view-save-after-annotation t)
-
   ;; Save after creating an annotation
   (defun zp/pdf-view-save-buffer ()
     "Save buffer and preserve midnight state."
