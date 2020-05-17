@@ -4566,7 +4566,7 @@ commas and space."
         '(("d" "default" plain
            (function org-roam-capture--get-point)
            "%?"
-           :file-name "%<%Y%m%d%H%M%S>"
+           :file-name "%<%Y%m%d%H%M%S>-${slug}"
            :head "#+TITLE: ${title}\n#+CREATED: %U\n#+LAST_MODIFIED: %U\n\n"
            :unnarrowed t))
         org-roam-capture-ref-templates
