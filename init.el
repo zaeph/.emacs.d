@@ -202,7 +202,8 @@ For details on DATA, CONTEXT, and SIGNAL, see
 
 ;; Safe local-variables
 (setq safe-local-variable-values '((org-confirm-babel-evaluate)
-                                   (eval require 'org-roam-dev)))
+                                   (eval require 'org-roam-dev)
+                                   (org-roam-directory . "~/org/slip-box-testing/")))
 
 ;;----------------------------------------------------------------------------
 ;; Debugging functions
@@ -4556,6 +4557,7 @@ commas and space."
           ("C-c m F" . org-roam-find-file)
           ("C-c m r" . org-roam-find-ref)
           ("C-c m d" . org-roam-find-directory)
+          ("C-c m D" . zp/org-roam-find-directory-testing)
           ("C-c m j" . org-roam-jump-to-index)
           ("C-c m b" . org-roam-switch-to-buffer)
           ("C-c m g" . org-roam-graph))
@@ -4578,6 +4580,12 @@ commas and space."
            :unnarrowed t)))
 
   (setq org-roam-title-include-subdirs t)
+
+  (defvar zp/org-roam-directory-testing "~/org/slip-box-testing")
+
+  (defun zp/org-roam-find-directory-testing ()
+    (interactive)
+    (find-file zp/org-roam-directory-testing))
 
   (defun zp/org-link-set-local-find-file-current-window ()
     "Make org-link open file in the same window locally."
