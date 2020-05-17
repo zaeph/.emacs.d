@@ -4157,24 +4157,24 @@ indirect-buffers."
     ;; Special set of templates to be used in ‘org-agenda-mode’
     (setq zp/org-agenda-capture-templates
           '(("f" "Todo" entry (file+headline "~/org/life.org" "Inbox")
-             "* TODO %?\n%t")
+             "* TODO %?\n%t" :add-created t)
             ("r" "Todo (+time)" entry (file+headline "~/org/life.org" "Inbox")
-             "* TODO %?\n%^T" :add-warntime t)
+             "* TODO %?\n%^T" :add-created t :add-warntime t)
 
             ("d" "Date" entry (file+olp "~/org/life.org" "Life" "Calendar")
-             "* %?\n%t")
+             "* %?\n%t" :add-created t )
             ("e" "Date (+time)" entry (file+olp "~/org/life.org" "Life" "Calendar")
-             "* %?\n%^T" :add-warntime t)
+             "* %?\n%^T" :add-created t :add-warntime t)
 
             ("s" "Todo & Scheduled" entry (file+headline "~/org/life.org" "Inbox")
-             "* TODO %?\nSCHEDULED: %t")
+             "* TODO %?\nSCHEDULED: %t" :add-created t)
             ("w" "Todo & Scheduled (+time)" entry (file+headline "~/org/life.org" "Inbox")
-             "* TODO %?\nSCHEDULED: %^T" :add-warntime t)
+             "* TODO %?\nSCHEDULED: %^T" :add-created t :add-warntime t)
 
             ("g" "Todo + Deadline" entry (file+headline "~/org/life.org" "Inbox")
-             "* TODO %?\nDEADLINE: %t")
+             "* TODO %?\nDEADLINE: %t" :add-created t)
             ("t" "Todo & Deadline (+time)" entry (file+headline "~/org/life.org" "Inbox")
-             "* TODO %?\nDEADLINE: %^T" :add-warntime t)))
+             "* TODO %?\nDEADLINE: %^T" :add-created t :add-warntime t)))
 
     (defun zp/org-agenda-capture (&optional arg)
       (interactive "P")
