@@ -3932,7 +3932,7 @@ indirect-buffers."
           ("^grooming$" "~/org/svg/icons/razor.svg" nil nil :ascent center)
           ("^clean$" "~/org/svg/icons/bucket.svg" nil nil :ascent center)
 
-          (".*" '(space . (:width (24))) nil nil :ascent center)))
+          (".*" '(space . (:width (26))) nil nil :ascent center)))
 
   (setq zp/org-agenda-default-agendas-list '("n" "l"))
 
