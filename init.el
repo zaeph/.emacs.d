@@ -3872,6 +3872,7 @@ indirect-buffers."
           ("^union$" "~/org/svg/icons/fist.svg" nil nil :ascent center)
 
           ;; Professional
+          ("^pro$" "~/org/svg/icons/professional.svg" nil nil :ascent center)
           ("^university$" "~/org/svg/icons/aperture-yellow.svg" nil nil :ascent center)
           ("^school$" "~/org/svg/icons/university.svg" nil nil :ascent center)
 
