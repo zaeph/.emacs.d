@@ -1028,8 +1028,18 @@ as regular projects."
 
 (defun zp/skip-routine ()
   "Skip items which have a :routine: tag."
-  (when (member "routine" (org-get-tags (point)))
-    (org-end-of-subtree)))
+  (when zp/org-agenda-skip-functions-debug
+    (message "on: %s" (org-entry-get (point) "ITEM")))
+  (cond
+   ((member "routine" (org-get-tags (point) t))
+    (org-end-of-subtree))
+   ((and (member "routine" (org-get-tags (point)))
+         (not (member "routine" (org--get-local-tags))))
+    (while (not (member "routine" (org--get-local-tags)))
+      (when zp/org-agenda-skip-functions-debug
+        (message "on: %s" (org-entry-get (point) "ITEM")))
+      (org-up-heading-safe))
+    (org-end-of-subtree))))
 
 (defun zp/skip-routine-cond ()
   "Conditionally skip items which have a :routine: tag."
