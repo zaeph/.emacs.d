@@ -1028,7 +1028,7 @@ as regular projects."
 
 (defun zp/skip-routine ()
   "Skip items which have a :routine: tag."
-  (when (member "routine" (org-get-tags (point) t))
+  (when (member "routine" (org-get-tags (point)))
     (org-end-of-subtree)))
 
 (defun zp/skip-routine-cond ()
