@@ -2164,7 +2164,8 @@ SEARCH is a string to be interpreted by notmuch-search."
           ("C-c <C-backspace>" . zp/LaTeX-remove-macro)
           ("C-c <M-backspace>" . zp/LaTeX-remove-environment)
           ("C-c C-t C-v" . zp/tex-view-program-switch)))
-  :hook (LaTeX-mode . visual-line-mode)
+  :hook ((LaTeX-mode . visual-line-mode)
+         (LaTeX-mode . TeX-source-correlate-mode))
   :config
   ;; Set default library
   (setq-default TeX-engine 'luatex
