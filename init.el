@@ -4394,7 +4394,7 @@ indirect-buffers."
           (default . bibtex-completion-format-citation-default)))
 
   ;; Default citation command
-  (setq bibtex-completion-cite-default-command "autocite")
+  (setq bibtex-completion-cite-default-command "cite")
 
   ;; PDF open function
   (setq bibtex-completion-pdf-open-function 'helm-open-file-with-default-tool)
