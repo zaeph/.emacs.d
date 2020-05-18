@@ -4615,27 +4615,49 @@ This function is intended to be run with ‘find-file-hook’."
          :map org-mode-map
          (("C-c m t" . orb-insert-non-ref)
           ("C-c m a" . orb-note-actions)))
+  :init
+  (defcustom orb-title-format "${author-or-editor-abbrev} (${date}).  ${title}."
+    "Format of the title to use for `orb-templates'.")
   :custom
   (orb-templates
    `(("r" "ref" plain
       (function org-roam-capture--get-point)
       ""
       :file-name "refs/${citekey}"
-      :head "#+TITLE: ${author-or-editor-abbrev}  ${title}.\n#+ROAM_KEY: ${ref}\n#+CREATED: %U\n#+LAST_MODIFIED: %U\n\n"
+      :head ,(s-join "\n"
+                     (list
+                      (concat "#+TITLE: "
+                              orb-title-format)
+                      "#+ROAM_KEY: ${ref}"
+                      "#+CREATED: %U"
+                      "#+LAST_MODIFIED: %U\n\n"))
       :unnarrowed t)
+     ("p" "ref + physical" plain
+      (function org-roam-capture--get-point)
+      ""
+      :file-name "refs/${citekey}"
+      :head ,(s-join "\n"
+                     (list
+                      (concat "#+TITLE: "
+                              orb-title-format)
+                      "#+ROAM_KEY: ${ref}"
+                      ""
+                      "* Notes :physical:")))
      ("n" "ref + noter" plain
       (function org-roam-capture--get-point)
       ""
-      :file-name "${slug}"
+      :file-name "refs/${citekey}"
       :head ,(s-join "\n"
-                     '("#+TITLE: ${author-or-editor-abbrev}  ${title}."
-                       "#+ROAM_KEY: ${ref}"
-                       ""
-                       "* Notes"
-                       ":PROPERTIES:"
-                       ":NOTER_DOCUMENT: %(orb-process-file-field \"${citekey}\")"
-                       ":NOTER_PAGE:"
-                       ":END:"))))))
+                     (list
+                      (concat "#+TITLE: "
+                              orb-title-format)
+                      "#+ROAM_KEY: ${ref}"
+                      ""
+                      "* Notes :noter:"
+                      ":PROPERTIES:"
+                      ":NOTER_DOCUMENT: %(orb-process-file-field \"${citekey}\")"
+                      ":NOTER_PAGE:"
+                      ":END:"))))))
 
 ;;----------------------------------------------------------------------------
 ;; hydra-org-refile
