@@ -4606,6 +4606,9 @@ This function is intended to be run with ‘find-file-hook’."
 
 (use-package org-roam-protocol)
 
+(defcustom orb-title-format "${author-or-editor-abbrev} (${date}).  ${title}."
+    "Format of the title to use for `orb-templates'.")
+
 (use-package org-roam-bibtex
   :requires bibtex-completion
   :hook (org-roam-mode . org-roam-bibtex-mode)
@@ -4616,8 +4619,6 @@ This function is intended to be run with ‘find-file-hook’."
          (("C-c m t" . orb-insert-non-ref)
           ("C-c m a" . orb-note-actions)))
   :init
-  (defcustom orb-title-format "${author-or-editor-abbrev} (${date}).  ${title}."
-    "Format of the title to use for `orb-templates'.")
   :custom
   (orb-templates
    `(("r" "ref" plain
