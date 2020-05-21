@@ -4840,7 +4840,8 @@ This function is intended to be run with ‘find-file-hook’."
   _g_: Git
   _p_: Python
   _P_: Perl
-  _c_: Common Lisp
+  _c_: Clojure
+  _C_: Common Lisp
 "
     (("." "~/org/life.org" "Hacking")
      ("e" "~/org/life.org" "Emacs")
