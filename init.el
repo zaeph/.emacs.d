@@ -983,7 +983,7 @@ With a ‘C-u’ prefix argument, amend the last commit instead."
                  (funcall method indent-point state)))))))))
 
 (use-package lispy
-  ;; :load-path "~/projects/lispy
+  :load-path "~/projects/lispy"
   :hook (emacs-lisp-mode . lispy-mode)
   :config
   (defun lispy-mode-unbind-keys ()
