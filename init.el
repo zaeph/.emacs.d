@@ -1566,6 +1566,19 @@ LANGUAGE should be the name of an Ispell dictionary."
          (latex-mode . flyspell-mode)))
 
 ;;----------------------------------------------------------------------------
+;; RSS
+;;----------------------------------------------------------------------------
+(use-package elfeed
+  :bind ("C-x w" . elfeed)
+  :custom
+  (elfeed-feeds
+   '(
+     ;; Amazing Phil
+     ("https://www.youtube.com/feeds/videos.xml?channel_id=UCHUE4ypXKp7ZkmdWbGJNgJg" video youtube)
+     ("https://xkcd.com/rss.xml" webcomic)
+     )))
+
+;;----------------------------------------------------------------------------
 ;; Email
 ;;----------------------------------------------------------------------------
 (use-package message
