@@ -984,6 +984,7 @@ With a ‘C-u’ prefix argument, amend the last commit instead."
 
 (use-package lispy
   ;; :load-path "~/projects/lispy
+  :hook (emacs-lisp-mode . lispy-mode)
   :config
   (defun lispy-mode-unbind-keys ()
     "Modify keymaps used by ‘lispy-mode’."
@@ -997,9 +998,7 @@ With a ‘C-u’ prefix argument, amend the last commit instead."
              ?N ?O ?P ?Q ?R ?S ?T ?U ?V ?W ?X ?Y ?Z))
 
   (setq semantic-inhibit-functions
-        (list (lambda () (not (eq major-mode org-mode)))))
-
-  (add-hook 'emacs-lisp-mode-hook #'lispy-mode))
+        (list (lambda () (not (eq major-mode org-mode))))))
 
 (use-package nov
   :hook (nov-mode . zp/variable-pitch-mode)
