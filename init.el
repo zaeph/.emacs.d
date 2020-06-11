@@ -801,6 +801,8 @@ With a ‘C-u’ prefix argument, amend the last commit instead."
         (whitespace-mode t)
         (message "Whitespace mode enabled in current buffer")))))
 
+(use-package interaction-log)
+
 (use-package info+
   :bind (:map Info-mode-map
          ("<mouse-4>" . mwheel-scroll)
