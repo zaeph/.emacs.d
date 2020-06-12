@@ -2966,13 +2966,16 @@ When KEEP-RESTRICTION is non-nil, do not widen the buffer."
       (message "Removing narrowing.")
       (run-hooks 'zp/org-after-view-change-hook)))
 
+  (defvar zp/presentation-mode nil)
+
   (defun zp/org-narrow-forwards ()
     "Move to the next subtree at same level, and narrow the buffer to it."
     (interactive)
     (widen)
     (org-forward-heading-same-level 1)
     (org-narrow-to-subtree)
-    (zp/org-fold nil)
+    (unless zp/presentation-mode
+      (zp/org-fold nil))
     (when (called-interactively-p 'any)
       (message "Narrowing to next tree.")
       (run-hooks 'zp/org-after-view-change-hook)))
@@ -2983,7 +2986,8 @@ When KEEP-RESTRICTION is non-nil, do not widen the buffer."
     (widen)
     (org-backward-heading-same-level 1)
     (org-narrow-to-subtree)
-    (zp/org-fold nil)
+    (unless zp/presentation-mode
+      (zp/org-fold nil))
     (when (called-interactively-p 'any)
       (message "Narrowing to previous tree.")
       (run-hooks 'zp/org-after-view-change-hook)))
