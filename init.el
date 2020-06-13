@@ -761,7 +761,13 @@ With a ‘C-u’ prefix argument, amend the last commit instead."
 (use-package package-lint)
 
 (use-package duplicate-thing
-  :bind ("M-J" . duplicate-thing))
+  :bind (("M-J" . zp/duplicate-thing))
+  :config
+  (defun zp/duplicate-thing (arg)
+    "Wrapper for `duplicate-thing' which restores point."
+    (interactive "P")
+    (save-excursion
+      (duplicate-thing arg))))
 
 (use-package volatile-highlights
   :config
