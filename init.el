@@ -717,7 +717,8 @@ With a ‘C-u’ prefix argument, amend the last commit instead."
 (use-package auth-source
   :custom
   ;; Path to authentication sources
-  (auth-sources '("~/.authinfo.gpg" "~/.netrc")))
+  (auth-sources '("~/.authinfo.gpg" "~/.netrc"))
+  (auth-source-save-behavior nil))
 
 (use-package gif-screencast
   :load-path ("~/src/gif-screencast/")
