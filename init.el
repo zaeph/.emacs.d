@@ -522,13 +522,13 @@ surrounding paragraph."
 (global-set-key (kbd "C-x b") #'ibuffer)
 (global-set-key (kbd "M-SPC") #'delete-horizontal-space)
 (global-set-key (kbd "M-S-SPC") #'just-one-space)
-(global-set-key (kbd "C-s-.") #'zp/echo-buffer-name)
+(global-set-key (kbd "s-.") #'zp/echo-buffer-name)
 (global-set-key (kbd "C-x F") #'zp/unfill-document)
 (global-set-key (kbd "M-Q") #'zp/unfill-dwim)
 (global-set-key (kbd "C-x B") #'rename-buffer)
 (global-set-key (kbd "M-o") #'mode-line-other-buffer)
-(global-set-key (kbd "C-s-j") #'other-window-reverse)
-(global-set-key (kbd "C-s-k") #'other-window)
+(global-set-key (kbd "s-j") #'other-window-reverse)
+(global-set-key (kbd "s-k") #'other-window)
 (global-set-key (kbd "C-x 4 1") #'zp/kill-other-buffer-and-window)
 
 ;; Ignore Kanji key in IME
@@ -678,8 +678,8 @@ surrounding paragraph."
 ;;----------------------------------------------------------------------------
 (use-package magit
   ;; :load-path "~/projects/magit/lisp/"
-  :bind (("C-s-m" . magit-status)
-         ("C-s-M-m" . zp/magit-stage-file-and-commit))
+  :bind (("s-m" . magit-status)
+         ("s-M-m" . zp/magit-stage-file-and-commit))
   :config
   (transient-append-suffix 'magit-log "-A"
     '("-1" "First parent" "--first-parent"))
@@ -738,7 +738,7 @@ With a ‘C-u’ prefix argument, amend the last commit instead."
   :ensure t
   :commands rg
   :bind (("M-s ," . rg-dwim)
-         ("C-s-SPC" . rg)))
+         ("s-SPC" . rg)))
 
 ;; For handling encryption
 (use-package epa-file
@@ -1028,11 +1028,11 @@ With a ‘C-u’ prefix argument, amend the last commit instead."
 (use-package yasnippet
   :config
   (yas-global-mode 1)
-  (global-set-key (kbd "C-s-<backspace>") 'yas-prev-field))
+  (global-set-key (kbd "s-<backspace>") 'yas-prev-field))
 
 (use-package winner
-  :bind (("C-s-u" . winner-undo)
-         ("C-s-i" . winner-redo))
+  :bind (("s-u" . winner-undo)
+         ("s-i" . winner-redo))
   :config
   (winner-mode 1))
 
@@ -1042,15 +1042,15 @@ With a ‘C-u’ prefix argument, amend the last commit instead."
   (ace-link-setup-default))
 
 (use-package ace-window
-  :bind ("C-s-b" . ace-window)
+  :bind ("s-b" . ace-window)
   :config
   (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)
         aw-scope 'frame))
 
 (use-package avy
-  :bind (;; ("C-s-n" . avy-goto-goto-word-1)
-         ;; ("C-s-n" . avy-goto-goto-char)
-         ("C-s-n" . avy-goto-char-timer)))
+  :bind (;; ("s-n" . avy-goto-goto-word-1)
+         ;; ("s-n" . avy-goto-goto-char)
+         ("s-n" . avy-goto-char-timer)))
 
 ;; (use-package dumb-jump
 ;;   :config
@@ -1894,7 +1894,7 @@ based on ‘zp/message-mode-ispell-alist’."
   (setq send-mail-function 'sendmail-send-it))
 
 (use-package notmuch
-  :bind (("C-s-l" . zp/switch-to-notmuch)
+  :bind (("s-l" . zp/switch-to-notmuch)
          :map notmuch-hello-mode-map
          ("q" . zp/notmuch-hello-quit)
          :map notmuch-search-mode-map
@@ -3304,7 +3304,7 @@ along with effort estimates and total time."
   (global-set-key (kbd "C-c C-x C-o") #'org-clock-out)
   (global-set-key (kbd "C-c C-x C-z") #'org-resolve-clocks)
 
-  (global-set-key (kbd "C-s-/") 'zp/echo-clock-string))
+  (global-set-key (kbd "s-/") 'zp/echo-clock-string))
 
 ;; Enable resetting plain-list checks when marking a repeated tasks DONE
 ;; To enable that behaviour, set the ‘RESET_CHECK_BOXES’ property to t for the
@@ -3382,7 +3382,7 @@ along with effort estimates and total time."
 
 (use-package counsel-projectile
   :ensure t
-  :bind (("C-s-p" . counsel-projectile))
+  :bind (("s-p" . counsel-projectile))
   :custom
   (counsel-projectile-switch-project-action
    '(1
@@ -3421,7 +3421,7 @@ along with effort estimates and total time."
   :bind (("M-x" . helm-M-x)
          ("<menu>" . helm-M-x)
          ("M-y" . helm-show-kill-ring)
-         ("C-s-b" . helm-mini)
+         ("s-b" . helm-mini)
          ("C-x b" . helm-mini)
          ("C-x C-b" . ibuffer)
          ("C-x C-f" . helm-find-files)
@@ -3739,7 +3739,7 @@ indirect-buffers."
 ;; org-agenda
 ;;----------------------------------------------------------------------------
 (use-package zp-org-agenda
-  :bind (("C-s-o" . zp/switch-to-agenda)
+  :bind (("s-o" . zp/switch-to-agenda)
          :map org-agenda-mode-map
          (("M-n" . org-agenda-next-date-line)
           ("M-p" . org-agenda-previous-date-line)
@@ -4290,8 +4290,8 @@ indirect-buffers."
 
 (use-package helm-bibtex
   :load-path "~/projects/helm-bibtex/"
-  :bind (("C-s-y" . helm-bibtex)
-         ("C-s-M-y" . helm-bibtex-with-notes)
+  :bind (("s-y" . helm-bibtex)
+         ("s-M-y" . helm-bibtex-with-notes)
          ("C-c D" . zp/bibtex-completion-message-key-last))
   :config
   (setq helm-bibtex-notes-path "~/org/lit/")
@@ -5436,8 +5436,8 @@ running."
 
 (use-package helm-chronos
   :load-path "~/projects/helm-chronos"
-  :bind (("C-s-;" . zp/switch-to-chronos-dwim)
-         ("C-s-M-;" . zp/helm-chronos-add))
+  :bind (("s-;" . zp/switch-to-chronos-dwim)
+         ("s-M-;" . zp/helm-chronos-add))
   :after chronos
   :config
   ;; Fix for adding new timers with helm-chronos
@@ -5670,7 +5670,7 @@ command reveals the other lines."
     (or mode-line-format
         hide-mode-line))))
 
-(global-set-key (kbd "C-s-M-.") 'herald-the-mode-line)
+(global-set-key (kbd "s-M-.") 'herald-the-mode-line)
 
 (defun move-beginning-of-line-dwim (arg)
   "Move point back to indentation or beginning of line
@@ -5772,7 +5772,7 @@ See ‘~/.bin/terminator-dwim’ for more info."
 ;; TODO: Confirm if this is still the case
 (use-package expand-region
   :config
-  (global-set-key (kbd "C-s-h") 'er/expand-region))
+  (global-set-key (kbd "s-h") 'er/expand-region))
 
 (use-package multiple-cursors-core)
 
