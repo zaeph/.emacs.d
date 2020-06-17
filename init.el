@@ -4575,8 +4575,7 @@ commas and space."
 ;;----------------------------------------------------------------------------
 (use-package org-roam
   :load-path ("~/projects/org-roam/")
-  :hook ((after-init . org-roam-mode)
-         (org-mode . zp/org-roam-set-local-find-file-current-window))
+  :hook ((after-init . org-roam-mode))
   :custom
   (org-roam-directory "~/org/slip-box/")
   (org-roam-index-file "index.org")
@@ -4611,22 +4610,7 @@ commas and space."
 
   (defun zp/org-roam-find-directory-testing ()
     (interactive)
-    (find-file zp/org-roam-directory-testing))
-
-  (defun zp/org-link-set-local-find-file-current-window ()
-    "Make org-link open file in the same window locally."
-    (let* ((default (copy-alist org-link-frame-setup))
-           (modified (progn
-                       (setf (alist-get 'file default) 'find-file)
-                       default)))
-      (setq-local org-link-frame-setup modified)))
-
-  (defun zp/org-roam-set-local-find-file-current-window ()
-    "Make org-link open file in the same window locally.
-
-This function is intended to be run with ‘find-file-hook’."
-    (when (org-roam--org-roam-file-p)
-      (zp/org-link-set-local-find-file-current-window))))
+    (find-file zp/org-roam-directory-testing)))
 
 (use-package org-roam-protocol)
 
