@@ -4607,8 +4607,6 @@ commas and space."
            :head "#+title: ${title}\n#+roam_key: ${ref}\n#+created: %u\n#+last_modified: %U\n\n"
            :unnarrowed t)))
 
-  (setq org-roam-title-include-subdirs t)
-
   (defvar zp/org-roam-directory-testing "~/org/slip-box-testing")
 
   (defun zp/org-roam-find-directory-testing ()
