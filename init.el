@@ -2196,6 +2196,7 @@ SEARCH is a string to be interpreted by notmuch-search."
                 LaTeX-includegraphics-read-file 'LaTeX-includegraphics-read-file-relative)
   (setq warning-suppress-types nil)
   (add-to-list 'warning-suppress-types '(yasnippet backquote-change))
+  (add-to-list 'TeX-command-list '("Make" "make" TeX-run-compile nil t))
 
   ;; Used to prevent radio tables from having trailing $
   (setq LaTeX-verbatim-environments '("verbatim" "verbatim*" "comment"))
