@@ -4575,6 +4575,7 @@ commas and space."
 ;;----------------------------------------------------------------------------
 (use-package org-roam
   :load-path ("~/projects/org-roam/")
+  :ensure t
   :hook ((after-init . org-roam-mode))
   :custom
   (org-roam-directory "~/org/slip-box/")
