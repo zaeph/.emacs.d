@@ -200,6 +200,9 @@ For details on DATA, CONTEXT, and SIGNAL, see
 ;; Prefer horizontal splits with edif
 (setq ediff-split-window-function 'split-window-horizontally)
 
+;; Command history
+(setq list-command-history-max 256)
+
 ;; Safe local-variables
 (setq safe-local-variable-values '((org-confirm-babel-evaluate)
                                    (eval require 'org-roam-dev)
