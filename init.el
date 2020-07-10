@@ -1585,6 +1585,8 @@ LANGUAGE should be the name of an Ispell dictionary."
      ;; Amazing Phil
      ("https://www.youtube.com/feeds/videos.xml?channel_id=UCHUE4ypXKp7ZkmdWbGJNgJg" video youtube)
      ("https://xkcd.com/rss.xml" webcomic)
+     ("https://entrepreneur-interet-general.etalab.gouv.fr/feed.xml" eig)
+     ("https://disic.github.io/gazette-bluehats/index.xml" bluehats)
      )))
 
 ;;----------------------------------------------------------------------------
