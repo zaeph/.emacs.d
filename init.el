@@ -1571,7 +1571,8 @@ LANGUAGE should be the name of an Ispell dictionary."
   :bind ("C-c f" . flyspell-mode)
   :hook ((message-setup . flyspell-mode)
          (org-mode . flyspell-mode)
-         (latex-mode . flyspell-mode)))
+         (latex-mode . flyspell-mode)
+         (fountain-mode . flyspell-mode)))
 
 ;;----------------------------------------------------------------------------
 ;; RSS
