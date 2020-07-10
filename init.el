@@ -4632,6 +4632,7 @@ commas and space."
           ("C-c m a" . orb-note-actions)))
   :init
   :custom
+  (orb-autokey-format "%a%y")
   (orb-templates
    `(("r" "ref" plain
       (function org-roam-capture--get-point)
