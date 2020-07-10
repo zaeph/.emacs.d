@@ -4639,11 +4639,11 @@ commas and space."
       :file-name "refs/${citekey}"
       :head ,(s-join "\n"
                      (list
-                      (concat "#+TITLE: "
+                      (concat "#+title: "
                               orb-title-format)
-                      "#+ROAM_KEY: ${ref}"
-                      "#+CREATED: %U"
-                      "#+LAST_MODIFIED: %U\n\n"))
+                      "#+roam_key: ${ref}"
+                      "#+created: %U"
+                      "#+last_modified: %U\n\n"))
       :unnarrowed t)
      ("p" "ref + physical" plain
       (function org-roam-capture--get-point)
@@ -4651,9 +4651,9 @@ commas and space."
       :file-name "refs/${citekey}"
       :head ,(s-join "\n"
                      (list
-                      (concat "#+TITLE: "
+                      (concat "#+title: "
                               orb-title-format)
-                      "#+ROAM_KEY: ${ref}"
+                      "#+roam_key: ${ref}"
                       ""
                       "* Notes :physical:")))
      ("n" "ref + noter" plain
@@ -4662,9 +4662,9 @@ commas and space."
       :file-name "refs/${citekey}"
       :head ,(s-join "\n"
                      (list
-                      (concat "#+TITLE: "
+                      (concat "#+title: "
                               orb-title-format)
-                      "#+ROAM_KEY: ${ref}"
+                      "#+roam_key: ${ref}"
                       ""
                       "* Notes :noter:"
                       ":PROPERTIES:"
