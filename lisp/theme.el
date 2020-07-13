@@ -481,10 +481,10 @@ Act on all buffers."
 ;; Wrapper for ‘variable-pitch-mode’
 ;; TODO: Use hook rather than a wrapper
 (defun zp/variable-pitch-mode ()
-  "Enable variable-pitch-mode and changes line-spacing."
+  "Enable `variable-pitch-mode' and change `line-spacing'."
   (interactive)
   (cond (zp/variable-pitch-mode-toggle
-         (variable-pitch-mode)
+         (variable-pitch-mode -1)
          (setq zp/variable-pitch-mode-toggle nil))
         (t
          (variable-pitch-mode)
