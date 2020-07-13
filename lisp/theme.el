@@ -541,6 +541,10 @@ FONT is a preset."
          (set-face-attribute 'variable-pitch nil
                              :font "Bliss Pro Prog" :height 195)
          (setq zp/line-spacing-variable 0.2))
+        ("halogen"
+         (set-face-attribute 'variable-pitch nil
+                             :font "Halogen" :height 195)
+         (setq zp/line-spacing-variable 0.2))
         ("typewriter"
          (set-face-attribute 'variable-pitch nil
                              :font "ITC American Typewriter Std" :height 158)
@@ -563,7 +567,7 @@ FONT is a preset."
   "List of variable font-presets.")
 
 (setq zp/list-fonts '("sarasa" "operator" "gintronic"))
-(setq zp/list-fonts-variable '("equity" "guyot" "bliss" "typewriter"))
+(setq zp/list-fonts-variable '("equity" "guyot" "bliss" "halogen" "typewriter"))
 
 (defun zp/toggle-font (type current list)
   "Toggle between font-presets.
