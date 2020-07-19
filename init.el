@@ -71,6 +71,9 @@
 ;; Point to my Emacs fork for studying built-in functions
 (setq source-directory "~/projects/forks/emacs")
 
+;; Time
+(setq display-time-24hr-format t)
+
 ;; Turn off background when Emacs is run with -nt
 (defun on-after-init ()
   "Turn off background."
