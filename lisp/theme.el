@@ -509,7 +509,7 @@ FONT is a preset."
       (pcase font
         ("sarasa"
          (set-face-attribute 'default nil
-                             :font "Sarasa Term Prog J" :height 113)
+                             :font "Sarasa Term Prog J" :height 122)
          (setq zp/line-spacing nil))
         ("operator"
          (set-face-attribute 'default nil
@@ -541,9 +541,21 @@ FONT is a preset."
          (set-face-attribute 'variable-pitch nil
                              :font "Bliss Pro Prog" :height 195)
          (setq zp/line-spacing-variable 0.2))
+        ("warung-kopi"
+         (set-face-attribute 'variable-pitch nil
+                             :font "Warung Kopi" :height 195)
+         (setq zp/line-spacing-variable 0.2))
+        ("anysome"
+         (set-face-attribute 'variable-pitch nil
+                             :font "Anysome" :height 195)
+         (setq zp/line-spacing-variable 0.2))
         ("halogen"
          (set-face-attribute 'variable-pitch nil
                              :font "Halogen" :height 195)
+         (setq zp/line-spacing-variable 0.2))
+        ("handgley"
+         (set-face-attribute 'variable-pitch nil
+                             :font "Handgley" :height 195)
          (setq zp/line-spacing-variable 0.2))
         ("typewriter"
          (set-face-attribute 'variable-pitch nil
@@ -567,7 +579,7 @@ FONT is a preset."
   "List of variable font-presets.")
 
 (setq zp/list-fonts '("sarasa" "operator" "gintronic"))
-(setq zp/list-fonts-variable '("equity" "guyot" "bliss" "halogen" "typewriter"))
+(setq zp/list-fonts-variable '("equity" "guyot" "bliss" "warung-kopi" "anysome" "halogen" "handgley" "typewriter"))
 
 (defun zp/toggle-font (type current list)
   "Toggle between font-presets.
