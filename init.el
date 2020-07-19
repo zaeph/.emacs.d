@@ -4586,6 +4586,7 @@ commas and space."
   :hook ((after-init . org-roam-mode))
   :custom
   (org-roam-directory "~/org/slip-box/")
+  ;; (org-roam-directory "/tmp/slip-box/")
   (org-roam-index-file "index.org")
   :bind (:map org-roam-mode-map
          (("C-c m l" . org-roam)
