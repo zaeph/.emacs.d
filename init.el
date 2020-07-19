@@ -3926,6 +3926,7 @@ indirect-buffers."
           ("^org$" "~/org/svg/icons/org-mode-unicorn.svg" nil nil :ascent center)
           ("^roam$" "~/org/svg/icons/org-roam-bibtex-icon-p.svg" nil nil :ascent center)
           ("^python$" "~/org/svg/icons/python.svg" nil nil :ascent center)
+          ("^java$" "~/org/svg/icons/java-cup.svg" nil nil :ascent center)
           ("^perl$" "~/org/svg/icons/perl.svg" nil nil :ascent center)
           ("^cl$" "~/org/svg/icons/common-lisp-b.svg" nil nil :ascent center)
           ("^contrib$" "~/org/svg/icons/chill.svg" nil nil :ascent center)
@@ -4870,6 +4871,7 @@ commas and space."
   _n_: NixOS
   _g_: Git
   _p_: Python
+  _j_: Java
   _P_: Perl
   _c_: Clojure
   _C_: Common Lisp
@@ -4886,6 +4888,7 @@ commas and space."
      ("n" "~/org/life.org" "NixOS")
      ("g" "~/org/life.org" "Git")
      ("p" "~/org/life.org" "Python")
+     ("j" "~/org/life.org" "Java")
      ("P" "~/org/life.org" "Perl")
      ("c" "~/org/life.org" "Clojure")
      ("C" "~/org/life.org" "Common Lisp")
