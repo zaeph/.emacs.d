@@ -3105,6 +3105,34 @@ With a C-u argument, toggle the link display."
         (zp/org-toggle-emphasis-markers))
       (font-lock-fontify-buffer)))
 
+  (defun zp/org-find-olp (target &optional move)
+    "Find TARGET in the current buffer.
+
+When there is a match and MOVE is nil, return a marker pointing
+to the beginning of the matched headline.  When there is a match
+and MOVE is non-nil, move point to that match.  Otherwise, return
+nil.
+
+TARGET can either be a string or a list.  If it is a string, it
+should be the name of the top-headline to find.  If it is a list,
+it should be an outline path OLP."
+    (let* ((olp (pcase target
+                  ((pred stringp) (list target))
+                  ((pred listp) target)
+                  (wrong-type (signal 'wrong-type-argument
+                                      `((stringp listp)
+                                        ,wrong-type)))))
+           (marker (condition-case msg
+                       (org-find-olp olp t)
+                     (error))))
+      (cond ((and marker
+                  (not move))
+             marker)
+            (marker
+             (goto-char marker)
+             (set-marker marker nil)
+             t))))
+
   ;;--------------------------------
   ;; Customise exported timestamps
   ;;--------------------------------
