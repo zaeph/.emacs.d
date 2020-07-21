@@ -38,12 +38,26 @@
 ;;----------------------------------------------------------------------------
 ;; ‘org-capture’ expansion
 ;;----------------------------------------------------------------------------
-(defun org-journal-find-location ()
+(defun zp/org-journal-find-current-journal-file ()
+  "Find the current org-journal file, and create it if it does not exist.
+
+This command is similar to `org-journal-new-entry' with a prefix
+argument, but it does not move the point."
+  (interactive)
+  (let ((file (org-journal-get-entry-path)))
+    (if (file-exists-p file)
+        (find-file file)
+      (org-journal-new-entry t)
+      (current-buffer))))
+
+(defun zp/org-journal-capture-find-target ()
+  "Find the current org-journal file, and create it if it does not exist.
+
+This function is meant to be run by `org-capture-templates'."
   (set-buffer
    (save-window-excursion
-     (org-journal-new-entry t)
-     (zp/org-find-olp (list "Inbox") t)
-     (current-buffer))))
+     (prog1 (zp/org-journal-find-current-journal-file)
+       (goto-char (point-min))))))
 
 (defun zp/org-journal-find-today ()
   "Open today’s journal, and create it if it doesn’t exist."
@@ -53,7 +67,7 @@
 (defun zp/org-journal-capture (goto)
   (interactive "P")
   (let ((org-capture-templates
-         '(("j" "Journal entry" entry #'org-journal-find-location
+         '(("j" "Journal entry" entry #'zp/org-journal-capture-find-target
             "* %(format-time-string org-journal-time-format)%?"
             :add-created t))))
     (org-capture goto "j")))

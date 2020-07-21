@@ -4191,7 +4191,7 @@ commas and space."
          ("C-c C-s" . org-journal-search))
   :custom
   (org-journal-date-prefix "")
-  (org-journal-file-header "#+title: %Y-%m-%d\n\n* Inbox\n* Staging")
+  (org-journal-file-header "#+title: %Y-%m-%d\n\n")
   (org-journal-file-format "%Y-%m-%d.org")
   (org-journal-dir (concat (file-name-as-directory org-roam-directory) "journal/"))
   (org-journal-date-format "%Y-%m-%d")
@@ -4201,7 +4201,8 @@ commas and space."
   (setq org-journal-after-entry-create-hook nil))
 
 (use-package zp-org-journal
-  :bind (("C-c m J" . zp/org-journal-find-today)))
+  :bind (("C-c m J" . zp/org-journal-find-current-journal-file)
+         ("C-c m n" . zp/org-journal-capture)))
 
 ;;----------------------------------------------------------------------------
 ;; hydra-org-refile
