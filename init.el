@@ -4183,8 +4183,12 @@ commas and space."
         org-roam-server-network-label-wrap-length 20))
 
 (use-package org-journal
-  :bind
-  ("C-c m J" . zp/org-journal-find-today)
+  :bind (("C-c m J" . zp/org-journal-find-today)
+         (:map org-journal-mode-map
+          ("C-c C-f" . org-journal-next-entry)
+          ("C-c C-b" . org-journal-previous-entry)
+          ("C-c C-j" . org-journal-new-entry)
+          ("C-c C-s" . org-journal-search)))
   :custom
   (org-journal-date-prefix "")
   (org-journal-file-header "#+title: %Y-%m-%d\n\n* Inbox\n* Staging")
@@ -4194,31 +4198,7 @@ commas and space."
   (org-journal-time-format "")
   (org-journal-time-prefix "* ")
   :config
-  (setq org-journal-after-entry-create-hook nil)
-
-  ;;--------------------------------------------
-  ;; Configure ‘org-journal’ with ‘org-capture’
-  ;;--------------------------------------------
-
-  (defun org-journal-find-location ()
-    (set-buffer
-     (save-window-excursion
-       (org-journal-new-entry t)
-       (zp/org-find-olp (list "Inbox") t)
-       (current-buffer))))
-
-  (defun zp/org-journal-find-today ()
-    "Open today’s journal, and create it if it doesn’t exist."
-    (interactive)
-    (org-journal-new-entry t))
-
-  (defun zp/org-journal-capture (goto)
-    (interactive "P")
-    (let ((org-capture-templates
-           '(("j" "Journal entry" entry (function org-journal-find-location)
-              "* %(format-time-string org-journal-time-format)%?"
-              :add-created t))))
-      (org-capture goto "j"))))
+  (setq org-journal-after-entry-create-hook nil))
 
 ;;----------------------------------------------------------------------------
 ;; hydra-org-refile
