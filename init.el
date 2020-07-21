@@ -4100,7 +4100,7 @@ commas and space."
         '(("r" "ref" plain
            (function org-roam-capture--get-point)
            ""
-           :file-name "caps/${slug}"
+           :file-name "web/${slug}"
            :head "#+title: ${title}\n#+roam_key: ${ref}\n#+created: %u\n#+last_modified: %U\n\n"
            :unnarrowed t)))
 
