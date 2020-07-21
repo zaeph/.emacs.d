@@ -33,6 +33,7 @@
 ;;;; Library Requires
 (require 'org)
 (require 'org-journal)
+(require 'zp-org)
 
 ;;----------------------------------------------------------------------------
 ;; ‘org-capture’ expansion
