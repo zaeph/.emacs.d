@@ -3733,7 +3733,7 @@ indirect-buffers."
   (defun zp/org-capture-set-created-property ()
     "Conditionally set the CREATED property on captured trees."
     (let ((add-created (plist-get org-capture-plist :add-created))
-          (type (plist-get org-capture-plist :type)))
+          (type (plist-get org-capture-current-plist :type)))
       (when (and (eq type 'entry)
                  add-created)
         (unless (buffer-narrowed-p)
