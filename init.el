@@ -4107,7 +4107,7 @@ commas and space."
            :unnarrowed t))
         org-roam-dailies-capture-templates
         '(("d" "daily" entry #'org-roam-capture--get-point
-           "* %?\n%a"
+           "* %?\n"
            :file-name "scratch/%<%Y-%m-%d>"
            :head "#+title: %<%Y-%m-%d>\n\n"
            :add-created t)))
