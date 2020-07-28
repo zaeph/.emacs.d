@@ -685,6 +685,7 @@ surrounding paragraph."
 (use-package magit
   ;; :load-path "~/projects/magit/lisp/"
   :bind (("s-m" . magit-status)
+         ("s-b" . magit-blame-addition)
          ("s-M-m" . zp/magit-stage-file-and-commit))
   :config
   (transient-append-suffix 'magit-log "-A"
@@ -1049,7 +1050,7 @@ With a ‘C-u’ prefix argument, amend the last commit instead."
   (ace-link-setup-default))
 
 (use-package ace-window
-  :bind ("s-b" . ace-window)
+  ;; :bind ("s-b" . ace-window)
   :config
   (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)
         aw-scope 'frame))
@@ -2918,7 +2919,7 @@ along with effort estimates and total time."
   :bind (("M-x" . helm-M-x)
          ("<menu>" . helm-M-x)
          ("M-y" . helm-show-kill-ring)
-         ("s-b" . helm-mini)
+         ;; ("s-b" . helm-mini)
          ("C-x b" . helm-mini)
          ("C-x C-b" . ibuffer)
          ("C-x C-f" . helm-find-files)
