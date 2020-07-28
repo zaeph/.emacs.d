@@ -3739,7 +3739,7 @@ indirect-buffers."
                  (eq type 'entry)
                  add-created)
         (unless (buffer-narrowed-p)
-          (error "Buffer is not narrowed"))
+          (error "Cannot add CREATED when buffer is not narrowed"))
         (save-excursion
           (goto-char (point-min))
           (zp/org-set-created-property)))))
