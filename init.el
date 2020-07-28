@@ -3774,6 +3774,8 @@ indirect-buffers."
       (if full-frame
           (delete-other-windows)))))
 
+(use-package zp-org-protocol)
+
 (use-package org-capture-web
   :commands (zp/org-capture-web
              zp/org-capture-web-kill
