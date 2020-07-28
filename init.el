@@ -4193,7 +4193,7 @@ commas and space."
         org-roam-server-network-label-wrap-length 20))
 
 (use-package org-journal
-  :disabled t
+  :disabled
   :load-path "~/projects/org-journal/"
   :bind (:map org-journal-mode-map
          ("C-c C-f" . org-journal-next-entry)
