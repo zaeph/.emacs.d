@@ -3629,11 +3629,11 @@ indirect-buffers."
            "* %^{Title|Entry}\n%T\n\n%?" :full-frame t)
 
           ;; Org-protocol templates
-          ("OPr" "Read with Context" entry (file+headline "~/org/life.org" "Inbox")
-           "* TODO Read %a%? :online:\n" :add-created t)
+          ("OPr" "Capture with guessed action" entry (file+headline "~/org/life.org" "Inbox")
+           "* TODO %(zp/org-protocol-get-verb \"%:link\") %a%? :online:\n%(zp/org-protocol-insert-selection-dwim \"%i\")" :add-created t)
 
-          ("OPr" "Watch with Context" entry (file+headline "~/org/life.org" "Inbox")
-           "* TODO Watch %a%? :online:\n" :add-created t)
+          ("OPrp" "Capture with completion" entry (file+headline "~/org/life.org" "Inbox")
+           "* TODO %(zp/org-protocol-get-verb \"%:link\" t) %a%? :online:\n%(zp/org-protocol-insert-selection-dwim \"%i\")" :add-created t)
 
           ;; Daily Record of Dysfunctional Thoughts
           ("D" "Record Dysfunctional Thoughts" entry (file+headline "~/org/journal.org" "Psychotherapy")
