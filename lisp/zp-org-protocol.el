@@ -52,7 +52,7 @@ a completion-list and preselect the guess"
                   "Watch")
                  (_ (car zp/org-protocol-verbs)))))
     (if with-completion
-        (ivy-read "Action: " zp/org-protocol-verbs :preselect guess)
+        (ivy-read "Verb: " zp/org-protocol-verbs :preselect guess)
       guess)))
 
 (defun zp/org-protocol-insert-selection-dwim (selection)
