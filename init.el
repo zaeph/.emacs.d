@@ -3735,7 +3735,8 @@ indirect-buffers."
     "Conditionally set the CREATED property on captured trees."
     (let ((add-created (plist-get org-capture-plist :add-created))
           (type (plist-get org-capture-current-plist :type)))
-      (when (and (eq type 'entry)
+      (when (and (not org-note-abort)
+                 (eq type 'entry)
                  add-created)
         (unless (buffer-narrowed-p)
           (error "Buffer is not narrowed"))
