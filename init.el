@@ -4104,7 +4104,27 @@ commas and space."
            ""
            :file-name "web/${slug}"
            :head "#+title: ${title}\n#+roam_key: ${ref}\n#+created: %u\n#+last_modified: %U\n\n"
-           :unnarrowed t)))
+           :unnarrowed t))
+        org-roam-dailies-capture-templates
+        '(("d" "daily" entry #'org-roam-capture--get-point
+           "* %?\n%a"
+           :file-name "scratch/%<%Y-%m-%d>"
+           :head "#+title: %<%Y-%m-%d>\n\n"
+           :add-created t)
+          ("D" "default" entry #'org-roam-capture--get-point
+           "* %?"
+           :file-name "scratch/%<%Y-%m-%d>"
+           :head "#+title: %<%Y-%m-%d>\n\n")
+          ("p" "plain" plain #'org-roam-capture--get-point
+           ""
+           :file-name "scratch/%<%Y-%m-%d>"
+           :head "#+title: %<%Y-%m-%d>\n\n")
+          ("i" "immediate" entry #'org-roam-capture--get-point
+           "* %?\n%a"
+           :file-name "scratch/%<%Y-%m-%d>"
+           :head "#+title: %<%Y-%m-%d>\n\n"
+           :immediate-finish t
+           :finalize find-file)))
 
   (defvar zp/org-roam-directory-testing "~/org/slip-box-testing")
 
