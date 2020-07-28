@@ -4110,21 +4110,7 @@ commas and space."
            "* %?\n%a"
            :file-name "scratch/%<%Y-%m-%d>"
            :head "#+title: %<%Y-%m-%d>\n\n"
-           :add-created t)
-          ("D" "default" entry #'org-roam-capture--get-point
-           "* %?"
-           :file-name "scratch/%<%Y-%m-%d>"
-           :head "#+title: %<%Y-%m-%d>\n\n")
-          ("p" "plain" plain #'org-roam-capture--get-point
-           ""
-           :file-name "scratch/%<%Y-%m-%d>"
-           :head "#+title: %<%Y-%m-%d>\n\n")
-          ("i" "immediate" entry #'org-roam-capture--get-point
-           "* %?\n%a"
-           :file-name "scratch/%<%Y-%m-%d>"
-           :head "#+title: %<%Y-%m-%d>\n\n"
-           :immediate-finish t
-           :finalize find-file)))
+           :add-created t)))
 
   (defvar zp/org-roam-directory-testing "~/org/slip-box-testing")
 
