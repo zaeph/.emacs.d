@@ -40,9 +40,14 @@
 
 The first element will be considered the default.")
 
-(defun zp/org-protocol-get-verb (link &optional with-completion)
-  "Get verb according to LINK."
-  (let ((guess (pcase link
+(defun zp/org-protocol-get-verb (url &optional with-completion)
+  "Get verb according to URL.
+
+The function tries to guess which verb to use based on the URL.
+
+When WITH-COMPLETION is non-nil, use `zp/org-protocol-verbs' as
+a completion-list and preselect the guess"
+  (let ((guess (pcase url
                  ((pred (string-match "youtube\\.com/watch"))
                   "Watch")
                  (_ (car zp/org-protocol-verbs)))))
