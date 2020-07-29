@@ -3555,6 +3555,21 @@ indirect-buffers."
   :config
   (setq org-default-notes-file "~/org/life.org")
 
+  ;;------------------
+  ;; Helper functions
+  ;;------------------
+
+  (defun zp/org-capture-journal-create-template (key name)
+    "Create journal template for `org-capture'.
+
+NAME is the name of the template, which will also be used as the
+target-headline in `zp/org-capture-journal-file'.
+
+KEY is the key to use to access the template"
+    `(,key ,name entry (file+olp ,zp/org-capture-journal-file ,name)
+           "* %^{Title|Entry}\n%T\n\n%?"
+           :full-frame t))
+
   ;;-----------
   ;; Templates
   ;;-----------
@@ -3612,24 +3627,15 @@ indirect-buffers."
            "* DONE Training%^{SWIM_DISTANCE}p%^{SWIM_DURATION}p\n%t%(print zp/swimming-workout-default)")
 
           ("j" "Journal")
-          ("jj" "Journal" entry (file+olp "~/org/journal.org" "Life")
-           "* %^{Title|Entry}\n%T\n\n%?" :full-frame t)
-          ("jw" "Awakening" entry (file+olp "~/org/journal.org" "Awakening")
-           "* %^{Title|Entry}\n%T\n\n%?" :full-frame t)
-          ("jp" "Psychotherapy" entry (file+olp "~/org/journal.org" "Psychotherapy")
-           "* %^{Title|Entry}\n%T\n\n%?" :full-frame t)
-          ("jw" "Writing" entry (file+olp "~/org/journal.org" "Writing")
-           "* %^{Title|Entry} %^g\n%T\n\n%?" :full-frame t)
-          ("jr" "Research" entry (file+olp "~/org/journal.org" "Research")
-           "* %^{Title|Entry}\n%T\n\n%?" :full-frame t)
-          ("ju" "University" entry (file+olp "~/org/journal.org" "University")
-           "* %^{Title|Entry}\n%T\n\n%?" :full-frame t)
-          ("jh" "Hacking" entry (file+olp "~/org/journal.org" "Hacking")
-           "* %^{Title|Entry}\n%T\n\n%?" :full-frame t)
-          ("jm" "Music" entry (file+olp "~/org/journal.org" "Music")
-           "* %^{Title|Entry}\n%T\n\n%?" :full-frame t)
-          ("js" "Swimming" entry (file+olp "~/org/journal.org" "Swimming")
-           "* %^{Title|Entry}\n%T\n\n%?" :full-frame t)
+          ,(zp/org-capture-journal-create-template "jj" "Life")
+          ,(zp/org-capture-journal-create-template "jW" "Awakening")
+          ,(zp/org-capture-journal-create-template "jp" "Psychotherapy")
+          ,(zp/org-capture-journal-create-template "jw" "Writing")
+          ,(zp/org-capture-journal-create-template "jr" "Research")
+          ,(zp/org-capture-journal-create-template "ju" "University")
+          ,(zp/org-capture-journal-create-template "jh" "Hacking")
+          ,(zp/org-capture-journal-create-template "jm" "Music")
+          ,(zp/org-capture-journal-create-template "js" "Swimming")
 
           ;; Org-protocol templates
           ("OPr" "Capture with guessed action" entry (file+headline "~/org/life.org" "Inbox")
