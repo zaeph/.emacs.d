@@ -3236,6 +3236,9 @@ indirect-buffers."
 ;;----------------------------------------------------------------------------
 ;; org-agenda
 ;;----------------------------------------------------------------------------
+(use-package org-agenda
+  :bind ("C-c a" . org-agenda))
+
 (use-package zp-org-agenda
   :bind (("s-o" . zp/switch-to-agenda)
          :map org-agenda-mode-map
