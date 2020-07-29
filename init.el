@@ -4227,6 +4227,7 @@ commas and space."
   (setq org-journal-after-entry-create-hook nil))
 
 (use-package zp-org-journal
+  :disabled
   :bind (("C-c m J" . zp/org-journal-find-current-journal-file)
          ("C-c m n" . zp/org-journal-capture)))
 
