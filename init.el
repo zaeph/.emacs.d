@@ -3559,6 +3559,11 @@ indirect-buffers."
   ;; Helper functions
   ;;------------------
 
+  (defvar zp/org-capture-journal-file nil
+    "Location of the journal file.")
+
+  (setq zp/org-capture-journal-file "~/org/journal.org")
+
   (defun zp/org-capture-journal-create-template (key name)
     "Create journal template for `org-capture'.
 
