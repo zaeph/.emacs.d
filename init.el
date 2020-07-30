@@ -3790,7 +3790,13 @@ KEY is the key to use to access the template"
       (if full-frame
           (delete-other-windows)))))
 
-(use-package zp-org-protocol)
+(use-package zp-org-protocol
+  :custom
+  (zp/org-protocol-verbs (list "Explore"
+                               "Investigate"
+                               "Read"
+                               "Listen"
+                               "Watch")))
 
 (use-package org-capture-web
   :commands (zp/org-capture-web

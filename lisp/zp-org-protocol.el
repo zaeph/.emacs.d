@@ -30,15 +30,17 @@
 ;; functions.
 
 ;;; Code:
-(defvar zp/org-protocol-verbs
-  (list "Explore"
-        "Investigate"
-        "Read"
-        "Listen"
-        "Watch")
+(defgroup zp/org-protocol nil
+  "Personal expansion to Org-protocol."
+  :group 'org
+  :prefix "zp/org-protocol-")
+
+(defcustom zp/org-protocol-verbs (list "Read")
   "List of action verbs to use when capturing with `org-protocol'.
 
-The first element will be considered the default.")
+The first element will be considered the default."
+  :group 'zp/org-protocol
+  :type 'list)
 
 (defun zp/org-protocol-get-verb (url &optional with-completion)
   "Get verb according to URL.
@@ -50,7 +52,9 @@ a completion-list and preselect the guess"
   (let ((guess (pcase url
                  ((pred (string-match "youtube\\.com/watch"))
                   "Watch")
-                 (_ (car zp/org-protocol-verbs)))))
+                 (_ (if zp/org-protocol-verbs
+                        (car zp/org-protocol-verbs)
+                      (user-error "No action verb has been defined in `zp/org-protocol-verbs'"))))))
     (if with-completion
         (ivy-read "Verb: " zp/org-protocol-verbs :preselect guess)
       guess)))
