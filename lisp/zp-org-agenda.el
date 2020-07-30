@@ -51,6 +51,21 @@
 (setq zp/org-agenda-skip-functions-debug nil)
 
 ;;----------------------------------------------------------------------------
+;; Helper functions
+;;----------------------------------------------------------------------------
+(defvar zp/org-agenda-main-file nil
+  "Path to the main Org-agenda file.")
+
+(defun zp/org-agenda-get-main-file ()
+  "Get path to the main Org-agenda file.
+
+If `zp/org-agenda-main-file' is nil, use the first file in
+`org-agenda-files'."
+  (or zp/org-agenda-main-file
+      (car org-agenda-files)
+      (user-error "`org-agenda-files' is undefined")))
+
+;;----------------------------------------------------------------------------
 ;; Initialise local config
 ;;----------------------------------------------------------------------------
 (defun zp/org-agenda-get-key ()
@@ -123,13 +138,6 @@ With a prefix argument, do so in all agenda buffers."
         (t
          (with-timer "Rebuilding agenda buffer"
            (org-agenda-redo)))))
-
-(defun zp/update-org-agenda-files ()
-  "Initialise ‘org-agenda-files’ and all the shortcuts."
-  (interactive)
-  (setq org-agenda-files '("~/org/life.org")))
-
-(zp/update-org-agenda-files)
 
 (defun zp/org-agenda-redo-all ()
   "Redo all the agenda views."
@@ -1897,12 +1905,10 @@ a wipe (‘zp/org-agenda-wipe-local-config’).")
 
 Save the file it has been modified, and reveal everything in the
 file (trees, drawers, etc.)."
-  (let ((buffer (get-file-buffer "~/org/life.org"))
+  (let ((buffer (get-file-buffer (zp/org-agenda-get-main-file)))
         (inhibit-message t))
-    (when buffer
+    (when (buffer-modified-p buffer)
       (with-current-buffer buffer
-        (when (buffer-modified-p (get-file-buffer "~/org/life.org"))
-          (save-buffer))
         (org-show-all)))))
 
 (add-hook 'org-agenda-mode-hook #'zp/org-agenda-prepare-main-file)
@@ -1986,7 +1992,7 @@ With a ‘C-u’ prefix argument, also kill the main Org buffer."
         (kill-count (zp/org-agenda-kill-special-agendas)))
     (zp/create-agenda-view nil)
     (when kill-file
-      (when-let ((file (find-buffer-visiting "~/org/life.org")))
+      (when-let ((file (get-file-buffer (zp/org-agenda-get-main-file))))
         (with-current-buffer file
           (when (buffer-modified-p)
             (save-buffer))

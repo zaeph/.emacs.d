@@ -3237,7 +3237,9 @@ indirect-buffers."
 ;; org-agenda
 ;;----------------------------------------------------------------------------
 (use-package org-agenda
-  :bind ("C-c a" . org-agenda))
+  :bind ("C-c a" . org-agenda)
+  :custom
+  (org-agenda-files '("~/org/life.org")))
 
 (use-package zp-org-agenda
   :bind (("s-o" . zp/switch-to-agenda)
