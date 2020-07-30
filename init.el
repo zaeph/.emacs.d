@@ -4216,30 +4216,6 @@ commas and space."
         org-roam-server-network-label-truncate-length 60
         org-roam-server-network-label-wrap-length 20))
 
-(use-package org-journal
-  :disabled
-  :load-path "~/projects/org-journal/"
-  :bind (:map org-journal-mode-map
-         ("C-c C-f" . org-journal-next-entry)
-         ("C-c C-b" . org-journal-previous-entry)
-         ("C-c C-j" . org-journal-new-entry)
-         ("C-c C-s" . org-journal-search))
-  :custom
-  (org-journal-date-prefix "")
-  (org-journal-file-header "#+title: %Y-%m-%d\n\n")
-  (org-journal-file-format "%Y-%m-%d.org")
-  (org-journal-dir (concat (file-name-as-directory org-roam-directory) "journal/"))
-  (org-journal-date-format "%Y-%m-%d")
-  (org-journal-time-format "")
-  (org-journal-time-prefix "* ")
-  :config
-  (setq org-journal-after-entry-create-hook nil))
-
-(use-package zp-org-journal
-  :disabled
-  :bind (("C-c m J" . zp/org-journal-find-current-journal-file)
-         ("C-c m n" . zp/org-journal-capture)))
-
 ;;----------------------------------------------------------------------------
 ;; hydra-org-refile
 ;;----------------------------------------------------------------------------
