@@ -3792,9 +3792,9 @@ KEY is the key to use to access the template"
 
 (use-package zp-org-protocol
   :custom
-  (zp/org-protocol-verbs (list "Explore"
+  (zp/org-protocol-verbs (list "Read"
+                               "Explore"
                                "Investigate"
-                               "Read"
                                "Listen"
                                "Watch")))
 
