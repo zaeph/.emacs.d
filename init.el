@@ -3645,10 +3645,10 @@ KEY is the key to use to access the template"
           ,(zp/org-capture-journal-create-template "js" "Swimming")
 
           ;; Org-protocol templates
-          ("OPr" "Capture with guessed action" entry (file+headline "~/org/life.org" "Inbox")
+          ("OPg" "Capture with guessed action" entry (file+headline "~/org/life.org" "Inbox")
            "* TODO %(zp/org-protocol-get-verb \"%:link\") %a%? :online:\n%(zp/org-protocol-insert-selection-dwim \"%i\")" :add-created t)
 
-          ("OPrp" "Capture with completion" entry (file+headline "~/org/life.org" "Inbox")
+          ("OPc" "Capture with completion" entry (file+headline "~/org/life.org" "Inbox")
            "* TODO %(zp/org-protocol-get-verb \"%:link\" t) %a%? :online:\n%(zp/org-protocol-insert-selection-dwim \"%i\")" :add-created t)
 
           ;; Daily Record of Dysfunctional Thoughts
