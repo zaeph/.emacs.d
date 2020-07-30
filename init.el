@@ -5205,6 +5205,7 @@ position."
          (org-capture-mode . zp/play-sound-start-capture)
          (org-capture-after-finalize . zp/play-sound-after-capture)
          (zp/org-after-view-change . zp/play-sound-turn-page)
+         (org-roam-dailies-find-file . zp/play-sound-turn-page)
          (zp/org-after-refile . zp/play-sound-turn-page))
   :requires org)
 
