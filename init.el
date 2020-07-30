@@ -4130,11 +4130,12 @@ commas and space."
            :file-name "web/${slug}"
            :head "#+title: ${title}\n#+roam_key: ${ref}\n#+created: %u\n#+last_modified: %U\n\n"
            :unnarrowed t))
+        org-roam-dailies-directory "scratch/"
+        org-roam-dailies-capture--header-default
+        "#+title: %<%Y-%m-%d>\n\n"
         org-roam-dailies-capture-templates
         '(("d" "daily" entry #'org-roam-capture--get-point
            "* %?\n"
-           :file-name "scratch/%<%Y-%m-%d>"
-           :head "#+title: %<%Y-%m-%d>\n\n"
            :add-created t)))
 
   (defvar zp/org-roam-directory-testing "~/org/slip-box-testing")
