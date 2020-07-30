@@ -4242,6 +4242,8 @@ commas and space."
              zp/hydra-org-refile)
   :bind ("C-c C-j" . zp/hydra-org-jump)
   :after (:any org org-capture)
+  :custom
+  (zp/org-agenda-files-primary "~/org/life.org")
   :init
   ;; ‘hydra-org-refile’ needs to modify the keymaps of ‘org-mode’,
   ;; ‘org-agenda-mode’, and ‘org-capture-mode’, but since those packages are

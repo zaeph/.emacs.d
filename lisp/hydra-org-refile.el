@@ -131,8 +131,6 @@ restriction."
 (defvar zp/org-agenda-files-primary nil
   "Primary org-agenda file.")
 
-(setq zp/org-agenda-files-primary "~/org/life.org")
-
 (defun zp/org-refile-main (&optional print-message jump)
   "Refile current heading to another in org-agenda file.
 
