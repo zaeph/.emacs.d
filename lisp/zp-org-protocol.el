@@ -59,6 +59,23 @@ a completion-list and preselect the guess."
         (ivy-read "Verb: " zp/org-protocol-verbs :preselect guess)
       guess)))
 
+(defun zp/org-protocol-process-title-by-url (title url)
+  "Clean up TITLE based on URL rules."
+  (pcase url
+    ((pred (string-match "youtube\\.com"))
+     (replace-regexp-in-string "\\(^([0-9]+) \\| - YouTube\\)" "" title))
+    (_
+     title)))
+
+(defun zp/org-protocol-process (url desc &optional with-completion)
+  "Get verb from URL and process DESC.
+
+When WITH-COMPLETION is non-nil, use `zp/org-protocol-verbs' as
+a completion-list and preselect the guess."
+  (let ((verb (zp/org-protocol-get-verb url with-completion))
+        (desc-new (zp/org-protocol-process-title-by-url desc url)))
+    (format "%s [[%s][%s]]" verb url desc-new)))
+
 (defun zp/org-protocol-insert-selection-dwim (selection)
   "Insert SELECTION as quote if it is not non-nil."
   (unless (string= selection "")
