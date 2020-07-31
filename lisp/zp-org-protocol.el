@@ -48,7 +48,7 @@ The first element will be considered the default."
 The function tries to guess which verb to use based on the URL.
 
 When WITH-COMPLETION is non-nil, use `zp/org-protocol-verbs' as
-a completion-list and preselect the guess"
+a completion-list and preselect the guess."
   (let ((guess (pcase url
                  ((pred (string-match "youtube\\.com/watch"))
                   "Watch")
