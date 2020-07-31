@@ -686,7 +686,8 @@ surrounding paragraph."
   ;; :load-path "~/projects/magit/lisp/"
   :bind (("s-m" . magit-status)
          ("s-b" . magit-blame-addition)
-         ("s-M-m" . zp/magit-stage-file-and-commit))
+         ("s-M-m" . zp/magit-stage-file-and-commit)
+         ("C-c g" . magit-file-dispatch))
   :config
   (transient-append-suffix 'magit-log "-A"
     '("-1" "First parent" "--first-parent"))
@@ -1089,7 +1090,8 @@ Modifies ‘diff-command’ and ‘diff-switches’ to use ‘git diff’."
          (markdown-mode . flyspell-mode)))
 
 (use-package git-link
-  :bind ("C-c g" . zp/git-link-dwim)
+  :bind (:map prog-mode-map
+         ("C-c C-g" . zp/git-link-dwim))
   :config
   (defun zp/git-link-dwim (arg)
     "Create a URL pointing to current line/region on the branch.
