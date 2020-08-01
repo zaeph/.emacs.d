@@ -3,6 +3,7 @@
 ;; Copyright © 2020 Leo Vivier <leo.vivier+dev@gmail.com>
 
 ;; Author: Leo Vivier <leo.vivier+dev@gmail.com>
+;; URL: https://github.com/zaeph/.emacs.d
 ;; Keywords: org, org-protocol
 ;; Version: 0.1.0
 ;; Package-Requires: org, org-protocol
