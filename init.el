@@ -4148,6 +4148,10 @@ commas and space."
 
 (use-package org-roam-protocol)
 
+(use-package company-org-roam
+  :config
+  (push 'company-org-roam company-backends))
+
 (defcustom orb-title-format "${author-or-editor-abbrev} (${date}).  ${title}."
     "Format of the title to use for `orb-templates'.")
 
