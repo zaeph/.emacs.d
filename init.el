@@ -2648,6 +2648,14 @@ return `nil'."
 
         org-tags-column -77)
 
+  ;; Change the functions used to follow links
+  (setq org-link-frame-setup
+        '((vm . vm-visit-folder-other-frame)
+          (vm-imap . vm-visit-imap-folder-other-frame)
+          (gnus . org-gnus-no-new-news)
+          (file . find-file)
+          (wl . wl-other-frame)))
+
   ;; org-refile settings
   (setq org-refile-targets '((nil :maxlevel . 9))
         org-refile-use-cache nil
