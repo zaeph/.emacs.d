@@ -67,45 +67,76 @@
   (set-face-attribute 'cursor nil :background "#c94922")
   (when (bound-and-true-p beacon-color)
     (setq beacon-color "#c94922"))
-  (set-face-attribute 'org-todo nil :foreground "darkred")
-  (set-face-attribute 'org-done nil :foreground "spring green")
-  (set-face-attribute 'org-scheduled nil :foreground "#198844")
-  (set-face-attribute 'org-scheduled-today nil :foreground "CadetBlue")
-  (set-face-attribute 'org-link nil :underline t)
+  (with-eval-after-load 'org
+    (set-face-attribute 'org-todo nil :foreground "darkred")
+    (set-face-attribute 'org-done nil :foreground "spring green")
+    (set-face-attribute 'org-scheduled nil :foreground "#198844")
+    (set-face-attribute 'org-scheduled-today nil :foreground "CadetBlue")
+    (set-face-attribute 'org-link nil :underline t)
+    (set-face-attribute 'org-hide nil :foreground "#141414")
+    (set-face-attribute 'org-level-4 nil :foreground "#ed3971")
+    (set-face-attribute 'org-meta-line nil :foreground "DodgerBlue3")
+    (set-face-attribute 'org-column nil :background "#1F1F1F")
+    (set-face-attribute 'org-block-begin-line nil :foreground "DodgerBlue3")
+    ;; (set-face-attribute 'org-block nil :foreground nil :background nil)
+    (set-face-attribute 'org-block-end-line nil :foreground "DodgerBlue3")
+    (set-face-attribute 'org-drawer nil :foreground "#4790C9")
+
+    (zp/org-todo-format-face 'normal 'org-todo-todo "darkred")
+    (zp/org-todo-format-face 'normal 'org-todo-next "DodgerBlue1")
+    (zp/org-todo-format-face 'normal 'org-todo-strt "gold3")
+    (zp/org-todo-format-face 'normal 'org-todo-done "SpringGreen3")
+    (zp/org-todo-format-face 'normal 'org-todo-stby "SkyBlue4")
+    (zp/org-todo-format-face 'normal 'org-todo-wait "Skyblue4")
+    (zp/org-todo-format-face 'normal 'org-todo-cxld "turquoise")
+
+    (set-face-attribute 'org-priority-face-a nil :foreground "purple")
+    (set-face-attribute 'org-priority-face-b nil :foreground "darkred")
+    (set-face-attribute 'org-priority-face-c nil :foreground "yellow")
+    (set-face-attribute 'org-priority-face-d nil :foreground "ForestGreen")
+    (set-face-attribute 'org-priority-face-e nil :foreground "RoyalBlue")
+
+    (set-face-attribute 'org-tag-context nil  :weight 'bold :foreground "BlueViolet")
+    (set-face-attribute 'org-tag-special nil :weight 'bold :foreground "SpringGreen4")
+    (set-face-attribute 'org-tag-standby nil :weight 'bold :foreground "Skyblue4")
+    (set-face-attribute 'org-tag-important nil :weight 'bold :foreground "darkred")
+    (set-face-attribute 'org-tag-curios nil   :weight 'bold :foreground "DeepPink")
+    (set-face-attribute 'org-tag-french nil    :weight 'bold :foreground "DodgerBlue1"))
+
   (with-eval-after-load 'org-roam
     (set-face-attribute 'org-roam-link nil :foreground "#9449ff")
     (set-face-attribute 'org-roam-link-current nil :foreground "#ae005c"))
-  (set-face-attribute 'org-hide nil :foreground "#141414")
-  (set-face-attribute 'org-agenda-dimmed-todo-face nil :foreground "LightSlateBlue")
+
+  (with-eval-after-load 'org-agenda
+    (set-face-attribute 'org-agenda-dimmed-todo-face nil :foreground "LightSlateBlue")
+    (set-face-attribute 'org-agenda-clocking nil :background "RoyalBlue4")
+    (set-face-attribute 'org-agenda-structure nil
+                        :foreground "DodgerBlue1"
+                        :weight 'bold)
+    (set-face-attribute 'org-agenda-date nil
+                        :foreground "#3971ed")
+    (set-face-attribute 'org-agenda-date-today nil
+                        :foreground "#2aa198"
+                        :slant 'normal)
+    (set-face-attribute 'org-agenda-date-weekend nil
+                        :foreground "#5b39ed"
+                        :slant 'normal
+                        :weight 'normal))
+
   (set-face-attribute 'region nil :background "RoyalBlue4")
-  (set-face-attribute 'helm-selection nil :background "RoyalBlue4") ;Darker Royal Blue
-  (set-face-attribute 'org-agenda-clocking nil :background "RoyalBlue4")
   (set-face-attribute 'fringe nil :background "gray10" :foreground "orangered")
   (set-face-attribute 'vertical-border nil :foreground "RoyalBlue1")
-  (set-face-attribute 'hl-line nil :background "#1f1f3f")
-  (set-face-attribute 'org-level-4 nil :foreground "#ed3971")
-  (set-face-attribute 'org-meta-line nil :foreground "DodgerBlue3")
+
+  (with-eval-after-load 'helm
+    (set-face-attribute 'helm-selection nil :background "RoyalBlue4") ;Darker Royal Blue
+    )
+
+  (with-eval-after-load 'hl-line
+    (set-face-attribute 'hl-line nil :background "#1f1f3f"))
+
   (set-face-attribute 'header-line nil :foreground "#777")
   (set-face-attribute 'line-number nil :foreground "#969996" :background "#2d2d2d")
   (set-face-attribute 'secondary-selection nil :background "#3B3273")
-  (set-face-attribute 'org-column nil :background "#1F1F1F")
-  (set-face-attribute 'org-block-begin-line nil :foreground "DodgerBlue3")
-  ;; (set-face-attribute 'org-block nil :foreground nil :background nil)
-  (set-face-attribute 'org-block-end-line nil :foreground "DodgerBlue3")
-  (set-face-attribute 'org-drawer nil :foreground "#4790C9")
-
-  (set-face-attribute 'org-agenda-structure nil
-                      :foreground "DodgerBlue1"
-                      :weight 'bold)
-  (set-face-attribute 'org-agenda-date nil
-                      :foreground "#3971ed")
-  (set-face-attribute 'org-agenda-date-today nil
-                      :foreground "#2aa198"
-                      :slant 'normal)
-  (set-face-attribute 'org-agenda-date-weekend nil
-                      :foreground "#5b39ed"
-                      :slant 'normal
-                      :weight 'normal)
 
   (with-eval-after-load "diff-hl"
     (set-face-attribute 'diff-hl-change nil :foreground "#6679cc")
@@ -120,36 +151,14 @@
                         :weight 'bold)
     (set-face-attribute 'zp/org-agenda-block-warning-face nil
                         :foreground "red"
-                        :weight 'bold))
-
-  (zp/org-todo-format-face 'normal 'org-todo-todo "darkred")
-  (zp/org-todo-format-face 'normal 'org-todo-next "DodgerBlue1")
-  (zp/org-todo-format-face 'normal 'org-todo-strt "gold3")
-  (zp/org-todo-format-face 'normal 'org-todo-done "SpringGreen3")
-  (zp/org-todo-format-face 'normal 'org-todo-stby "SkyBlue4")
-  (zp/org-todo-format-face 'normal 'org-todo-wait "Skyblue4")
-  (zp/org-todo-format-face 'normal 'org-todo-cxld "turquoise")
-
-  (set-face-attribute 'org-priority-face-a nil :foreground "purple")
-  (set-face-attribute 'org-priority-face-b nil :foreground "darkred")
-  (set-face-attribute 'org-priority-face-c nil :foreground "yellow")
-  (set-face-attribute 'org-priority-face-d nil :foreground "ForestGreen")
-  (set-face-attribute 'org-priority-face-e nil :foreground "RoyalBlue")
-
-  (set-face-attribute 'org-tag-context nil  :weight 'bold :foreground "BlueViolet")
-  (set-face-attribute 'org-tag-special nil :weight 'bold :foreground "SpringGreen4")
-  (set-face-attribute 'org-tag-standby nil :weight 'bold :foreground "Skyblue4")
-  (set-face-attribute 'org-tag-important nil :weight 'bold :foreground "darkred")
-  (set-face-attribute 'org-tag-curios nil   :weight 'bold :foreground "DeepPink")
-  (set-face-attribute 'org-tag-french nil    :weight 'bold :foreground "DodgerBlue1")
+                        :weight 'bold)
+    (zp/org-super-agenda-update-face))
 
   (with-eval-after-load "magit"
     (set-face-attribute 'magit-tag nil :foreground "SpringGreen4"))
 
   (with-eval-after-load "highlight-indent-guides"
     (highlight-indent-guides-auto-set-faces))
-
-  (zp/org-super-agenda-update-face)
 
   (zp/mode-line-dark-theme)
   (zp/pdf-view-midnight-mode-theme))
@@ -164,42 +173,72 @@
   (when (bound-and-true-p beacon-color)
     (setq beacon-color "#ff4136"))
   (set-face-attribute 'fringe nil :background "#e6deb8" :foreground "orangered")
-  (set-face-attribute 'org-hide nil :foreground "#fbf1c7")
-  (set-face-attribute 'org-agenda-dimmed-todo-face nil :foreground "LightSlateBlue")
-  (set-face-attribute 'org-scheduled-today nil :foreground "DodgerBlue4")
   (set-face-attribute 'region nil :background "SkyBlue1")
-  (set-face-attribute 'hl-line nil :background "#fff989")
-  (set-face-attribute 'org-level-4 nil :foreground "#ed3971")
-  (set-face-attribute 'org-link nil :underline t)
+
+  (with-eval-after-load 'org
+    (set-face-attribute 'org-hide nil :foreground "#fbf1c7")
+    (set-face-attribute 'org-scheduled-today nil :foreground "DodgerBlue4")
+    (set-face-attribute 'org-level-4 nil :foreground "#ed3971")
+    (set-face-attribute 'org-link nil :underline t)
+    (set-face-attribute 'org-meta-line nil :foreground "DodgerBlue3")
+    (set-face-attribute 'org-column nil :background "#F0E4BE")
+    (set-face-attribute 'org-block-begin-line nil :foreground "DodgerBlue3")
+    ;; (set-face-attribute 'org-block nil :foreground nil :background nil)
+    (set-face-attribute 'org-block-end-line nil :foreground "DodgerBlue3")
+    (set-face-attribute 'org-drawer nil :foreground "#4790C9")
+
+    (zp/org-todo-format-face 'normal 'org-todo-todo "red")
+    (zp/org-todo-format-face 'normal 'org-todo-next "DodgerBlue1")
+    (zp/org-todo-format-face 'normal 'org-todo-strt "gold3")
+    (zp/org-todo-format-face 'normal 'org-todo-done "SpringGreen3")
+    (zp/org-todo-format-face 'normal 'org-todo-stby "SkyBlue4")
+    (zp/org-todo-format-face 'normal 'org-todo-wait "Skyblue4")
+    (zp/org-todo-format-face 'normal 'org-todo-cxld "turquoise")
+
+    (set-face-attribute 'org-priority-face-a nil :foreground "purple")
+    (set-face-attribute 'org-priority-face-b nil :foreground "red")
+    (set-face-attribute 'org-priority-face-c nil :foreground "gold3")
+    (set-face-attribute 'org-priority-face-d nil :foreground "ForestGreen")
+    (set-face-attribute 'org-priority-face-e nil :foreground "RoyalBlue")
+
+    (set-face-attribute 'org-tag-context nil :weight 'bold :foreground "BlueViolet")
+    (set-face-attribute 'org-tag-special nil :weight 'bold :foreground "SpringGreen4")
+    (set-face-attribute 'org-tag-standby nil :weight 'bold :foreground "SkyBlue4")
+    (set-face-attribute 'org-tag-important nil :weight 'bold :foreground "red")
+    (set-face-attribute 'org-tag-curios nil :weight 'bold :foreground "DeepPink")
+    (set-face-attribute 'org-tag-french nil :weight 'bold :foreground "DodgerBlue1"))
+
+  (with-eval-after-load 'org-agenda
+    (set-face-attribute 'org-agenda-dimmed-todo-face nil :foreground "LightSlateBlue")
+    (set-face-attribute 'org-agenda-clocking nil :background "LightBlue2")
+    (set-face-attribute 'org-agenda-structure nil
+                        :foreground "DodgerBlue1"
+                        :weight 'bold)
+    (set-face-attribute 'org-agenda-date nil
+                        :foreground "#3971ed")
+    (set-face-attribute 'org-agenda-date-today nil
+                        :foreground "#2aa198"
+                        :slant 'normal)
+    (set-face-attribute 'org-agenda-date-weekend nil
+                        :foreground "#5b39ed"
+                        :slant 'normal
+                        :weight 'normal))
+
+  (with-eval-after-load 'hl-line
+    (set-face-attribute 'hl-line nil :background "#fff989"))
+
   (with-eval-after-load 'org-roam
     (set-face-attribute 'org-roam-link nil :foreground "#9449ff")
     (set-face-attribute 'org-roam-link-current nil :foreground "#ae005c"))
-  (set-face-attribute 'org-agenda-clocking nil :background "LightBlue2")
-  (set-face-attribute 'org-meta-line nil :foreground "DodgerBlue3")
-  (set-face-attribute 'helm-selection nil :background "SteelBlue1")
-  (set-face-attribute 'helm-visible-mark nil :background "goldenrod1")
+
+  (with-eval-after-load 'helm
+    (set-face-attribute 'helm-selection nil :background "SteelBlue1")
+    (set-face-attribute 'helm-visible-mark nil :background "goldenrod1"))
+
   (set-face-attribute 'header-line nil :foreground "#666")
   (set-face-attribute 'line-number nil :foreground "#636663" :background "#d4cdaa")
   ;; (set-face-attribute 'line-number-current-line nil :foreground "#707370" :background "#ccc6a4")
   (set-face-attribute 'secondary-selection nil :background "#d3ccff")
-  (set-face-attribute 'org-column nil :background "#F0E4BE")
-  (set-face-attribute 'org-block-begin-line nil :foreground "DodgerBlue3")
-  ;; (set-face-attribute 'org-block nil :foreground nil :background nil)
-  (set-face-attribute 'org-block-end-line nil :foreground "DodgerBlue3")
-  (set-face-attribute 'org-drawer nil :foreground "#4790C9")
-
-  (set-face-attribute 'org-agenda-structure nil
-                      :foreground "DodgerBlue1"
-                      :weight 'bold)
-  (set-face-attribute 'org-agenda-date nil
-                      :foreground "#3971ed")
-  (set-face-attribute 'org-agenda-date-today nil
-                      :foreground "#2aa198"
-                      :slant 'normal)
-  (set-face-attribute 'org-agenda-date-weekend nil
-                      :foreground "#5b39ed"
-                      :slant 'normal
-                      :weight 'normal)
 
   (with-eval-after-load "diff-hl"
     (set-face-attribute 'diff-hl-change nil :foreground "#3a81c3" :background "#afcce7")
@@ -214,36 +253,14 @@
                         :weight 'bold)
     (set-face-attribute 'zp/org-agenda-block-warning-face nil
                         :foreground "red"
-                        :weight 'bold))
-
-  (zp/org-todo-format-face 'normal 'org-todo-todo "red")
-  (zp/org-todo-format-face 'normal 'org-todo-next "DodgerBlue1")
-  (zp/org-todo-format-face 'normal 'org-todo-strt "gold3")
-  (zp/org-todo-format-face 'normal 'org-todo-done "SpringGreen3")
-  (zp/org-todo-format-face 'normal 'org-todo-stby "SkyBlue4")
-  (zp/org-todo-format-face 'normal 'org-todo-wait "Skyblue4")
-  (zp/org-todo-format-face 'normal 'org-todo-cxld "turquoise")
-
-  (set-face-attribute 'org-priority-face-a nil :foreground "purple")
-  (set-face-attribute 'org-priority-face-b nil :foreground "red")
-  (set-face-attribute 'org-priority-face-c nil :foreground "gold3")
-  (set-face-attribute 'org-priority-face-d nil :foreground "ForestGreen")
-  (set-face-attribute 'org-priority-face-e nil :foreground "RoyalBlue")
-
-  (set-face-attribute 'org-tag-context nil :weight 'bold :foreground "BlueViolet")
-  (set-face-attribute 'org-tag-special nil :weight 'bold :foreground "SpringGreen4")
-  (set-face-attribute 'org-tag-standby nil :weight 'bold :foreground "SkyBlue4")
-  (set-face-attribute 'org-tag-important nil :weight 'bold :foreground "red")
-  (set-face-attribute 'org-tag-curios nil :weight 'bold :foreground "DeepPink")
-  (set-face-attribute 'org-tag-french nil :weight 'bold :foreground "DodgerBlue1")
+                        :weight 'bold)
+    (zp/org-super-agenda-update-face))
 
   (with-eval-after-load "magit"
     (set-face-attribute 'magit-tag nil :foreground "SpringGreen4"))
 
   (with-eval-after-load "highlight-indent-guides"
     (highlight-indent-guides-auto-set-faces))
-
-  (zp/org-super-agenda-update-face)
 
   (zp/mode-line-light-theme)
   (zp/pdf-view-midnight-mode-theme))
