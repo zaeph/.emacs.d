@@ -308,11 +308,11 @@ be the list of commands to advice."
     `(progn
        ,@(cond ((string= method 'add)
                 (mapcar (lambda (command)
-                          `(advice-add ',command ,where-keyword #',function))
+                          `(advice-add ',command ,where-keyword ',function))
                         commands))
                ((string= method 'remove)
                 (mapcar (lambda (command)
-                          `(advice-remove ',command  #',function))
+                          `(advice-remove ',command  ',function))
                         commands))))))
 
 (defmacro zp/add-hooks (method commands function)
@@ -321,11 +321,11 @@ See `add-hooks' for details."
   `(progn
      ,@(cond ((string= method 'add)
               (mapcar (lambda (command)
-                        `(add-hook ',command #',function))
+                        `(add-hook ',command ',function))
                       commands))
              ((string= method 'remove)
               (mapcar (lambda (command)
-                        `(remove-hook ',command  #',function))
+                        `(remove-hook ',command ',function))
                       commands)))))
 
 (defun other-window-reverse ()
@@ -395,7 +395,7 @@ ITERATIONS is the sample-size to use for the statistics.
 MULTIPLIER is an integer to specify how many times to evaluate
 FORMS on each iteration."
   (declare (indent 2))
-  (let ((multiplier (or ,multiplier 1)))
+  (let ((multiplier (or multiplier 1)))
     ;; If only one iteration, use ‘time’ instead
     `(let (list)
        (if (or (not ,iterations) (= 1 ,iterations))
@@ -651,8 +651,12 @@ surrounding paragraph."
 ;; ‘use-package’ initialisation
 (eval-when-compile
   ;; Following line is not needed if use-package.el is in ~/.emacs.d
-  ;; (add-to-list 'load-path "<path where use-package is installed>")
+  (add-to-list 'load-path "~/.emacs.d/")
   (require 'use-package))
+
+(require 'bind-key)
+
+(require 'diminish)
 
 (use-package auto-compile
   :config
@@ -829,12 +833,13 @@ With a ‘C-u’ prefix argument, amend the last commit instead."
 
 (use-package interaction-log)
 
-(use-package info+
-  :bind (:map Info-mode-map
-         ("<mouse-4>" . mwheel-scroll)
-         ("<mouse-5>" . mwheel-scroll)
-         ("j" . next-line)
-         ("k" . previous-line)))
+;; (use-package info+
+;;   :load-path "~/.emacs.d/pkg/emacswiki.org/info+.el"
+;;   :bind (:map Info-mode-map
+;;          ("<mouse-4>" . mwheel-scroll)
+;;          ("<mouse-5>" . mwheel-scroll)
+;;          ("j" . next-line)
+;;          ("k" . previous-line)))
 
 (use-package recentf-ext)
 
@@ -1097,7 +1102,7 @@ Modifies ‘diff-command’ and ‘diff-switches’ to use ‘git diff’."
 (use-package vterm
   :ensure t)
 
-(use-package markdown
+(use-package markdown-mode
   :hook ((markdown-mode . visual-line-mode)
          (markdown-mode . flyspell-mode)))
 
@@ -1281,7 +1286,7 @@ numerical arguments."
     (unless activate
       (zp/pdf-view-save-buffer-maybe)))
 
-  (defun zp/pdf-annot-add-highlight-markup-annotation-and-activate (arg &optional activate)
+  (defun zp/pdf-annot-add-highlight-markup-annotation-and-activate (arg)
     "Add highlight markup annotation and activate it.
 
 This wrapper includes presets which can be accessed with
@@ -1603,7 +1608,7 @@ With numeric prefix arg DEC, decrement the integer by DEC amount."
       (notmuch-search-next-thread)))
 
   (define-key notmuch-show-mode-map "d"
-    (lambda (&optional beg end)
+    (lambda ()
       "mark thread as spam"
       (interactive (notmuch-interactive-region))
       (notmuch-show-tag (list "+deleted" "-inbox" "-draft"))
@@ -1847,6 +1852,8 @@ SEARCH is a string to be interpreted by notmuch-search."
 ;;----------------------------------------------------------------------------
 ;; AUCTeX
 ;;----------------------------------------------------------------------------
+(use-package tex-buf)
+
 (use-package latex
   :bind (:map LaTeX-mode-map
          (("C-x n e" . zp/LaTeX-narrow-to-environment)
@@ -1939,7 +1946,7 @@ entry in `TeX-view-program-list-builtin'."
                                    (get-file-buffer (TeX-region-file t)))
                                  (current-buffer))
           (pdf-sync-forward-search))
-      (let* ((pdf (concat file "." (TeX-output-extension)))
+      (let* ((pdf (concat file "." TeX-output-extension))
              (buffer (or (find-buffer-visiting pdf)
                          (find-file-noselect pdf))))
         (if TeX-view-pdf-tools-keep-focus
@@ -1968,7 +1975,7 @@ entry in `TeX-view-program-list-builtin'."
             (output-html "xdg-open"))
           TeX-source-correlate-start-server 'ask
           zp/tex-view-program 'evince)
-    (remove-hook #'TeX-after-compilation-finished-functions
+    (remove-hook 'TeX-after-compilation-finished-functions
                  #'TeX-revert-document-buffer))
 
   (defun zp/tex-view-program-switch ()
@@ -2038,7 +2045,7 @@ return `nil'."
 
   (defvar zp/LaTeX-narrow-previous-positions nil)
 
-  (defun zp/LaTeX-narrow-to-environment (&optional count)
+  (defun zp/LaTeX-narrow-to-environment ()
     (interactive "p")
     (LaTeX-narrow-to-environment)
     (LaTeX-mark-environment 1)
@@ -2178,12 +2185,12 @@ return `nil'."
       (re-search-forward "\\\\label{sec:org[0-9][^}]*}" nil t)
       (replace-match "")))
 
-  (defun zp/org-latex-remove-section-labels (string backend info)
+  (defun zp/org-latex-remove-section-labels (string backend _info)
     "Remove section labels generated by org-mode"
     (when (org-export-derived-backend-p backend 'latex)
       (replace-regexp-in-string "\\\\label{sec:.*?}" "" string)))
 
-  (add-to-list #'org-export-filter-final-output-functions
+  (add-to-list 'org-export-filter-final-output-functions
                #'zp/org-latex-remove-section-labels))
 
 (use-package bibtex
@@ -2488,27 +2495,27 @@ along with effort estimates and total time."
 
   ;; TODO: Optimise
 
-  (defface org-todo-todo '((t)) nil)
-  (defface org-todo-next '((t)) nil)
-  (defface org-todo-strt '((t)) nil)
-  (defface org-todo-done '((t)) nil)
-  (defface org-todo-stby '((t)) nil)
-  (defface org-todo-wait '((t)) nil)
-  (defface org-todo-cxld '((t)) nil)
+  (defface org-todo-todo '((t)) nil :group 'org-faces)
+  (defface org-todo-next '((t)) nil :group 'org-faces)
+  (defface org-todo-strt '((t)) nil :group 'org-faces)
+  (defface org-todo-done '((t)) nil :group 'org-faces)
+  (defface org-todo-stby '((t)) nil :group 'org-faces)
+  (defface org-todo-wait '((t)) nil :group 'org-faces)
+  (defface org-todo-cxld '((t)) nil :group 'org-faces)
 
-  (defface org-priority-face-a '((t)) nil)
-  (defface org-priority-face-b '((t)) nil)
-  (defface org-priority-face-c '((t)) nil)
-  (defface org-priority-face-d '((t)) nil)
-  (defface org-priority-face-e '((t)) nil)
+  (defface org-priority-face-a '((t)) nil :group 'org-faces)
+  (defface org-priority-face-b '((t)) nil :group 'org-faces)
+  (defface org-priority-face-c '((t)) nil :group 'org-faces)
+  (defface org-priority-face-d '((t)) nil :group 'org-faces)
+  (defface org-priority-face-e '((t)) nil :group 'org-faces)
 
-  (defface org-tag-context '((t :inherit 'org-tag)) nil)
-  (defface org-tag-special '((t :inherit 'org-tag)) nil)
-  (defface org-tag-standby '((t :inherit 'org-tag)) nil)
-  (defface org-tag-routine '((t :inherit 'org-tag-standby)) nil)
-  (defface org-tag-important '((t :inherit 'org-tag)) nil)
-  (defface org-tag-curios '((t :inherit 'org-tag)) nil)
-  (defface org-tag-french '((t :inherit 'org-tag)) nil))
+  (defface org-tag-context '((t :inherit 'org-tag)) nil :group 'org-faces)
+  (defface org-tag-special '((t :inherit 'org-tag)) nil :group 'org-faces)
+  (defface org-tag-standby '((t :inherit 'org-tag)) nil :group 'org-faces)
+  (defface org-tag-routine '((t :inherit 'org-tag-standby)) nil :group 'org-faces)
+  (defface org-tag-important '((t :inherit 'org-tag)) nil :group 'org-faces)
+  (defface org-tag-curios '((t :inherit 'org-tag)) nil :group 'org-faces)
+  (defface org-tag-french '((t :inherit 'org-tag)) nil :group 'org-faces))
 
 ;; Babel
 (use-package ob-async
@@ -2596,13 +2603,13 @@ along with effort estimates and total time."
           ("p" . helm-projectile)))
   :config
   ;; Increase truncation of buffer names
-  (setq helm-buffer-max-length 30                 ;Default: 20
+  (setq helm-buffer-max-length 30       ;Default: 20
         helm-M-x-fuzzy-match t
         helm-buffers-fuzzy-matching t
         helm-recentf-fuzzy-match t
         helm-semantic-fuzzy-match t
         helm-imenu-fuzzy-match t
-        helm-mode-fuzzy-match t
+        helm-completion-style 'helm-fuzzy
         helm-completion-in-region-fuzzy-match t
         helm-apropos-fuzzy-match t
         helm-lisp-fuzzy-completion t)
@@ -3427,7 +3434,7 @@ KEY is the key to use to access the template"
   ;;------
 
   ;; Align tags in templates before finalising
-  (add-hook 'org-capture-before-finalize-hook #'org-align-all-tags)
+  (add-hook 'org-capture-before-finalize-hook #'org-align-tags)
 
   ;; Restore the previous window configuration after exiting
   (defvar zp/org-capture-before-config nil
@@ -3471,7 +3478,7 @@ KEY is the key to use to access the template"
          ("s-M-y" . helm-bibtex-with-notes)
          ("C-c D" . zp/bibtex-completion-message-key-last))
   :config
-  (setq helm-bibtex-notes-path "~/org/lit/")
+  (setq bibtex-completion-notes-path "~/org/lit/")
 
   (setq bibtex-completion-notes-template-multiple-files
         "#+TITLE: ${=key=}\n#+CREATED: %U\n#+LAST_MODIFIED: %U\n\nLiterature notes for cite:${=key=}.\n\n")
@@ -3581,7 +3588,7 @@ KEY is the key to use to access the template"
                                       ("file" "Path to file")
                                       ("url" "URL to reference"))
 
-        helm-bibtex-additional-search-fields '(subtitle booksubtitle keywords tags library))
+        bibtex-completion-additional-search-fields '(subtitle booksubtitle keywords tags library))
 
   (define-key bibtex-mode-map (kbd "C-c M-o") 'bibtex-Online)
 
@@ -3607,8 +3614,7 @@ KEY is the key to use to access the template"
 With a prefix ARG the cache is invalidated and the bibliography
 reread."
     (interactive "P")
-    (let* ((local-bib-org org-ref-bibliography-files)
-           (local-bib (bibtex-completion-find-local-bibliography))
+    (let* ((local-bib (bibtex-completion-find-local-bibliography))
            (bibtex-completion-bibliography (or local-bib
                                                bibtex-completion-bibliography)))
       (helm-bibtex arg local-bib)))
@@ -3652,8 +3658,7 @@ commas and space."
 
   (defun zp/bibtex-completion-insert-key-last ()
     (interactive)
-    (let ((last-keys (zp/bibtex-completion-format-citation-default
-                      zp/bibtex-completion-key-last)))
+    (let ((last-keys zp/bibtex-completion-key-last))
       (if (bound-and-true-p last-keys)
           (insert last-keys)
         (zp/helm-bibtex-solo-action-insert-key))))
@@ -3803,8 +3808,8 @@ commas and space."
   :config
   (push 'company-org-roam company-backends))
 
-(defcustom orb-title-format "${author-or-editor-abbrev} (${date}).  ${title}."
-    "Format of the title to use for `orb-templates'.")
+(defvar orb-title-format "${author-or-editor-abbrev} (${date}).  ${title}."
+  "Format of the title to use for `orb-templates'.")
 
 (use-package org-roam-bibtex
   :requires bibtex-completion
@@ -4407,7 +4412,7 @@ Check their respective dosctrings for more info."
   ;; Notification script to handle appt
   (setq zp/appt-notification-app "~/.bin/appt-notify")
 
-  (defun zp/appt-display (min-to-app new-time msg)
+  (defun zp/appt-display (min-to-app _new-time msg)
     (if (atom min-to-app)
         (start-process "zp/appt-notification-app" nil zp/appt-notification-app min-to-app msg)
       (dolist (i (number-sequence 0 (1- (length min-to-app))))
@@ -4425,7 +4430,7 @@ Check their respective dosctrings for more info."
                                      end t)
               (zp/org-set-appt-warntime)))))))
 
-  (defun zp/org-set-appt-warntime-if-timestamp-advice (&rest args)
+  (defun zp/org-set-appt-warntime-if-timestamp-advice (&rest _args)
     "Prompt for APPT_WARNTIME if the heading is a timestamp.
 
 This function is intended to be used as an advice.
@@ -4513,45 +4518,6 @@ that date.  Leave point on the first amount."
 ;;----------------------------------------------------------------------------
 (use-package chronos
   :demand
-  :bind (:map chronos-mode-map
-         (("a" . 'helm-chronos-add-timer)
-          ("A" . (lambda ()
-                   (interactive)
-                   (let ((helm-chronos-add-relatively t))
-                     (helm-chronos-add-timer))))
-          ("q" . zp/chronos-quit)
-
-          ;; Quick keys
-          ("U" . (lambda ()
-                   (interactive)
-                   (zp/chronos-edit-quick "-0:00:05" "5 s")))
-          ("I" . (lambda ()
-                   (interactive)
-                   (zp/chronos-edit-quick "+0:00:05" "5 s")))
-          ("u" . (lambda ()
-                   (interactive)
-                   (zp/chronos-edit-quick "-0:00:15" "15 s")))
-          ("i" . (lambda ()
-                   (interactive)
-                   (zp/chronos-edit-quick "+0:00:15" "15 s")))
-          ("j" . (lambda ()
-                   (interactive)
-                   (zp/chronos-edit-quick "-0:01:00" "1 min")))
-          ("k" . (lambda ()
-                   (interactive)
-                   (zp/chronos-edit-quick "+0:01:00" "1 min")))
-          ("J" . (lambda ()
-                   (interactive)
-                   (zp/chronos-edit-quick "-0:05:00" "5 min")))
-          ("K" . (lambda ()
-                   (interactive)
-                   (zp/chronos-edit-quick "+0:05:00" "5 min")))
-          ("m" . (lambda ()
-                   (interactive)
-                   (zp/chronos-edit-quick "-0:10:00" "10 min")))
-          ("," . (lambda ()
-                   (interactive)
-                   (zp/chronos-edit-quick "+0:10:00" "10 min")))))
   :config
   (setq helm-chronos-recent-timers-limit 100
         helm-chronos-standard-timers
@@ -4591,7 +4557,6 @@ that date.  Leave point on the first amount."
   ;;-------------
 
   (defun zp/chronos-edit-selected-line-time (time prefix)
-    (interactive)
     (interactive "sTime: \nP")
     (let ((c chronos--selected-timer))
       (when (chronos--running-or-paused-p c)
@@ -4628,9 +4593,49 @@ running."
         (quit-window)))))
 
 (use-package helm-chronos
-  :load-path "~/projects/helm-chronos"
+  :load-path "~/projects/helm-chronos/"
   :bind (("s-;" . zp/switch-to-chronos-dwim)
-         ("s-M-;" . zp/helm-chronos-add))
+         ("s-M-;" . zp/helm-chronos-add)
+         (:map chronos-mode-map
+          (("a" . 'helm-chronos-add-timer)
+           ("A" . (lambda ()
+                    (interactive)
+                    (let ((helm-chronos-add-relatively t))
+                      (helm-chronos-add-timer))))
+           ("q" . zp/chronos-quit)
+
+           ;; Quick keys
+           ("U" . (lambda ()
+                    (interactive)
+                    (zp/chronos-edit-quick "-0:00:05" "5 s")))
+           ("I" . (lambda ()
+                    (interactive)
+                    (zp/chronos-edit-quick "+0:00:05" "5 s")))
+           ("u" . (lambda ()
+                    (interactive)
+                    (zp/chronos-edit-quick "-0:00:15" "15 s")))
+           ("i" . (lambda ()
+                    (interactive)
+                    (zp/chronos-edit-quick "+0:00:15" "15 s")))
+           ("j" . (lambda ()
+                    (interactive)
+                    (zp/chronos-edit-quick "-0:01:00" "1 min")))
+           ("k" . (lambda ()
+                    (interactive)
+                    (zp/chronos-edit-quick "+0:01:00" "1 min")))
+           ("J" . (lambda ()
+                    (interactive)
+                    (zp/chronos-edit-quick "-0:05:00" "5 min")))
+           ("K" . (lambda ()
+                    (interactive)
+                    (zp/chronos-edit-quick "+0:05:00" "5 min")))
+           ("m" . (lambda ()
+                    (interactive)
+                    (zp/chronos-edit-quick "-0:10:00" "10 min")))
+           ("," . (lambda ()
+                    (interactive)
+                    (zp/chronos-edit-quick "+0:10:00" "10 min"))))))
+  :bind
   :after chronos
   :config
   ;; Fix for adding new timers with helm-chronos
@@ -4725,11 +4730,11 @@ Workaround to counter race conditions with the margins."
   (add-hook 'org-noter-notes-mode-hook #'zp/org-noter-visual-line-mode)
 
   ;; Fix for hiding truncation
-  (defun org-noter--set-notes-scroll (window &rest ignored)
+  (defun org-noter--set-notes-scroll (_window &rest _ignored)
     nil)
 
   ;; Fix for visual-line-mode with PDF files
-  (defun org-noter--note-after-tipping-point (point note-property view)
+  (defun org-noter--note-after-tipping-point (_point _note-property _view)
     nil)
 
   (defun zp/org-noter-indirect (arg)
@@ -4765,7 +4770,7 @@ buffer, thereby propagating the indirectness."
              (zp/org-noter-indirect arg)
              (setq marker (point-marker))))
       (org-with-point-at marker
-        (let ((tags (org-get-tags-at)))
+        (let ((tags (org-get-tags)))
           (when (and (org-entry-get nil org-noter-property-doc-file)
                      (not (member "noter" tags)))
             (org-set-tags (push "noter" tags)))))

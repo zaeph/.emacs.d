@@ -41,7 +41,8 @@
   "Keymap for function `zp/notmuch-fetch-mode'.")
 
 (define-minor-mode zp/notmuch-fetch-mode
-  :light " fetch"
+  "Minor mode for notmuch-fetch."
+  :lighter " fetch"
   :keymap zp/notmuch-fetch-mode-map
   (cond (zp/notmuch-fetch-mode
          (read-only-mode +1))

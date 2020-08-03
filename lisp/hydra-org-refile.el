@@ -229,6 +229,14 @@ If JUMP is non-nil, jump instead."
       (org-beginning-of-line))
     (set-marker marker nil)))
 
+(defun zp/org-refile-with-paths (&optional arg default-buffer rfloc msg)
+  (interactive "P")
+  (let ((org-refile-use-outline-path 1)
+        (org-refile-targets
+         '((nil :maxlevel . 9)
+           (org-agenda-files :maxlevel . 3))))
+    (org-refile arg default-buffer rfloc msg)))
+
 (defun zp/org-refile-internal (file headline-or-olp &optional arg)
   "Refile to a specific location.
 
