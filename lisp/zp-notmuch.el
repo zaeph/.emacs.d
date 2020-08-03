@@ -71,7 +71,7 @@ See `zp/notmuch-identities' for details."
   (--map (-let (((id &plist :email :fcc) it))
            (cons (regexp-quote email)
                  (or fcc
-                     (--if-let (zp/notmuch-identities-get ,id :dir)
+                     (--if-let (zp/notmuch-identities-get id :dir)
                          (concat it " " zp/notmuch-fcc-tags-default)))))
          zp/notmuch-identities))
 
