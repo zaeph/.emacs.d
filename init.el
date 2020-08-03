@@ -1610,300 +1610,33 @@ LANGUAGE should be the name of an Ispell dictionary."
          (message-setup . electric-quote-local-mode)
          ;; (message-mode-hook . footnote-mode)
          )
+  :custom
+  (message-mark-insert-begin
+   "--------------------------------[START]--------------------------------\n")
+  (message-mark-insert-end
+   "\n---------------------------------[END]---------------------------------")
+  (message-send-mail-function 'message-send-mail-with-sendmail)
+  (message-sendmail-envelope-from 'header)
+  (message-kill-buffer-on-exit t)
   :config
-  (setq message-send-mail-function 'message-send-mail-with-sendmail
-        message-sendmail-envelope-from 'header
-        message-kill-buffer-on-exit t)
-
   ;; Enforce f=f in message-mode
   ;; Disabled because it’s bad practice according to the netiquette
   ;; (setq mml-enable-flowed t)
   ;; (defun zp/message-mode-use-hard-newlines ()
   ;;   (use-hard-newlines t 'always))
   ;; (add-hook 'message-mode-hook #'zp/message-mode-use-hard-newlines)
+  )
 
-  (defun zp/get-message-signature ()
-    (let* ((signature-override
-            (concat (file-name-as-directory "~/org/sig")
-                    (downcase (message-sendmail-envelope-from))))
-           (signature-file
-            (if (file-readable-p signature-override)
-                signature-override
-              "~/.signature")))
-      (when (file-readable-p signature-file)
-        (with-temp-buffer
-          (insert-file-contents signature-file)
-          (buffer-string)))))
-
-  (setq message-signature #'zp/get-message-signature
-        message-sendmail-envelope-from 'header)
-
-  ;; Set the marks for inserted text with message-mark-inserted-region
-  (setq message-mark-insert-begin
-        "--------------------------------[START]--------------------------------\n"
-        message-mark-insert-end
-        "\n---------------------------------[END]---------------------------------")
-
-  ;;------------
-  ;; Get emails
-  ;;------------
-
-  (defvar zp/email-private (zp/get-string-from-file "~/org/pp/private/email")
-    "Email used for private communications.")
-
-  (defvar zp/email-work (zp/get-string-from-file "~/org/pp/work/email")
-    "Email used for work-related communications.")
-
-  (defvar zp/email-work-pro (zp/get-string-from-file "~/org/pp/work-pro/email")
-    "Email used for work-related communications.")
-
-  (defun zp/get-email-with-alias (email alias &optional regex)
-    "Create email alias from EMAIL and ALIAS.
-
-If REGEX is non-nil, creates a regex to match the email alias."
-    (let* ((email (cond
-                   ((equal email "work")
-                    zp/email-work)
-                   ((equal email "private")
-                    zp/email-private)
-                   (t
-                    email)))
-           (email-alias (replace-regexp-in-string "@"
-                                                  (concat "+" alias "@")
-                                                  email)))
-      (if regex
-          (regexp-quote email-alias)
-        email-alias)))
-
-  (defvar zp/email-org (zp/get-email-with-alias "work" "org")
-    "Email alias used for the org-mode mailing list.")
-
-  (defvar zp/email-dev (zp/get-email-with-alias "work" "dev")
-    "Email alias used for general development work.")
-
-  ;;--------------------
-  ;; Extended movements
-  ;;--------------------
-
-  ;; TODO: Improve
-
-  (defun zp/message-goto-bottom-1 ()
-    (let ((newline message-signature-insert-empty-line))
-      (goto-char (point-max))
-      (when (re-search-backward message-signature-separator nil t)
-        (end-of-line (if newline -1 0)))
-      (point)))
-
-  (defun zp/message-goto-bottom ()
-    "Go to the end of the message or buffer.
-Go to the end of the message (before signature) or, if already there, go to the
-end of the buffer."
-    (interactive)
-    (let ((old-position (point))
-          (message-position (save-excursion (message-goto-body) (point)))
-          (newline message-signature-insert-empty-line))
-      (zp/message-goto-bottom-1)
-      (when (equal (point) old-position)
-        (goto-char (point-max)))))
-
-  (defun zp/message-goto-top-1 ()
-    "Go to the beginning of the message."
-    (interactive)
-    (message-goto-body-1)
-    (point))
-
-  (defun zp/message-goto-top ()
-    "Go to the beginning of the message or buffer.
-Go to the beginning of the message or, if already there, go to the
-beginning of the buffer."
-    (interactive)
-    (let ((old-position (point)))
-      (zp/message-goto-top-1)
-      (when (equal (point) old-position)
-        (goto-char (point-min)))))
-
-  (defun zp/message-goto-body-1 ()
-    "Go to the beginning of the body of the message."
-    (zp/message-goto-top-1)
-    (forward-line 2)
-    (point))
-
-  (defun zp/message-goto-body ()
-    "Move point to the beginning of the message body."
-    (interactive)
-    (let ((old-position (point))
-          (greeting (save-excursion
-                      (zp/message-goto-top-1)
-                      (re-search-forward "^[^>]+.*,$" (point-at-eol) t)))
-          (modified))
-      (zp/message-goto-top-1)
-      (cond (greeting
-             (forward-line 2))
-            ((save-excursion
-               (re-search-forward "writes:$" (point-at-eol) t))
-             (insert "\n\n")
-             (forward-char -2)
-             (setq modified t))
-            (t
-             (insert "\n")
-             (forward-char -1)
-             (setq modified t)))
-      ;; (cond ((re-search-forward "writes:$" (point-at-eol) t)
-      ;;        (beginning-of-line)
-      ;;        (insert "\n\n")
-      ;;        (forward-char -2))
-      ;;       ((re-search-forward "^[^>]+.*,$" (line-end-position) t)
-      ;;        (zp/message-goto-body-1))
-      ;;       (t
-      ;;        (insert "\n")
-      ;;        (forward-char -1)))
-      (when (and (not modified)
-                 (equal (point) old-position))
-        (zp/message-goto-top-1)
-        (goto-char (1- (line-end-position))))))
-
-  (defun zp/message-goto-body-end-1 ()
-    (zp/message-goto-bottom-1)
-    (re-search-backward "[^[:space:]]")
-    (end-of-line)
-    (point))
-
-  (defun zp/message-goto-body-end ()
-    (interactive)
-    (let* ((old-position (point))
-           (top-posting (save-excursion
-                          (zp/message-goto-top-1)
-                          (re-search-forward "writes:$" nil t)
-                          (when (< old-position (line-beginning-position 0))
-                            (line-beginning-position))))
-           (sign-off (save-excursion
-                       (or
-                        (progn
-                          (zp/message-goto-bottom-1)
-                          (beginning-of-line)
-                          (re-search-forward "^[^>]+.*,$" (line-end-position) t))
-                        (and top-posting
-                             (progn
-                               (goto-char top-posting)
-                               (beginning-of-line -1)
-                               (re-search-forward "^[^>]+.*,$" (line-end-position) t))))))
-           (modified))
-      (if sign-off
-          (progn
-            (goto-char sign-off)
-            (beginning-of-line 0)
-            (re-search-backward "^[^>[:space:]]+" nil t)
-            (end-of-line))
-        (cond (top-posting
-               (goto-char top-posting)
-               (insert "\n\n")
-               (forward-char -2)
-               (setq modified t))
-              (t
-               (zp/message-kill-to-signature)
-               (unless (bolp) (insert "\n"))
-               (insert "\n")
-               (setq modified t))))
-      (when (and (not modified)
-                 (equal (point) old-position))
-        (goto-char (1- sign-off)))))
-
-  (defun zp/message-kill-to-signature (&optional arg)
-    "Kill all text up to the signature.
-If a numeric argument or prefix arg is given, leave that number
-of lines before the signature intact."
-    (interactive "P")
-    (let ((newline message-signature-insert-empty-line))
-      (save-excursion
-        (save-restriction
-          (let ((point (point)))
-	    (narrow-to-region point (point-max))
-	    (message-goto-signature)
-	    (unless (eobp)
-	      (if (and arg (numberp arg))
-	          (forward-line (- -1 arg))
-	        (end-of-line (if newline -2 -1))))
-	    (unless (= point (point))
-	      (kill-region point (point))
-	      (unless (bolp)
-	        (insert "\n"))))))))
-
-  (defun zp/message-kill-to-signature (&optional arg)
-    (interactive "P")
-    (let ((newline message-signature-insert-empty-line)
-          (at-end (save-excursion (= (point) (zp/message-goto-bottom-1)))))
-      (when at-end
-        (error "Already at end"))
-      (message-kill-to-signature arg)
-      (unless (bolp) (insert "\n"))
-      (when newline
-        (insert "\n")
-        (forward-char -1))))
-
-  ;;------------------------------
-  ;; Automatic language detection
-  ;;------------------------------
-
-  (setq zp/message-ispell-alist
-        `((,zp/email-private . "french")
-          (,zp/email-work . "french")
-          (,zp/email-work-pro . "french")
-          (,zp/email-org . "british")
-          (,zp/email-dev . "british")))
-
-  (defun zp/message-flyspell-auto ()
-    "Start Ispell with the language associated with the email.
-
-Looks for the email in the ‘From:’ field and chooses a language
-based on ‘zp/message-mode-ispell-alist’."
-    (let* ((sender (downcase (message-sendmail-envelope-from)))
-           (language (cdr (assoc sender zp/message-ispell-alist))))
-      (zp/ispell-switch-dictionary language)))
-
-  ;;-------------------
-  ;; Unused functions
-  ;;-------------------
-
-  ;; TODO: Consider usage
-
-  (defun zp/message-sendmail-envelope-to ()
-    "Return the envelope to."
-    (save-excursion
-      (goto-char (point-min))
-      (when (re-search-forward "^To: " nil t)
-        (substring-no-properties
-         (buffer-substring
-          (point)
-          (point-at-eol))))))
-
-  (defun zp/message-retrieve-to ()
-    "Create a list of emails from ‘To:’."
-    (let ((to-raw (zp/message-sendmail-envelope-to))
-          (emails))
-      (with-temp-buffer
-        (insert to-raw)
-        (goto-char (point-min))
-        (while (< (point) (point-max))
-          (let ((bound (save-excursion
-                         (if (re-search-forward "," nil t)
-                             (progn (forward-char -1)
-                                    (point))
-                           (point-max)))))
-            (re-search-forward "@")
-            (if (re-search-backward " " nil t)
-                (forward-char)
-              (goto-char (point-min)))
-            (setq framed (looking-at-p "<"))
-            (push (substring-no-properties
-                   (buffer-substring (if framed
-                                         (1+ (point))
-                                       (point))
-                                     (if framed
-                                         (1- bound)
-                                       bound)))
-                  emails)
-            (goto-char (1+ bound))))
-        (setq email-list emails)))))
+(use-package zp-message
+  :custom
+  (zp/message-ispell-alist
+   `((,zp/email-old-private . "french")
+     (,zp/email-old-pro . "french")
+     (,zp/email-school . "french")
+     (,zp/email-org . "british")
+     (,zp/email-dev . "british")))
+  :config
+  (advice-add 'notmuch-mua-prompt-for-sender :override #'zp/notmuch-mua-prompt-for-sender))
 
 (use-package sendmail
   :after message
@@ -1932,16 +1665,18 @@ based on ‘zp/message-mode-ispell-alist’."
         notmuch-search-oldest-first nil)
 
   (setq notmuch-fcc-dirs
-        `((,(regexp-quote zp/email-private) .
-           "private/sent -inbox +sent -unread")
-          (,(regexp-quote zp/email-work) .
-           "work/sent -inbox +sent -unread")
-          (,(regexp-quote zp/email-work-pro) .
-           "work-pro/sent -inbox +sent -unread")
+        `((,(regexp-quote zp/email-main) .
+           "main/sent -inbox +sent -unread")
+          (,(regexp-quote zp/email-old-private) .
+           "old/private/sent -inbox +sent -unread")
+          (,(regexp-quote zp/email-old-pro) .
+           "old/pro/sent -inbox +sent -unread")
+          (,(regexp-quote zp/email-school) .
+           "school/sent -inbox +sent -unread")
           (,(regexp-quote zp/email-org) .
-           "work/sent -inbox +sent -unread +org")
+           "old/pro/sent -inbox +sent -unread +org")
           (,(regexp-quote zp/email-dev) .
-           "work/sent -inbox +sent -unread +dev")))
+           "old/pro/sent -inbox +sent -unread +dev")))
 
   (define-key notmuch-search-mode-map "d"
     (lambda (&optional untrash beg end)
@@ -2082,6 +1817,8 @@ SEARCH is a string to be interpreted by notmuch-search."
            (setq zp/notmuch-before-config (current-window-configuration))
            (delete-other-windows)
            (notmuch)))))
+
+(use-package zp-notmuch)
 
 (use-package zp-notmuch-fetch
   :bind (:map notmuch-hello-mode-map
