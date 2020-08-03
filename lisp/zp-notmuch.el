@@ -31,6 +31,7 @@
 
 ;;; Code:
 ;;;; Library Requires
+(require 'notmuch)
 (require 'notmuch-mua)
 (require 'dash)
 
@@ -75,9 +76,14 @@ See `zp/notmuch-identities' for details."
                          (concat it " " zp/notmuch-fcc-tags-default)))))
          zp/notmuch-identities))
 
+(defvar zp/message-ispell-alist nil
+    "Alist of emails and the language they typically use.
+The language should be the name as a string of a valid Ispell
+dictionary.")
+
 (defun zp/notmuch-make-ispell-alist ()
   "Populate `zp/message-ispell-alist' with data from `zp/notmuch-identities'."
-  (--map (-let (((id &plist :email :lang) it))
+  (--map (-let (((id &plist :email) it))
            (cons email
                  (zp/notmuch-identities-get id :lang)))
          zp/notmuch-identities))
@@ -93,6 +99,33 @@ Meant to replace `notmuch-mua-prompt-for-sender'."
                        (cdr)
                        (plist-get :email))))
       (message-make-from name address))))
+
+(defun zp/notmuch-confirm-before-sending (&optional arg)
+    (interactive "P")
+    (if (y-or-n-p "Ready to send? ")
+        (notmuch-mua-send-and-exit arg)))
+
+;;; Queries
+(defcustom zp/notmuch-saved-queries nil
+  "Alist of symbols to queries as strings."
+  :type 'alist
+  :group 'zp/notmuch)
+
+(defun zp/notmuch-get-query (query)
+  "Get string-query from QUERY.
+See `zp/notmuch-saved-queries' for details."
+  (cdr (assoc query zp/notmuch-saved-queries)))
+
+(defun zp/notmuch-format-search (name key)
+  "Format a saved-search from NAME and KEY."
+  `((:name ,(concat name "-inbox") :key ,key
+     :query ,(concat (zp/notmuch-get-query name)
+                     " and tag:inbox"))
+    (:name ,(concat name "-archive-week") :key ,(concat (upcase key) "a")
+     :query ,(concat (zp/notmuch-get-query name)
+                     " and date:\"7d..today\""))
+    (:name ,(concat name "-archive") :key ,(concat (upcase key) "A")
+     :query ,(concat (zp/notmuch-get-query name)))))
 
 (provide 'zp-notmuch)
 ;;; zp-notmuch.el ends here

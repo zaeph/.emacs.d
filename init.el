@@ -1562,6 +1562,8 @@ With numeric prefix arg DEC, decrement the integer by DEC amount."
   )
 
 (use-package zp-message
+  :custom
+  (zp/message-sigs-directory "~/org/sigs/")
   :config
   (advice-add 'notmuch-mua-prompt-for-sender :override #'zp/notmuch-mua-prompt-for-sender))
 
@@ -1571,21 +1573,10 @@ With numeric prefix arg DEC, decrement the integer by DEC amount."
   (setq send-mail-function 'sendmail-send-it))
 
 (use-package notmuch
-  :bind (("s-l" . zp/switch-to-notmuch)
-         :map notmuch-hello-mode-map
-         ("q" . zp/notmuch-hello-quit)
-         :map notmuch-search-mode-map
+  :bind (:map notmuch-search-mode-map
          ("g" . notmuch-refresh-this-buffer)
-         :map notmuch-message-mode-map
-         (("C-c C-c" . zp/notmuch-confirm-before-sending)
-          ("C-c C-s" . zp/notmuch-confirm-before-sending)
-          ("C-c C-b" . zp/message-goto-body)
-          ("C-c C-." . zp/message-goto-body-end)
-          ("M-<" . zp/message-goto-top)
-          ("M->" . zp/message-goto-bottom)
-          ("C-c C-z" . zp/message-kill-to-signature))
          :map notmuch-show-mode-map
-         (("C-c C-o" . goto-address-at-point)))
+         ("C-c C-o" . goto-address-at-point))
   :hook ((notmuch-hello-refresh . zp/color-all-inboxes))
   :config
   (setq notmuch-always-prompt-for-sender t
@@ -1612,64 +1603,6 @@ With numeric prefix arg DEC, decrement the integer by DEC amount."
   (define-key notmuch-search-mode-map "g" #'notmuch-refresh-this-buffer)
 
   (setq mail-host-address "hidden")
-
-  (defcustom zp/notmuch-saved-queries nil
-    "Alist of symbols to queries as strings.")
-
-  (setq zp/notmuch-saved-queries
-        '(("pro"        . "tag:pro and not tag:auto")
-          ("dev"        . "tag:dev and not tag:auto")
-          ("dev-github" . "tag:dev and tag:github and tag:auto")
-          ("dev-forum"  . "tag:dev and tag:forum and tag:auto")))
-
-  (defun zp/notmuch-get-query (query)
-    "Get string-query from QUERY.
-See `zp/notmuch-saved-queries' for details."
-    (cdr (assoc query zp/notmuch-saved-queries)))
-
-  (defun zp/notmuch-format-search (name key)
-    "Format a saved-search from NAME and KEY."
-    `((:name ,(concat name "-inbox") :key ,key
-       :query ,(concat (zp/notmuch-get-query name)
-                       " and tag:inbox"))
-      (:name ,(concat name "-archive-week") :key ,(concat (upcase key) "a")
-       :query ,(concat (zp/notmuch-get-query name)
-                       " and date:\"7d..today\""))
-      (:name ,(concat name "-archive") :key ,(concat (upcase key) "A")
-       :query ,(concat (zp/notmuch-get-query name)))))
-
-  (setq notmuch-saved-searches
-        `((:name "inbox" :key "i" :query "tag:inbox and not tag:auto")
-          (:name "unread" :key "u" :query "tag:unread and not tag:auto")
-          (:name "archive-week" :key "a" :query "date:\"7d..today\" and not tag:auto")
-          (:name "archive" :key "A" :query "not tag:auto")
-
-          ;; Pro
-          ,@(zp/notmuch-format-search "pro" "p")
-
-          ;; Dev
-          ,@(zp/notmuch-format-search "dev" "d")
-
-          ;; GitHub
-          ,@(zp/notmuch-format-search "dev-github" "g")
-
-          ;; Discourse
-          ,@(zp/notmuch-format-search "dev-forum" "f")
-
-          (:name "flagged" :key "v" :query "tag:flagged")
-          (:name "drafts" :key "x" :query "tag:draft")
-          (:name "sent-week" :key "s" :query "tag:sent date:\"7d..today\"")
-          (:name "sent" :key "S" :query "tag:sent")
-          (:name "trash" :key "t" :query "tag:deleted")))
-
-  (defvar zp/message-ispell-alist nil
-    "Alist of emails and the language they typically use.
-The language should be the name of a valid Ispell dictionary.")
-
-  (defun zp/notmuch-confirm-before-sending (&optional arg)
-    (interactive "P")
-    (if (y-or-n-p "Ready to send? ")
-        (notmuch-mua-send-and-exit arg)))
 
   ;;------------------------------------------------
   ;; Highlight inbox if it contains unread messages
@@ -1732,12 +1665,50 @@ SEARCH is a string to be interpreted by notmuch-search."
            (notmuch)))))
 
 (use-package zp-notmuch
+  :bind (("s-l" . zp/switch-to-notmuch)
+         :map notmuch-hello-mode-map
+         ("q" . zp/notmuch-hello-quit)
+         :map notmuch-message-mode-map
+         (("C-c C-c" . zp/notmuch-confirm-before-sending)
+          ("C-c C-s" . zp/notmuch-confirm-before-sending)
+          ("C-c C-b" . zp/message-goto-body)
+          ("C-c C-." . zp/message-goto-body-end)
+          ("M-<" . zp/message-goto-top)
+          ("M->" . zp/message-goto-bottom)
+          ("C-c C-z" . zp/message-kill-to-signature)))
   :custom
   (zp/notmuch-fcc-tags-default "-inbox +sent -unread")
-  (zp/message-ispell-alist (zp/notmuch-make-ispell-alist))
   :config
-  (setq notmuch-fcc-dirs
-        (zp/notmuch-make-fcc-dirs)))
+  (setq notmuch-fcc-dirs (zp/notmuch-make-fcc-dirs)
+        zp/message-ispell-alist (zp/notmuch-make-ispell-alist)
+        zp/notmuch-saved-queries
+        '(("pro"        . "tag:pro and not tag:auto")
+          ("dev"        . "tag:dev and not tag:auto")
+          ("dev-github" . "tag:dev and tag:github and tag:auto")
+          ("dev-forum"  . "tag:dev and tag:forum and tag:auto"))
+        notmuch-saved-searches
+        `((:name "inbox" :key "i" :query "tag:inbox and not tag:auto")
+          (:name "unread" :key "u" :query "tag:unread and not tag:auto")
+          (:name "archive-week" :key "a" :query "date:\"7d..today\" and not tag:auto")
+          (:name "archive" :key "A" :query "not tag:auto")
+
+          ;; Pro
+          ,@(zp/notmuch-format-search "pro" "p")
+
+          ;; Dev
+          ,@(zp/notmuch-format-search "dev" "d")
+
+          ;; GitHub
+          ,@(zp/notmuch-format-search "dev-github" "g")
+
+          ;; Discourse
+          ,@(zp/notmuch-format-search "dev-forum" "f")
+
+          (:name "flagged" :key "v" :query "tag:flagged")
+          (:name "drafts" :key "x" :query "tag:draft")
+          (:name "sent-week" :key "s" :query "tag:sent date:\"7d..today\"")
+          (:name "sent" :key "S" :query "tag:sent")
+          (:name "trash" :key "t" :query "tag:deleted"))))
 
 (use-package zp-notmuch-fetch
   :bind (:map notmuch-hello-mode-map

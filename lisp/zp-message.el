@@ -75,10 +75,13 @@ If REGEX is non-nil, creates a regex to match the email alias."
 ;;----------------------------------------------------------------------------
 ;; Signature
 ;;----------------------------------------------------------------------------
+(defcustom zp/message-sigs-directory nil
+  "Directory where email signatures live.")
+
 (defun zp/get-message-signature ()
   (let* ((signature-override
-          (concat (file-name-as-directory "~/org/sig")
-                  (downcase (message-sendmail-envelope-from))))
+          (concat (file-name-as-directory zp/message-sigs-directory)
+                  (downcase ( (message-sendmail-envelope-from)))))
          (signature-file
           (if (file-readable-p signature-override)
               signature-override
