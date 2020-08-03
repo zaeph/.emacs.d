@@ -1566,13 +1566,6 @@ With numeric prefix arg DEC, decrement the integer by DEC amount."
   )
 
 (use-package zp-message
-  :custom
-  (zp/message-ispell-alist
-   `((,zp/email-old-private . "french")
-     (,zp/email-old-pro . "french")
-     (,zp/email-school . "french")
-     (,zp/email-org . "british")
-     (,zp/email-dev . "british")))
   :config
   (advice-add 'notmuch-mua-prompt-for-sender :override #'zp/notmuch-mua-prompt-for-sender))
 
@@ -1745,6 +1738,7 @@ SEARCH is a string to be interpreted by notmuch-search."
 (use-package zp-notmuch
   :custom
   (zp/notmuch-fcc-tags-default "-inbox +sent -unread")
+  (zp/message-ispell-alist (zp/notmuch-make-ispell-alist))
   :config
   (setq notmuch-fcc-dirs
         (zp/notmuch-make-fcc-dirs)))

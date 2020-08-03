@@ -75,6 +75,13 @@ See `zp/notmuch-identities' for details."
                          (concat it " " zp/notmuch-fcc-tags-default)))))
          zp/notmuch-identities))
 
+(defun zp/notmuch-make-ispell-alist ()
+  "Populate `zp/message-ispell-alist' with data from `zp/notmuch-identities'."
+  (--map (-let (((id &plist :email :lang) it))
+           (cons email
+                 (zp/notmuch-identities-get id :lang)))
+         zp/notmuch-identities))
+
 (defun zp/notmuch-mua-prompt-for-sender ()
   "Prompt for a sender from the user's configured identities.
 
