@@ -1664,20 +1664,6 @@ LANGUAGE should be the name of an Ispell dictionary."
   (setq notmuch-always-prompt-for-sender t
         notmuch-search-oldest-first nil)
 
-  (setq notmuch-fcc-dirs
-        `((,(regexp-quote zp/email-main) .
-           "main/sent -inbox +sent -unread")
-          (,(regexp-quote zp/email-old-private) .
-           "old/private/sent -inbox +sent -unread")
-          (,(regexp-quote zp/email-old-pro) .
-           "old/pro/sent -inbox +sent -unread")
-          (,(regexp-quote zp/email-school) .
-           "school/sent -inbox +sent -unread")
-          (,(regexp-quote zp/email-org) .
-           "old/pro/sent -inbox +sent -unread +org")
-          (,(regexp-quote zp/email-dev) .
-           "old/pro/sent -inbox +sent -unread +dev")))
-
   (define-key notmuch-search-mode-map "d"
     (lambda (&optional untrash beg end)
       "mark thread as spam"
@@ -1818,7 +1804,10 @@ SEARCH is a string to be interpreted by notmuch-search."
            (delete-other-windows)
            (notmuch)))))
 
-(use-package zp-notmuch)
+(use-package zp-notmuch
+  :config
+  (setq notmuch-fcc-dirs
+        (zp/notmuch-make-fcc-dirs)))
 
 (use-package zp-notmuch-fetch
   :bind (:map notmuch-hello-mode-map

@@ -44,6 +44,20 @@
   "Alist of identities to emails."
   :group 'zp/notmuch)
 
+(defun zp/notmuch-identities-get (id keyword)
+  "Get KEYWORD from ID."
+  (when id
+    (-> (assoc id zp/notmuch-identities)
+        (cdr)
+        (plist-get keyword))))
+
+(defun zp/notmuch-make-fcc-dirs ()
+  "Populate `notmuch-fcc-dirs' with data from `zp/notmuch-identities'."
+  (--map (-let (((_ &plist :email :fcc) it))
+           (cons (regexp-quote email)
+                 fcc))
+         zp/notmuch-identities))
+
 (defun zp/notmuch-mua-prompt-for-sender ()
   "Prompt for a sender from the user's configured identities.
 
