@@ -1532,13 +1532,9 @@ With numeric prefix arg DEC, decrement the integer by DEC amount."
   :bind ("C-x w" . elfeed)
   :custom
   (elfeed-feeds
-   '(
-     ;; Amazing Phil
-     ("https://www.youtube.com/feeds/videos.xml?channel_id=UCHUE4ypXKp7ZkmdWbGJNgJg" video youtube)
-     ("https://xkcd.com/rss.xml" webcomic)
+   '(("https://xkcd.com/rss.xml" webcomic)
      ("https://entrepreneur-interet-general.etalab.gouv.fr/feed.xml" eig)
-     ("https://disic.github.io/gazette-bluehats/index.xml" bluehats)
-     )))
+     ("https://disic.github.io/gazette-bluehats/index.xml" bluehats))))
 
 ;;----------------------------------------------------------------------------
 ;; Email
