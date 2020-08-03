@@ -1563,8 +1563,11 @@ With numeric prefix arg DEC, decrement the integer by DEC amount."
 
 (use-package zp-message
   :custom
-  (zp/message-sigs-directory "~/org/sigs/")
+  (zp/message-sigs-directory "~/org/sig/")
   :config
+  (setq message-signature #'zp/message-get-signature
+        message-sendmail-envelope-from 'header)
+
   (advice-add 'notmuch-mua-prompt-for-sender :override #'zp/notmuch-mua-prompt-for-sender))
 
 (use-package sendmail
@@ -1681,6 +1684,7 @@ SEARCH is a string to be interpreted by notmuch-search."
   :config
   (setq notmuch-fcc-dirs (zp/notmuch-make-fcc-dirs)
         zp/message-ispell-alist (zp/notmuch-make-ispell-alist)
+        zp/message-sigs-alist (zp/notmuch-make-sigs-alist)
         zp/notmuch-saved-queries
         '(("pro"        . "tag:pro and not tag:auto")
           ("dev"        . "tag:dev and not tag:auto")

@@ -32,6 +32,7 @@
 ;;; Code:
 ;;;; Library Requires
 (require 'message)
+(require 'dash)
 
 ;;----------------------------------------------------------------------------
 ;; Getting emails
@@ -78,21 +79,23 @@ If REGEX is non-nil, creates a regex to match the email alias."
 (defcustom zp/message-sigs-directory nil
   "Directory where email signatures live.")
 
-(defun zp/get-message-signature ()
-  (let* ((signature-override
-          (concat (file-name-as-directory zp/message-sigs-directory)
-                  (downcase ( (message-sendmail-envelope-from)))))
-         (signature-file
-          (if (file-readable-p signature-override)
-              signature-override
-            "~/.signature")))
-    (when (file-readable-p signature-file)
-      (with-temp-buffer
-        (insert-file-contents signature-file)
-        (buffer-string)))))
+(defvar zp/message-sigs-alist nil
+  "Alist of emails and the signature to use with them.
+It should be a symbol representing the signature-model to use.")
 
-(setq message-signature #'zp/get-message-signature
-      message-sendmail-envelope-from 'header)
+(defun zp/message-get-signature ()
+  "Get signature for current buffer."
+  (let* ((sig (-> (message-sendmail-envelope-from)
+                  (downcase)
+                  (assoc zp/message-sigs-alist)
+                  (cdr)
+                  (symbol-name)))
+         (path (concat (file-name-as-directory zp/message-sigs-directory)
+                       sig)))
+    (when (file-readable-p path)
+      (with-temp-buffer
+        (insert-file-contents path)
+        (buffer-string)))))
 
 ;;----------------------------------------------------------------------------
 ;; Extended movements
@@ -255,7 +258,9 @@ of lines before the signature intact."
 ;; Automatic language detection
 ;;----------------------------------------------------------------------------
 (defvar zp/message-ispell-alist nil
-  "Alist mapping emails to languages.")
+  "Alist of emails and the language they typically use.
+The language should be the name as a string of a valid Ispell
+dictionary.")
 
 (defun zp/message-flyspell-auto ()
   "Start Ispell with the language associated with the email.

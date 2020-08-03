@@ -76,16 +76,18 @@ See `zp/notmuch-identities' for details."
                          (concat it " " zp/notmuch-fcc-tags-default)))))
          zp/notmuch-identities))
 
-(defvar zp/message-ispell-alist nil
-    "Alist of emails and the language they typically use.
-The language should be the name as a string of a valid Ispell
-dictionary.")
-
 (defun zp/notmuch-make-ispell-alist ()
   "Populate `zp/message-ispell-alist' with data from `zp/notmuch-identities'."
   (--map (-let (((id &plist :email) it))
            (cons email
                  (zp/notmuch-identities-get id :lang)))
+         zp/notmuch-identities))
+
+(defun zp/notmuch-make-sigs-alist ()
+  "Populate `zp/message-sigs-alist' with data from `zp/notmuch-identities'."
+  (--map (-let (((id &plist :email :sig) it))
+           (cons email
+                 (zp/notmuch-identities-get id :sig)))
          zp/notmuch-identities))
 
 (defun zp/notmuch-mua-prompt-for-sender ()
