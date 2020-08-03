@@ -41,15 +41,24 @@
   :link '(url-link :tag "Github" "https://github.com/zaeph/.emacs.d"))
 
 (defcustom zp/notmuch-identities nil
-  "Alist of identities to emails."
+  "Plist of identities based on `notmuch-identities'."
+  :group 'zp/notmuch)
+
+(defcustom zp/notmuch-identities-defaults nil
+  "Default values for keywords in `zp/notmuch-identities'.
+Used as fallback when the keyword is not defined for a given
+identity."
   :group 'zp/notmuch)
 
 (defun zp/notmuch-identities-get (id keyword)
-  "Get KEYWORD from ID."
+  "Get KEYWORD from ID in `zp/notmuch-identities'.
+If the value is nil, fallback to KEYWORD’s value in
+`zp/notmuch-identities-defaults'."
   (when id
-    (-> (assoc id zp/notmuch-identities)
-        (cdr)
-        (plist-get keyword))))
+    (or (-> (assoc id zp/notmuch-identities)
+            (cdr)
+            (plist-get keyword))
+        (plist-get zp/notmuch-identities-defaults keyword))))
 
 (defun zp/notmuch-make-fcc-dirs ()
   "Populate `notmuch-fcc-dirs' with data from `zp/notmuch-identities'."
