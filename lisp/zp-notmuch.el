@@ -60,11 +60,19 @@ If the value is nil, fallback to KEYWORD’s value in
             (plist-get keyword))
         (plist-get zp/notmuch-identities-defaults keyword))))
 
+(defcustom zp/notmuch-fcc-tags-default nil
+  "Default tags to apply to outgoing emails when `:dir' is set.
+See `zp/notmuch-identities' for details."
+  :type 'string
+  :group 'zp/notmuch)
+
 (defun zp/notmuch-make-fcc-dirs ()
   "Populate `notmuch-fcc-dirs' with data from `zp/notmuch-identities'."
-  (--map (-let (((_ &plist :email :fcc) it))
+  (--map (-let (((id &plist :email :fcc) it))
            (cons (regexp-quote email)
-                 fcc))
+                 (or fcc
+                     (--if-let (zp/notmuch-identities-get ,id :dir)
+                         (concat it " " zp/notmuch-fcc-tags-default)))))
          zp/notmuch-identities))
 
 (defun zp/notmuch-mua-prompt-for-sender ()

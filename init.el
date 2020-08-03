@@ -1805,6 +1805,8 @@ SEARCH is a string to be interpreted by notmuch-search."
            (notmuch)))))
 
 (use-package zp-notmuch
+  :custom
+  (zp/notmuch-fcc-tags-default "-inbox +sent -unread")
   :config
   (setq notmuch-fcc-dirs
         (zp/notmuch-make-fcc-dirs)))
