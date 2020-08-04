@@ -37,18 +37,6 @@
 ;;----------------------------------------------------------------------------
 ;; Getting emails
 ;;----------------------------------------------------------------------------
-(defvar zp/email-main (zp/get-string-from-file "~/org/pp/email/main/email")
-  "Main email.")
-
-(defvar zp/email-old-private (zp/get-string-from-file "~/org/pp/email/old/private/email")
-  "Old email used for private communications.")
-
-(defvar zp/email-old-pro (zp/get-string-from-file "~/org/pp/email/old/pro/email")
-  "Old email used for professional communications.")
-
-(defvar zp/email-school (zp/get-string-from-file "~/org/pp/email/school/email")
-  "Email used for school-related communications.")
-
 (defun zp/get-email-with-alias (email alias &optional regex)
   "Create email alias from EMAIL and ALIAS.
 
@@ -66,12 +54,6 @@ If REGEX is non-nil, creates a regex to match the email alias."
     (if regex
         (regexp-quote email-alias)
       email-alias)))
-
-(defvar zp/email-org (zp/get-email-with-alias "old-pro" "org")
-  "Email alias used for the org-mode mailing list.")
-
-(defvar zp/email-dev (zp/get-email-with-alias "old-pro" "dev")
-  "Email alias used for general development work.")
 
 ;;----------------------------------------------------------------------------
 ;; Signature
