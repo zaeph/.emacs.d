@@ -2605,15 +2605,7 @@ along with effort estimates and total time."
   :config
   ;; Increase truncation of buffer names
   (setq helm-buffer-max-length 30       ;Default: 20
-        helm-M-x-fuzzy-match t
-        helm-buffers-fuzzy-matching t
-        helm-recentf-fuzzy-match t
-        helm-semantic-fuzzy-match t
-        helm-imenu-fuzzy-match t
-        helm-completion-style 'helm-fuzzy
-        helm-completion-in-region-fuzzy-match t
-        helm-apropos-fuzzy-match t
-        helm-lisp-fuzzy-completion t)
+        helm-completion-style 'fuzzy)
 
   ;; Disable helm-mode for some functions
   ;; Used to be necessary, but now it works just fine
