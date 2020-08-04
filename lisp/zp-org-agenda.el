@@ -1979,11 +1979,13 @@ With a ‘C-u’ prefix argument, also kill the main Org buffer."
         (kill-count (zp/org-agenda-kill-special-agendas)))
     (zp/create-agenda-view nil)
     (when kill-file
-      (when-let ((file (get-file-buffer (zp/org-agenda-get-main-file))))
-        (with-current-buffer file
+      (when-let* ((file (zp/org-agenda-get-main-file))
+                  (buffer (get-file-buffer file)))
+        (with-current-buffer buffer
           (when (buffer-modified-p)
             (save-buffer))
-          (kill-buffer))))
+          (kill-buffer))
+        (find-file-noselect file)))
     (org-agenda-redo-all)
     (with-selected-window (window-left (selected-window))
       (org-agenda-redo-all))
