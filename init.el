@@ -3427,8 +3427,12 @@ KEY is the key to use to access the template"
   ;; Rest
   ;;------
 
-  ;; Align tags in templates before finalising
-  (add-hook 'org-capture-before-finalize-hook #'org-align-tags)
+  (defun zp/org-align-all-tags ()
+    "Align tags in current entry."
+    (org-align-tags t))
+
+;; Align tags in templates before finalising
+  (add-hook 'org-capture-before-finalize-hook #'zp/org-align-all-tags)
 
   ;; Restore the previous window configuration after exiting
   (defvar zp/org-capture-before-config nil
