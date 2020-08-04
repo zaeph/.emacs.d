@@ -510,7 +510,8 @@ surrounding paragraph."
 (define-key zp/toggle-map (kbd "d") #'toggle-debug-on-error)
 (define-key zp/toggle-map (kbd "Q") #'toggle-debug-on-quit)
 (define-key zp/toggle-map (kbd "q") #'electric-quote-local-mode)
-(define-key zp/toggle-map (kbd "f") #'auto-fill-mode)
+(define-key zp/toggle-map (kbd "F") #'flyspell-mode)
+(define-key zp/toggle-map (kbd "a") #'auto-fill-mode)
 (define-key zp/toggle-map (kbd "l") #'display-line-numbers-mode)
 (define-key zp/toggle-map (kbd "h") #'global-hl-line-mode)
 (define-key zp/toggle-map (kbd "p") #'print-circle-mode)
@@ -948,7 +949,7 @@ With a ‘C-u’ prefix argument, amend the last commit instead."
          ;; (after-init . global-flycheck-mode)
          )
   :bind (:map zp/toggle-map
-         ("F" . flycheck-mode))
+         ("f" . flycheck-mode))
   :config
   ;; (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc))
   (setq flycheck-emacs-lisp-load-path 'inherit
