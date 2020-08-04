@@ -666,6 +666,10 @@ surrounding paragraph."
   (auto-compile-on-load-mode)
   (auto-compile-on-save-mode))
 
+(use-package eldoc
+  :config
+  (setq eldoc-idle-delay 0.5))
+
 (use-package secret)
 
 (use-package slime)
@@ -954,7 +958,7 @@ With a ‘C-u’ prefix argument, amend the last commit instead."
   :config
   ;; (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc))
   (setq flycheck-emacs-lisp-load-path 'inherit
-        flycheck-display-errors-delay 0.5))
+        flycheck-display-errors-delay 0.6))
 
 ;; Minor-mode to show Flycheck error messages in a popup
 (use-package flycheck-pos-tip
