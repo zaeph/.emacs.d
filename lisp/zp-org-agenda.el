@@ -416,10 +416,9 @@ FILTER should be formatted as \"+group1-group2\" where:
     (dolist (group groups)
       (let ((type (substring group 0 1))
             (group (substring group 1)))
-        (push group
-              (pcase type
-                ("+" include)
-                ("-" exclude)))))
+        (pcase type
+          ("+" (push group include))
+          ("-" (push group exclude)))))
     (list include
           exclude)))
 
