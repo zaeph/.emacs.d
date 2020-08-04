@@ -43,6 +43,7 @@
 ;; Require other packages
 ;;----------------------------------------------------------------------------
 (require 'org-agenda)
+(require 'org-habit)
 
 ;;----------------------------------------------------------------------------
 ;; Debugging
@@ -169,7 +170,7 @@ With a prefix argument, do so in all agenda buffers."
 (defun org-agenda-bulk-mark (&optional arg)
   "Mark the entry at point for future bulk action."
   (interactive "p")
-  (dotimes (i (or arg 1))
+  (dotimes (_i (or arg 1))
     (unless (org-get-at-bol 'org-agenda-diary-link)
       (let* ((m (org-get-at-bol 'org-hd-marker))
              ov)
@@ -194,9 +195,9 @@ With a prefix argument, do so in all agenda buffers."
 (defun zp/org-resolve-clocks ()
   "Resolve all curently open Org clocks and conditionally refresh."
   (interactive)
-  (let ((marker (org-get-at-bol 'org-marker))
-        (hdmarker (or (org-get-at-bol 'org-hd-marker) marker))
-        newhead)
+  (let* ((marker (org-get-at-bol 'org-marker))
+         (hdmarker (or (org-get-at-bol 'org-hd-marker) marker))
+         newhead)
     (org-resolve-clocks)
     ;; Update faces
     (org-agenda-unmark-clocking-task)
@@ -307,8 +308,7 @@ agenda view or to spawn a new one.")
   "Open the Emacs calendar with the date at the cursor.
 Wrapper to use our own agenda-view."
   (interactive)
-  (let* ((calendar-window (selected-window))
-         (date (destructuring-bind (month day year)
+  (let* ((date (destructuring-bind (month day year)
                    (calendar-cursor-to-date)
                  (format "%d-%02d-%02d" year month day))))
     (other-window 1)
@@ -330,7 +330,6 @@ Wrapper to use our own agenda-view."
 	  (eval org-agenda-jump-prefer-future))
 	 (date (org-read-date nil nil date))
 	 (day (time-to-days (org-time-string-to-time date)))
-	 (org-agenda-sticky-orig org-agenda-sticky)
 	 (org-agenda-buffer-tmp-name (buffer-name))
 	 (args (get-text-property (min (1- (point-max)) (point)) 'org-last-args))
 	 (0-arg (or current-prefix-arg (car args)))
@@ -564,7 +563,7 @@ agenda-group."
          (org-agenda-redo)
          (message "Cleared extra filters.")))
     (_ (let* ((filters (zp/get-agenda-local 'zp/org-agenda-groups-filters))
-              (related (zp/org-agenda-groups-get-related-groups filters))
+              (related (zp/org-get-related-categories filters))
               (extra-group (ivy-read "Filters: " related
                                      :preselect (when-let ((marker (get-text-property (point) 'org-hd-marker)))
                                                   (car (zp/org-get-agenda-groups marker)))))
@@ -624,8 +623,7 @@ FILTER should be a list of string-values to match."
   (when filter
     (save-restriction
       (widen)
-      (let* ((category (zp/org-get-category))
-             (include (car filter))
+      (let* ((include (car filter))
              (next-headline (save-excursion
                               (or (outline-next-heading)
                                   (point-max)))))
@@ -927,7 +925,7 @@ are done."
 
 (defun zp/is-waiting-p ()
   "Return t if the item/tree at point is waiting for something."
-  (member "waiting" (org-get-tags-at)))
+  (member "waiting" (org-get-tags)))
 
 (defvar zp/org-agenda-include-waiting nil
   "When t, include waiting item/trees in the agenda.")
@@ -1059,21 +1057,8 @@ as regular projects."
 ;;----------------------------------------------------------------------------
 (defun zp/org-cmp-test-todo (todo a b)
   "Compare the todo states of strings A and B."
-  (let* ((ma (or (get-text-property 1 'org-marker a)
-                 (get-text-property 1 'org-hd-marker a)))
-         (mb (or (get-text-property 1 'org-marker b)
-                 (get-text-property 1 'org-hd-marker b)))
-         (fa (and ma (marker-buffer ma)))
-         (fb (and mb (marker-buffer mb)))
-         (todo-kwds
-          (or (and fa (with-current-buffer fa org-todo-keywords-1))
-              (and fb (with-current-buffer fb org-todo-keywords-1))))
-         (ta (or (get-text-property 1 'todo-state a) ""))
-         (tb (or (get-text-property 1 'todo-state b) ""))
-         (la (- (length (member ta todo-kwds))))
-         (lb (- (length (member tb todo-kwds))))
-         (donepa (member ta org-done-keywords-for-agenda))
-         (donepb (member tb org-done-keywords-for-agenda)))
+  (let* ((ta (or (get-text-property 1 'todo-state a) ""))
+         (tb (or (get-text-property 1 'todo-state b) "")))
     (cond ((and (string-match-p ta todo) (not (string-match-p tb todo))) +1)
           ((and (string-match-p tb todo) (not (string-match-p ta todo))) -1))))
 
@@ -1225,27 +1210,27 @@ afterwards."
 
 (defun zp/org-agenda-format-header-main (header)
   "Format the main header block in org-agenda."
-  (let* ((tags-column org-agenda-tags-column)
-         (flanking-symbol "~")
+  (let* ((flanking-symbol "~")
          (header-formatted
           (zp/org-agenda-format-header-align
            (concat flanking-symbol " " header " " flanking-symbol)))
          (category-filter zp/org-agenda-category-filter)
          word-list)
     (unless org-agenda-include-deadlines
-      (add-to-list 'word-list "-deadlines" t))
+      (push "-deadlines" word-list))
     (unless org-agenda-show-all-dates
-      (add-to-list 'word-list "-empty" t))
+      (push "-empty" word-list))
     (unless org-habit-show-habits
-      (add-to-list 'word-list "-habits" t))
+      (push "-habits" word-list))
     (unless zp/org-agenda-include-category-icons
-      (add-to-list 'word-list "-icons" t))
+      (push "-icons" word-list))
     (unless zp/org-agenda-include-projects
-      (add-to-list 'word-list "-projects" t))
+      (push "-projects" word-list))
     (unless zp/org-agenda-include-routine
-      (add-to-list 'word-list "-routine" t))
+      (push "-routine" word-list))
     (unless zp/org-agenda-include-scheduled
-      (add-to-list 'word-list "-scheduled" t))
+      (push "-scheduled" word-list))
+    (setq word-list (nreverse word-list))
     (let ((word-list-formatted (s-join ";" word-list)))
       (if (not (eq word-list nil))
           (setq word-list-formatted (concat " " "(" word-list-formatted ")")))
@@ -1257,29 +1242,29 @@ afterwards."
 
 (defun zp/org-agenda-format-header-block (header)
   "Format header blocks in org-agenda."
-  (let* ((tags-column org-agenda-tags-column)
-         (header-formatted (zp/org-agenda-format-header-align header)))
+  (let* ((header-formatted (zp/org-agenda-format-header-align header)))
     (concat
      header-formatted "\n")))
 
 (defun zp/org-agenda-format-header-block-with-settings (header)
   "Format header blocks in org-agenda, and display important
 agenda settings after them."
-  (let ((word-list ()))
+  (let (word-list)
     (when zp/org-agenda-sorting-strategy-special-first
-      (add-to-list 'word-list "+S↓" t))
+      (push "+S↓" word-list))
     ;; (if (eq org-agenda-dim-blocked-tasks nil)
-    ;;     (add-to-list 'word-list "-dimmed" t))
+    ;;     (push "-dimmed" word-list))
     (when zp/org-agenda-todo-ignore-future
-      (add-to-list 'word-list "-future" t))
+      (push "-future" word-list))
     (when zp/org-agenda-sort-by-rev-fifo
-      (add-to-list 'word-list "+rev-fifo" t))
+      (push "+rev-fifo" word-list))
     (unless zp/org-agenda-include-routine
-      (add-to-list 'word-list "-routine" t))
+      (push "-routine" word-list))
     (when zp/org-agenda-split-subtasks
-      (add-to-list 'word-list "+split" t))
+      (push "+split" word-list))
     (unless zp/org-agenda-include-waiting
-      (add-to-list 'word-list "-waiting" t))
+      (push "-waiting" word-list))
+    (setq word-list (nreverse word-list))
     (let ((header-formatted (zp/org-agenda-format-header-align header))
           (word-list-formatted (zp/org-agenda-format-word-list word-list)))
       (concat header-formatted word-list-formatted))))
@@ -1288,13 +1273,13 @@ agenda settings after them."
 (defun zp/org-agenda-format-header-projects ()
   "Format header blocks in org-agenda, and display important
 agenda settings after them."
-  (let* ((tags-column org-agenda-tags-column)
-         (header "Projects")
-         (word-list ()))
+  (let* ((header "Projects")
+         word-list)
     (when zp/org-agenda-sorting-strategy-special-first
-      (add-to-list 'word-list "+S↓" t))
+      (push "+S↓" word-list))
     (when (eq zp/org-agenda-include-waiting nil)
-      (add-to-list 'word-list "-waiting" t))
+      (push "-waiting" word-list))
+    (setq word-list (nreverse word-list))
     (let ((header-formatted (zp/org-agenda-format-header-align header))
           (word-list-formatted (zp/org-agenda-format-word-list word-list)))
       (concat header-formatted word-list-formatted))))
@@ -1303,10 +1288,12 @@ agenda settings after them."
 ;; Show modes in headers
 ;;----------------------------------------------------------------------------
 (defface zp/org-agenda-block-info-face nil
-  "Info for blocked faces in org-agenda.")
+  "Info for blocked faces in org-agenda."
+  :group 'org-faces)
 
 (defface zp/org-agenda-block-warning-face nil
-  "Warning for blocked faces in org-agenda.")
+  "Warning for blocked faces in org-agenda."
+  :group 'org-faces)
 
 (defun zp/org-agenda-hi-lock ()
   (highlight-regexp "([-+].*?)" 'zp/org-agenda-block-info-face)
@@ -1880,12 +1867,12 @@ a wipe (‘zp/org-agenda-wipe-local-config’).")
       (zp/org-agenda-create-local-config agenda)
       (zp/org-agenda-load-extra-local-config agenda))
     ;; Load all settings
-    (mapcar (lambda (cons)
-              (let ((variable (car cons))
-                    (value (cdr cons)))
-                (set variable value
-                     ;; (message "Setting ‘%s’ to ‘%s’." variable value)
-                     )))
+    (mapc (lambda (cons)
+            (let ((variable (car cons))
+                  (value (cdr cons)))
+              (set variable value
+                   ;; (message "Setting ‘%s’ to ‘%s’." variable value)
+                   )))
             ;; alist-get returns its match within a list, but we only
             ;; need its car
             (car (alist-get agenda
@@ -2101,8 +2088,7 @@ Based on `org-agenda-set-property'."
                        (org-agenda-error)))
          (buffer (marker-buffer hdmarker))
          (pos (marker-position hdmarker))
-         (inhibit-read-only t)
-         newhead)
+         (inhibit-read-only t))
     (org-with-remote-undo buffer
       (with-current-buffer buffer
         (widen)
