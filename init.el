@@ -844,6 +844,7 @@ With a ‘C-u’ prefix argument, amend the last commit instead."
 (use-package recentf-ext)
 
 (use-package dired
+  :bind ("C-x C-d" . dired)
   :hook (dired-mode . turn-on-gnus-dired-mode)
   :custom
   (dired-dwim-target t))
