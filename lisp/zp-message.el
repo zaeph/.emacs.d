@@ -251,7 +251,8 @@ Looks for the email in the ‘From:’ field and chooses a language
 based on ‘zp/message-mode-ispell-alist’."
   (let* ((sender (downcase (message-sendmail-envelope-from)))
          (lang (cdr (assoc sender zp/message-ispell-alist))))
-    (zp/ispell-switch-dict lang)))
+    (zp/ispell-switch-dict (unless (eq lang 'ask)
+                             lang))))
 
 ;;----------------------------------------------------------------------------
 ;; Unused functions
