@@ -1853,7 +1853,6 @@ SEARCH is a string to be interpreted by notmuch-search."
 
 (use-package lsp-mode :hook ((lsp-mode . lsp-enable-which-key-integration))
   :config (setq lsp-completion-enable-additional-text-edit nil))
-(use-package company)
 (use-package lsp-ui)
 (use-package lsp-java :config (add-hook 'java-mode-hook 'lsp))
 (use-package dap-mode :after lsp-mode :config (dap-auto-configure-mode))
@@ -3812,9 +3811,9 @@ commas and space."
 
 (use-package org-roam-protocol)
 
-(use-package company-org-roam
-  :config
-  (push 'company-org-roam company-backends))
+(use-package company
+  :bind ("M-/" . company-complete)
+  :hook ((after-init . global-company-mode)))
 
 (defvar orb-title-format "${author-or-editor-abbrev} (${date}).  ${title}."
   "Format of the title to use for `orb-templates'.")
