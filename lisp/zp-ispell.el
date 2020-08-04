@@ -32,6 +32,7 @@
 ;;; Code:
 ;;;; Library Requires
 (require 'ispell)
+(require 'dash)
 
 ;; Don't send ’ to the subprocess.
 (defun endless/replace-apostrophe (args)
@@ -52,50 +53,67 @@
             #'endless/replace-quote)
 
 ;; Helm-Ispell
-(defvar zp/ispell-completion-data nil)
-(setq ispell-dictionary "british"
-      zp/ispell-completion-data '(("English" . "british")
-                                  ("French" . "french")))
+(defvar zp/ispell-completion-data nil
+  "Alist of languages to Ispell dictionaries.")
 
-(defun zp/ispell-switch-dictionary (language)
-  "Change the Ispell dictionary to LANGUAGE.
+(defun zp/ispell--lang-to-dict (lang)
+  "Get Ispell dictionary to use from LANG.
+See `zp/ispell-completion-data' for details."
+  (when lang
+    (let ((data zp/ispell-completion-data))
+      (-> (assoc lang data)
+          (cdr)))))
 
-LANGUAGE should be the name of an Ispell dictionary."
-  (interactive)
-  (let ((name (car (rassoc language zp/ispell-completion-data))))
-    (if (eq language ispell-local-dictionary)
-        (message "Dictionary is already loaded for this language")
-      (setq ispell-local-dictionary language)
-      (flyspell-mode)
-      (message (concat "Local Ispell dictionary set to " name)))
+(defun zp/ispell--dict-to-lang (dict)
+  "Get language from Ispell DICT.
+See `zp/ispell-completion-data' for details."
+  (when dict
+    (let ((data zp/ispell-completion-data))
+      (-> (rassoc dict data)
+          (car)))))
+
+(defun zp/ispell--switch-dict (lang-or-dict)
+  "Change the Ispell dictionary to LANG-OR-DICT.
+LANG-OR-DICT can either be a language or an Ispell dictionary.
+See `zp/ispell-completion-data' for details."
+  (let* ((data zp/ispell-completion-data)
+         (langs (mapcar #'car data))
+         (dict (if (member lang-or-dict langs)
+                   (zp/ispell--lang-to-dict lang-or-dict)
+                 lang-or-dict)))
+    (setq ispell-local-dictionary dict)
+    ;; Disable `flyspell-mode' if it is already loaded
+    ;; Required for fontification from previous dict
     (when flyspell-mode
-      (flyspell-mode -1)
-      (flyspell-mode))))
+      (flyspell-mode -1))
+    (flyspell-mode)))
 
-(defun zp/ispell-query-dictionary ()
-  (if (not (y-or-n-p "Writing in English? "))
-      (ispell-change-dictionary "french")))
-
-(defvar zp/helm-ispell-actions nil)
-(setq zp/helm-ispell-actions
-      '(("Change dictionary" . zp/ispell-switch-dictionary)))
-
-(defvar zp/helm-source-ispell nil)
-(setq zp/helm-source-ispell
-      '((name . "*HELM Ispell - Dictionary selection*")
-        (candidates . zp/ispell-completion-data)
-        (action . zp/helm-ispell-actions)))
-
-(defun zp/helm-ispell-preselect (&optional lang)
+(defun zp/ispell-switch-dict (&optional lang)
+  "Change the Ispell dictionary to LANG.
+LANG should be the name of an Ispell dictionary.  See
+`zp/ispell-completion-data' for details.
+If LANG is not provided, query the user."
   (interactive)
-  (let ((current ispell-local-dictionary))
-    (helm :sources '(zp/helm-source-ispell)
-          :preselect (if (or
-                          (eq lang "French")
-                          (eq current nil)
-                          (string-match-p current "british"))
-                         "French"
-                       "English"))))
+  (let* ((data zp/ispell-completion-data)
+         (dict-current ispell-local-dictionary)
+         (lang-current (zp/ispell--dict-to-lang dict-current))
+         (lang-preselect (pcase lang-current
+                           ("en" "fr")
+                           (_ "en")))
+         (lang (or lang
+                   (ivy-read "Choose language: " data
+                             :preselect
+                             lang-preselect)))
+         (dict (zp/ispell--lang-to-dict lang)))
+    (when (eq dict dict-current)
+      (user-error "Dictionary is already loaded"))
+    (zp/ispell--switch-dict dict)
+    (message "Changed dictionary to %s" (capitalize dict))))
+
+(defun zp/ispell-query-dict ()
+  (interactive)
+  (unless (y-or-n-p "Writing in English? ")
+    (zp/ispell-switch-dict "fr")))
 
 (provide 'zp-ispell)
 ;;; zp-ispell.el ends here

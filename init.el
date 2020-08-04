@@ -1508,7 +1508,7 @@ With numeric prefix arg DEC, decrement the integer by DEC amount."
 ;; ispell
 ;;----------------------------------------------------------------------------
 (use-package ispell
-  :bind ("C-c d" . zp/helm-ispell-preselect)
+  :bind ("C-c d" . zp/ispell-switch-dict)
   :config
   ;; TODO: Modernise
 
@@ -1531,7 +1531,11 @@ With numeric prefix arg DEC, decrement the integer by DEC amount."
           ("british" "[[:alpha:]]" "[^[:alpha:]]" "['’]" t ("-d" "en_GB") nil utf-8)
           ("french" "[[:alpha:]]" "[^[:alpha:]]" "['’]" t ("-d" "fr_FR") nil utf-8)))))
 
-(use-package zp-ispell)
+(use-package zp-ispell
+  :custom
+  (ispell-dictionary "british")
+  (zp/ispell-completion-data '(("en" . "british")
+                               ("fr" . "french"))))
 
 (use-package flyspell
   :bind ("C-c f" . flyspell-mode)
