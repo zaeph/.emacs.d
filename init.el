@@ -655,11 +655,9 @@ surrounding paragraph."
   ;; Following line is not needed if use-package.el is in ~/.emacs.d
   (add-to-list 'load-path "~/.emacs.d/")
   (require 'use-package)
+  (require 'bind-key)
+  (require 'diminish)
   (setq use-package-expand-minimally byte-compile-current-file))
-
-(require 'bind-key)
-
-(require 'diminish)
 
 (use-package auto-compile
   :config
