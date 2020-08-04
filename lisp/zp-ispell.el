@@ -100,10 +100,12 @@ If LANG is not provided, query the user."
          (lang-preselect (pcase lang-current
                            ("en" "fr")
                            (_ "en")))
-         (lang (or lang
-                   (ivy-read "Choose language: " data
-                             :preselect
-                             lang-preselect)))
+         (lang (pcase lang
+                 ((or "ask" 'nil)
+                  (ivy-read "Choose language: " data
+                            :preselect
+                    lang-preselect))
+                 (_ lang)))
          (dict (zp/ispell--lang-to-dict lang)))
     (when (eq dict dict-current)
       (user-error "Dictionary is already loaded"))
