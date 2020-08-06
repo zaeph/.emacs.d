@@ -73,7 +73,7 @@ See `zp/notmuch-identities' for details."
            (cons (regexp-quote email)
                  (or fcc
                      (--if-let (zp/notmuch-identities-get id :dir)
-                         (concat it " " zp/notmuch-fcc-tags-default)))))
+                         (concat it "/sent " zp/notmuch-fcc-tags-default)))))
          zp/notmuch-identities))
 
 (defun zp/notmuch-make-ispell-alist ()
