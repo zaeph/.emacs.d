@@ -95,7 +95,9 @@ LANG should be the name of an Ispell dictionary.  See
 If LANG is not provided, query the user."
   (interactive)
   (let* ((data zp/ispell-completion-data)
-         (dict-current ispell-local-dictionary)
+         (dict-current (when flyspell-mode
+                         (or ispell-local-dictionary
+                             ispell-dictionary)))
          (lang-current (zp/ispell--dict-to-lang dict-current))
          (lang-preselect (pcase lang-current
                            ("en" "fr")
