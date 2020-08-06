@@ -80,7 +80,8 @@ See `zp/ispell-completion-data' for details."
          (langs (mapcar #'car data))
          (dict (if (member lang-or-dict langs)
                    (zp/ispell--lang-to-dict lang-or-dict)
-                 lang-or-dict)))
+                 lang-or-dict))
+         (inhibit-message t))
     (setq ispell-local-dictionary dict)
     ;; Disable `flyspell-mode' if it is already loaded
     ;; Required for fontification from previous dict
