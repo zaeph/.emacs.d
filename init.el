@@ -2339,8 +2339,7 @@ return `nil'."
 
   ;; Set the default apps to use when opening org-links
   (add-to-list 'org-file-apps
-               '("\\.pdf\\'" . (lambda (file link)
-                                 (org-pdfview-open link))))
+               '("\\.pdf\\'" . default))
 
   ;; Define TODO keywords
   (setq org-todo-keywords
