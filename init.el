@@ -3005,7 +3005,7 @@ indirect-buffers."
 
         ;; View setup
         org-agenda-hide-tags-regexp "recurring\\|waiting\\|standby"
-        org-agenda-tags-column -94
+        org-agenda-tags-column -88
         org-agenda-timegrid-use-ampm nil
         org-agenda-window-setup 'current-window
         org-agenda-compact-blocks nil
