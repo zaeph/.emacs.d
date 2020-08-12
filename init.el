@@ -381,6 +381,7 @@ Return a list containing:
 
 (defmacro time (&rest forms)
   "Return the time taken to run FORMS as a string."
+  (message "Processing...")
   `(let* ((results (time-internal ,@forms))
           (return-value (pop results))
           (elapsed (pop results))
@@ -388,7 +389,7 @@ Return a list containing:
           (elapsed-total (pop results)))
      (format timer-output-format elapsed elapsed-gc elapsed-total)))
 
-(defmacro time-stats (iterations multiplier &rest forms)
+(defmacro time-stats-internal (iterations multiplier &rest forms)
   "Return statistics on the execution of FORMS.
 
 ITERATIONS is the sample-size to use for the statistics.
@@ -396,23 +397,40 @@ ITERATIONS is the sample-size to use for the statistics.
 MULTIPLIER is an integer to specify how many times to evaluate
 FORMS on each iteration."
   (declare (indent 2))
+  (pcase iterations
+    ((pred integerp)
+     (unless (> iterations 0)
+       (user-error "ITERATIONS needs to be a non-null positive integer")) )
+    (wrong-type (signal 'wrong-type-argument
+                        `((integerp)
+                          ,wrong-type))))
   (let ((multiplier (or multiplier 1)))
-    ;; If only one iteration, use ‘time’ instead
     `(let (list)
-       (if (or (not ,iterations) (= 1 ,iterations))
-           (time
-            (dotimes (y ,multiplier)
-              ,@forms))
-         (dotimes (i ,iterations)
-           (message "Iteration: %s" (1+ i))
-           (push (nth 1 (time-internal
-                         (dotimes (y ,multiplier)
-                           ,@forms)))
-                 list))
-         (let ((min (apply #'min list))
-               (max (apply #'max list))
-               (mean (/ (apply #'+ list) (length list))))
-           (format "min: %.3fs, max: %.3fs, mean: %.3fs" min max mean))))))
+       (dotimes (i ,iterations)
+         (message "Processing...  Iteration: %s" (1+ i))
+         (push (nth 1 (time-internal
+                       (dotimes (y ,multiplier)
+                         ,@forms)))
+               list))
+       (let ((min (apply #'min list))
+             (max (apply #'max list))
+             (mean (/ (apply #'+ list) (length list))))
+         (list min max mean)))))
+
+(defmacro time-stats (iterations multiplier &rest forms)
+  "Return statistics on the execution of FORMS as a string.
+
+ITERATIONS is the sample-size to use for the statistics.
+
+MULTIPLIER is an integer to specify how many times to evaluate
+FORMS on each iteration."
+  `(if (= ,iterations 1)
+       (time
+        (dotimes (y ,multiplier)
+          ,@forms))
+     (pcase-let* ((stats (time-stats-internal ,iterations ,multiplier ,@forms))
+                  (`(,min ,max ,mean) stats))
+       (format "min: %.3fs, max: %.3fs, mean: %.3fs" min max mean))))
 
 (defmacro with-timer (title &rest forms)
   "Run the given FORMS, counting the elapsed time.
