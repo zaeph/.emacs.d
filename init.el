@@ -389,6 +389,16 @@ Return a list containing:
           (elapsed-total (pop results)))
      (format timer-output-format elapsed elapsed-gc elapsed-total)))
 
+(defun time-validate-iterations (iterations)
+  "Validate ITERATIONS."
+  (pcase iterations
+    ((pred (natnump))
+     (when (zerop iterations)
+       (user-error "ITERATIONS needs to be a non-null positive integer")) )
+    (wrong-type (signal 'wrong-type-argument
+                        `((natnump)
+                          ,wrong-type)))))
+
 (defmacro time-stats-internal (iterations multiplier &rest forms)
   "Return statistics on the execution of FORMS.
 
@@ -397,13 +407,7 @@ ITERATIONS is the sample-size to use for the statistics.
 MULTIPLIER is an integer to specify how many times to evaluate
 FORMS on each iteration."
   (declare (indent 2))
-  (pcase iterations
-    ((pred integerp)
-     (unless (> iterations 0)
-       (user-error "ITERATIONS needs to be a non-null positive integer")) )
-    (wrong-type (signal 'wrong-type-argument
-                        `((integerp)
-                          ,wrong-type))))
+  (time-validate-iterations iterations)
   (let ((multiplier (or multiplier 1)))
     `(let (list)
        (dotimes (i ,iterations)
@@ -424,9 +428,10 @@ ITERATIONS is the sample-size to use for the statistics.
 
 MULTIPLIER is an integer to specify how many times to evaluate
 FORMS on each iteration."
+  (time-validate-iterations iterations)
   `(if (= ,iterations 1)
        (time
-        (dotimes (y ,multiplier)
+        (dotimes (_y ,multiplier)
           ,@forms))
      (pcase-let* ((stats (time-stats-internal ,iterations ,multiplier ,@forms))
                   (`(,min ,max ,mean) stats))
