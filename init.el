@@ -366,14 +366,14 @@ Return a list containing:
   `(let* ((body '(progn ,@forms))
           (gc-cons-threshold (progn (garbage-collect)
                                     gc-cons-threshold-for-timers))
-          (start (current-time))
           (return-value (eval body))
           (end (current-time))
           (elapsed (float-time (time-subtract end start)))
           results)
      (prog1 (setq results (list return-value elapsed))
-       (garbage-collect)
-       (let* ((end-gc (current-time))
+       (let* ((beg-gc (prog1 (current-time)
+                        (garbage-collect)))
+              (end-gc (current-time))
               (elapsed-gc (float-time (time-subtract end-gc end)))
               (elapsed-total (+ elapsed elapsed-gc)))
          (push elapsed-gc (cdr (last results)))
@@ -3361,16 +3361,14 @@ KEY is the key to use to access the template"
     "Default swimming workout.")
 
   (setq zp/swimming-workout-default "
-|-----+-----------------------------------|
-| 500 | warmup crawl/fly                  |
-| 500 | 100 pull / 100 pull fast          |
-| 500 | 5*25 kick steady / 5*25 kick fast |
-| 500 | 100 pull / 100 pull fast          |
-| 500 | 50 fly / 100 crawl                |
-| 500 | 100 pull / 100 pull fast          |
-| 500 | 50 fly / 100 crawl                |
-| 100 | warmdown                          |
-|-----+-----------------------------------|")
+|------+--------------------------------|
+|  500 | warmup crawl/fly               |
+|  500 | 100 pull / 100 pull fast       |
+| 1500 | 50 fly / 100 crawl × 3 no rest |
+|  500 | 100 pull / 100 pull fast       |
+|  500 | crawl fast                     |
+|  100 | warmdown                       |
+|------+--------------------------------|")
 
   ;;---------------------------------
   ;; Templates for ‘org-agenda-mode’
