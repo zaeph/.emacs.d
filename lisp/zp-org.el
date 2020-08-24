@@ -80,6 +80,30 @@
                 (org-paste-subtree level tree-text))))))))
 
 ;;----------------------------------------------------------------------------
+;; State flow
+;;----------------------------------------------------------------------------
+;; Heavily inspired from
+;; https://emacs.stackexchange.com/questions/9433/how-to-make-org-prompt-for-a-timestamp-when-changing-state-of-a-todo/9451#9451
+(defun zp/org-todo-with-date (&optional arg)
+  "Like `org-todo' but the time of change will be prompted."
+  (interactive "P")
+  (cl-letf* ((org-read-date-prefer-future nil)
+             (my-current-time (org-read-date t t nil "when:" nil nil nil))
+             ((symbol-function 'current-time)
+              #'(lambda () my-current-time))
+             ((symbol-function 'org-today)
+              #'(lambda () (time-to-days my-current-time)))
+             ((symbol-function 'org-current-effective-time)
+              #'(lambda () my-current-time))
+             (super (symbol-function 'format-time-string))
+             ((symbol-function 'format-time-string)
+              #'(lambda (fmt &optional time time-zone)
+                  (funcall super fmt my-current-time time-zone))))
+    (if (eq major-mode 'org-agenda-mode)
+        (org-agenda-todo arg)
+      (org-todo arg))))
+
+;;----------------------------------------------------------------------------
 ;; LaTeX export
 ;;----------------------------------------------------------------------------
 (defvar zp/org-format-latex-default-scale 3.0
