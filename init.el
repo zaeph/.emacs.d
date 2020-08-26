@@ -1580,6 +1580,7 @@ With numeric prefix arg DEC, decrement the integer by DEC amount."
   :custom
   (elfeed-feeds
    '(("https://xkcd.com/rss.xml" webcomic)
+     ("https://blog.einval.eu/index.xml" friends)
      ("https://entrepreneur-interet-general.etalab.gouv.fr/feed.xml" eig)
      ("https://disic.github.io/gazette-bluehats/index.xml" bluehats))))
 
