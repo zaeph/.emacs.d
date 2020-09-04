@@ -458,6 +458,23 @@ it should be an outline path OLP."
       '("<%d %b %Y>" . "<%d/%m/%y %a %H:%M>"))
 
 ;;----------------------------------------------------------------------------
+;; Resolve with calc
+;;----------------------------------------------------------------------------
+(defun vifon/org-resolve-clocks-with-calc (orig &rest args)
+  (require 'cl-lib)
+  (cl-letf* ((plain-read-number (symbol-function 'read-number))
+             ((symbol-function 'read-number)
+              (lambda (prompt &optional default)
+                (string-to-number
+                 (calc-eval (read-string prompt
+                                         nil
+                                         nil default))))))
+    (apply orig args)))
+
+(advice-add #'org-resolve-clocks :around
+            #'vifon/org-resolve-clocks-with-calc)
+
+;;----------------------------------------------------------------------------
 ;; Commenting old ‘LOGBOOK’ notes
 ;;----------------------------------------------------------------------------
 (defcustom zp/org-logbook-notes-current-lines 30
