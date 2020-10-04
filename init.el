@@ -3364,7 +3364,10 @@ KEY is the key to use to access the template"
            "* TODO %(zp/org-protocol-process \"%:link\" \"%:description\")%? :online:\n%(zp/org-protocol-insert-selection-dwim \"%i\")" :add-created t)
 
           ("OPc" "Capture with completion" entry (file+headline "~/org/life.org" "Inbox")
-           "* TODO %(zp/org-protocol-process \"%:link\" \"%:description\" t)%? :online:\n%(zp/org-protocol-insert-selection-dwim \"%i\")" :add-created t)
+           "* TODO %(zp/org-protocol-process \"%:link\" \"%:description\" nil t)%? :online:\n%(zp/org-protocol-insert-selection-dwim \"%i\")" :add-created t)
+
+          ("OPe" "Explore" entry (file+headline "~/org/life.org" "Inbox")
+           "* TODO %(zp/org-protocol-process \"%:link\" \"%:description\" \"Explore\")%? :online:\n%(zp/org-protocol-insert-selection-dwim \"%i\")" :add-created t)
 
           ;; Daily Record of Dysfunctional Thoughts
           ("D" "Record Dysfunctional Thoughts" entry (file+headline "~/org/journal.org" "Psychotherapy")
