@@ -68,12 +68,16 @@ a completion-list and preselect the guess."
     (_
      title)))
 
-(defun zp/org-protocol-process (url desc &optional with-completion)
+(defun zp/org-protocol-process (url desc &optional verb with-completion)
   "Get verb from URL and process DESC.
+
+When VERB is non-nil, use it instead of processing it via
+`zp/org-protocol-get-verb'.
 
 When WITH-COMPLETION is non-nil, use `zp/org-protocol-verbs' as
 a completion-list and preselect the guess."
-  (let ((verb (zp/org-protocol-get-verb url with-completion))
+  (let ((verb (or verb
+                  (zp/org-protocol-get-verb url with-completion)))
         (desc-new (zp/org-protocol-process-title-by-url desc url)))
     (format "%s [[%s][%s]]" verb url desc-new)))
 
