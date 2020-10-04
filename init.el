@@ -212,6 +212,8 @@ For details on DATA, CONTEXT, and SIGNAL, see
                                    (eval require 'org-roam-dev)
                                    (org-roam-directory . "~/org/slip-box-testing/")))
 
+(add-hook 'after-save-hook #'executable-make-buffer-file-executable-if-script-p)
+
 ;;----------------------------------------------------------------------------
 ;; Debugging functions
 ;;----------------------------------------------------------------------------
