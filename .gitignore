@@ -6,5 +6,5 @@
 !lisp/**
 !doc/**
 !README.md
-/lisp/secret.el
+# /extra/**
 *.elc
