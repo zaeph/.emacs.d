@@ -1707,8 +1707,9 @@ SEARCH is a string to be interpreted by notmuch-search."
                                              (:underline t))))))))))
 
   (defun zp/color-all-inboxes ()
-    (zp/color-inbox-if-unread "inbox" "not tag:auto")
+    (zp/color-inbox-if-unread "inbox" "not (tag:auto or tag:list")
     (zp/color-inbox-if-unread "pro-inbox" "tag:pro")
+    (zp/color-inbox-if-unread "lists-inbox" "tag:list")
     (zp/color-inbox-if-unread "dev-github-inbox" "tag:github")
     (zp/color-inbox-if-unread "dev-forum-inbox" "tag:forum"))
 
@@ -1752,11 +1753,14 @@ SEARCH is a string to be interpreted by notmuch-search."
         zp/message-sigs-alist (zp/notmuch-make-sigs-alist)
         zp/notmuch-saved-queries
         '(("pro"        . "tag:pro and not tag:auto")
+          ("etalab"     . "tag:etalab and not tag:auto")
           ("dev"        . "tag:dev and not tag:auto")
+          ("beta"       . "(tag:list or tag:auto)")
+          ("lists"      . "tag:list and not tag:auto")
           ("dev-github" . "tag:dev and tag:github and tag:auto")
           ("dev-forum"  . "tag:dev and tag:forum and tag:auto"))
         notmuch-saved-searches
-        `((:name "inbox" :key "i" :query "tag:inbox and not tag:auto")
+        `((:name "inbox" :key "i" :query "tag:inbox and not (tag:auto or tag:list)")
           (:name "unread" :key "u" :query "tag:unread and not tag:auto")
           (:name "archive-week" :key "a" :query "date:\"7d..today\" and not tag:auto")
           (:name "archive" :key "A" :query "not tag:auto")
@@ -1764,8 +1768,17 @@ SEARCH is a string to be interpreted by notmuch-search."
           ;; Pro
           ,@(zp/notmuch-format-search "pro" "p")
 
+          ;; Etalab
+          ,@(zp/notmuch-format-search "etalab" "e")
+
           ;; Dev
           ,@(zp/notmuch-format-search "dev" "d")
+
+          ;; Beta
+          ,@(zp/notmuch-format-search "beta" "b")
+
+          ;; Lists
+          ,@(zp/notmuch-format-search "lists" "l")
 
           ;; GitHub
           ,@(zp/notmuch-format-search "dev-github" "g")
