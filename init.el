@@ -2603,7 +2603,7 @@ along with effort estimates and total time."
 
 (use-package counsel-projectile
   :ensure t
-  :bind (("s-p" . counsel-projectile))
+  ;; :bind (("s-p" . counsel-projectile))
   :custom
   (counsel-projectile-switch-project-action
    '(1
