@@ -43,8 +43,6 @@
 (setq inhibit-startup-screen 1)
 (setq initial-scratch-message ";; Emacs Scratch\n\n")
 
-(setq user-full-name "Leo Vivier")
-
 ;; (toggle-debug-on-error)
 ;; (toggle-debug-on-quit)
 ;; (setq garbage-collection-messages t)
