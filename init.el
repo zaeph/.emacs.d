@@ -2458,10 +2458,7 @@ return `nil'."
   ;; Show images after executing a src-block that generated one
   ;; TODO: Limit the scope of the hook by testing if the block actually
   ;; generated an image
-  (add-hook 'org-babel-after-execute-hook #'org-display-inline-images 'append)
-
-  ;; Load library required for PlantUML
-  (setq org-ditaa-jar-path "/usr/share/java/ditaa/ditaa-0.11.jar"))
+  (add-hook 'org-babel-after-execute-hook #'org-display-inline-images 'append))
 
 (use-package zp-org
   :config
@@ -2590,7 +2587,12 @@ along with effort estimates and total time."
   ;; PlantUML
   (setq org-plantuml-jar-path (expand-file-name "/usr/share/java/plantuml/plantuml.jar"))
   (add-to-list 'org-src-lang-modes '("plantuml" . plantuml))
-  (org-babel-do-load-languages 'org-babel-load-languages '((plantuml . t))))
+  (org-babel-do-load-languages 'org-babel-load-languages '((plantuml . t)))
+
+  ;; Load library required for PlantUML
+  (setq org-ditaa-jar-path "/usr/share/java/ditaa/ditaa-0.11.jar")
+  (add-to-list 'org-src-lang-modes '("ditaa" . plantuml))
+  (org-babel-do-load-languages 'org-babel-load-languages '((ditaa . t))))
 
 ;;------------
 ;; Projectile
