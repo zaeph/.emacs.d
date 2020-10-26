@@ -3429,7 +3429,7 @@ KEY is the key to use to access the template"
   (zp/org-protocol-verbs (list "Read"
                                "Explore"
                                "Investigate"
-                               "Listen"
+                               "Listen to"
                                "Watch")))
 
 (use-package org-capture-web
