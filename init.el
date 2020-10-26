@@ -2445,6 +2445,7 @@ return `nil'."
   (org-babel-do-load-languages 'org-babel-load-languages
                                '((R . t)
                                  (python . t)
+                                 (java . t)
                                  (latex . t)
                                  (ledger . t)
                                  (shell . t)))
