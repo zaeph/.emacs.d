@@ -82,7 +82,7 @@ a completion-list and preselect the guess."
     (format "%s [[%s][%s]]" verb url desc-new)))
 
 (defun zp/org-protocol-insert-selection-dwim (selection)
-  "Insert SELECTION as quote if it is not non-nil."
+  "Insert SELECTION as an org blockquote."
   (unless (string= selection "")
     (format "#+begin_quote\n%s\n#+end_quote" selection)))
 
