@@ -970,13 +970,21 @@ With a ‘C-u’ prefix argument, amend the last commit instead."
 (use-package fish-mode
   :mode "\\.fish\\'")
 
+(use-package bicycle
+  :after outline
+  :bind (:map outline-minor-mode-map
+              ([C-tab] . bicycle-cycle)
+              ([S-tab] . bicycle-cycle-global)))
+
 (use-package prog-mode
   ;; Force fringe indicators
-  :hook (prog-mode . zp/enable-visual-line-fringe-indicators)
+  :hook ((prog-mode . zp/enable-visual-line-fringe-indicators)
+         (prog-mode . outline-minor-mode)
+         (prog-mode . hs-minor-mode))
   :config
   (defun zp/enable-visual-line-fringe-indicators ()
     "Enablle visual-line fringe-indicators."
-    (setq-local visual-line-fringe-indicators '(left-curly-arrow right-curly-arrow))) )
+    (setq-local visual-line-fringe-indicators '(left-curly-arrow right-curly-arrow))))
 
 (use-package free-keys
   :config
