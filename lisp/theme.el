@@ -33,6 +33,8 @@
 
 ;;; Code:
 
+(require 'seq)
+
 ;;----------------------------------------------------------------------------
 ;; Helper functions
 ;;----------------------------------------------------------------------------
@@ -332,11 +334,11 @@ specifications are processed in order:
     ;; and 1am, use tomorrow’s data instead.
     (apply 'encode-time
            (append
-            (subseq (parse-time-string time-string) 0 3)
-            (subseq (if (string-match "^0*:" time-string)
-                        next-day-decoded
-                      current-day-decoded)
-                    3)))))
+            (seq-subseq (parse-time-string time-string) 0 3)
+            (seq-subseq (if (string-match "^0*:" time-string)
+                            next-day-decoded
+                          current-day-decoded)
+                        3)))))
 
 (defvar zp/time-of-day-sections-parsed nil
   "List of time specifications (HIGH LOW) to split the day into sections.
