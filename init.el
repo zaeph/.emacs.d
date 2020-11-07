@@ -3768,8 +3768,15 @@ commas and space."
            (function org-roam-capture--get-point)
            ""
            :file-name "web/${slug}"
+           :head "#+title: ${title}\n#+roam_key: ${ref}\n#+created: %u\n#+last_modified: %U\n\n%(zp/org-protocol-insert-selection-dwim \"%i\")"
+           :unnarrowed t)
+          ("i" "incremental" plain
+           (function org-roam-capture--get-point)
+           "* %?\n%(zp/org-protocol-insert-selection-dwim \"%i\")"
+           :file-name "web/${slug}"
            :head "#+title: ${title}\n#+roam_key: ${ref}\n#+created: %u\n#+last_modified: %U\n\n"
-           :unnarrowed t))
+           :unnarrowed t
+           :empty-lines-before 1))
         org-roam-dailies-directory "scratch/"
         org-roam-dailies-capture--header-default
         "#+title: %<%Y-%m-%d>\n\n"
