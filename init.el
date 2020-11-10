@@ -3781,12 +3781,12 @@ commas and space."
            :unnarrowed t
            :empty-lines-before 1))
         org-roam-dailies-capture-templates
-        '(("d" "default" plain
+        '(("d" "default" entry
            #'org-roam-capture--get-point
-           "%?"
+           "* %?"
            :file-name "scratch/%<%Y-%m-%d>"
            :head "#+title: %<%Y-%m-%d>\n\n"
-           :unnarrowed t)))
+           :add-created t)))
 
   (defvar zp/org-roam-directory-testing "~/org/slip-box-testing")
 
