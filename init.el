@@ -3784,13 +3784,7 @@ commas and space."
            "%?"
            :file-name "scratch/%<%Y-%m-%d>"
            :head "#+title: %<%Y-%m-%d>\n\n"
-           :unnarrowed t)
-          ("a" "alternative template" entry
-           #'org-roam-capture--get-point
-           "* %?"
-           :file-name "scratch/%<%Y-%m-%d>"
-           :head "#+title: %<%Y-%m-%d>\n\n* Foo"
-           :olp ("Foo"))))
+           :unnarrowed t)))
 
   (defvar zp/org-roam-directory-testing "~/org/slip-box-testing")
 
