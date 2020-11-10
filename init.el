@@ -795,6 +795,8 @@ With a ‘C-u’ prefix argument, amend the last commit instead."
          ("<f9>" . gif-screencast-stop)))
 
 (use-package undo-tree
+  :init
+  (global-undo-tree-mode)
   :custom
   (undo-tree-enable-undo-in-region nil))
 
