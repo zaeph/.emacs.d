@@ -3743,6 +3743,7 @@ commas and space."
   (org-roam-directory "~/org/slip-box/")
   ;; (org-roam-directory "/tmp/slip-box/")
   (org-roam-index-file "index.org")
+  (org-roam-dailies-directory "scratch/")
   :bind (:map org-roam-mode-map
          (("C-c m l" . org-roam)
           ("C-c m F" . org-roam-find-file)
@@ -3777,13 +3778,19 @@ commas and space."
            :head "#+title: ${title}\n#+roam_key: ${ref}\n#+created: %u\n#+last_modified: %U\n\n"
            :unnarrowed t
            :empty-lines-before 1))
-        org-roam-dailies-directory "scratch/"
-        org-roam-dailies-capture--header-default
-        "#+title: %<%Y-%m-%d>\n\n"
         org-roam-dailies-capture-templates
-        '(("d" "daily" entry #'org-roam-capture--get-point
-           "* %?\n"
-           :add-created t)))
+        '(("d" "default" plain
+           #'org-roam-capture--get-point
+           "%?"
+           :file-name "scratch/%<%Y-%m-%d>"
+           :head "#+title: %<%Y-%m-%d>\n\n"
+           :unnarrowed t)
+          ("a" "alternative template" entry
+           #'org-roam-capture--get-point
+           "* %?"
+           :file-name "scratch/%<%Y-%m-%d>"
+           :head "#+title: %<%Y-%m-%d>\n\n* Foo"
+           :olp ("Foo"))))
 
   (defvar zp/org-roam-directory-testing "~/org/slip-box-testing")
 
