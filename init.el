@@ -2727,7 +2727,8 @@ along with effort estimates and total time."
   (projectile-indexing-method 'hybrid)
   (projectile-switch-project-action (lambda () (dired ".")))
   :config
-  (projectile-mode))
+  (projectile-mode)
+  (add-to-list 'projectile-globally-ignored-directories "node_modules"))
 
 (use-package counsel-projectile
   :ensure t
