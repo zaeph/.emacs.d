@@ -700,6 +700,9 @@ surrounding paragraph."
 (require 'bind-key)
 (require 'diminish)
 
+(use-package crdt
+  :load-path "/home/zaeph/projects/crdt.el/")
+
 (use-package auto-compile
   :config
   (auto-compile-on-load-mode)
