@@ -2774,7 +2774,6 @@ along with effort estimates and total time."
          ;; ("M-y" . consult-yank-pop)
          ;; ("s-b" . helm-mini)
          ("C-x b" . helm-mini)
-         ("C-x C-b" . ibuffer)
          ("C-x C-f" . helm-find-files)
          ("M-s M-s" . helm-occur)
          ("C-x r b" . helm-bookmarks)
