@@ -1045,6 +1045,13 @@ With a ‘C-u’ prefix argument, amend the last commit instead."
   :config
   (flycheck-pos-tip-mode))
 
+(use-package flycheck-posframe
+  :ensure t
+  :after flycheck
+  :config
+  (add-hook 'flycheck-mode-hook #'flycheck-posframe-mode)
+  (setq flycheck-posframe-position 'window-bottom-left-corner))
+
 (use-package lisp-mode
   :custom
   ;; (lisp-indent-function #'zp/lisp-indent-function)
