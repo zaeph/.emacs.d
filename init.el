@@ -2497,7 +2497,7 @@ return `nil'."
   (setq org-image-actual-width nil)
 
   ;; Prevent auto insertion of blank-lines before heading (but not for lists)
-  (setq org-blank-before-new-entry (quote ((heading)
+  (setq org-blank-before-new-entry (quote ((heading . auto)
                                            (plain-list-item . auto))))
 
   ;; Prevent blank-lines from being displayed between headings in folded state
