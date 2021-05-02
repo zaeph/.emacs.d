@@ -32,6 +32,8 @@
 
 ;;; Code:
 
+(require 'org-macs)
+
 (defvar zp/hydra-org-refile-chain nil
     "When non-nil, make zp/hydra-org-refile chain the commands.")
 
