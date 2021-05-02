@@ -1128,6 +1128,9 @@ With a ‘C-u’ prefix argument, amend the last commit instead."
   (setq semantic-inhibit-functions
         (list (lambda () (not (eq major-mode org-mode))))))
 
+(use-package eros
+  :hook (emacs-lisp-mode . eros-mode))
+
 (use-package nov
   :hook (nov-mode . zp/variable-pitch-mode)
   :mode ("\\.\\(epub\\|mobi\\)\\'" . nov-mode))
