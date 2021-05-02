@@ -3916,7 +3916,11 @@ commas and space."
 (use-package org-roam-protocol)
 
 (use-package company
-  :bind ("M-/" . company-complete)
+  :bind (("M-/" . company-complete)
+         (:map company-mode-map
+          (([remap indent-for-tab-command] . #'company-indent-or-complete-common))))
+  :custom
+  (company-idle-delay . nil)
   :hook ((after-init . global-company-mode)))
 
 (defvar orb-title-format "${author-or-editor-abbrev} (${date}).  ${title}."
