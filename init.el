@@ -2771,6 +2771,7 @@ along with effort estimates and total time."
   :bind (("M-x" . helm-M-x)
          ("<menu>" . helm-M-x)
          ("M-y" . helm-show-kill-ring)
+         ;; ("M-y" . consult-yank-pop)
          ;; ("s-b" . helm-mini)
          ("C-x b" . helm-mini)
          ("C-x C-b" . ibuffer)
