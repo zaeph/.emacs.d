@@ -568,7 +568,6 @@ surrounding paragraph."
 (global-set-key (kbd "C-x C-c") #'delete-frame)
 
 ;; Actions
-(global-set-key (kbd "C-x b") #'ibuffer)
 (global-set-key (kbd "M-SPC") #'delete-horizontal-space)
 (global-set-key (kbd "M-S-SPC") #'just-one-space)
 (global-set-key (kbd "s-.") #'zp/echo-buffer-name)
@@ -728,6 +727,15 @@ surrounding paragraph."
 
 (use-package package
   :bind ("C-c P" . package-list-packages))
+
+(use-package ibuffer
+  :init (global-set-key (kbd "C-x C-b")
+                        (if (fboundp #'ibuffer-jump)
+                            #'ibuffer-jump
+                          #'ibuffer))
+  :config
+  ;; (global-set-key (kbd "C-x b") #'ibuffer)
+  )
 
 ;; Start server
 (use-package server
