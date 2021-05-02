@@ -53,7 +53,9 @@
             #'endless/replace-quote)
 
 ;; Helm-Ispell
-(defvar zp/ispell-completion-data nil
+(defvar zp/ispell-completion-data
+  '(("en" . "english")
+    ("fr" . "french"))
   "Alist of languages to Ispell dictionaries.")
 
 (defun zp/ispell--lang-to-dict (lang)
