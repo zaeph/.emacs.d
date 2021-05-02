@@ -52,6 +52,8 @@
 
 ;; Put customisations in a separate file
 (setq custom-file (concat user-emacs-directory "custom.el"))
+(add-to-list 'load-path custom-file)
+(load custom-file)
 
 ;; Show current filename in titlebar
 (setq frame-title-format "%b")
