@@ -3132,6 +3132,7 @@ indirect-buffers."
          :map calendar-mode-map
          (("c" . zp/org-calendar-goto-agenda)
           ("<RET>" . zp/org-calendar-goto-agenda)))
+  :commands (org-agenda)
   :hook ((org-agenda-finalize . zp/org-font-lock-add-energy-faces))
   :config
   (setq org-agenda-show-future-repeats t
