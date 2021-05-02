@@ -971,6 +971,9 @@ With a ‘C-u’ prefix argument, amend the last commit instead."
 
 (use-package ox-org)
 
+(use-package ox-texinfo+
+  :load-path "~/projects/ox-texinfo-plus/")
+
 (use-package org-mind-map)
 
 (use-package exwm-config)
