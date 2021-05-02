@@ -2505,7 +2505,7 @@ return `nil'."
 
   ;; Add curly quotes to list of pre- and post-matches for emphasis markers
   ;; Otherwise, curly quotes prevent fontification
-  (setq org-emphasis-regexp-components '("-       ('‘\"“’{" "-    .,:!?;'’\"”)}\\[" "     
+  (setq org-emphasis-regexp-components '("-       ('‘\"“’{" "-    .,:!?;'’\"”)}\\[" "     
 " "." 1))
 
   ;; Set the default apps to use when opening org-links
