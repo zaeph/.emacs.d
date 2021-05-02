@@ -4744,6 +4744,8 @@ See ‘~/.bin/terminator-dwim’ for more info."
   (global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines))
 
 (use-package mc-mark-more
+  :bind (("M-<mouse-1>" . mc/add-cursor-on-click))
+  :init (global-unset-key (kbd "M-<down-mouse-1>"))
   :config
   (global-set-key (kbd "C->") 'mc/mark-next-like-this)
   (global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
