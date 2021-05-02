@@ -1015,6 +1015,10 @@ With a ‘C-u’ prefix argument, amend the last commit instead."
     "Enablle visual-line fringe-indicators."
     (setq-local visual-line-fringe-indicators '(left-curly-arrow right-curly-arrow))))
 
+(use-package hide-mode-line
+  :bind (:map zp/toggle-map
+         ("m" . hide-mode-line-mode)))
+
 (use-package free-keys
   :config
   (setq free-keys-modifiers '("" "C" "M" "C-M" "H")))
