@@ -842,6 +842,12 @@ With a ‘C-u’ prefix argument, amend the last commit instead."
 ;; Disabled because of slow-downs in combination with visual-line-mode
 ;; (fcitx-aggressive-setup)
 
+(use-package consult
+  ;; :ensure t
+  :bind (([remap goto-line] . consult-goto-line)
+         ;; ([remap yank-pop] . consult-yank-pop)
+         ))
+
 (use-package ox-hugo)
 
 (use-package edit-indirect)
