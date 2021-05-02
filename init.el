@@ -3783,12 +3783,12 @@ commas and space."
   (defun zp/helm-bibtex-solo-action-insert-key ()
     (interactive)
     (let ((inhibit-message t)
-          (previous-actions (helm-attr 'action helm-source-bibtex))
+          (previous-actions (helm-get-attr 'action helm-source-bibtex))
           (new-action zp/helm-source-bibtex-insert-key))
-      (helm-attrset 'action new-action helm-source-bibtex)
+      (helm-set-attr 'action new-action helm-source-bibtex)
       (helm-bibtex)
       ;; Wrapping with (progn (foo) nil) suppress the output
-      (progn (helm-attrset 'action previous-actions helm-source-bibtex) nil))))
+      (progn (helm-set-attr 'action previous-actions helm-source-bibtex) nil))))
 
 (use-package ivy-bibtex
   :load-path "~/projects/helm-bibtex/")
