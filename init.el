@@ -803,6 +803,8 @@ With a ‘C-u’ prefix argument, amend the last commit instead."
   (auth-sources '("~/.authinfo.gpg" "~/.netrc"))
   (auth-source-save-behavior nil))
 
+(use-package helpful)
+
 (use-package gif-screencast
   :load-path ("~/src/gif-screencast/")
   :commands (gif-screencast)
