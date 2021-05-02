@@ -2411,6 +2411,9 @@ return `nil'."
   ;; Length of the habit graph
   (setq org-habit-graph-column 65))
 
+(use-package org-appear
+  :load-path "~/projects/org-appear/")
+
 (use-package org
   :bind (:map org-mode-map
          ("C-c i" . org-indent-mode)
