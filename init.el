@@ -3860,6 +3860,7 @@ commas and space."
   :ensure t
   :hook ((after-init . org-roam-mode))
   :custom
+  (org-roam-db-update-method 'immediate)
   (org-roam-directory "~/org/slip-box/")
   ;; (org-roam-directory "/tmp/slip-box/")
   (org-roam-index-file "index.org")
