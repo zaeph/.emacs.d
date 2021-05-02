@@ -703,6 +703,8 @@ surrounding paragraph."
 (use-package crdt
   :load-path "/home/zaeph/projects/crdt.el/")
 
+(use-package iso-transl)
+
 (use-package auto-compile
   :config
   (auto-compile-on-load-mode)
