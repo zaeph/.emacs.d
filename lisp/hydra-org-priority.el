@@ -30,6 +30,8 @@
 
 ;;; Code:
 
+(require 'hydra)
+
 (defvar zp/hydra-org-priority-chain nil
     "When non-nil, make zp/hydra-org-priority chain the commands.")
 
