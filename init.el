@@ -209,7 +209,9 @@ For details on DATA, CONTEXT, and SIGNAL, see
 ;; Safe local-variables
 (setq safe-local-variable-values '((org-confirm-babel-evaluate)
                                    (eval require 'org-roam-dev)
-                                   (org-roam-directory . "~/org/slip-box-testing/")))
+                                   (org-roam-directory . "~/org/slip-box-testing/")
+                                   (org-roam-directory . "~/projects/erg-notes/")
+                                   (org-roam-db-location . "./org-roam.db")))
 
 (add-hook 'after-save-hook #'executable-make-buffer-file-executable-if-script-p)
 
