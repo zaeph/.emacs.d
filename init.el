@@ -1917,14 +1917,75 @@ SEARCH is a string to be interpreted by notmuch-search."
 ;; Java
 ;;----------------------------------------------------------------------------
 
-(use-package lsp-mode :hook ((lsp-mode . lsp-enable-which-key-integration))
+(use-package lsp-mode
+  :hook ((lsp-mode . lsp-enable-which-key-integration))
   :config (setq lsp-completion-enable-additional-text-edit nil))
-(use-package lsp-ui)
-(use-package lsp-java :config (add-hook 'java-mode-hook 'lsp))
-(use-package dap-mode :after lsp-mode :config (dap-auto-configure-mode))
-(use-package dap-java :ensure nil)
+
+(use-package lsp-ui
+  :config
+  (setq lsp-ui-doc-enable nil))
+
+(use-package lsp-java
+  :config (add-hook 'java-mode-hook 'lsp))
+
+(use-package dap-mode
+  :after lsp-mode
+  :config (dap-auto-configure-mode))
+
+(use-package dap-java
+  :ensure nil)
+
 (use-package helm-lsp)
 (use-package lsp-treemacs)
+
+;;----------------------------------------------------------------------------
+;; TypeScript
+;;----------------------------------------------------------------------------
+
+(use-package tide
+  :ensure t
+  :after (typescript-mode company flycheck)
+  :hook ((typescript-mode . tide-setup)
+         (typescript-mode . tide-hl-identifier-mode)
+         (before-save . tide-format-before-save))
+  :bind ("M-RET" . zp/typescript-eval-buffer)
+  :config
+  ;; (defun setup-tide-mode ()
+  ;;   (interactive)
+  ;;   (tide-setup)
+  ;;   (flycheck-mode 1)
+  ;;   (setq flycheck-check-syntax-automatically '(save mode-enabled))
+  ;;   (eldoc-mode 1)
+  ;;   (tide-hl-identifier-mode 1)
+  ;;   ;; company is an optional dependency. You have to
+  ;;   ;; install it separately via package-install
+  ;;   ;; `M-x package-install [ret] company`
+  ;;   (company-mode 1))
+
+  ;; aligns annotation to the right hand side
+  ;; (setq company-tooltip-align-annotations t)
+
+  ;; formats the buffer before saving
+  ;; (add-hook 'before-save-hook 'tide-format-before-save)
+
+  ;; (add-hook 'typescript-mode-hook #'setup-tide-mode)
+
+  (defun zp/typescript-eval-buffer (arg)
+    "Run current buffer as Python code."
+    (interactive "P")
+    (let (max-mini-window-height)
+      (save-buffer)
+      (unless arg
+        (setq max-mini-window-height 999))
+      (shell-command-on-region (point-min) (point-max) (format "ts-node %s" (buffer-file-name)))))
+
+  (defun zp/typescript-init-dir-locals ()
+    (interactive)
+    (let ((content "((nil . ((create-lockfiles . nil))))")
+          (target "./.dir-locals.el"))
+      (write-region content nil target))))
+
+
 
 ;;----------------------------------------------------------------------------
 ;; AUCTeX
