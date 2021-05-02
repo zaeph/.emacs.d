@@ -2724,6 +2724,7 @@ along with effort estimates and total time."
                                     "~/.bin/"
                                     "~/.dotfiles/"
                                     "~/projects/"))
+  (projectile-indexing-method 'hybrid)
   (projectile-switch-project-action (lambda () (dired ".")))
   :config
   (projectile-mode))
