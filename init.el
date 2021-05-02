@@ -1216,8 +1216,7 @@ With a C-u argument, point on the commit instead."
       (call-interactively #'git-link))))
 
 (use-package pdf-tools
-  ;; :magic ("%PDF" . pdf-view-mode)
-  :demand
+  :magic ("%PDF" . pdf-view-mode)
   :config
   (pdf-tools-install :no-query))
 
