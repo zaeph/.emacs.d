@@ -2458,6 +2458,7 @@ return `nil'."
   (setq org-agenda-inhibit-startup nil
         org-log-into-drawer "LOGBOOK-NOTES"
         org-use-property-inheritance '("AGENDA_GROUP")
+        org-startup-folded 'fold
         org-attach-preferred-new-method 'ask
         org-log-state-notes-insert-after-drawers nil
         org-special-ctrl-a/e 't
