@@ -1027,6 +1027,7 @@ With a ‘C-u’ prefix argument, amend the last commit instead."
   :hook ((sh-mode . flycheck-mode)
          (cperl-mode . flycheck-mode)
          (lispy-mode . flycheck-mode)
+         (typescript-mode . flycheck-mode)
          ;; Enable flycheck everywhere
          ;; Disabled because of slow-downs in large files
          ;; (after-init . global-flycheck-mode)
