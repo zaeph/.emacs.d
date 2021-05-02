@@ -1492,6 +1492,13 @@ If text is selected, adds furigana to the selected kanji instead."
 
 (use-package hidpi-fringe-bitmaps)
 
+(use-package strokes
+  :config
+  ;; Draw strokes with RMB
+  (global-set-key (kbd "<down-mouse-3>") 'strokes-do-stroke)
+  ;; Don't draw strokes to the screen)
+  (setq strokes-use-strokes-buffer t))
+
 (use-package thingatpt
   :bind (("C-c C-=" . increment-integer-at-point)
          ("C-c C--" . decrement-integer-at-point))
