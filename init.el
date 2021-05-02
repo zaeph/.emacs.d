@@ -1479,7 +1479,8 @@ If text is selected, adds furigana to the selected kanji instead."
 
 (use-package tramp
   :config
-  (setq tramp-default-method "ssh"))
+  (setq tramp-default-method "ssh")
+  (setq tramp-connection-properties '((nil "session-timeout" nil))))
 
 (use-package realgud
   :config
