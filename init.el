@@ -1098,7 +1098,7 @@ Modifies ‘diff-command’ and ‘diff-switches’ to use ‘git diff’."
   :config
   (defun zp/git-link-dwim (arg)
     "Create a URL pointing to current line/region on the branch.
-With a C-u argument, point on the commit instead."
+With a C-u argument, point to the commit instead."
     (interactive "P")
     (let ((git-link-use-commit (if arg nil t))
           (current-prefix-arg nil))
