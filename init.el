@@ -3685,10 +3685,10 @@ commas and space."
 
   (defun zp/bibtex-completion-message-key-last ()
     (interactive)
-    (let ((keys (zp/bibtex-completion-format-citation-comma-space
+    (let ((bib-keys (zp/bibtex-completion-format-citation-comma-space
                  zp/bibtex-completion-key-last)))
-      (if (bound-and-true-p keys)
-          (message (concat "Last key(s) used: " keys "."))
+      (if (bound-and-true-p bib-keys)
+          (message (concat "Last key(s) used: " bib-keys "."))
         (message "No previous key used."))))
 
   ;; Add to helm
