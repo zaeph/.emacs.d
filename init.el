@@ -427,6 +427,11 @@ surrounding paragraph."
           (select-window first-win)
           (if this-win-2nd (other-window 1))))))
 
+(defun zp/switch-to-help ()
+  "Switch to the help buffer."
+  (interactive)
+  (switch-to-buffer "*Help*"))
+
 ;;----------------------------------------------------------------------------
 ;; Custom modes
 ;;----------------------------------------------------------------------------
@@ -475,6 +480,8 @@ surrounding paragraph."
 (define-key zp/toggle-map (kbd "h") #'global-hl-line-mode)
 (define-key zp/toggle-map (kbd "p") #'print-circle-mode)
 (define-key zp/toggle-map (kbd "s") #'scroll-bar-mode)
+
+(define-key help-map (kbd "h") #'zp/switch-to-help)
 
 ;; Modes
 (global-set-key (kbd "C-c H") #'global-hl-line-mode)
