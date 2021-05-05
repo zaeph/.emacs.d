@@ -628,8 +628,12 @@ subsequent calls.")
   "Show when the current indirect buffer is a spawned buffer."
   :lighter " Spawn"
   :keymap zp/org-spawned-ibuf-mode-map
-  (setq header-line-format
-        "Spawned indirect buffer.  Kill with ‘C-c C-k’, dedicate with ‘C-u C-c C-k’."))
+  (setq-local
+   header-line-format
+   (substitute-command-keys
+    "\\<zp/org-spawned-ibuf-mode-map>Spawned indirect buffer.  Kill \
+`\\[zp/org-kill-spawned-ibuf-dwim]', dedicate `\\[universal-argument] \
+\\[zp/org-kill-spawned-ibuf-dwim]'.")))
 
 (provide 'zp-org)
 ;;; zp-org.el ends here
