@@ -494,6 +494,7 @@ surrounding paragraph."
 (global-set-key (kbd "M-o") #'mode-line-other-buffer)
 (global-set-key (kbd "s-j") #'other-window-reverse)
 (global-set-key (kbd "s-k") #'other-window)
+(global-set-key (kbd "s-K") #'toggle-window-split)
 (global-set-key (kbd "C-x 4 1") #'zp/kill-other-buffer-and-window)
 
 ;; Ignore Kanji key in IME
