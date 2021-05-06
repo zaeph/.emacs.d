@@ -67,11 +67,14 @@ it."
   :type 'boolean
   :group 'zp/lispy)
 
-(defun zp/lispy-spawn-kill ()
-  "Kill the current lispy-spawn indirect buffer."
-  (interactive)
+(defun zp/lispy-spawn-kill (arg)
+  "Kill the current lispy-spawn indirect buffer.
+With a `\\[universal-argument]' ARG, restore the previous window
+configuration."
+  (interactive "P")
   (pcase-let (((map (:win parent-win)
                     (:buf parent-buf)
+                    (:win-conf parent-win-conf)
                     (:close close)
                     (:created created))
                zp/lispy-spawn-parent-plist)
@@ -80,15 +83,19 @@ it."
     (when (and (window-live-p parent-win)
                (eq (window-buffer parent-win) parent-buf))
       (select-window parent-win))
-    (when close (delete-window spawn-win))
+    (kill-buffer spawn-buf)
+    (when (and close
+               (not (one-window-p)))
+      (delete-window spawn-win))
+    (when (equal arg '(4))
+      (set-window-configuration parent-win-conf))
     (when created
       (with-current-buffer created
         (setq-local zp/lispy-spawn-children
                     (delq spawn-buf zp/lispy-spawn-children))
         (unless (or (not zp/lispy-spawn-auto-cleanup)
                     zp/lispy-spawn-children)
-          (kill-buffer created))))
-    (kill-buffer spawn-buf)))
+          (kill-buffer created))))))
 
 (defun zp/lispy-spawn-visit ()
   "Visit the base buffer of the current lispy-spawn indirect buffer."
@@ -116,8 +123,9 @@ SYMBOL is a string."
   (interactive (list (or (thing-at-point 'symbol t)
                          (lispy--current-function))))
   (let ((buffers (buffer-list))
-        (cur-window (selected-window))
-        (cur-buffer (current-buffer))
+        (cur-win (selected-window))
+        (cur-win-conf (current-window-configuration))
+        (cur-buf (current-buffer))
         (pos-win-start (window-start))
         (close (one-window-p))
         new-pos
@@ -159,8 +167,9 @@ SYMBOL is a string."
       ;; Store parent info in local var
       (setq-local zp/lispy-spawn-parent-plist
                   (list
-                   :win cur-window
-                   :buf cur-buffer
+                   :win cur-win
+                   :buf cur-buf
+                   :win-conf cur-win-conf
                    :close close
                    :created new-buffer-created)))
     (pop-to-buffer new-buffer-indirect)))
@@ -180,7 +189,8 @@ SYMBOL is a string."
    header-line-format
    (substitute-command-keys
     "\\<zp/lispy-spawn-mode-map>Spawned indirect buffer.  \
-Kill `\\[zp/lispy-spawn-kill]', visit \
+Kill `\\[zp/lispy-spawn-kill]', \ + restore \
+`\\[universal-argument], \\[zp/lispy-spawn-kill]', visit \
 `\\[zp/lispy-spawn-visit]'.")))
 
 (provide 'zp-lispy)
