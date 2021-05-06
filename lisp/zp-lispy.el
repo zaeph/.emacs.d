@@ -57,13 +57,10 @@ there is little use to keep the base-buffer around, since we only
 visited it for `zp/lispy-goto-symbol-ibuf'.
 
 Setting this variable to non-nil enables the tracking and the
-killing of those visited base-buffers which is done by tracking
-the origins and the relationships between the buffers.
-
-The code tries to be clever about the definition of a visited
-buffer, and it ensures that a base-buffer is not prematurely
-killed when multiple lispy-spawn indirect buffers are based on
-it."
+killing of those visited base-buffers.  The code tries to be
+clever about the definition of a visited buffer, and it ensures
+that a base-buffer is not prematurely killed when multiple
+lispy-spawn indirect buffers are based on it."
   :type 'boolean
   :group 'zp/lispy)
 
