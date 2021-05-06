@@ -111,7 +111,7 @@ configuration."
      ;; Focus parent if window+buffer is live
      ((and (window-live-p parent-win)
            (eq (window-buffer parent-win) parent-buf))
-      (select-window parent-win) ))
+      (select-window parent-win)))
     (when (and close
                (not (one-window-p)))
       (delete-window spawn-win))
