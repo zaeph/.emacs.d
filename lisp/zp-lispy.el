@@ -32,6 +32,11 @@
 ;;;; Library Requires
 (require 'lispy)
 
+(defgroup zp/lispy nil
+  "Extra customisation for `lispy'."
+  :group 'bindings
+  :prefix "zp/lispy-")
+
 (defvar-local zp/lispy-spawn-parent-plist nil
   "Properties from the parent of the lispy-spawn indirect buffer.
 The parent of a spawned indirect buffer is the buffer where the
