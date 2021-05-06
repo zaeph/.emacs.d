@@ -653,14 +653,14 @@ LIST is the variable holding the list of variable font-presets."
                      (action . (("Change font" . zp/set-font-variable))))
           :preselect current)))
 
-(defun zp/helm-select-font-dwim ()
+(defun zp/helm-select-font-dwim (arg)
   "Select the font-preset to use.
 
 If in variable-pitch-mode, change the variable font-preset."
-  (interactive)
-  (if zp/variable-pitch-mode-toggle
-      (zp/helm-select-font-variable)
-    (zp/helm-select-font)))
+  (interactive "P")
+  (pcase arg
+    ('(4) (zp/helm-select-font-variable))
+    (_ (zp/helm-select-font))))
 
 (provide 'theme)
 ;;; theme.el ends here
