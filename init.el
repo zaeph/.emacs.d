@@ -690,7 +690,6 @@ surrounding paragraph."
   ;; :load-path "~/projects/magit/lisp/"
   :bind (("s-m" . magit-status)
          ("s-b" . magit-blame-addition)
-         ("s-M-m" . zp/magit-stage-file-and-commit)
          ("C-c g" . magit-file-dispatch))
   :config
   (transient-append-suffix 'magit-log "-A"
@@ -702,23 +701,10 @@ surrounding paragraph."
   (transient-append-suffix 'magit-log-refresh "-f"
     '("-m" "Hide merges" "--no-merges"))
   (setq magit-diff-refine-hunk 'all)
-  (magit-wip-mode)
+  (magit-wip-mode))
 
-  ;;----------
-  ;; Commands
-  ;;----------
-
-  (defun zp/magit-stage-file-and-commit (&optional arg)
-    "Stage the current file and commit the changes.
-
-With a ‘C-u’ prefix argument, amend the last commit instead."
-    (interactive "p")
-    (when (buffer-modified-p)
-      (save-buffer))
-    (magit-stage-file (magit-file-relative-name))
-    (pcase arg
-      (4 (magit-commit-amend))
-      (_ (magit-commit-create)))))
+(use-package zp-magit
+  :bind ("s-M-m" . zp/magit-stage-file-and-commit))
 
 (use-package forge
   :after magit)
