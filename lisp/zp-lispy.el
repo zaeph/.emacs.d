@@ -94,6 +94,7 @@ configuration."
     (when (and close
                (not (one-window-p)))
       (delete-window spawn-win))
+    ;; Handle base-buffer
     (when created
       (with-current-buffer created
         (setq-local zp/lispy-spawn-children
