@@ -32,9 +32,8 @@
 ;;;; Library Requires
 (require 'lispy)
 
-(defvar-local zp/lispy-spawn-parent nil
-  "Data on the parent of the Lispy spawned indirect buffer.
-The value is a cons where ( window . buffer ).
+(defvar-local zp/lispy-spawn-parent-plist nil
+  "Plist containing properties from the parent of the spawned indirect buffer.
 The parent of a spawned indirect buffer is the buffer where the
 command that spawned the buffer was run.  This is not the same
 thing as the base buffer of an indirect buffer.")
@@ -45,7 +44,7 @@ thing as the base buffer of an indirect buffer.")
   (pcase-let (((map (:win parent-win)
                     (:buf parent-buf)
                     (:close close))
-               zp/lispy-spawn-parent)
+               zp/lispy-spawn-parent-plist)
               (spawn-win (selected-window))
               (spawn-buf (current-buffer)))
     (when (and (window-live-p parent-win)
@@ -109,7 +108,7 @@ SYMBOL is a string."
       (narrow-to-defun)
       (zp/lispy-spawn-mode t)
       ;; Store parent info in local var
-      (setq-local zp/lispy-spawn-parent
+      (setq-local zp/lispy-spawn-parent-plist
                   (list
                    :win cur-window
                    :buf cur-buffer
