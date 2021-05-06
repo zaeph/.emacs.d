@@ -81,6 +81,7 @@ SYMBOL is a string."
   (let ((cur-filename (buffer-file-name))
         (cur-window (selected-window))
         (cur-buffer (current-buffer))
+        (pos-win-start (window-start))
         (close (one-window-p))
         new-pos
         new-filename
@@ -98,6 +99,7 @@ SYMBOL is a string."
                                     (generate-new-buffer-name
                                      (format "%s / %s" (buffer-name) symbol))
                                     t))))
+    (set-window-start (selected-window) pos-win-start)
     (unless (eq cur-filename new-filename)
       ;; (message "Jumping to another buffer")
       (with-current-buffer new-buffer
