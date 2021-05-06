@@ -104,7 +104,7 @@ SYMBOL is a string."
         (bury-buffer)))
     (with-current-buffer new-buffer-indirect
       (goto-char new-pos)
-      (lispy-narrow 1)
+      (narrow-to-defun)
       (zp/lispy-spawn-mode t)
       ;; Store parent info in local var
       (setq-local zp/lispy-spawn-parent
