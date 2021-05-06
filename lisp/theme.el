@@ -552,6 +552,10 @@ FONT is a preset."
          (set-face-attribute 'variable-pitch nil
                              :font "Equity Text A" :height 187)
          (setq zp/line-spacing-variable 0.2))
+        ("valkyrie"
+         (set-face-attribute 'variable-pitch nil
+                             :font "Valkyrie T4" :height 187)
+         (setq zp/line-spacing-variable 0.2))
         ("guyot"
          (set-face-attribute 'variable-pitch nil
                              :font "Guyot Text" :height 187)
@@ -598,7 +602,7 @@ FONT is a preset."
   "List of variable font-presets.")
 
 (setq zp/list-fonts '("sarasa" "operator" "gintronic"))
-(setq zp/list-fonts-variable '("equity" "guyot" "bliss" "warung-kopi" "anysome" "halogen" "handgley" "typewriter"))
+(setq zp/list-fonts-variable '("equity" "valkyrie" "guyot" "bliss" "warung-kopi" "anysome" "halogen" "handgley" "typewriter"))
 
 (defun zp/toggle-font (type current list)
   "Toggle between font-presets.
