@@ -98,7 +98,7 @@ it."
                          (save-restriction
                            (widen)
                            (goto-char (window-start))
-                           ;; Subtracting the header-line
+                           ;; Subtract the header-line
                            (forward-line -1)
                            (point))))
         (pos (point)))
