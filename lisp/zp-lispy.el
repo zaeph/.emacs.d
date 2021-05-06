@@ -73,24 +73,6 @@ thing as the base buffer of an indirect buffer.")
     (goto-char pos)
     (kill-buffer spawn)))
 
-(defvar zp/lispy-spawn-mode-map
-  (let ((map (make-sparse-keymap)))
-    (define-key map (kbd "C-c C-k") #'zp/lispy-spawn-kill)
-    (define-key map (kbd "C-c C-d") #'zp/lispy-spawn-visit)
-    map)
-  "Keymap for ‘zp/org-spawned-ibuf-mode’.")
-
-(define-minor-mode zp/lispy-spawn-mode
-  "Minor mode for special key bindings in a Lispy spawn-buffer."
-  :lighter " Spawn"
-  :keymap zp/lispy-spawn-mode-map
-  (setq-local
-   header-line-format
-   (substitute-command-keys
-    "\\<zp/lispy-spawn-mode-map>Lispy spawned indirect buffer.  \
-Kill `\\[zp/lispy-spawn-kill]', Visit \
-`\\[zp/lispy-spawn-visit]'.")))
-
 (defun zp/lispy-goto-symbol-ibuf (symbol)
   "Go to definition of SYMBOL in a spawned indirect buffer.
 SYMBOL is a string."
@@ -131,6 +113,24 @@ SYMBOL is a string."
                    :buf cur-buffer
                    :close close)))
     (pop-to-buffer new-buffer-indirect)))
+
+(defvar zp/lispy-spawn-mode-map
+  (let ((map (make-sparse-keymap)))
+    (define-key map (kbd "C-c C-k") #'zp/lispy-spawn-kill)
+    (define-key map (kbd "C-c C-d") #'zp/lispy-spawn-visit)
+    map)
+  "Keymap for ‘zp/org-spawned-ibuf-mode’.")
+
+(define-minor-mode zp/lispy-spawn-mode
+  "Minor mode for special key bindings in a Lispy spawn-buffer."
+  :lighter " Spawn"
+  :keymap zp/lispy-spawn-mode-map
+  (setq-local
+   header-line-format
+   (substitute-command-keys
+    "\\<zp/lispy-spawn-mode-map>Lispy spawned indirect buffer.  \
+Kill `\\[zp/lispy-spawn-kill]', Visit \
+`\\[zp/lispy-spawn-visit]'.")))
 
 (provide 'zp-lispy)
 ;;; zp-lispy.el ends here
