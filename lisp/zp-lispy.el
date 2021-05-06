@@ -129,22 +129,24 @@ SYMBOL is a string."
         (save-restriction
           (widen)
           (lispy-goto-symbol symbol)
-          (save-restriction
-            (when (buffer-narrowed-p)
-              (widen)
-              (lispy-goto-symbol symbol))
-            (setq new-pos (point))
-            (setq new-buffer (current-buffer))
-            (setq new-buffer-indirect
-                  (make-indirect-buffer (current-buffer)
-                                        (generate-new-buffer-name
-                                         (format "%s / %s" (buffer-name) symbol))
-                                        t))
-            ;; Store whether `lispy-goto-symbol' created a new buffer
-            (unless (or zp/lispy-spawn-children
-                        (member new-buffer buffers))
-              (push new-buffer-indirect zp/lispy-spawn-children)
-              (setq new-buffer-created new-buffer))))))
+          (save-excursion
+            (save-restriction
+              ;; Repeat `lispy-goto-symbol' if the base-buffer was narrowed
+              (when (buffer-narrowed-p)
+                (widen)
+                (lispy-goto-symbol symbol))
+              (setq new-pos (point))
+              (setq new-buffer (current-buffer))
+              (setq new-buffer-indirect
+                    (make-indirect-buffer (current-buffer)
+                                          (generate-new-buffer-name
+                                           (format "%s / %s" (buffer-name) symbol))
+                                          t))
+              ;; Store whether `lispy-goto-symbol' created a new buffer
+              (unless (or zp/lispy-spawn-children
+                          (member new-buffer buffers))
+                (push new-buffer-indirect zp/lispy-spawn-children)
+                (setq new-buffer-created new-buffer)))))))
     (set-window-start (selected-window) pos-win-start)
     ;; Bury buffer if it was created
     (when new-buffer-created
