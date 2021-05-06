@@ -152,6 +152,7 @@ SYMBOL is a string."
         (close (one-window-p))
         base-pos
         base-buf
+        base-visited
         spawn-buf)
     (save-window-excursion
       (save-excursion
@@ -174,6 +175,7 @@ SYMBOL is a string."
                      t))
               (when (or zp/lispy-spawn-children
                         (not (member base-buf buffers)))
+                (setq base-visited base-buf)
                 ;; Bury buffer if it was created
                 (bury-buffer base-buf)
                 ;; Relate base-buffer and spawn-buffer
@@ -191,7 +193,7 @@ SYMBOL is a string."
                         :win-conf cur-win-conf
                         :win-pos cur-win-pos
                         :close close
-                        :base base-buf)))
+                        :base base-visited)))
     (pop-to-buffer spawn-buf)))
 
 (defvar zp/lispy-spawn-mode-map
