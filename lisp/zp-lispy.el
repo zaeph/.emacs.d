@@ -138,10 +138,11 @@ SYMBOL is a string."
               (setq new-pos (point))
               (setq new-buffer (current-buffer))
               (setq new-buffer-indirect
-                    (make-indirect-buffer (current-buffer)
-                                          (generate-new-buffer-name
-                                           (format "%s / %s" (buffer-name) symbol))
-                                          t))
+                    (make-indirect-buffer
+                     (current-buffer)
+                     (generate-new-buffer-name
+                      (format "%s / %s" (buffer-name) symbol))
+                     t))
               ;; Store whether `lispy-goto-symbol' created a new buffer
               (unless (or zp/lispy-spawn-children
                           (member new-buffer buffers))
