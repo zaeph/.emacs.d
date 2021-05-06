@@ -70,7 +70,7 @@
 (add-to-list 'load-path "/usr/share/emacs/site-lisp/")
 
 ;; Point to my Emacs fork for studying built-in functions
-(setq source-directory "~/projects/emacs/src")
+(setq source-directory "~/projects/emacs/")
 
 ;; Time
 (setq display-time-24hr-format t)
