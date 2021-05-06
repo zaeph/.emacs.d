@@ -33,7 +33,7 @@
 (require 'lispy)
 
 (defvar-local zp/lispy-spawn-parent-plist nil
-  "Plist containing properties from the parent of the spawned indirect buffer.
+  "Properties from the parent of the lispy-spawn indirect buffer.
 The parent of a spawned indirect buffer is the buffer where the
 command that spawned the buffer was run.  This is not the same as
 the base buffer of an indirect buffer.")
