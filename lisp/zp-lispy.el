@@ -74,21 +74,29 @@ configuration."
   (interactive "P")
   (pcase-let (((map (:win parent-win)
                     (:buf parent-buf)
+                    (:pos parent-pos)
                     (:win-conf parent-win-conf)
+                    (:win-pos parent-win-pos)
                     (:close close)
                     (:created created))
                zp/lispy-spawn-parent-plist)
               (spawn-win (selected-window))
               (spawn-buf (current-buffer)))
-    (when (and (window-live-p parent-win)
-               (eq (window-buffer parent-win) parent-buf))
-      (select-window parent-win))
+    ;; Resolve windows and focus
+    (cond
+     ;; With universal-argument, restore previous win-conf
+     ((equal arg '(4))
+      (set-window-configuration parent-win-conf)
+      (goto-char parent-pos)
+      (set-window-start (selected-window) parent-win-pos))
+     ;; Focus parent if window+buffer is live
+     ((and (window-live-p parent-win)
+           (eq (window-buffer parent-win) parent-buf))
+      (select-window parent-win) ))
     (kill-buffer spawn-buf)
     (when (and close
                (not (one-window-p)))
       (delete-window spawn-win))
-    (when (equal arg '(4))
-      (set-window-configuration parent-win-conf))
     (when created
       (with-current-buffer created
         (setq-local zp/lispy-spawn-children
@@ -124,9 +132,10 @@ SYMBOL is a string."
                          (lispy--current-function))))
   (let ((buffers (buffer-list))
         (cur-win (selected-window))
-        (cur-win-conf (current-window-configuration))
         (cur-buf (current-buffer))
-        (pos-win-start (window-start))
+        (cur-pos (point))
+        (cur-win-conf (current-window-configuration))
+        (cur-win-pos (window-start))
         (close (one-window-p))
         new-pos
         new-buffer
@@ -156,7 +165,7 @@ SYMBOL is a string."
                           (member new-buffer buffers))
                 (push new-buffer-indirect zp/lispy-spawn-children)
                 (setq new-buffer-created new-buffer)))))))
-    (set-window-start (selected-window) pos-win-start)
+    (set-window-start (selected-window) cur-win-pos)
     ;; Bury buffer if it was created
     (when new-buffer-created
       (bury-buffer new-buffer))
@@ -169,7 +178,9 @@ SYMBOL is a string."
                   (list
                    :win cur-win
                    :buf cur-buf
+                   :pos cur-pos
                    :win-conf cur-win-conf
+                   :win-pos cur-win-pos
                    :close close
                    :created new-buffer-created)))
     (pop-to-buffer new-buffer-indirect)))
