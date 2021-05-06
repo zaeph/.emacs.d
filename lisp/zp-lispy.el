@@ -97,7 +97,7 @@ configuration."
                     (:win-conf parent-win-conf)
                     (:win-pos parent-win-pos)
                     (:close close)
-                    (:created created))
+                    (:base base))
                zp/lispy-spawn-parent-plist)
               (spawn-win (selected-window))
               (spawn-buf (current-buffer)))
@@ -115,7 +115,8 @@ configuration."
     (when (and close
                (not (one-window-p)))
       (delete-window spawn-win))
-    (zp/lispy-spawn--kill spawn-buf created)))
+    ;; Defer killing to internal function
+    (zp/lispy-spawn--kill spawn-buf base)))
 
 (defun zp/lispy-spawn-visit ()
   "Visit the base-buffer of the current lispy-spawn indirect buffer."
@@ -149,10 +150,9 @@ SYMBOL is a string."
         (cur-win-conf (current-window-configuration))
         (cur-win-pos (window-start))
         (close (one-window-p))
-        new-pos
-        new-buffer
-        new-buffer-indirect
-        new-buffer-created)
+        base-pos
+        base-buf
+        spawn-buf)
     (save-window-excursion
       (save-excursion
         (save-restriction
@@ -160,29 +160,27 @@ SYMBOL is a string."
           (lispy-goto-symbol symbol)
           (save-excursion
             (save-restriction
-              ;; Repeat `lispy-goto-symbol' if the base-buffer is narrowed
+              ;; Repeat `lispy-goto-symbol' if the base-buf is narrowed
               (when (buffer-narrowed-p)
                 (widen)
                 (lispy-goto-symbol symbol))
-              (setq new-pos (point))
-              (setq new-buffer (current-buffer))
-              (setq new-buffer-indirect
+              (setq base-pos (point))
+              (setq base-buf (current-buffer))
+              (setq spawn-buf
                     (make-indirect-buffer
                      (current-buffer)
                      (generate-new-buffer-name
                       (format "%s / %s" (buffer-name) symbol))
                      t))
-              ;; Store whether `lispy-goto-symbol' created a new buffer
-              (unless (or zp/lispy-spawn-children
-                          (member new-buffer buffers))
-                (push new-buffer-indirect zp/lispy-spawn-children)
-                (setq new-buffer-created new-buffer)))))))
+              (when (or zp/lispy-spawn-children
+                        (not (member base-buf buffers)))
+                ;; Bury buffer if it was created
+                (bury-buffer base-buf)
+                ;; Relate base-buffer and spawn-buffer
+                (push spawn-buf zp/lispy-spawn-children)))))))
     (set-window-start (selected-window) cur-win-pos)
-    ;; Bury buffer if it was created
-    (when new-buffer-created
-      (bury-buffer new-buffer))
-    (with-current-buffer new-buffer-indirect
-      (goto-char new-pos)
+    (with-current-buffer spawn-buf
+      (goto-char base-pos)
       (narrow-to-defun)
       (zp/lispy-spawn-mode t)
       ;; Store properties from parent in local var
@@ -193,8 +191,8 @@ SYMBOL is a string."
                         :win-conf cur-win-conf
                         :win-pos cur-win-pos
                         :close close
-                        :created new-buffer-created)))
-    (pop-to-buffer new-buffer-indirect)))
+                        :base base-buf)))
+    (pop-to-buffer spawn-buf)))
 
 (defvar zp/lispy-spawn-mode-map
   (let ((map (make-sparse-keymap)))
