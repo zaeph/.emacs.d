@@ -129,7 +129,7 @@ SYMBOL is a string."
    header-line-format
    (substitute-command-keys
     "\\<zp/lispy-spawn-mode-map>Lispy spawned indirect buffer.  \
-Kill `\\[zp/lispy-spawn-kill]', Visit \
+Kill `\\[zp/lispy-spawn-kill]', visit \
 `\\[zp/lispy-spawn-visit]'.")))
 
 (provide 'zp-lispy)
