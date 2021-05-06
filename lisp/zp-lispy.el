@@ -57,7 +57,12 @@ the base buffer of an indirect buffer.")
                (eq (window-buffer parent-win) parent-buf))
       (select-window parent-win))
     (when close (delete-window spawn-win))
-    (when created (kill-buffer created))
+    (when created
+      (with-current-buffer created
+        (setq-local zp/lispy-spawn-children
+                    (delq spawn-buf zp/lispy-spawn-children))
+        (unless zp/lispy-spawn-children
+          (kill-buffer created))))
     (kill-buffer spawn-buf)))
 
 (defun zp/lispy-spawn-visit ()
@@ -73,6 +78,7 @@ the base buffer of an indirect buffer.")
                            (point))))
         (pos (point)))
     (switch-to-buffer (buffer-base-buffer spawn))
+    (setq-local zp/lispy-spawn-children nil)
     (goto-char pos-win-start)
     (let ((recenter-positions '(top)))
       (recenter-top-bottom))
@@ -102,14 +108,16 @@ SYMBOL is a string."
         (setq new-pos (point))
         (setq new-filename (buffer-file-name))
         (setq new-buffer (current-buffer))
-        ;; Store whether `lispy-goto-symbol' created a new buffer
-        (unless (member new-buffer buffers)
-          (setq new-buffer-created new-buffer))
         (setq new-buffer-indirect
               (make-indirect-buffer (current-buffer)
                                     (generate-new-buffer-name
                                      (format "%s / %s" (buffer-name) symbol))
-                                    t))))
+                                    t))
+        ;; Store whether `lispy-goto-symbol' created a new buffer
+        (unless (or (member new-buffer buffers)
+                    zp/lispy-spawn-children)
+          (push new-buffer-indirect zp/lispy-spawn-children)
+          (setq new-buffer-created new-buffer))))
     (set-window-start (selected-window) pos-win-start)
     (unless (eq cur-filename new-filename)
       ;; (message "Jumping to another buffer")
