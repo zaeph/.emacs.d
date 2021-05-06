@@ -141,8 +141,8 @@ SYMBOL is a string."
                                          (format "%s / %s" (buffer-name) symbol))
                                         t))
             ;; Store whether `lispy-goto-symbol' created a new buffer
-            (unless (or (member new-buffer buffers)
-                        zp/lispy-spawn-children)
+            (unless (or zp/lispy-spawn-children
+                        (member new-buffer buffers))
               (push new-buffer-indirect zp/lispy-spawn-children)
               (setq new-buffer-created new-buffer))))))
     (set-window-start (selected-window) pos-win-start)
