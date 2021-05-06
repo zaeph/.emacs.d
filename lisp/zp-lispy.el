@@ -91,13 +91,11 @@ SYMBOL is a string."
   (interactive (list (or (thing-at-point 'symbol t)
                          (lispy--current-function))))
   (let ((buffers (buffer-list))
-        (cur-filename (buffer-file-name))
         (cur-window (selected-window))
         (cur-buffer (current-buffer))
         (pos-win-start (window-start))
         (close (one-window-p))
         new-pos
-        new-filename
         new-buffer
         new-buffer-created
         new-buffer-indirect)
@@ -106,7 +104,6 @@ SYMBOL is a string."
         (widen)
         (lispy-goto-symbol symbol)
         (setq new-pos (point))
-        (setq new-filename (buffer-file-name))
         (setq new-buffer (current-buffer))
         (setq new-buffer-indirect
               (make-indirect-buffer (current-buffer)
