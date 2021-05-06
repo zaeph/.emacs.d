@@ -830,7 +830,9 @@ With a ‘C-u’ prefix argument, amend the last commit instead."
         (whitespace-mode t)
         (message "Whitespace mode enabled in current buffer")))))
 
-(use-package interaction-log)
+(use-package interaction-log
+  :bind (:map zp/toggle-map
+         ("i" . interaction-log-mode)))
 
 ;; (use-package info+
 ;;   :load-path "~/.emacs.d/pkg/emacswiki.org/info+.el"
