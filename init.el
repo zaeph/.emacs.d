@@ -1057,6 +1057,10 @@ With a ‘C-u’ prefix argument, amend the last commit instead."
   (setq semantic-inhibit-functions
         (list (lambda () (not (eq major-mode org-mode))))))
 
+(use-package zp-lispy
+  :bind (:map lispy-mode-map
+         ("M-." . zp/lispy-goto-symbol-ibuf)))
+
 (use-package eros
   :hook (emacs-lisp-mode . eros-mode))
 
