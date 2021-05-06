@@ -1047,9 +1047,10 @@ surrounding paragraph."
 
 (use-package zp-lispy
   :config
-  (use-package lispy
-    :bind (:map lispy-mode-map
-           ("M-." . zp/lispy-goto-symbol-ibuf))))
+  ;; (use-package lispy
+  ;;   :bind (:map lispy-mode-map
+  ;;          ("M-." . zp/lispy-goto-symbol-ibuf)))
+  )
 
 (use-package eros
   :hook (emacs-lisp-mode . eros-mode))
