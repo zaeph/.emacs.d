@@ -136,8 +136,8 @@ SYMBOL is a string."
         (close (one-window-p))
         new-pos
         new-buffer
-        new-buffer-created
-        new-buffer-indirect)
+        new-buffer-indirect
+        new-buffer-created)
     (save-window-excursion
       (save-excursion
         (save-restriction
