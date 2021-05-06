@@ -98,7 +98,7 @@ configuration."
           (kill-buffer created))))))
 
 (defun zp/lispy-spawn-visit ()
-  "Visit the base buffer of the current lispy-spawn indirect buffer."
+  "Visit the base-buffer of the current lispy-spawn indirect buffer."
   (interactive)
   (let ((spawn (current-buffer))
         (pos-win-start (save-excursion
