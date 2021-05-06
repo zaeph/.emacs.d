@@ -130,7 +130,7 @@ SYMBOL is a string."
   (setq-local
    header-line-format
    (substitute-command-keys
-    "\\<zp/lispy-spawn-mode-map>Lispy spawned indirect buffer.  \
+    "\\<zp/lispy-spawn-mode-map>Spawned indirect buffer.  \
 Kill `\\[zp/lispy-spawn-kill]', visit \
 `\\[zp/lispy-spawn-visit]'.")))
 
