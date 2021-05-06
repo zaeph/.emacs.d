@@ -43,6 +43,30 @@ The parent of a spawned indirect buffer is the buffer where the
 command that spawned the buffer was run.  This is not the same as
 the base buffer of an indirect buffer.")
 
+(defvar-local zp/lispy-spawn-children nil
+  "List of dependent lispy-spawn indirect buffers.")
+
+(defcustom zp/lispy-spawn-auto-cleanup t
+  "When non-nil, automatically cleanup visited buffers.
+When looking up symbols with `zp/lispy-goto-symbol-ibuf', it is
+sometimes necessary to create buffers.  For instance, when the
+definition of a symbol is found in a file that was not already
+opened, a base-buffer needs to be created to be the base of the
+lispy-spawn indirect buffer.  However, once the latter is killed,
+there is little use to keep the base-buffer around, since we only
+visited it for `zp/lispy-goto-symbol-ibuf'.
+
+Setting this variable to non-nil enables the tracking and the
+killing of those visited base-buffers which is done by tracking
+the origins and the relationships between the buffers.
+
+The code tries to be clever about the definition of a visited
+buffer, and it ensures that a base-buffer is not prematurely
+killed when multiple lispy-spawn indirect buffers are based on
+it."
+  :type 'boolean
+  :group 'zp/lispy)
+
 (defun zp/lispy-spawn-kill ()
   "Kill the current lispy-spawn indirect buffer."
   (interactive)
@@ -61,7 +85,8 @@ the base buffer of an indirect buffer.")
       (with-current-buffer created
         (setq-local zp/lispy-spawn-children
                     (delq spawn-buf zp/lispy-spawn-children))
-        (unless zp/lispy-spawn-children
+        (unless (or (not zp/lispy-spawn-auto-cleanup)
+                    zp/lispy-spawn-children)
           (kill-buffer created))))
     (kill-buffer spawn-buf)))
 
