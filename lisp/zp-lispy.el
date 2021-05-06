@@ -173,7 +173,7 @@ SYMBOL is a string."
       (goto-char new-pos)
       (narrow-to-defun)
       (zp/lispy-spawn-mode t)
-      ;; Store parent info in local var
+      ;; Store properties from parent in local var
       (setq-local zp/lispy-spawn-parent-plist
                   (list
                    :win cur-win
