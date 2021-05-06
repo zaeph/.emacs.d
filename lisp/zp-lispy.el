@@ -91,7 +91,8 @@ thing as the base buffer of an indirect buffer.")
 Kill `\\[zp/lispy-spawn-kill]', Visit \
 `\\[zp/lispy-spawn-visit]'.")))
 
-(defun zp/lispy-goto-symbol-indirect-buffer (symbol)
+(defun zp/lispy-goto-symbol-ibuf (symbol)
+  "Go to definition of SYMBOL in a spawned indirect buffer."
   (interactive (list (or (thing-at-point 'symbol t)
                          (lispy--current-function))))
   (let ((cur-filename (buffer-file-name))
