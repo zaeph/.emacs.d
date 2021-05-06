@@ -172,14 +172,13 @@ SYMBOL is a string."
       (zp/lispy-spawn-mode t)
       ;; Store properties from parent in local var
       (setq-local zp/lispy-spawn-parent-plist
-                  (list
-                   :win cur-win
-                   :buf cur-buf
-                   :pos cur-pos
-                   :win-conf cur-win-conf
-                   :win-pos cur-win-pos
-                   :close close
-                   :created new-buffer-created)))
+                  (list :win cur-win
+                        :buf cur-buf
+                        :pos cur-pos
+                        :win-conf cur-win-conf
+                        :win-pos cur-win-pos
+                        :close close
+                        :created new-buffer-created)))
     (pop-to-buffer new-buffer-indirect)))
 
 (defvar zp/lispy-spawn-mode-map
