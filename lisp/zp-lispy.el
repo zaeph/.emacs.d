@@ -64,6 +64,28 @@ lispy-spawn indirect buffers are based on it."
   :type 'boolean
   :group 'zp/lispy)
 
+(defun zp/lispy-spawn--kill (&optional spawn base)
+  "Kill the current lispy-spawn indirect buffer.
+
+SPAWN is the lispy-spawn indirect buffer.  If it is not provided,
+the current buffer is used.
+
+BASE is the base-buffer of SPAWN.  If it is not provided, it is
+read from `zp/lispy-spawn-parent-plist'."
+  (let ((spawn (or spawn
+                   (current-buffer)))
+        (base (or base
+                  (plist-get zp/lispy-spawn-parent-plist :created))))
+    (kill-buffer spawn)
+    ;; Handle base-buffer
+    (when base
+      (with-current-buffer base
+        (setq-local zp/lispy-spawn-children
+                    (delq spawn zp/lispy-spawn-children))
+        (unless (or (not zp/lispy-spawn-auto-cleanup)
+                    zp/lispy-spawn-children)
+          (kill-buffer base))))))
+
 (defun zp/lispy-spawn-kill (arg)
   "Kill the current lispy-spawn indirect buffer.
 With a `\\[universal-argument]' ARG, restore the previous window
@@ -90,18 +112,10 @@ configuration."
      ((and (window-live-p parent-win)
            (eq (window-buffer parent-win) parent-buf))
       (select-window parent-win) ))
-    (kill-buffer spawn-buf)
     (when (and close
                (not (one-window-p)))
       (delete-window spawn-win))
-    ;; Handle base-buffer
-    (when created
-      (with-current-buffer created
-        (setq-local zp/lispy-spawn-children
-                    (delq spawn-buf zp/lispy-spawn-children))
-        (unless (or (not zp/lispy-spawn-auto-cleanup)
-                    zp/lispy-spawn-children)
-          (kill-buffer created))))))
+    (zp/lispy-spawn--kill spawn-buf created)))
 
 (defun zp/lispy-spawn-visit ()
   "Visit the base-buffer of the current lispy-spawn indirect buffer."
