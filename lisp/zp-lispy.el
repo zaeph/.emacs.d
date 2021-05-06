@@ -101,7 +101,7 @@ SYMBOL is a string."
         new-buffer
         new-buffer-created
         new-buffer-indirect)
-    (save-excursion
+    (save-window-excursion
       (save-restriction
         (widen)
         (lispy-goto-symbol symbol)
@@ -119,10 +119,9 @@ SYMBOL is a string."
           (push new-buffer-indirect zp/lispy-spawn-children)
           (setq new-buffer-created new-buffer))))
     (set-window-start (selected-window) pos-win-start)
-    (unless (eq cur-filename new-filename)
-      ;; (message "Jumping to another buffer")
-      (with-current-buffer new-buffer
-        (bury-buffer)))
+    ;; Bury buffer if it was created
+    (when new-buffer-created
+      (bury-buffer new-buffer))
     (with-current-buffer new-buffer-indirect
       (goto-char new-pos)
       (narrow-to-defun)
