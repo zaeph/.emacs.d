@@ -43,7 +43,8 @@ the base buffer of an indirect buffer.")
   (interactive)
   (pcase-let (((map (:win parent-win)
                     (:buf parent-buf)
-                    (:close close))
+                    (:close close)
+                    (:created created))
                zp/lispy-spawn-parent-plist)
               (spawn-win (selected-window))
               (spawn-buf (current-buffer)))
@@ -51,6 +52,7 @@ the base buffer of an indirect buffer.")
                (eq (window-buffer parent-win) parent-buf))
       (select-window parent-win))
     (when close (delete-window spawn-win))
+    (when created (kill-buffer created))
     (kill-buffer spawn-buf)))
 
 (defun zp/lispy-spawn-visit ()
@@ -77,7 +79,8 @@ the base buffer of an indirect buffer.")
 SYMBOL is a string."
   (interactive (list (or (thing-at-point 'symbol t)
                          (lispy--current-function))))
-  (let ((cur-filename (buffer-file-name))
+  (let ((buffers (buffer-list))
+        (cur-filename (buffer-file-name))
         (cur-window (selected-window))
         (cur-buffer (current-buffer))
         (pos-win-start (window-start))
@@ -85,6 +88,7 @@ SYMBOL is a string."
         new-pos
         new-filename
         new-buffer
+        new-buffer-created
         new-buffer-indirect)
     (save-excursion
       (save-restriction
@@ -93,6 +97,9 @@ SYMBOL is a string."
         (setq new-pos (point))
         (setq new-filename (buffer-file-name))
         (setq new-buffer (current-buffer))
+        ;; Store whether `lispy-goto-symbol' created a new buffer
+        (unless (member new-buffer buffers)
+          (setq new-buffer-created new-buffer))
         (setq new-buffer-indirect
               (make-indirect-buffer (current-buffer)
                                     (generate-new-buffer-name
@@ -112,7 +119,8 @@ SYMBOL is a string."
                   (list
                    :win cur-window
                    :buf cur-buffer
-                   :close close)))
+                   :close close
+                   :created new-buffer-created)))
     (pop-to-buffer new-buffer-indirect)))
 
 (defvar zp/lispy-spawn-mode-map
