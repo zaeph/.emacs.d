@@ -131,7 +131,7 @@ SYMBOL is a string."
           (lispy-goto-symbol symbol)
           (save-excursion
             (save-restriction
-              ;; Repeat `lispy-goto-symbol' if the base-buffer was narrowed
+              ;; Repeat `lispy-goto-symbol' if the base-buffer is narrowed
               (when (buffer-narrowed-p)
                 (widen)
                 (lispy-goto-symbol symbol))
