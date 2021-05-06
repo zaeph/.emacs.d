@@ -625,6 +625,10 @@ surrounding paragraph."
 (require 'bind-key)
 (require 'diminish)
 
+;; Libraries
+(use-package dash)
+(use-package s)
+
 (use-package crdt
   :load-path "/home/zaeph/projects/crdt.el/")
 
