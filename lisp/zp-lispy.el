@@ -35,11 +35,11 @@
 (defvar-local zp/lispy-spawn-parent-plist nil
   "Plist containing properties from the parent of the spawned indirect buffer.
 The parent of a spawned indirect buffer is the buffer where the
-command that spawned the buffer was run.  This is not the same
-thing as the base buffer of an indirect buffer.")
+command that spawned the buffer was run.  This is not the same as
+the base buffer of an indirect buffer.")
 
 (defun zp/lispy-spawn-kill ()
-  "Kill the Lispy spawned indirect buffer."
+  "Kill the current lispy-spawn indirect buffer."
   (interactive)
   (pcase-let (((map (:win parent-win)
                     (:buf parent-buf)
@@ -54,7 +54,7 @@ thing as the base buffer of an indirect buffer.")
     (kill-buffer spawn-buf)))
 
 (defun zp/lispy-spawn-visit ()
-  "Visit the base buffer of a Lispy spawn buffer."
+  "Visit the base buffer of the current lispy-spawn indirect buffer."
   (interactive)
   (let ((spawn (current-buffer))
         (pos-win-start (save-excursion
@@ -73,7 +73,7 @@ thing as the base buffer of an indirect buffer.")
     (kill-buffer spawn)))
 
 (defun zp/lispy-goto-symbol-ibuf (symbol)
-  "Go to definition of SYMBOL in a spawned indirect buffer.
+  "Go to definition of SYMBOL in a lispy-spawn indirect buffer.
 SYMBOL is a string."
   (interactive (list (or (thing-at-point 'symbol t)
                          (lispy--current-function))))
@@ -123,7 +123,7 @@ SYMBOL is a string."
   "Keymap for ‘zp/org-spawned-ibuf-mode’.")
 
 (define-minor-mode zp/lispy-spawn-mode
-  "Minor mode for special key bindings in a Lispy spawn-buffer."
+  "Minor mode for special key-bindings in a lispy-spawn indirect buffer."
   :lighter " Spawn"
   :keymap zp/lispy-spawn-mode-map
   (setq-local
