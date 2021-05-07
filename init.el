@@ -267,6 +267,8 @@ For details on DATA, CONTEXT, and SIGNAL, see
 ;;----------------------------------------------------------------------------
 ;; Scratch directories
 ;;----------------------------------------------------------------------------
+(require 'vc-git)
+
 (defun scratch-dir-path (name)
   "Format a new scratch dir-path based on NAME and timestamp."
   (concat "~/scratch.d/scratch-"
@@ -289,7 +291,6 @@ Prefix argument initializes the Git repository."
       (delete-file "~/scratch"))
     (make-symbolic-link directory "~/scratch" t)
     (when (car use-git)
-      (require 'vc-git)
       (let ((default-directory directory))
         (vc-git-create-repo)))
     (find-file directory)))
