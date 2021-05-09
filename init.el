@@ -4586,10 +4586,12 @@ the beginning of the line."
   :ensure t
   :init (doom-modeline-mode 1)
   :custom
-  (doom-modeline-height 25))
+  (doom-modeline-height 10))
 
 
-(use-package all-the-icons)
+(use-package all-the-icons
+  :custom
+  (all-the-icons-scale-factor 1))
 
 (use-package minions
   :disabled
