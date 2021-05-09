@@ -344,6 +344,8 @@ See `add-hooks' for details."
   (interactive "aFunction symbol: ")
   (advice-mapc (lambda (advice _props) (advice-remove sym advice)) sym))
 
+(require 'compile)
+
 (defun compile-on-save-start ()
   (let ((buffer (compilation-find-buffer)))
     (unless (get-buffer-process buffer)
