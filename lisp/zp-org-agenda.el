@@ -2015,7 +2015,7 @@ With a ‘C-u’ prefix argument, also kill the main Org buffer."
   (if (get-buffer "*Org Agenda(n)*")
       (switch-to-buffer "*Org Agenda(n)*")
     (org-agenda arg "n"))
-  (select-window (next-window))
+  ;; (select-window (next-window))
   (balance-windows))
 
 (defun zp/switch-to-agenda (arg)
