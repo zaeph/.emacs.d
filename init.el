@@ -482,7 +482,8 @@ surrounding paragraph."
 (define-key zp/toggle-map (kbd "l") #'display-line-numbers-mode)
 (define-key zp/toggle-map (kbd "h") #'global-hl-line-mode)
 (define-key zp/toggle-map (kbd "p") #'print-circle-mode)
-(define-key zp/toggle-map (kbd "s") #'scroll-bar-mode)
+(define-key zp/toggle-map (kbd "s") #'so-long-mode)
+(define-key zp/toggle-map (kbd "S") #'scroll-bar-mode)
 
 (define-key help-map (kbd "h") #'zp/switch-to-help)
 
