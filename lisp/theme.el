@@ -105,9 +105,9 @@
     (set-face-attribute 'org-tag-curios nil   :weight 'bold :foreground "DeepPink")
     (set-face-attribute 'org-tag-french nil    :weight 'bold :foreground "DodgerBlue1"))
 
-  (with-eval-after-load 'org-roam
-    (set-face-attribute 'org-roam-link nil :foreground "#9449ff")
-    (set-face-attribute 'org-roam-link-current nil :foreground "#ae005c"))
+  ;; (with-eval-after-load 'org-roam
+  ;;   (set-face-attribute 'org-roam-link nil :foreground "#9449ff")
+  ;;   (set-face-attribute 'org-roam-link-current nil :foreground "#ae005c"))
 
   (with-eval-after-load 'org-agenda
     (set-face-attribute 'org-agenda-dimmed-todo-face nil :foreground "LightSlateBlue")
@@ -229,9 +229,9 @@
   (with-eval-after-load 'hl-line
     (set-face-attribute 'hl-line nil :background "#fff989"))
 
-  (with-eval-after-load 'org-roam
-    (set-face-attribute 'org-roam-link nil :foreground "#9449ff")
-    (set-face-attribute 'org-roam-link-current nil :foreground "#ae005c"))
+  ;; (with-eval-after-load 'org-roam
+  ;;   (set-face-attribute 'org-roam-link nil :foreground "#9449ff")
+  ;;   (set-face-attribute 'org-roam-link-current nil :foreground "#ae005c"))
 
   (with-eval-after-load 'helm
     (set-face-attribute 'helm-selection nil :background "SteelBlue1")

@@ -208,11 +208,12 @@ For details on DATA, CONTEXT, and SIGNAL, see
 (setq list-command-history-max 256)
 
 ;; Safe local-variables
-(setq safe-local-variable-values '((org-confirm-babel-evaluate)
-                                   (eval require 'org-roam-dev)
-                                   (org-roam-directory . "~/org/slip-box-testing/")
-                                   (org-roam-directory . "~/projects/erg-notes/")
-                                   (org-roam-db-location . "./org-roam.db")))
+;; (setq safe-local-variable-values '((org-confirm-babel-evaluate)
+;;                                    (eval require 'org-roam-dev)
+;;                                    ;; (org-roam-directory . "~/org/slip-box-testing/")
+;;                                    ;; (org-roam-directory . "~/projects/erg-notes/")
+;;                                    ;; (org-roam-db-location . "./org-roam.db")
+;;                                    ))
 
 (add-hook 'after-save-hook #'executable-make-buffer-file-executable-if-script-p)
 
@@ -3786,62 +3787,84 @@ commas and space."
 ;; org-roam
 ;;----------------------------------------------------------------------------
 (use-package org-roam
-  :load-path ("~/projects/org-roam/")
-  :ensure t
-  :hook ((after-init . org-roam-mode))
-  :custom
-  (org-roam-db-update-method 'immediate)
-  (org-roam-directory "~/org/slip-box/")
-  ;; (org-roam-directory "/tmp/slip-box/")
-  (org-roam-index-file "index.org")
-  (org-roam-dailies-directory "scratch/")
-  :bind (:map org-roam-mode-map
-         (("C-c m l" . org-roam)
-          ("C-c m F" . org-roam-find-file)
-          ("C-c m r" . org-roam-find-ref)
-          ("C-c m ." . org-roam-find-directory)
-          ("C-c m >" . zp/org-roam-find-directory-testing)
-          ("C-c m d" . org-roam-dailies-map)
-          ("C-c m j" . org-roam-jump-to-index)
-          ("C-c m b" . org-roam-switch-to-buffer)
-          ("C-c m g" . org-roam-graph))
+  :load-path "~/projects/org-roam/"
+  ;; :after org
+  ;; :commands
+  ;; (org-roam-buffer
+  ;;  org-roam-setup
+  ;;  org-roam-capture
+  ;;  org-roam-node-find)
+  :bind (("C-c m l" . org-roam-buffer-toggle)
+         ("C-c m f" . org-roam-node-find)
+         ;; ("C-c m r" . org-roam-find-ref)
+         ("C-c m ." . zp/org-roam-find-directory)
+         ("C-c m >" . zp/org-roam-find-directory-testing)
+         ("C-c m d" . org-roam-dailies-map)
+         ("C-c m j" . org-roam-jump-to-index)
+         ;; ("C-c m b" . org-roam-switch-to-buffer)
+         ;; ("C-c m g" . org-roam-graph)
          :map org-mode-map
          (("C-c m i" . org-roam-insert)))
+  :custom
+  (org-roam-directory "~/org/slip-box/")
+  (org-roam-dailies-directory "scratch/")
   :config
-  (setq org-roam-capture-templates
-        '(("d" "default" plain
-           (function org-roam-capture--get-point)
-           "%?"
-           :file-name "%<%Y%m%d%H%M%S>-${slug}"
-           :head "#+title: ${title}\n#+created: %u\n#+last_modified: %U\n\n"
-           :unnarrowed t))
-        org-roam-capture-ref-templates
-        '(("r" "ref" plain
-           (function org-roam-capture--get-point)
-           ""
-           :file-name "web/${slug}"
-           :head "#+title: ${title}\n#+roam_key: ${ref}\n#+created: %u\n#+last_modified: %U\n\n%(zp/org-protocol-insert-selection-dwim \"%i\")"
-           :unnarrowed t)
-          ("i" "incremental" plain
-           (function org-roam-capture--get-point)
-           "* %?\n%(zp/org-protocol-insert-selection-dwim \"%i\")"
-           :file-name "web/${slug}"
-           :head "#+title: ${title}\n#+roam_key: ${ref}\n#+created: %u\n#+last_modified: %U\n\n"
-           :unnarrowed t
-           :empty-lines-before 1))
-        org-roam-dailies-capture-templates
-        '(("d" "default" entry
-           #'org-roam-capture--get-point
-           "* %?"
-           :file-name "scratch/%<%Y-%m-%d>"
-           :head "#+title: %<%Y-%m-%d>\n\n"
-           :add-created t)))
+  (defun zp/org-roam-find-directory ()
+    (interactive)
+    (dired org-roam-directory))
+
+  (defcustom org-roam-index-file "index.org"
+    "Path to the Org-roam index file.
+The path can be a string or a function.  If it is a string, it
+should be the path (absolute or relative to `org-roam-directory')
+to the index file.  If it is is a function, the function should
+return the path to the index file.  Otherwise, the index is
+assumed to be a note in `org-roam-directory' whose title is
+'Index'."
+    :type '(choice
+            (string :tag "Path to index" "%s")
+            (function :tag "Function to generate the path"))
+    :group 'org-roam)
+
+  (defun org-roam--get-index-path ()
+    "Return the path to the index in `org-roam-directory'.
+The path to the index can be defined in `org-roam-index-file'.
+Otherwise, it is assumed to be a note in `org-roam-directory'
+whose title is 'Index'."
+    (let ((path (pcase org-roam-index-file
+                  ((pred functionp) (funcall org-roam-index-file))
+                  ((pred stringp) org-roam-index-file)
+                  ('() (user-error "You need to set `org-roam-index-file' before you can jump to it"))
+                  (wrong-type (signal 'wrong-type-argument
+                                      `((functionp stringp)
+                                        ,wrong-type))))))
+      (expand-file-name path org-roam-directory)))
+
+  (defun org-roam-jump-to-index ()
+    "Find the index file in `org-roam-directory'.
+The path to the index can be defined in `org-roam-index-file'.
+Otherwise, the function will look in your `org-roam-directory'
+for a note whose title is 'Index'.  If it does not exist, the
+command will offer you to create one."
+    (interactive)
+    (let ((index (org-roam--get-index-path)))
+      (if (and index
+               (file-exists-p index))
+          (find-file index)
+        (when (y-or-n-p "Index file does not exist.  Would you like to create it? ")
+          (message "Do it yourself; it’s broken")))))
 
   (defvar zp/org-roam-directory-testing "~/org/slip-box-testing")
 
   (defun zp/org-roam-find-directory-testing ()
     (interactive)
-    (find-file zp/org-roam-directory-testing)))
+    (find-file zp/org-roam-directory-testing))
+
+  ;;(setq org-roam-mode-sections
+  ;;      (list #'org-roam-backlinks-insert-section
+  ;;            #'org-roam-reflinks-insert-section
+  ;;            #'org-roam-unlinked-references-insert-section))
+  (org-roam-setup))
 
 (use-package org-roam-protocol)
 
@@ -3856,57 +3879,57 @@ commas and space."
 (defvar orb-title-format "${author-or-editor-abbrev} (${date}).  ${title}."
   "Format of the title to use for `orb-templates'.")
 
-(use-package org-roam-bibtex
-  :requires bibtex-completion
-  :hook (org-roam-mode . org-roam-bibtex-mode)
-  :load-path "~/projects/org-roam-bibtex/"
-  :bind (:map org-roam-bibtex-mode-map
-         (("C-c m f" . orb-find-non-ref-file))
-         :map org-mode-map
-         (("C-c m t" . orb-insert-non-ref)
-          ("C-c m a" . orb-note-actions)))
-  :init
-  :custom
-  (orb-autokey-format "%a%y")
-  (orb-templates
-   `(("r" "ref" plain
-      (function org-roam-capture--get-point)
-      ""
-      :file-name "refs/${citekey}"
-      :head ,(s-join "\n"
-                     (list
-                      (concat "#+title: "
-                              orb-title-format)
-                      "#+roam_key: ${ref}"
-                      "#+created: %U"
-                      "#+last_modified: %U\n\n"))
-      :unnarrowed t)
-     ("p" "ref + physical" plain
-      (function org-roam-capture--get-point)
-      ""
-      :file-name "refs/${citekey}"
-      :head ,(s-join "\n"
-                     (list
-                      (concat "#+title: "
-                              orb-title-format)
-                      "#+roam_key: ${ref}"
-                      ""
-                      "* Notes :physical:")))
-     ("n" "ref + noter" plain
-      (function org-roam-capture--get-point)
-      ""
-      :file-name "refs/${citekey}"
-      :head ,(s-join "\n"
-                     (list
-                      (concat "#+title: "
-                              orb-title-format)
-                      "#+roam_key: ${ref}"
-                      ""
-                      "* Notes :noter:"
-                      ":PROPERTIES:"
-                      ":NOTER_DOCUMENT: %(orb-process-file-field \"${citekey}\")"
-                      ":NOTER_PAGE:"
-                      ":END:"))))))
+;; (use-package org-roam-bibtex
+;;   :requires bibtex-completion
+;;   :hook (org-roam-mode . org-roam-bibtex-mode)
+;;   :load-path "~/projects/org-roam-bibtex/"
+;;   :bind (:map org-roam-bibtex-mode-map
+;;          (("C-c m f" . orb-find-non-ref-file))
+;;          :map org-mode-map
+;;          (("C-c m t" . orb-insert-non-ref)
+;;           ("C-c m a" . orb-note-actions)))
+;;   :init
+;;   :custom
+;;   (orb-autokey-format "%a%y")
+;;   (orb-templates
+;;    `(("r" "ref" plain
+;;       (function org-roam-capture--get-point)
+;;       ""
+;;       :file-name "refs/${citekey}"
+;;       :head ,(s-join "\n"
+;;                      (list
+;;                       (concat "#+title: "
+;;                               orb-title-format)
+;;                       "#+roam_key: ${ref}"
+;;                       "#+created: %U"
+;;                       "#+last_modified: %U\n\n"))
+;;       :unnarrowed t)
+;;      ("p" "ref + physical" plain
+;;       (function org-roam-capture--get-point)
+;;       ""
+;;       :file-name "refs/${citekey}"
+;;       :head ,(s-join "\n"
+;;                      (list
+;;                       (concat "#+title: "
+;;                               orb-title-format)
+;;                       "#+roam_key: ${ref}"
+;;                       ""
+;;                       "* Notes :physical:")))
+;;      ("n" "ref + noter" plain
+;;       (function org-roam-capture--get-point)
+;;       ""
+;;       :file-name "refs/${citekey}"
+;;       :head ,(s-join "\n"
+;;                      (list
+;;                       (concat "#+title: "
+;;                               orb-title-format)
+;;                       "#+roam_key: ${ref}"
+;;                       ""
+;;                       "* Notes :noter:"
+;;                       ":PROPERTIES:"
+;;                       ":NOTER_DOCUMENT: %(orb-process-file-field \"${citekey}\")"
+;;                       ":NOTER_PAGE:"
+;;                       ":END:"))))))
 
 (use-package org-roam-server
   :ensure t
