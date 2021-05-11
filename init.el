@@ -1092,7 +1092,7 @@ surrounding paragraph."
   (ace-link-setup-default))
 
 (use-package ace-window
-  ;; :bind ("s-b" . ace-window)
+  :bind ("s-J" . ace-window)
   :config
   (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)
         aw-scope 'frame))
