@@ -3809,6 +3809,31 @@ commas and space."
   (org-roam-directory "~/org/slip-box/")
   (org-roam-dailies-directory "scratch/")
   :config
+  (setq org-roam-capture-templates
+        '(("d" "default" plain
+           "%?"
+           :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org"
+                              "#+title: ${title}\n#+created: %u\n#+last_modified: %U\n\n")
+           :unnarrowed t))
+        org-roam-capture-ref-templates
+        '(("r" "ref" plain
+           "%?"
+           :if-new (file+head "web/${slug}.org"
+                              "#+title: ${title}\n#+roam_key: ${ref}\n#+created: %u\n#+last_modified: %U\n\n%(zp/org-protocol-insert-selection-dwim \"%i\")")
+           :unnarrowed t)
+          ("i" "incremental" plain
+           "* %?\n%(zp/org-protocol-insert-selection-dwim \"%i\")"
+           :if-new (file+head "web/${slug}.org"
+                              "#+title: ${title}\n#+roam_key: ${ref}\n#+created: %u\n#+last_modified: %U\n\n")
+           :unnarrowed t
+           :empty-lines-before 1))
+        org-roam-dailies-capture-templates
+        '(("d" "default" entry
+           "* %?"
+           :if-new (file+head "scratch/%<%Y-%m-%d>.org"
+                              "#+title: %<%Y-%m-%d>\n\n")
+           :add-created t)))
+
   (defun zp/org-roam-find-directory ()
     (interactive)
     (dired org-roam-directory))
