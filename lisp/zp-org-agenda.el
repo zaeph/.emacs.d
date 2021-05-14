@@ -1987,7 +1987,7 @@ With a ‘C-u’ prefix argument, also kill the main Org buffer."
           (kill-buffer))
         (find-file-noselect file)))
     (org-agenda-redo-all)
-    (with-selected-window (window-left (selected-window))
+    (with-selected-window (window-right (selected-window))
       (org-agenda-redo-all))
     (when arg
       (message (concat "Garbage collection complete: "
