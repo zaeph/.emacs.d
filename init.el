@@ -3804,7 +3804,7 @@ commas and space."
          ;; ("C-c m b" . org-roam-switch-to-buffer)
          ;; ("C-c m g" . org-roam-graph)
          :map org-mode-map
-         (("C-c m i" . org-roam-insert)))
+         (("C-c m i" . org-roam-node-insert)))
   :custom
   (org-roam-directory "~/org/slip-box/")
   (org-roam-dailies-directory "scratch/")
