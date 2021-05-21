@@ -1626,8 +1626,9 @@ With numeric prefix arg DEC, decrement the integer by DEC amount."
          ("C-c C-o" . goto-address-at-point))
   :hook ((notmuch-hello-refresh . zp/color-all-inboxes))
   :config
-  (setq notmuch-always-prompt-for-sender t
-        notmuch-search-oldest-first nil)
+  (setq notmuch-always-prompt-for-sender t)
+
+  (setq-default notmuch-search-oldest-first nil)
 
   (define-key notmuch-search-mode-map "d"
     (lambda (&optional untrash beg end)
