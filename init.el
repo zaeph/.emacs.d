@@ -3901,7 +3901,9 @@ command will offer you to create one."
           (([remap indent-for-tab-command] . #'company-indent-or-complete-common))))
   :custom
   (company-idle-delay . nil)
-  :hook ((after-init . global-company-mode)))
+  :hook ((after-init . global-company-mode))
+  :config
+  (add-to-list 'company-backends 'company-capf))
 
 (defvar orb-title-format "${author-or-editor-abbrev} (${date}).  ${title}."
   "Format of the title to use for `orb-templates'.")
