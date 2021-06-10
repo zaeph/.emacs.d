@@ -1979,7 +1979,11 @@ SEARCH is a string to be interpreted by notmuch-search."
 
 (use-package rust-mode
   :hook ((rust-mode . (lambda ()
-                        (setq indent-tabs-mode nil)))))
+                        (setq indent-tabs-mode nil))))
+  :bind (:map rust-mode-map
+         (("C-c C-c" . rust-run)))
+  :config
+  (setq rust-format-on-save t))
 
 ;;----------------------------------------------------------------------------
 ;; AUCTeX
