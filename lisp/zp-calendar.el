@@ -34,10 +34,15 @@
 
 ;; Taken from https://www.emacswiki.org/emacs/CalendarWeekNumbers
 
-(copy-face font-lock-constant-face 'calendar-iso-week-face)
-(set-face-attribute 'calendar-iso-week-face nil
-                    :height 1.0
-                    :foreground "medium sea green")
+(defface calendar-iso-week-face
+  '((t :inherit (default)))
+  "Face for week numbers."
+  :group 'calendar-faces)
+
+(defface calendar-iso-week-header-face
+  '((t :inherit (default)))
+  "Face for header of week numbers."
+  :group 'calendar-faces)
 
 (setq calendar-intermonth-text
       '(propertize
@@ -47,14 +52,9 @@
                   (calendar-absolute-from-gregorian (list month day year)))))
         'font-lock-face 'calendar-iso-week-face))
 
-(copy-face 'default 'calendar-iso-week-header-face)
-(set-face-attribute 'calendar-iso-week-header-face nil
-                    :height 1.0
-                    :foreground "sea green")
 (setq calendar-intermonth-header
       (propertize "Wk"                  ; or e.g. "KW" in Germany
                   'font-lock-face 'calendar-iso-week-header-face))
-
 
 (provide 'zp-calendar)
 ;;; zp-calendar.el ends here

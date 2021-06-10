@@ -125,6 +125,12 @@
                         :slant 'normal
                         :weight 'normal))
 
+  (with-eval-after-load 'zp-calendar
+    (set-face-attribute 'calendar-iso-week-face nil
+                        :foreground "light sea green")
+    (set-face-attribute 'calendar-iso-week-header-face nil
+                        :foreground "sea green"))
+
   (set-face-attribute 'region nil :background "RoyalBlue4")
   (set-face-attribute 'fringe nil :background "gray10" :foreground "orangered")
   (set-face-attribute 'vertical-border nil :foreground "RoyalBlue1")
@@ -257,6 +263,12 @@
                         :foreground "red"
                         :weight 'bold)
     (zp/org-super-agenda-update-face))
+
+  (with-eval-after-load 'zp-calendar
+    (set-face-attribute 'calendar-iso-week-face nil
+                        :foreground "light sea green")
+    (set-face-attribute 'calendar-iso-week-header-face nil
+                        :foreground "sea green"))
 
   (with-eval-after-load "magit"
     (set-face-attribute 'magit-tag nil :foreground "SpringGreen4"))
