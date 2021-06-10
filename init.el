@@ -950,6 +950,8 @@ surrounding paragraph."
          (cperl-mode . flycheck-mode)
          (lispy-mode . flycheck-mode)
          (typescript-mode . flycheck-mode)
+         (haskell-mode . flycheck-mode)
+         (rust-mode . flycheck-mode)
          ;; Enable flycheck everywhere
          ;; Disabled because of slow-downs in large files
          ;; (after-init . global-flycheck-mode)
@@ -1916,7 +1918,8 @@ SEARCH is a string to be interpreted by notmuch-search."
   :hook ((typescript-mode . tide-setup)
          (typescript-mode . tide-hl-identifier-mode)
          (before-save . tide-format-before-save))
-  :bind ("M-RET" . zp/typescript-eval-buffer)
+  :bind (:map tide-mode-map
+         ("M-RET" . zp/typescript-eval-buffer))
   :config
   ;; (defun setup-tide-mode ()
   ;;   (interactive)
@@ -1953,7 +1956,30 @@ SEARCH is a string to be interpreted by notmuch-search."
           (target "./.dir-locals.el"))
       (write-region content nil target))))
 
+;;----------------------------------------------------------------------------
+;; Haskell
+;;----------------------------------------------------------------------------
 
+(use-package haskell
+  :bind (:map haskell-mode-map
+         ("M-RET" . zp/haskell-eval-buffer))
+  :config
+  (defun zp/haskell-eval-buffer (arg)
+    "Run current buffer as Python code."
+    (interactive "P")
+    (let (max-mini-window-height)
+      (save-buffer)
+      (unless arg
+        (setq max-mini-window-height 999))
+      (shell-command-on-region (point-min) (point-max) (format "ts-node %s" (buffer-file-name))))))
+
+;;----------------------------------------------------------------------------
+;; Rust
+;;----------------------------------------------------------------------------
+
+(use-package rust-mode
+  :hook ((rust-mode . (lambda ()
+                        (setq indent-tabs-mode nil)))))
 
 ;;----------------------------------------------------------------------------
 ;; AUCTeX
