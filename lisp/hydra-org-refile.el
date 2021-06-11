@@ -124,11 +124,15 @@ window’s buffer."
 With a ‘C-u’ prefix, jump to another heading within the current
 restriction."
   (interactive "P")
-  (pcase arg
-    ('(4) (if (buffer-narrowed-p)
-              (zp/org-jump-restricted t)
-            (zp/org-jump t)))
-    (_ (zp/hydra-org-jump/body))))
+  (let ((org? (eq major-mode 'org-mode)))
+    (pcase arg
+      ('(4) (cond ((and org? (buffer-narrowed-p))
+                   (zp/org-jump-restricted t))
+                  (org?
+                   (zp/org-jump t))
+                  (t
+                   (error "Not in an org-mode buffer"))))
+      (_ (zp/hydra-org-jump/body)))))
 
 (defvar zp/org-agenda-files-primary nil
   "Primary org-agenda file.")
