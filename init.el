@@ -1977,7 +1977,19 @@ SEARCH is a string to be interpreted by notmuch-search."
 ;; Rust
 ;;----------------------------------------------------------------------------
 
-(use-package rustic)
+(use-package rustic
+  :bind (:map rustic-mode-map
+         (("M-RET" . zp/rust-eval-buffer)))
+  :config
+  (defun zp/rust-eval-buffer (arg)
+    "Run current buffer as Perl code"
+    (interactive "P")
+    (let (max-mini-window-height)
+      (unless arg
+        (setq max-mini-window-height 999))
+      (let ((inhibit-message t))
+        (basic-save-buffer))
+      (shell-command (concat "cargo run --quiet " (buffer-file-name (buffer-base-buffer)))))))
 
 ;;----------------------------------------------------------------------------
 ;; AUCTeX
