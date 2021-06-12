@@ -788,6 +788,8 @@ surrounding paragraph."
   (volatile-highlights-mode))
 
 (use-package beacon
+  :bind (:map zp/toggle-map
+         ("b" . beacon-mode))
   :custom
   (beacon-push-mark 10)
   (beacon-color "#cc342b")
