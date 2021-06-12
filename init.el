@@ -791,9 +791,9 @@ surrounding paragraph."
   :bind (:map zp/toggle-map
          ("b" . beacon-mode))
   :custom
-  (beacon-push-mark 10)
+  (beacon-push-mark nil)
   (beacon-color "#cc342b")
-  (beacon-blink-delay 0.3)
+  (beacon-blink-delay 0.1)
   (beacon-blink-duration 0.3)
   :config
   (beacon-mode)
