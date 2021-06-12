@@ -1893,7 +1893,8 @@ SEARCH is a string to be interpreted by notmuch-search."
 
 (use-package lsp-ui
   :config
-  (setq lsp-ui-doc-enable nil))
+  (setq lsp-ui-doc-enable nil)
+  (setq lsp-ui-doc-position 'bottom))
 
 (use-package lsp-java
   :config (add-hook 'java-mode-hook 'lsp))
