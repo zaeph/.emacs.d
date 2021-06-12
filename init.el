@@ -2439,7 +2439,7 @@ return `nil'."
         org-clock-report-include-clocking-task t
         org-clock-out-remove-zero-time-clocks t
 
-        org-hide-emphasis-markers t
+        org-hide-emphasis-markers nil
         org-ellipsis "…"
         org-track-ordered-property-with-tag "ORDERED"
         org-tags-exclude-from-inheritance nil
