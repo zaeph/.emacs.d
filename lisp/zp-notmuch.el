@@ -143,5 +143,14 @@ See `zp/notmuch-saved-queries' for details."
         (notmuch-show-view-part))
     (error "No text/html part")))
 
+(defun zp/notmuch-search-view-html ()
+  "View the HTML part of email at point in an external viewer."
+  (interactive)
+  (save-window-excursion
+    (notmuch-search-show-thread)
+    (notmuch-show-mark-read)
+    (zp/notmuch-view-html)
+    (notmuch-bury-or-kill-this-buffer)))
+
 (provide 'zp-notmuch)
 ;;; zp-notmuch.el ends here

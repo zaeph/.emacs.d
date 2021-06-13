@@ -1724,6 +1724,8 @@ SEARCH is a string to be interpreted by notmuch-search."
          ("q" . zp/notmuch-hello-quit)
          :map notmuch-show-mode-map
          ("v" . zp/notmuch-view-html)
+         :map notmuch-search-mode-map
+         ("v" . zp/notmuch-search-view-html)
          :map notmuch-message-mode-map
          (("C-c C-c" . zp/notmuch-confirm-before-sending)
           ("C-c C-s" . zp/notmuch-confirm-before-sending)
