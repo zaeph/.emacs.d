@@ -508,6 +508,9 @@ surrounding paragraph."
 (global-set-key (kbd "s-k") #'other-window)
 (global-set-key (kbd "s-K") #'toggle-window-split)
 (global-set-key (kbd "C-x 4 1") #'zp/kill-other-buffer-and-window)
+(global-set-key (kbd "C-h I") #'elisp-index-search)
+(global-set-key (kbd "C-h E") #'emacs-index-search)
+
 
 ;; Ignore Kanji key in IME
 (global-set-key [M-kanji] 'ignore)
