@@ -133,8 +133,9 @@ See `zp/notmuch-saved-queries' for details."
   "View the HTML part of the current email in an external viewer."
   (interactive)
   (if-let ((match (save-excursion
-                    (goto-char 0)
-                    (re-search-forward "\\[ text/html .*\\]" nil t))))
+                    (goto-char (notmuch-show-message-top))
+                    (re-search-forward "\\[ text/html .*\\]"
+                                       (notmuch-show-message-bottom) t))))
       (save-excursion
         (goto-char match)
         (notmuch-show-view-part))
