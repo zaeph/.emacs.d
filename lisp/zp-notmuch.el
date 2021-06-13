@@ -43,13 +43,15 @@
 
 (defcustom zp/notmuch-identities nil
   "Plist of identities based on `notmuch-identities'."
-  :group 'zp/notmuch)
+  :group 'zp/notmuch
+  :type 'plist)
 
 (defcustom zp/notmuch-identities-defaults nil
   "Default values for keywords in `zp/notmuch-identities'.
 Used as fallback when the keyword is not defined for a given
 identity."
-  :group 'zp/notmuch)
+  :group 'zp/notmuch
+  :type 'plist)
 
 (defun zp/notmuch-identities-get (id keyword)
   "Get KEYWORD from ID in `zp/notmuch-identities'.
@@ -85,7 +87,7 @@ See `zp/notmuch-identities' for details."
 
 (defun zp/notmuch-make-sigs-alist ()
   "Populate `zp/message-sigs-alist' with data from `zp/notmuch-identities'."
-  (--map (-let (((id &plist :email :sig) it))
+  (--map (-let (((id &plist :email) it))
            (cons email
                  (zp/notmuch-identities-get id :sig)))
          zp/notmuch-identities))
