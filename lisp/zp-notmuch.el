@@ -132,14 +132,13 @@ See `zp/notmuch-saved-queries' for details."
 (defun zp/notmuch-view-html ()
   "View the HTML part of the current email in an external viewer."
   (interactive)
-  (let ((match (save-excursion
-                 (goto-char 0)
-                 (re-search-forward "\\[ text/html .*\\]" nil t))))
-    (unless match
-      (error "No text/html part"))
-    (save-excursion
-      (goto-char match)
-      (notmuch-show-view-part))))
+  (if-let ((match (save-excursion
+                    (goto-char 0)
+                    (re-search-forward "\\[ text/html .*\\]" nil t))))
+      (save-excursion
+        (goto-char match)
+        (notmuch-show-view-part))
+    (error "No text/html part")))
 
 (provide 'zp-notmuch)
 ;;; zp-notmuch.el ends here
