@@ -1984,12 +1984,14 @@ SEARCH is a string to be interpreted by notmuch-search."
 ;; Rust
 ;;----------------------------------------------------------------------------
 
+(use-package rust-mode)
+
 (use-package rustic
   :bind (:map rustic-mode-map
          (("M-RET" . zp/rust-eval-buffer)))
   :config
   (defun zp/rust-eval-buffer (arg)
-    "Run current buffer as Perl code"
+    "Run current buffer as Rust code"
     (interactive "P")
     (let (max-mini-window-height)
       (unless arg
