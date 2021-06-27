@@ -3269,7 +3269,7 @@ indirect-buffers."
 
           ("S" "Swimming records"
            ((agenda ""
-                    ((org-agenda-files zp/org-agenda-files-sports))))
+                    ((org-agenda-files '("~/org/sports/swimming/swimming.org.gpg")))))
            ((org-agenda-skip-timestamp-if-done nil)))
           ))
 
