@@ -1617,9 +1617,7 @@ With numeric prefix arg DEC, decrement the integer by DEC amount."
   (zp/message-sigs-directory "~/org/sig/")
   :config
   (setq message-signature #'zp/message-get-signature
-        message-sendmail-envelope-from 'header)
-
-  (advice-add 'notmuch-mua-prompt-for-sender :override #'zp/notmuch-mua-prompt-for-sender))
+        message-sendmail-envelope-from 'header))
 
 (use-package sendmail
   :after message
@@ -1781,7 +1779,9 @@ SEARCH is a string to be interpreted by notmuch-search."
           (:name "drafts" :key "x" :query "tag:draft")
           (:name "sent-week" :key "s" :query "tag:sent date:\"7d..today\"")
           (:name "sent" :key "S" :query "tag:sent")
-          (:name "trash" :key "t" :query "tag:deleted"))))
+          (:name "trash" :key "t" :query "tag:deleted")))
+
+  (advice-add 'notmuch-mua-prompt-for-sender :override #'zp/notmuch-mua-prompt-for-sender))
 
 (use-package zp-notmuch-fetch
   :bind (:map notmuch-hello-mode-map
