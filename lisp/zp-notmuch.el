@@ -97,12 +97,10 @@ See `zp/notmuch-identities' for details."
 
 Meant to replace `notmuch-mua-prompt-for-sender'."
   (when zp/notmuch-identities
-    (let ((name (notmuch-user-name))
-          (address (-> (ivy-read "Send mail from: " zp/notmuch-identities)
-                       (assoc zp/notmuch-identities)
-                       (cdr)
-                       (plist-get :email))))
-      (message-make-from name address))))
+    (let* ((id (ivy-read "Send mail from: " zp/notmuch-identities))
+           (name (zp/notmuch-identities-get id :name))
+           (email (zp/notmuch-identities-get id :email)))
+      (message-make-from name email))))
 
 (defun zp/notmuch-confirm-before-sending (&optional arg)
     (interactive "P")
