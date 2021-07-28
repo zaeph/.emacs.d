@@ -3416,14 +3416,14 @@ KEY is the key to use to access the template"
     "Default swimming workout.")
 
   (setq zp/swimming-workout-default "
-|------+--------------------------------|
-|  500 | warmup crawl/fly               |
-|  500 | 100 pull / 100 pull fast       |
-| 1500 | 50 fly / 100 crawl × 3 no rest |
-|  500 | 100 pull / 100 pull fast       |
-|  500 | crawl fast                     |
-|  100 | warmdown                       |
-|------+--------------------------------|")
+|------+--------------------------------------------------|
+|  500 | warmup crawl/fly                                 |
+|  500 | 100 pull / 100 pull fast                         |
+|  500 | 50 fly / 100 crawl × 3 no rest                   |
+|  500 | 100 pull / 100 pull fast                         |
+| 1500 | 50 fly / 100 crawl × 3 no rest incl. 2 × 100 fly |
+|  100 | warmdown                                         |
+|------+--------------------------------------------------|")
 
   ;;---------------------------------
   ;; Templates for ‘org-agenda-mode’
