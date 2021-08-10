@@ -4043,7 +4043,7 @@ command will offer you to create one."
              zp/org-refile-dwim
              zp/hydra-org-refile)
   :bind ("C-c C-j" . zp/org-jump-dwim)
-  ;; :after (:any org org-capture)
+  :after (:any org org-capture)
   :custom
   (zp/org-agenda-files-primary "~/org/life.org")
   :init
