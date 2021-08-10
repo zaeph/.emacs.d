@@ -3843,12 +3843,13 @@ commas and space."
   ;;  org-roam-setup
   ;;  org-roam-capture
   ;;  org-roam-node-find)
+  :init
+  (setq org-roam-v2-ack t)
   :bind (("C-c m l" . org-roam-buffer-toggle)
          ("C-c m f" . org-roam-node-find)
          ;; ("C-c m r" . org-roam-find-ref)
          ("C-c m ." . zp/org-roam-find-directory)
          ("C-c m >" . zp/org-roam-find-directory-testing)
-         ("C-c m d" . org-roam-dailies-map)
          ("C-c m j" . org-roam-jump-to-index)
          ;; ("C-c m b" . org-roam-switch-to-buffer)
          ;; ("C-c m g" . org-roam-graph)
@@ -3856,7 +3857,6 @@ commas and space."
          (("C-c m i" . org-roam-node-insert)))
   :custom
   (org-roam-directory "~/org/slip-box/")
-  (org-roam-dailies-directory "scratch/")
   :config
   (setq org-roam-capture-templates
         '(("d" "default" plain
@@ -3938,7 +3938,20 @@ command will offer you to create one."
   ;;      (list #'org-roam-backlinks-insert-section
   ;;            #'org-roam-reflinks-insert-section
   ;;            #'org-roam-unlinked-references-insert-section))
-  (org-roam-setup))
+  (org-roam-db-autosync-enable))
+
+
+(use-package org-roam-dailies
+  :load-path "~/projects/org-roam/extensions/"
+  :bind (("C-c m d" . org-roam-dailies-map))
+  :custom
+  (org-roam-dailies-directory "scratch/")
+  (org-roam-dailies-capture-templates
+   '(("d" "default" entry
+      "* %?"
+      :if-new (file+head "%<%Y-%m-%d>.org"
+                         "#+title: %<%Y-%m-%d>\n\n")
+      :add-created t))))
 
 (use-package org-roam-protocol)
 
