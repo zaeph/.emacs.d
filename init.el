@@ -3876,13 +3876,7 @@ commas and space."
            :if-new (file+head "web/${slug}.org"
                               "#+title: ${title}\n#+roam_key: ${ref}\n#+created: %u\n#+last_modified: %U\n\n")
            :unnarrowed t
-           :empty-lines-before 1))
-        org-roam-dailies-capture-templates
-        '(("d" "default" entry
-           "* %?"
-           :if-new (file+head "scratch/%<%Y-%m-%d>.org"
-                              "#+title: %<%Y-%m-%d>\n\n")
-           :add-created t)))
+           :empty-lines-before 1)))
 
   (defun zp/org-roam-find-directory ()
     (interactive)
