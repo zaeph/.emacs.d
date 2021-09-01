@@ -635,7 +635,8 @@ surrounding paragraph."
 (use-package s)
 
 (use-package crdt
-  :load-path "/home/zaeph/projects/crdt.el/")
+  ;; :load-path "/home/zaeph/projects/crdt.el/"
+  )
 
 (use-package iso-transl)
 
