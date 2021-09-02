@@ -3862,18 +3862,18 @@ commas and space."
   (setq org-roam-capture-templates
         '(("d" "default" plain
            "%?"
-           :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org"
+           :target (file+head "%<%Y%m%d%H%M%S>-${slug}.org"
                               "#+title: ${title}\n#+created: %u\n#+last_modified: %U\n\n")
            :unnarrowed t))
         org-roam-capture-ref-templates
         '(("r" "ref" plain
            "%?"
-           :if-new (file+head "web/${slug}.org"
+           :target (file+head "web/${slug}.org"
                               "#+title: ${title}\n#+roam_key: ${ref}\n#+created: %u\n#+last_modified: %U\n\n%(zp/org-protocol-insert-selection-dwim \"%i\")")
            :unnarrowed t)
           ("i" "incremental" plain
            "* %?\n%(zp/org-protocol-insert-selection-dwim \"%i\")"
-           :if-new (file+head "web/${slug}.org"
+           :target (file+head "web/${slug}.org"
                               "#+title: ${title}\n#+roam_key: ${ref}\n#+created: %u\n#+last_modified: %U\n\n")
            :unnarrowed t
            :empty-lines-before 1)))
@@ -3944,7 +3944,7 @@ command will offer you to create one."
   (org-roam-dailies-capture-templates
    '(("d" "default" entry
       "* %?"
-      :if-new (file+head "%<%Y-%m-%d>.org"
+      :target (file+head "%<%Y-%m-%d>.org"
                          "#+title: %<%Y-%m-%d>\n\n")
       :add-created t))))
 
