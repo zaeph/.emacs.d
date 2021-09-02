@@ -3933,7 +3933,7 @@ command will offer you to create one."
   ;;      (list #'org-roam-backlinks-insert-section
   ;;            #'org-roam-reflinks-insert-section
   ;;            #'org-roam-unlinked-references-insert-section))
-  (org-roam-db-autosync-enable))
+  )
 
 
 (use-package org-roam-dailies
