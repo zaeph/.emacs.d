@@ -111,6 +111,7 @@ ITERATIONS is the sample-size to use for the statistics.
 
 MULTIPLIER is an integer to specify how many times to evaluate
 FORMS on each iteration."
+  (declare (indent 2))
   (time-validate-iterations iterations)
   `(if (= ,iterations 1)
        (time
