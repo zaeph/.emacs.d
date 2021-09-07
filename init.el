@@ -3863,7 +3863,7 @@ commas and space."
         '(("d" "default" plain
            "%?"
            :target (file+head "%<%Y%m%d%H%M%S>-${slug}.org"
-                              "#+title: ${title}\n#+created: %u\n#+last_modified: %U\n\n")
+                              "#+title: ${title}\n#+created: %U\n#+last_modified: %U\n\n")
            :unnarrowed t))
         org-roam-capture-ref-templates
         '(("r" "ref" plain
