@@ -528,7 +528,6 @@ surrounding paragraph."
 ;;----------------------------------------------------------------------------
 ;; Electric
 ;;----------------------------------------------------------------------------
-(electric-quote-mode 1)
 (setq electric-quote-context-sensitive 1)
 
 ;;----------------------------------------------------------------------------
@@ -1630,7 +1629,8 @@ With numeric prefix arg DEC, decrement the integer by DEC amount."
          ("g" . notmuch-refresh-this-buffer)
          :map notmuch-show-mode-map
          ("C-c C-o" . goto-address-at-point))
-  :hook ((notmuch-hello-refresh . zp/color-all-inboxes))
+  :hook ((notmuch-hello-refresh . zp/color-all-inboxes)
+         (notmuch-message-mode . electric-quote-local-mode))
   :config
   (setq notmuch-always-prompt-for-sender t)
 
@@ -2432,6 +2432,7 @@ return `nil'."
          ("C-c R" . org-display-inline-images))
   :hook ((org-mode . org-indent-mode)
          (org-mode . visual-line-mode)
+         (org-mode . electric-quote-local-mode)
          (before-save . zp/org-set-last-modified)
          (org-todo-repeat . zp/org-comment-logbook-notes))
   :config
