@@ -1098,7 +1098,7 @@ surrounding paragraph."
   (ace-link-setup-default))
 
 (use-package ace-window
-  :bind ("s-J" . ace-window)
+  :bind ("s-y" . ace-window)
   :config
   (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)
         aw-scope 'frame))
@@ -3557,8 +3557,8 @@ KEY is the key to use to access the template"
 
 (use-package helm-bibtex
   :load-path "~/projects/helm-bibtex/"
-  :bind (("s-y" . helm-bibtex)
-         ("s-M-y" . helm-bibtex-with-notes)
+  :bind (("s-p" . helm-bibtex)
+         ("s-M-p" . helm-bibtex-with-notes)
          ("C-c D" . zp/bibtex-completion-message-key-last))
   :config
   (setq bibtex-completion-notes-path "~/org/lit/")
