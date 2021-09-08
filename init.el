@@ -367,6 +367,13 @@ nothing happens."
 ;;----------------------------------------------------------------------------
 ;; Editing commands
 ;;----------------------------------------------------------------------------
+(defun zp/delete-frame-ask (&optional frame force)
+  "Ask before deleting FRAME, permanently eliminating it from use.
+See `delete-frame' for details."
+  (interactive)
+  (when (y-or-n-p "Do you want to close the current frame?")
+    (delete-frame frame force)))
+
 (defun zp/unfill-document ()
   "Fill individual paragraphs with large fill column."
   (interactive)
@@ -494,7 +501,7 @@ surrounding paragraph."
 
 ;; Exit Emacs with ‘C-x r q’, and kill the current frame with ‘C-x C-c’
 (global-set-key (kbd "C-x r q") #'save-buffers-kill-terminal)
-(global-set-key (kbd "C-x C-c") #'delete-frame)
+(global-set-key (kbd "C-x C-c") #'zp/delete-frame-ask)
 
 ;; Actions
 (global-set-key (kbd "M-SPC") #'delete-horizontal-space)
