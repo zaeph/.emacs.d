@@ -367,12 +367,12 @@ nothing happens."
 ;;----------------------------------------------------------------------------
 ;; Editing commands
 ;;----------------------------------------------------------------------------
-(defun zp/delete-frame-ask (&rest args)
+(defun zp/delete-frame-ask ()
   "Ask before deleting FRAME, permanently eliminating it from use.
 See `delete-frame' for details."
   (interactive)
   (when (y-or-n-p "Do you want to close the current frame?")
-    (funcall #'delete-frame args)))
+    (call-interactively #'delete-frame)))
 
 (defun zp/unfill-document ()
   "Fill individual paragraphs with large fill column."
