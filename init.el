@@ -501,6 +501,7 @@ surrounding paragraph."
 
 ;; Exit Emacs with ‘C-x r q’, and kill the current frame with ‘C-x C-c’
 (global-set-key (kbd "C-x r q") #'save-buffers-kill-terminal)
+(global-set-key (kbd "C-x r c") #'delete-frame)
 (global-set-key (kbd "C-x C-c") #'zp/delete-frame-ask)
 
 ;; Actions
