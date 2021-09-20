@@ -641,6 +641,12 @@ surrounding paragraph."
 (use-package dash)
 (use-package s)
 
+(use-package simple
+  :bind (([remap just-one-space] . #'cycle-spacing)
+         ([remap upcase-word] . #'upcase-dwim)
+         ([remap downcase-word] . #'downcase-dwim)
+         ([remap capitalize-word] . #'capitalize-dwim)))
+
 (use-package crdt
   ;; :load-path "/home/zaeph/projects/crdt.el/"
   )
