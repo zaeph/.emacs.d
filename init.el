@@ -796,6 +796,7 @@ surrounding paragraph."
   (volatile-highlights-mode))
 
 (use-package beacon
+  :demand
   :bind (:map zp/toggle-map
          ("b" . beacon-mode))
   :custom
