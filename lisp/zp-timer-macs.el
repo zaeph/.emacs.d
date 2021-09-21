@@ -119,7 +119,7 @@ FORMS on each iteration."
           ,@forms))
      (pcase-let* ((stats (time-stats-internal ,iterations ,multiplier ,@forms))
                   (`(,min ,max ,mean) stats))
-       (format "min: %.3fs, max: %.3fs, mean: %.3fs" min max mean))))
+       (message (format "min: %.3fs, max: %.3fs, mean: %.3fs" min max mean)))))
 
 (defmacro with-timer (title &rest forms)
   "Run the given FORMS, counting the elapsed time.
