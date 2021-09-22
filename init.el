@@ -1153,9 +1153,9 @@ Modifies ‘diff-command’ and ‘diff-switches’ to use ‘git diff’."
 
 (use-package git-link
   :bind (:map prog-mode-map
-         ("C-c C-g" . zp/git-link-dwim)
+         ("C-c C-l" . zp/git-link-dwim)
          :map conf-mode-map
-         ("C-c C-g" . zp/git-link-dwim))
+         ("C-c C-l" . zp/git-link-dwim))
   :config
   (defun zp/git-link-dwim (arg)
     "Create a URL pointing to current line/region on the branch.
