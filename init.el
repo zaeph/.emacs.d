@@ -2592,6 +2592,8 @@ return `nil'."
           :html-scale 1.0
           :matchers ("begin" "$1" "$" "$$" "\\(" "\\["))))
 
+(use-package org-contrib)
+
 (use-package org-footnote
   :config
   (setq org-footnote-define-inline 1))
