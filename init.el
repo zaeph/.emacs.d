@@ -1153,6 +1153,8 @@ Modifies ‘diff-command’ and ‘diff-switches’ to use ‘git diff’."
   :hook ((markdown-mode . visual-line-mode)
          (markdown-mode . flyspell-mode)))
 
+(use-package conf-mode)
+
 (use-package git-link
   :bind (:map prog-mode-map
          ("C-c C-l" . zp/git-link-dwim)
