@@ -615,8 +615,7 @@ surrounding paragraph."
     (add-to-list 'package-archives '("gnu" . (concat proto "://elpa.gnu.org/packages/")))))
 
 ;; Disable org’s ELPA packages
-(setq package-load-list '(all
-                          (org nil)))
+(setq package-load-list '(all (org nil)))
 
 ;; org-elpa
 (add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") t)
