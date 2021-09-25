@@ -620,6 +620,9 @@ surrounding paragraph."
 ;; org-elpa
 (add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") t)
 
+;; NonGNU ELPA
+(add-to-list 'package-archives '("org" . "https://elpa.nongnu.org/nongnu/") t)
+
 ;; Avoid loading older byte-compiled version
 (setq load-prefer-newer t)
 
