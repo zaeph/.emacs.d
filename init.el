@@ -3177,8 +3177,8 @@ indirect-buffers."
            zp/org-agenda-sort-by-rev-fifo nil))
 
         zp/org-agenda-extra-local-config
-        '(("k" ((zp/org-agenda-include-routine . nil)))
-          ("K" ((zp/org-agenda-include-routine . nil)))
+        '(("k" ((zp/org-agenda-include-routine . t)))
+          ("K" ((zp/org-agenda-include-routine . t)))
           ("x" ((zp/org-agenda-todo-ignore-future . nil)
                 (org-agenda-todo-ignore-scheduled . nil)))
           ("calendar" ((zp/org-agenda-include-routine . nil))))
