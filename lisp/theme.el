@@ -653,7 +653,7 @@ LIST is the variable holding the list of variable font-presets."
   (zp/toggle-font "variable" zp/current-font-variable zp/list-fonts-variable))
 
 ;; Select font with Helm
-(defun zp/helm-select-font (&optional font)
+(defun zp/helm-select-font (&optional _font)
   "Select the font-preset to use."
   (interactive)
   (let ((current zp/current-font))
@@ -662,7 +662,7 @@ LIST is the variable holding the list of variable font-presets."
                      (action . (("Change font" . zp/set-font))))
           :preselect current)))
 
-(defun zp/helm-select-font-variable (&optional font)
+(defun zp/helm-select-font-variable (&optional _font)
   "Select the variable font-preset to use."
   (interactive)
   (let ((current zp/current-font-variable))
