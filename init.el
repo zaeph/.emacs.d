@@ -68,6 +68,7 @@
 (add-to-list 'load-path "~/.emacs.d/lisp/")
 (add-to-list 'load-path "~/.emacs.d/extra/")
 (add-to-list 'load-path "/usr/share/emacs/site-lisp/")
+(add-to-list 'load-path "~/projects/org-mode/lisp/")
 
 ;; Point to my Emacs fork for studying built-in functions
 (setq source-directory "~/projects/emacs/")
@@ -2414,7 +2415,6 @@ return `nil'."
   :load-path "~/projects/org-appear/")
 
 (use-package org
-  :load-path "~/projects/org-mode/lisp/"
   :commands (org-clocking-buffer)
   :bind (:map org-mode-map
          ("C-c i" . org-indent-mode)
