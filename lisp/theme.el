@@ -541,13 +541,19 @@ FONT is a preset."
         ("sarasa"
          (set-face-attribute 'default nil
                              :font "Sarasa Term Prog J" :height 122)
+         (set-face-attribute 'fixed-pitch nil
+                             :font "Sarasa Term Prog J" :height 122)
          (setq zp/line-spacing nil))
         ("operator"
          (set-face-attribute 'default nil
                              :font "Operator Mono Prog" :height 122)
+         (set-face-attribute 'fixed-pitch nil
+                             :font "Operator Mono Prog" :height 122)
          (setq zp/line-spacing 0.1))
         ("gintronic"
          (set-face-attribute 'default nil
+                             :font "Gintronic Prog" :height 113)
+         (set-face-attribute 'fixed-pitch nil
                              :font "Gintronic Prog" :height 113)
          (setq zp/line-spacing 0.1)))
       (setq zp/current-font font)
