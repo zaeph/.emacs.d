@@ -2415,7 +2415,6 @@ return `nil'."
   :load-path "~/projects/org-appear/")
 
 (use-package org
-  :commands (org-clocking-buffer)
   :bind (:map org-mode-map
          ("C-c i" . org-indent-mode)
          ("C-c [" . nil)
