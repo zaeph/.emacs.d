@@ -648,7 +648,8 @@ surrounding paragraph."
   :bind (([remap just-one-space] . #'cycle-spacing)
          ([remap upcase-word] . #'upcase-dwim)
          ([remap downcase-word] . #'downcase-dwim)
-         ([remap capitalize-word] . #'capitalize-dwim)))
+         ([remap capitalize-word] . #'capitalize-dwim)
+         ([remap count-words-region] . #'count-words)))
 
 (use-package crdt
   ;; :load-path "/home/zaeph/projects/crdt.el/"
