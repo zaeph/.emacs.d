@@ -1830,6 +1830,21 @@ SEARCH is a string to be interpreted by notmuch-search."
 ;;----------------------------------------------------------------------------
 ;; Programming modes
 ;;----------------------------------------------------------------------------
+(use-package lsp-mode
+  :hook ((lsp-mode . lsp-enable-which-key-integration)
+         (python-mode . lsp))
+  :config (setq lsp-completion-enable-additional-text-edit nil))
+
+(use-package lsp-ui
+  :config
+  (setq lsp-ui-doc-enable nil)
+  (setq lsp-ui-doc-position 'bottom)
+  (setq lsp-ui-sideline-show-code-actions nil))
+
+;;----------------------------------------------------------------------------
+;;; Perl
+;;----------------------------------------------------------------------------
+
 (use-package cperl-mode
   :bind (:map cperl-mode-map
          ("M-RET" . zp/perl-eval-buffer)
@@ -1859,6 +1874,10 @@ SEARCH is a string to be interpreted by notmuch-search."
       (unless arg
         (setq max-mini-window-height 999))
       (shell-command-on-region (point-min) (point-max) "perl"))))
+
+;;----------------------------------------------------------------------------
+;;; Python
+;;----------------------------------------------------------------------------
 
 (use-package python
   :bind (:map python-mode-map
@@ -1890,6 +1909,22 @@ SEARCH is a string to be interpreted by notmuch-search."
   ;;   (scroll-up-line)))
   )
 
+;; (use-package lsp-jedi
+;;   :ensure t
+;;   :config
+;;   (with-eval-after-load "lsp-mode"
+;;     (add-to-list 'lsp-disabled-clients 'pyls)))
+
+;; (use-package lsp-pyright
+;;   :ensure t
+;;   :hook (python-mode . (lambda ()
+;;                          (require 'lsp-pyright)
+;;                          (lsp)))
+;;   :config
+;;   (with-eval-after-load "lsp-mode"
+;;     ;; (add-to-list 'lsp-disabled-clients 'jedi)
+;;     (add-to-list 'lsp-enabled-clients 'pyright)))
+
 ;; (use-package elpy
 ;;   :bind (:map elpy-mode-map
 ;;          ("C-M-n" . elpy-nav-forward-block)
@@ -1901,6 +1936,10 @@ SEARCH is a string to be interpreted by notmuch-search."
 ;;   (elpy-enable)
 ;;   :config
 ;;   (setq elpy-modules (delq 'elpy-module-flymake elpy-modules)))
+
+;;----------------------------------------------------------------------------
+;;; Racket
+;;----------------------------------------------------------------------------
 
 (use-package racket-mode
   :bind (:map racket-mode-map
@@ -1919,15 +1958,6 @@ SEARCH is a string to be interpreted by notmuch-search."
 ;;----------------------------------------------------------------------------
 ;; Java
 ;;----------------------------------------------------------------------------
-
-(use-package lsp-mode
-  :hook ((lsp-mode . lsp-enable-which-key-integration))
-  :config (setq lsp-completion-enable-additional-text-edit nil))
-
-(use-package lsp-ui
-  :config
-  (setq lsp-ui-doc-enable nil)
-  (setq lsp-ui-doc-position 'bottom))
 
 (use-package lsp-java
   :config (add-hook 'java-mode-hook 'lsp))
