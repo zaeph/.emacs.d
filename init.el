@@ -2469,6 +2469,7 @@ return `nil'."
         ;; org-special-ctrl-a/e t
         org-special-ctrl-a/e t
         org-log-done 'time
+        org-log-refile nil
         org-enforce-todo-dependencies nil
         org-adapt-indentation nil
         org-loop-over-headlines-in-active-region 'start-level
