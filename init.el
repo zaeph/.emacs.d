@@ -1133,10 +1133,7 @@ surrounding paragraph."
          ;; ("s-n" . avy-goto-goto-char)
          ("s-n" . avy-goto-char-timer)))
 
-;; (use-package dumb-jump
-;;   :config
-;;   (dumb-jump-mode)
-;;   (global-visible-mark-mode 1))
+(use-package dumb-jump)
 
 (use-package backup-walker
   :hook (backup-walker-mode . zp/set-diff-backend-git-diff)
