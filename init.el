@@ -43,6 +43,10 @@
 (setq inhibit-startup-screen 1)
 (setq initial-scratch-message ";; Emacs Scratch\n\n")
 
+;; Increase buffers for GC and subprocesses
+(setq gc-cons-threshold 100000000)      	;Default: 800000
+(setq read-process-output-max (* 1024 1024))	;Default: 4096
+
 ;; (toggle-debug-on-error)
 ;; (toggle-debug-on-quit)
 ;; (setq garbage-collection-messages t)
