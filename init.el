@@ -624,7 +624,7 @@ surrounding paragraph."
 
 (require 'crdt)
 
-(use-package iso-transl)
+(require 'iso-transl)
 
 (use-package auto-compile
   :config
