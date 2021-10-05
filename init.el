@@ -468,11 +468,7 @@ For details on DATA, CONTEXT, and SIGNAL, see
 ;;----------------------------------------------------------------------------
 ;; Packages
 ;;----------------------------------------------------------------------------
-(use-package auth-source
-  :custom
-  ;; Path to authentication sources
-  (auth-sources '("~/.authinfo.gpg" "~/.netrc"))
-  (auth-source-save-behavior nil))
+(use-package init-auth-source)
 
 (use-package helpful)
 
