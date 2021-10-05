@@ -482,7 +482,6 @@ For details on DATA, CONTEXT, and SIGNAL, see
 (use-package init-evil)
 
 (use-package rg
-  :ensure t
   :commands rg
   :bind (("M-s ," . rg-dwim)
          ("s-SPC" . rg)))
