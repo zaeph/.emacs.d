@@ -613,12 +613,12 @@ surrounding paragraph."
 (require 'init-elpa)
 (require 'init-use-package)
 
-(require 'bind-key)
-(require 'diminish)
+(use-package bind-key)
+(use-package diminish)
 
 ;; Libraries
-(require 'dash)
-(require 's)
+(use-package dash)
+(use-package s)
 
 (use-package simple
   :bind (([remap just-one-space] . #'cycle-spacing)
@@ -627,11 +627,11 @@ surrounding paragraph."
          ([remap capitalize-word] . #'capitalize-dwim)
          ([remap count-words-region] . #'count-words)))
 
-(require 'crdt)
+(use-package crdt)
 
-(require 'iso-transl)
+(use-package iso-transl)
 
-(require 'init-auto-compile)
+(use-package init-auto-compile)
 
 (use-package init-eldoc)
 
