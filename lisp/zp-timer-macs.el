@@ -23,6 +23,8 @@
 ;; Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 ;; Boston, MA 02110-1301, USA.
 
+;;; Commentary:
+
 ;;; Code:
 (defvar gc-cons-threshold-for-timers 800000000
   "Custom ‘gc-cons-threshold’ to be used by ‘time’.
