@@ -1,6 +1,6 @@
 ;;; init-utils.el --- Elisp helpers  -*- fill-column: 78; lexical-binding: t; -*-
 
-;; Copyright © 2021 Leo Vivier <zaeph@zaeph.net>
+;; Copyright © 2013-2021 Leo Vivier <zaeph@zaeph.net>
 
 ;; Author: Leo Vivier <zaeph@zaeph.net>
 ;; Version: 0.1.0
