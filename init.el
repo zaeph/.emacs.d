@@ -613,6 +613,9 @@ surrounding paragraph."
 (require 'init-elpa)
 (require 'init-use-package)
 
+(use-package package
+  :bind ("C-c P" . package-list-packages))
+
 (use-package bind-key)
 (use-package diminish)
 
@@ -640,9 +643,6 @@ surrounding paragraph."
 (use-package init-cl)
 
 (use-package slime)
-
-(use-package package
-  :bind ("C-c P" . package-list-packages))
 
 (use-package ibuffer
   :init (global-set-key (kbd "C-x C-b")
