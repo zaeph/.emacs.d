@@ -633,9 +633,7 @@ surrounding paragraph."
 
 (require 'init-auto-compile)
 
-(use-package eldoc
-  :config
-  (setq eldoc-idle-delay 0.5))
+(use-package init-eldoc)
 
 (use-package secret)
 
