@@ -32,5 +32,7 @@
   (require 'use-package)
   (setq use-package-expand-minimally byte-compile-current-file))
 
+;; (setq use-package-verbose t)
+
 (provide 'init-use-package)
 ;;; init-use-package.el ends here
