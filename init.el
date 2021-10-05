@@ -1698,6 +1698,7 @@ SEARCH is a string to be interpreted by notmuch-search."
           ("M-<" . zp/message-goto-top)
           ("M->" . zp/message-goto-bottom)
           ("C-c C-z" . zp/message-kill-to-signature)))
+  :commands (zp/notmuch-identities-get)
   :custom
   (zp/notmuch-fcc-tags-default "-inbox +sent -unread")
   :config
