@@ -313,74 +313,6 @@ Prefix argument initializes the Git repository."
     (find-file directory)))
 
 ;;----------------------------------------------------------------------------
-;; Helper functions & macros
-;;----------------------------------------------------------------------------
-(defun zp/get-string-from-file (file-path)
-  "Read file content from FILE-PATH."
-  (with-temp-buffer
-    (insert-file-contents file-path)
-    (buffer-string)))
-
-;; TODO: Does it need to be macro?
-(defmacro zp/advise-commands (method commands where function)
-  "Macro for advising COMMANDS with FUNCTION.
-
-METHOD and WHERE follows the same syntax as `add-advice'.  COMMANDS should
-be the list of commands to advice."
-  (let ((where-keyword (intern-soft (concat ":" (symbol-name where)))))
-    `(progn
-       ,@(cond ((string= method 'add)
-                (mapcar (lambda (command)
-                          `(advice-add ',command ,where-keyword ',function))
-                        commands))
-               ((string= method 'remove)
-                (mapcar (lambda (command)
-                          `(advice-remove ',command  ',function))
-                        commands))))))
-
-(defmacro zp/add-hooks (method commands function)
-  "Add FUNCTION as a hook to COMMANDS with METHOD.
-See `add-hooks' for details."
-  `(progn
-     ,@(cond ((string= method 'add)
-              (mapcar (lambda (command)
-                        `(add-hook ',command ',function))
-                      commands))
-             ((string= method 'remove)
-              (mapcar (lambda (command)
-                        `(remove-hook ',command ',function))
-                      commands)))))
-
-(defun other-window-reverse ()
-  "Select the previous window."
-  (interactive)
-  (select-window (previous-window)))
-
-(defun advice-unadvice (sym)
-  "Remove all advices from symbol SYM."
-  (interactive "aFunction symbol: ")
-  (advice-mapc (lambda (advice _props) (advice-remove sym advice)) sym))
-
-(require 'compile)
-
-(defun compile-on-save-start ()
-  (let ((buffer (compilation-find-buffer)))
-    (unless (get-buffer-process buffer)
-      (recompile))))
-
-(define-minor-mode compile-on-save-mode
-  "Minor mode to automatically call `recompile' whenever the
-current buffer is saved. When there is ongoing compilation,
-nothing happens."
-  :lighter " CoS"
-    (if compile-on-save-mode
-    (progn  (make-local-variable 'after-save-hook)
-        (add-hook 'after-save-hook 'compile-on-save-start nil t))
-      (kill-local-variable 'after-save-hook)))
-
-(require 'zp-timer-macs)
-
-;;----------------------------------------------------------------------------
 ;; Custom modes
 ;;----------------------------------------------------------------------------
 (define-minor-mode print-circle-mode
@@ -548,6 +480,8 @@ nothing happens."
 (use-package bind-key)
 (use-package diminish)
 
+(use-package init-utils)
+(use-package zp-timer-macs)
 (use-package init-edit-utils)
 
 ;; Libraries

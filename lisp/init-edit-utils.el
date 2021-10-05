@@ -25,7 +25,13 @@
 ;;; Commentary:
 
 ;;; Code:
-;;;; Library Requires
+
+;;; Windows & Frames
+
+(defun other-window-reverse ()
+  "Select the previous window."
+  (interactive)
+  (select-window (previous-window)))
 
 (defun zp/delete-frame-ask ()
   "Ask before deleting FRAME, permanently eliminating it from use.
@@ -33,34 +39,6 @@ See `delete-frame' for details."
   (interactive)
   (when (y-or-n-p "Do you want to close the current frame?")
     (call-interactively #'delete-frame)))
-
-(defun zp/unfill-document ()
-  "Fill individual paragraphs with large fill column."
-  (interactive)
-  (let ((fill-column 100000))
-    (fill-individual-paragraphs (point-min) (point-max))))
-
-(defun zp/unfill-paragraph ()
-  "Unfill current paragraph."
-  (interactive)
-  (let ((fill-column (point-max)))
-    (fill-paragraph nil)))
-
-(defun zp/unfill-region ()
-  "Unfill current region."
-  (interactive)
-  (let ((fill-column (point-max)))
-    (fill-region (region-beginning) (region-end) nil)))
-
-(defun zp/unfill-dwim ()
-  "Contextually unfill text.
-
-If region is active, unfill it.  Otherwise, unfill the
-surrounding paragraph."
-  (interactive)
-  (if (region-active-p)
-      (zp/unfill-region)
-    (zp/unfill-paragraph)))
 
 (defun zp/kill-other-buffer-and-window ()
   "Kill the other buffer and window if there is more than one window."
@@ -103,6 +81,35 @@ surrounding paragraph."
   (interactive)
   (switch-to-buffer "*Help*"))
 
+;;; Unfill
+
+(defun zp/unfill-document ()
+  "Fill individual paragraphs with large fill column."
+  (interactive)
+  (let ((fill-column 100000))
+    (fill-individual-paragraphs (point-min) (point-max))))
+
+(defun zp/unfill-paragraph ()
+  "Unfill current paragraph."
+  (interactive)
+  (let ((fill-column (point-max)))
+    (fill-paragraph nil)))
+
+(defun zp/unfill-region ()
+  "Unfill current region."
+  (interactive)
+  (let ((fill-column (point-max)))
+    (fill-region (region-beginning) (region-end) nil)))
+
+(defun zp/unfill-dwim ()
+  "Contextually unfill text.
+
+If region is active, unfill it.  Otherwise, unfill the
+surrounding paragraph."
+  (interactive)
+  (if (region-active-p)
+      (zp/unfill-region)
+    (zp/unfill-paragraph)))
 
 (provide 'init-edit-utils)
 ;;; init-edit-utils.el ends here
