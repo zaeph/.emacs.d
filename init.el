@@ -74,6 +74,9 @@
 ;; Set default fill column to 78
 (setq-default fill-column 78)
 
+;; Enable `global-hl-line-mode'
+(global-hl-line-mode 1)
+
 ;; Add folders to load-path
 (add-to-list 'load-path "~/.emacs.d/lisp/")
 (add-to-list 'load-path "~/.emacs.d/extra/")
@@ -514,18 +517,9 @@ For details on DATA, CONTEXT, and SIGNAL, see
 
 (use-package init-volatile-highlights)
 
-(use-package beacon
-  :demand
+(use-package init-beacon
   :bind (:map zp/toggle-map
-         ("b" . beacon-mode))
-  :custom
-  (beacon-push-mark nil)
-  (beacon-color "#cc342b")
-  (beacon-blink-delay 0.1)
-  (beacon-blink-duration 0.3)
-  :config
-  (beacon-mode)
-  (global-hl-line-mode 1))
+         ("b" . beacon-mode)))
 
 ;; ;; Removed because of conflict with ‘use-hard-newlines’
 ;; (use-package clean-aindent-mode
