@@ -381,6 +381,7 @@ For details on DATA, CONTEXT, and SIGNAL, see
 (use-package init-edit-utils)
 (use-package zp-scratch-dir)
 (use-package zp-always-centred
+  :commands (zp/always-centred-mode)
   :bind ("M-Y" . #'zp/always-centred-mode))
 
 (use-package diff)
