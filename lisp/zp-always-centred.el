@@ -24,8 +24,6 @@
 ;; Boston, MA 02110-1301, USA.
 
 ;;; Commentary:
-;;
-;;
 
 ;;; Code:
 (define-minor-mode zp/always-centred-mode
