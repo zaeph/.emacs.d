@@ -654,22 +654,10 @@ surrounding paragraph."
 ;;----------------------------------------------------------------------------
 ;; magit
 ;;----------------------------------------------------------------------------
-(use-package magit
-  ;; :load-path "~/projects/magit/lisp/"
+(use-package init-magit
   :bind (("s-m" . magit-status)
          ("s-b" . magit-blame-addition)
-         ("C-c g" . magit-file-dispatch))
-  :config
-  (transient-append-suffix 'magit-log "-A"
-    '("-1" "First parent" "--first-parent"))
-  (transient-append-suffix 'magit-log-refresh "-A"
-    '("-1" "First parent" "--first-parent"))
-  (transient-append-suffix 'magit-log "-f"
-    '("-m" "Hide merges" "--no-merges"))
-  (transient-append-suffix 'magit-log-refresh "-f"
-    '("-m" "Hide merges" "--no-merges"))
-  (setq magit-diff-refine-hunk 'all)
-  (magit-wip-mode))
+         ("C-c g" . magit-file-dispatch)))
 
 (use-package zp-magit
   :bind ("s-M-m" . zp/magit-stage-file-and-commit))
