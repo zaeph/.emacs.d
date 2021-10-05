@@ -637,19 +637,9 @@ surrounding paragraph."
 
 (use-package secret)
 
+(use-package init-cl)
+
 (use-package slime)
-
-(use-package slime-cl-indent
-  :config
-  ;; (setq lisp-indent-function #'lisp-indent-function)
-                                        ;Default
-
-  ;; Change indent style for CL
-  (setq common-lisp-style "sbcl")
-
-  ;; Way to override indent for some functions
-  ;; (put 'use-package 'common-lisp-indent-function 1)
-  )
 
 (use-package package
   :bind ("C-c P" . package-list-packages))
