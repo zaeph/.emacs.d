@@ -622,9 +622,7 @@ surrounding paragraph."
 
 (require 'init-simple)
 
-(use-package crdt
-  ;; :load-path "/home/zaeph/projects/crdt.el/"
-  )
+(require 'crdt)
 
 (use-package iso-transl)
 
