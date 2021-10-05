@@ -473,9 +473,7 @@ For details on DATA, CONTEXT, and SIGNAL, see
 (use-package helpful)
 
 (use-package gif-screencast
-  :load-path ("~/src/gif-screencast/")
   :commands (gif-screencast)
-  :load-path "~/projects/emacs-gif-screencast/"
   :bind (("<f8>" . gif-screencast-toggle-pause)
          ("<f9>" . gif-screencast-stop)))
 
