@@ -647,15 +647,7 @@ surrounding paragraph."
 (use-package ibuffer
   :bind ("C-x C-b" . ibuffer-jump))
 
-;; Start server
-(use-package server
-  :config
-  ;; Start server if it hasn’t been started already
-  (if (server-running-p)
-      (setq initial-scratch-message
-            (concat initial-scratch-message
-                    ";; STANDALONE\n\n"))
-    (server-start)))
+(use-package init-server)
 
 ;; (setq use-package-verbose t)
 
