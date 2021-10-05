@@ -365,15 +365,6 @@ For details on DATA, CONTEXT, and SIGNAL, see
 (setq vc-make-backup-files t)
 
 ;;----------------------------------------------------------------------------
-;; diff
-;;----------------------------------------------------------------------------
-;; Diff backend
-(setq diff-command "diff")            ;Default
-
-;; Add ‘-u’ switch for diff
-(setq diff-switches "-u")
-
-;;----------------------------------------------------------------------------
 ;; Setup package repositories
 ;;----------------------------------------------------------------------------
 (require 'init-elpa)
@@ -391,6 +382,8 @@ For details on DATA, CONTEXT, and SIGNAL, see
 (use-package zp-scratch-dir)
 (use-package zp-always-centred
   :bind ("M-Y" . #'zp/always-centred-mode))
+
+(use-package diff)
 
 ;; Libraries
 (use-package dash)
