@@ -617,7 +617,7 @@ surrounding paragraph."
 (require 'diminish)
 
 ;; Libraries
-(use-package dash)
+(require 'dash)
 (use-package s)
 
 (use-package simple
