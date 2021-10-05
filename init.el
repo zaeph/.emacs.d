@@ -315,15 +315,6 @@ Prefix argument initializes the Git repository."
 ;;----------------------------------------------------------------------------
 ;; Custom modes
 ;;----------------------------------------------------------------------------
-(define-minor-mode print-circle-mode
-  "Mode for toggling ‘print-circle’ globally."
-  :lighter " crcl"
-  :group 'misc
-  :global t
-  (if print-circle-mode
-      (setq print-circle t)
-    (setq print-circle nil)))
-
 (define-minor-mode always-centred-mode
   "Mode for keeping the cursor vertically centred."
   :lighter " ctr"

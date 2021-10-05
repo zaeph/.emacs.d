@@ -84,5 +84,14 @@ nothing happens."
         (add-hook 'after-save-hook 'compile-on-save-start nil t))
       (kill-local-variable 'after-save-hook)))
 
+(define-minor-mode print-circle-mode
+  "Mode for toggling `print-circle' globally."
+  :lighter " crcl"
+  :group 'misc
+  :global t
+  (if print-circle-mode
+      (setq print-circle t)
+    (setq print-circle nil)))
+
 (provide 'init-utils)
 ;;; init-utils.el ends here
