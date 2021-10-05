@@ -479,9 +479,7 @@ For details on DATA, CONTEXT, and SIGNAL, see
 
 (use-package init-undo-tree)
 
-(use-package evil
-  :config
-  (evil-mode 0))
+(use-package init-evil)
 
 (use-package rg
   :ensure t
