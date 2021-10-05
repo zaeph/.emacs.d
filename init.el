@@ -611,13 +611,7 @@ surrounding paragraph."
 ;; Setup package repositories
 ;;----------------------------------------------------------------------------
 (require 'init-elpa)
-
-;; ‘use-package’ initialisation
-(eval-when-compile
-  ;; Following line is not needed if use-package.el is in ~/.emacs.d
-  ;; (add-to-list 'load-path "~/.emacs.d/")
-  (require 'use-package)
-  (setq use-package-expand-minimally byte-compile-current-file))
+(require 'init-use-package)
 
 (require 'bind-key)
 (require 'diminish)
