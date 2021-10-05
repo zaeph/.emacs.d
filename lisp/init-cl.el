@@ -24,6 +24,7 @@
 
 ;;; Code:
 ;;;; Library Requires
+(require 'slime)
 (require 'slime-cl-indent)
 
 ;; (setq lisp-indent-function #'lisp-indent-function)
