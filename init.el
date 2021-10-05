@@ -80,6 +80,9 @@
 ;; Time
 (setq display-time-24hr-format t)
 
+;; Avoid loading older byte-compiled version
+(setq load-prefer-newer t)
+
 ;; Turn off background when Emacs is run with -nt
 (defun on-after-init ()
   "Turn off background."
@@ -607,34 +610,7 @@ surrounding paragraph."
 ;;----------------------------------------------------------------------------
 ;; Setup package repositories
 ;;----------------------------------------------------------------------------
-;; MELPA
-(require 'package)
-(let* ((no-ssl (and (memq system-type '(windows-nt ms-dos))
-                    (not (gnutls-available-p))))
-       (proto (if no-ssl "http" "https")))
-  ;; Comment/uncomment these two lines to enable/disable MELPA and MELPA Stable as desired
-  (add-to-list 'package-archives (cons "melpa" (concat proto "://melpa.org/packages/")) t)
-  ;;(add-to-list 'package-archives (cons "melpa-stable" (concat proto "://stable.melpa.org/packages/")) t)
-  (when (< emacs-major-version 24)
-    ;; For important compatibility libraries like cl-lib
-    (add-to-list 'package-archives '("gnu" . (concat proto "://elpa.gnu.org/packages/")))))
-
-;; Disable org’s ELPA packages
-(setq package-load-list '(all
-                          ;; (org nil)
-                          ))
-
-;; org-elpa
-(add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") t)
-
-;; NonGNU ELPA
-(add-to-list 'package-archives '("org" . "https://elpa.nongnu.org/nongnu/") t)
-
-;; Avoid loading older byte-compiled version
-(setq load-prefer-newer t)
-
-;; Initialise packages
-(package-initialize)
+(require 'init-elpa)
 
 ;; ‘use-package’ initialisation
 (eval-when-compile
