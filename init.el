@@ -430,7 +430,9 @@ For details on DATA, CONTEXT, and SIGNAL, see
       mml-secure-openpgp-sign-with-sender t
       mml-secure-openpgp-encrypt-to-self t)
 
-(use-package crdt)
+(use-package crdt
+  :commands (crdt-connect
+             crdt-share-buffer))
 
 (use-package iso-transl)
 
