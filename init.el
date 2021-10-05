@@ -313,29 +313,6 @@ Prefix argument initializes the Git repository."
     (find-file directory)))
 
 ;;----------------------------------------------------------------------------
-;; Custom modes
-;;----------------------------------------------------------------------------
-(define-minor-mode always-centred-mode
-  "Mode for keeping the cursor vertically centred."
-  :lighter " ctr"
-  (let* ((settings '((scroll-preserve-screen-position nil t)
-                     (scroll-conservatively 0 0)
-                     (maximum-scroll-margin 0.25 0.5)
-                     (scroll-margin 0 99999)))
-         (toggle (lambda (mode)
-                   (dolist (data settings)
-                     (cl-destructuring-bind (setting default new) data
-                       (set (make-local-variable setting)
-                            (if (eq mode 'on)
-                                new
-                              default)))))))
-    (if always-centred-mode
-        (funcall toggle 'on)
-      (funcall toggle 'off))))
-
-(global-set-key (kbd "M-Y") #'always-centred-mode)
-
-;;----------------------------------------------------------------------------
 ;; Keys
 ;;----------------------------------------------------------------------------
 ;; Define keymap for minor mode toggles
@@ -474,6 +451,8 @@ Prefix argument initializes the Git repository."
 (use-package init-utils)
 (use-package zp-timer-macs)
 (use-package init-edit-utils)
+(use-package zp-always-centred
+  :bind ("M-Y" . #'zp/always-centred-mode))
 
 ;; Libraries
 (use-package dash)
