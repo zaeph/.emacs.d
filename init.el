@@ -645,13 +645,7 @@ surrounding paragraph."
 (use-package slime)
 
 (use-package ibuffer
-  :init (global-set-key (kbd "C-x C-b")
-                        (if (fboundp #'ibuffer-jump)
-                            #'ibuffer-jump
-                          #'ibuffer))
-  :config
-  ;; (global-set-key (kbd "C-x b") #'ibuffer)
-  )
+  :bind ("C-x C-b" . ibuffer-jump))
 
 ;; Start server
 (use-package server
