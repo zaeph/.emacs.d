@@ -512,9 +512,7 @@ For details on DATA, CONTEXT, and SIGNAL, see
 (use-package init-duplicate-thing
   :bind (("M-J" . zp/duplicate-thing)))
 
-(use-package volatile-highlights
-  :config
-  (volatile-highlights-mode))
+(use-package init-volatile-highlights)
 
 (use-package beacon
   :demand
