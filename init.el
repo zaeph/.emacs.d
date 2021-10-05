@@ -626,10 +626,7 @@ surrounding paragraph."
 
 (require 'iso-transl)
 
-(use-package auto-compile
-  :config
-  (auto-compile-on-load-mode)
-  (auto-compile-on-save-mode))
+(require 'init-auto-compile)
 
 (use-package eldoc
   :config
