@@ -376,7 +376,8 @@ For details on DATA, CONTEXT, and SIGNAL, see
 (use-package bind-key)
 (use-package diminish)
 
-(use-package init-utils)
+(use-package init-utils
+  :commands (zp/get-string-from-file))
 (use-package zp-timer-macs)
 (use-package init-edit-utils)
 (use-package zp-scratch-dir)
