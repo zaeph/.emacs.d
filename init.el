@@ -487,10 +487,7 @@ For details on DATA, CONTEXT, and SIGNAL, see
          ("s-SPC" . rg)))
 
 ;; For handling encryption
-(use-package epa-file
-  :config
-  (epa-file-enable)
-  (setq epg-gpg-program "gpg2"))
+(use-package init-epa-file)
 
 (use-package isearch
   :bind (:map isearch-mode-map
