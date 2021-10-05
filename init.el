@@ -618,7 +618,7 @@ surrounding paragraph."
 
 ;; Libraries
 (require 'dash)
-(use-package s)
+(require 's)
 
 (use-package simple
   :bind (([remap just-one-space] . #'cycle-spacing)
