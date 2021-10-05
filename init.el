@@ -477,11 +477,7 @@ For details on DATA, CONTEXT, and SIGNAL, see
   :bind (("<f8>" . gif-screencast-toggle-pause)
          ("<f9>" . gif-screencast-stop)))
 
-(use-package undo-tree
-  :init
-  (global-undo-tree-mode)
-  :custom
-  (undo-tree-enable-undo-in-region nil))
+(use-package init-undo-tree)
 
 (use-package evil
   :config
