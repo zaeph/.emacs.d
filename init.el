@@ -1442,7 +1442,7 @@ SEARCH is a string to be interpreted by notmuch-search."
            (notmuch)))))
 
 (use-package zp-notmuch
-  :bind (("s-l" . zp/switch-to-notmuch)
+  :bind (("s-M-l" . zp/switch-to-notmuch)
          :map notmuch-hello-mode-map
          ("q" . zp/notmuch-hello-quit)
          :map notmuch-show-mode-map
@@ -1530,9 +1530,13 @@ SEARCH is a string to be interpreted by notmuch-search."
 ;; Programming modes
 ;;----------------------------------------------------------------------------
 (use-package lsp-mode
+  :init
+  (setq lsp-keymap-prefix "s-l")
   :hook ((lsp-mode . lsp-enable-which-key-integration)
          (python-mode . lsp))
-  :config (setq lsp-completion-enable-additional-text-edit nil))
+  :bind-keymap ("s-l" . lsp-command-map)
+  :config
+  (setq lsp-completion-enable-additional-text-edit nil))
 
 (use-package lsp-ui
   :config
