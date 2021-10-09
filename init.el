@@ -518,6 +518,7 @@ For details on DATA, CONTEXT, and SIGNAL, see
 (use-package init-volatile-highlights)
 
 (use-package init-beacon
+  :demand
   :bind (:map zp/toggle-map
          ("b" . beacon-mode)))
 
