@@ -3996,13 +3996,14 @@ advised function and this one."
     (zp/org-set-appt-warntime-if-timestamp))
 
   ;; Advise timestamp-related commands
-  (zp/advise-commands
-   add
-   (org-schedule
-    org-deadline
-    org-time-stamp)
-   after
-   zp/org-set-appt-warntime-if-timestamp-advice))
+  ;; (zp/advise-commands
+  ;;  add
+  ;;  (org-schedule
+  ;;   org-deadline
+  ;;   org-time-stamp)
+  ;;  after
+  ;;  zp/org-set-appt-warntime-if-timestamp-advice)
+  )
 
 ;;----------------------------------------------------------------------------
 ;; ledger
