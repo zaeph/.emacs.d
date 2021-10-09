@@ -44,7 +44,7 @@
 (add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") t)
 
 ;;;; NonGNU ELPA
-(add-to-list 'package-archives '("org" . "https://elpa.nongnu.org/nongnu/") t)
+(add-to-list 'package-archives '("nongnu" . "https://elpa.nongnu.org/nongnu/") t)
 
 ;;; Disable some packages
 (setq package-load-list '(all
