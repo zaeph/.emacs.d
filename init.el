@@ -3708,8 +3708,9 @@ command will offer you to create one."
 
 (use-package company
   :bind (("M-/" . company-complete)
-         (:map company-mode-map
-          (([remap indent-for-tab-command] . #'company-indent-or-complete-common))))
+         ;; (:map company-mode-map
+         ;;  (([remap indent-for-tab-command] . #'company-complete-common-or-cycle)))
+         )
   :custom
   (company-idle-delay . nil)
   :hook ((after-init . global-company-mode))
