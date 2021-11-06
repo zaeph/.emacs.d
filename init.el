@@ -3619,6 +3619,8 @@ commas and space."
   :custom
   (org-roam-directory "~/org/slip-box/")
   :config
+  (org-roam-db-autosync-mode)
+
   (setq org-roam-capture-templates
         `(("d" "default" plain
            "%?"
