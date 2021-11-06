@@ -1468,12 +1468,13 @@ SEARCH is a string to be interpreted by notmuch-search."
         '(("pro"        . "tag:pro and not tag:auto")
           ("etalab"     . "tag:etalab and not tag:auto")
           ("dev"        . "tag:dev and not tag:auto")
-          ("beta"       . "(tag:list or tag:auto)")
+          ("beta"       . "(tag:list or tag:auto or tag:news)")
           ("lists"      . "tag:list and not tag:auto")
+          ("news"      . "tag:news and not tag:auto")
           ("dev-github" . "tag:dev and tag:github and tag:auto")
           ("dev-forum"  . "tag:dev and tag:forum and tag:auto"))
         notmuch-saved-searches
-        `((:name "inbox" :key "i" :query "tag:inbox and not (tag:auto or tag:list)")
+        `((:name "inbox" :key "i" :query "tag:inbox and not (tag:auto or tag:list or tag:news)")
           (:name "unread" :key "u" :query "tag:unread and not tag:auto")
           (:name "archive-week" :key "a" :query "date:\"7d..today\" and not tag:auto")
           (:name "archive" :key "A" :query "not tag:auto")
@@ -1489,6 +1490,9 @@ SEARCH is a string to be interpreted by notmuch-search."
 
           ;; Beta
           ,@(zp/notmuch-format-search "beta" "b")
+
+          ;; News
+          ,@(zp/notmuch-format-search "news" "n")
 
           ;; Lists
           ,@(zp/notmuch-format-search "lists" "l")
