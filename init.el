@@ -3620,10 +3620,30 @@ commas and space."
   (org-roam-directory "~/org/slip-box/")
   :config
   (setq org-roam-capture-templates
-        '(("d" "default" plain
+        `(("d" "default" plain
            "%?"
            :target (file+head "%<%Y%m%d%H%M%S>-${slug}.org"
                               "#+title: ${title}\n#+created: %U\n#+last_modified: %U\n\n")
+           :unnarrowed t)
+          ("r" "ref" plain
+           "%?"
+           :target (file+head "refs/${citekey}.org"
+                              "#+title: ${title}\n#+created: %U\n#+last_modified: %U\n\n")
+           :unnarrowed t)
+          ("p" "ref + physical" plain
+           "%?"
+           :target (file+head "refs/${citekey}.org"
+                              "#+title: ${title}\n#+created: %U\n#+last_modified: %U\n\n* Notes :physical:")
+           :unnarrowed t)
+          ("n" "ref + noter" plain
+           "%?"
+           :target (file+head "refs/${citekey}.org"
+                              ,(s-join "\n" (list "#+title: ${title}\n#+created: %U\n#+last_modified: %U\n"
+                                                  "* Notes :noter:"
+                                                  ":PROPERTIES:"
+                                                  ":NOTER_DOCUMENT: %(orb-process-file-field \"${citekey}\")"
+                                                  ":NOTER_PAGE:"
+                                                  ":END:")))
            :unnarrowed t))
         org-roam-capture-ref-templates
         '(("r" "ref" plain
@@ -3723,6 +3743,10 @@ command will offer you to create one."
 
 (defvar orb-title-format "${author-or-editor-abbrev} (${date}).  ${title}."
   "Format of the title to use for `orb-templates'.")
+
+(use-package org-roam-bibtex
+  :config
+  (org-roam-bibtex-mode 1))
 
 ;; (use-package org-roam-bibtex
 ;;   :requires bibtex-completion
