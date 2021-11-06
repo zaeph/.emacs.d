@@ -2130,9 +2130,9 @@ return `nil'."
 
   ;; Geo-location
   (setq calendar-week-start-day 1
-        calendar-latitude 48.11198
-        calendar-longitude -1.67429
-        calendar-location-name "Rennes, France")
+        calendar-latitude 48.8566
+        calendar-longitude 2.3522
+        calendar-location-name "Paris, France")
 
   (global-set-key (kbd "C-c c") 'calendar))
 
