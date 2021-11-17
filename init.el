@@ -873,9 +873,9 @@ With a C-u argument, point to the commit instead."
       (call-interactively #'git-link))))
 
 (use-package pdf-tools
-  :magic ("%PDF" . pdf-view-mode)
-  :config
-  (pdf-tools-install :no-query))
+  :init
+  (pdf-tools-install :no-query)
+  :magic ("%PDF" . pdf-view-mode))
 
 (use-package pdf-view
   :config
