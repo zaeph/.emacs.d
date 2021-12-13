@@ -71,11 +71,11 @@ See `zp/notmuch-identities' for details."
 
 (defun zp/notmuch-make-fcc-dirs ()
   "Populate `notmuch-fcc-dirs' with data from `zp/notmuch-identities'."
-  (--map (-let (((id &plist :email :fcc) it))
+  (--map (-let (((id &plist :email :fcc :sent) it))
            (cons (regexp-quote email)
                  (or fcc
                      (--if-let (zp/notmuch-identities-get id :dir)
-                         (concat it "/sent " zp/notmuch-fcc-tags-default)))))
+                         (concat it (or sent "/sent ") zp/notmuch-fcc-tags-default)))))
          zp/notmuch-identities))
 
 (defun zp/notmuch-make-ispell-alist ()
