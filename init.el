@@ -3018,6 +3018,13 @@ indirect-buffers."
            (,(zp/org-agenda-block-journal))
            ((org-agenda-files '("~/org/journal.org"))))
 
+          ("J" "Journal entries - Swimming"
+           (,(zp/org-agenda-block-journal "Swimming"))
+           ((org-agenda-files '("~/org/journal.org"))
+            (org-agenda-skip-function
+             '(zp/skip-tasks-not-in-agenda-groups-with-extra-filters
+              (zp/org-agenda-groups-process-filters '("+swim"))))))
+
           ("d" "Deadlines"
            (,(zp/org-agenda-block-deadlines)))
 
@@ -3030,11 +3037,14 @@ indirect-buffers."
                      (org-agenda-log-mode))))
            ((org-agenda-skip-timestamp-if-done nil)))
 
-          ("S" "Swimming records"
+          ("S" "Swim logs"
            ((agenda ""
-                    ((org-agenda-files '("~/org/sports/swimming/swimming.org.gpg")))))
-           ((org-agenda-skip-timestamp-if-done nil)))
-          ))
+                    ((org-agenda-files '("~/org/sports/swimming/swimming.org"
+                                         "~/org/sports/swimming/dryland.org")))))
+           ((org-agenda-skip-timestamp-if-done nil)
+            (org-agenda-show-log t)
+            (org-agenda-log-mode-items '(closed clock))
+            ))))
 
   ;; Update ‘org-super-agenda-header-map’
   (use-package org-super-agenda

@@ -1529,10 +1529,17 @@ It creates 4 blocks:
               ((org-agenda-overriding-header
                 (zp/org-agenda-format-header-block "Next & Started")))))
 
-(defun zp/org-agenda-block-journal ()
+(defun zp/org-agenda-block-journal (&optional header)
+  (let ((header (or header
+                    "Journal")))
+    `(agenda ""
+             ((org-agenda-overriding-header
+               (zp/org-agenda-format-header-main ,header))))))
+
+(defun zp/org-agenda-block-journal-swimming ()
   '(agenda ""
            ((org-agenda-overriding-header
-             (zp/org-agenda-format-header-main "Journal")))))
+             (zp/org-agenda-format-header-main "Journal - Swimming")))))
 
 (defun zp/org-agenda-delete-empty-blocks ()
   "Remove empty agenda blocks.
