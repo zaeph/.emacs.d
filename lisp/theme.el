@@ -298,6 +298,8 @@
                       :background "#293233"
                       :foreground "#bfe9bd"
                       :weight 'bold)
+  (set-face-attribute 'mode-line-active nil
+                      :inherit 'mode-line)
   (set-face-attribute 'mode-line-inactive nil
                       :background "#1d1d1d"
                       :foreground "#666"
@@ -315,6 +317,8 @@
                       :background "#d4c692"
                       :foreground "#333"
                       :weight 'bold)
+  (set-face-attribute 'mode-line-active nil
+                      :inherit 'mode-line)
   (set-face-attribute 'mode-line-inactive nil
                       :background "#c7bf9e"
                       :foreground "#666"
