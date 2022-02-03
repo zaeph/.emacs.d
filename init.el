@@ -162,6 +162,7 @@
 
 ;; Enable line-restricted horizontal scrolling
 (setq auto-hscroll-mode 'current-line)
+;; (setq auto-hscroll-mode 't)
 
 ;; Disable final newline insertion
 (setq-default require-final-newline nil)
