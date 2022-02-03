@@ -3137,8 +3137,12 @@ KEY is the key to use to access the template"
            "* %(zp/letterboxd-capture)")
           ("sF" "Film (insert at top)" entry (file+olp "~/org/media.org.gpg" "Films" "List")
            "* %(zp/letterboxd-capture)" :prepend t)
-          ("sw" "Swimming workout" entry (file+weektree+prompt "~/org/sports/swimming/swimming.org.gpg")
-           "* DONE Training%^{SWIM_DISTANCE}p%^{SWIM_DURATION}p\n%t%(print zp/swimming-workout-default)")
+          ("st" "Swim training" entry (file+weektree+prompt "~/org/sports/swimming/swimming.org")
+           ;; "* DONE Training%^{SWIM_DISTANCE}p%^{SWIM_DURATION}p\n%t%(print zp/swimming-workout-default)"
+           "* DONE Training%^{SWIM_DISTANCE}p%^{SWIM_DURATION}p\n%t\n%?")
+          ("sd" "Dryland training" entry (file+weektree+prompt "~/org/sports/swimming/dryland.org")
+           ;; "* DONE Training%^{SWIM_DISTANCE}p%^{SWIM_DURATION}p\n%t%(print zp/swimming-workout-default)"
+           "* DONE Training\n%?" :clock-in t)
 
           ("j" "Journal")
           ,(zp/org-capture-journal-create-template "jj" "Life")
@@ -3150,6 +3154,7 @@ KEY is the key to use to access the template"
           ,(zp/org-capture-journal-create-template "jh" "Hacking")
           ,(zp/org-capture-journal-create-template "jm" "Music")
           ,(zp/org-capture-journal-create-template "js" "Swimming")
+          ,(zp/org-capture-journal-create-template "jd" "Dryland")
 
           ;; Org-protocol templates
           ("OPg" "Capture with guessed action" entry (file+headline "~/org/life.org" "Inbox")
