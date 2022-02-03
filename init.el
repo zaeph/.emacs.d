@@ -2694,8 +2694,8 @@ indirect-buffers."
    ;; Psychotherapy
    ("p p" "~/org/projects/psychotherapy/psychotherapy.org.gpg")
    ;; Sports
-   ("p S" "~/org/sports/swimming/swimming.org.gpg")
-   ("p R" "~/org/sports/running/running.org.gpg")
+   ("p S" "~/org/sports/swimming/swimming.org")
+   ("p D" "~/org/sports/swimming/dryland.org")
 
    ;; Hacking
    ("p h e" "~/org/projects/hacking/emacs/emacs.org.gpg")
