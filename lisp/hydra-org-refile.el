@@ -403,7 +403,7 @@ Ensures that the toggles are set to their default variable."
   (zp/hydra-org-jump/body))
 
 (defmacro zp/create-hydra-org-refile-protocol (protocol chain name docstring targets &optional heads back)
-  (declare (indent defun) (doc-string 2))
+  (declare (indent 2))
   (let* ((protocol-name (symbol-name protocol))
          (hydra (intern (concat "zp/hydra-org-"
                                 protocol-name
@@ -503,7 +503,7 @@ Ensures that the toggles are set to their default variable."
               (message "Cancelled")) "cancel" :exit t))))
 
 (defmacro zp/create-hydra-org-refile (name docstring targets &optional heads back)
-  (declare (indent 2) (doc-string 2))
+  (declare (indent 2))
   `(progn
      (zp/create-hydra-org-refile-protocol refile nil
        ,name ,docstring ,targets ,heads ,back)
