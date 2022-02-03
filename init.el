@@ -39,6 +39,15 @@
 ;; Change default face to prevent flashing
 (set-face-attribute 'default nil :foreground "#bcaf8e" :background "#141414")
 
+;; EmacsConf
+(setenv "PROTECTEDUSER" "emacsconf")
+(setenv "PROTECTEDPASSWORD" "stcgX5n7tF3")
+;; (setq org-link-shell-confirm-function
+;;       'yes-or-no-p)
+(setq org-link-shell-confirm-function
+      (lambda (&rest _arg) t))
+;; (setq conf-directory "~/projects/emacsconf-wiki/" "Directory where the wiki files are.")
+
 (setq default-directory "~")
 (setq inhibit-startup-screen 1)
 (setq initial-scratch-message ";; Emacs Scratch\n\n")
