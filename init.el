@@ -3310,7 +3310,7 @@ KEY is the key to use to access the template"
     "Align tags in current entry."
     (org-align-tags t))
 
-;; Align tags in templates before finalising
+  ;; Align tags in templates before finalising
   (add-hook 'org-capture-before-finalize-hook #'zp/org-align-all-tags)
 
   ;; Restore the previous window configuration after exiting
