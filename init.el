@@ -3075,7 +3075,6 @@ indirect-buffers."
 ;; org-capture
 ;;----------------------------------------------------------------------------
 (use-package org-capture
-  :commands (zp/org-agenda-capture)
   :bind (("C-c n" . org-capture)
          :map org-agenda-mode-map
          ("k" . zp/org-agenda-capture))
