@@ -2462,15 +2462,15 @@ with effort estimates and total time."
 
 (use-package ob
   :config
-  ;; PlantUML
   (setq org-plantuml-jar-path (expand-file-name "/usr/share/java/plantuml/plantuml.jar"))
-  (add-to-list 'org-src-lang-modes '("plantuml" . plantuml))
-  (org-babel-do-load-languages 'org-babel-load-languages '((plantuml . t)))
-
-  ;; Load library required for PlantUML
   (setq org-ditaa-jar-path "/usr/share/java/ditaa/ditaa-0.11.jar")
+  (add-to-list 'org-src-lang-modes '("plantuml" . plantuml))
+  (add-to-list 'org-src-lang-modes '("awk" . awk))
   (add-to-list 'org-src-lang-modes '("ditaa" . plantuml))
-  (org-babel-do-load-languages 'org-babel-load-languages '((ditaa . t))))
+
+  (org-babel-do-load-languages 'org-babel-load-languages '((plantuml . t)
+                                                           (ditaa .t)
+                                                           (awk .t))))
 
 ;;------------
 ;; Projectile
