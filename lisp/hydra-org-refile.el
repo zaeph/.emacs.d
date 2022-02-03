@@ -1,6 +1,6 @@
 ;;; hydra-org-refile.el --- Hydra for handling refiling targets in Org-mode  -*- fill-column: 78; lexical-binding: t; -*-
 
-;; Copyright © 2018-2020 Leo Vivier <leo.vivier+dev@gmail.com>
+;; Copyright © 2018-2022 Leo Vivier <leo.vivier+dev@gmail.com>
 
 ;; Author: Leo Vivier <leo.vivier+dev@gmail.com>
 ;; URL: https://github.com/zaeph/.emacs.d
