@@ -112,6 +112,9 @@
     (set-face-background 'default "unspecified-bg" (selected-frame))))
 (add-hook 'window-setup-hook 'on-after-init)
 
+;; Auto-update copyright
+(add-hook 'after-save-hook #'copyright-update)
+
 ;; Force horizontal splitting
 ;; (setq split-width-threshold 9999)    ;Default: 160
 
