@@ -646,11 +646,15 @@ For details on DATA, CONTEXT, and SIGNAL, see
 (use-package fish-mode
   :mode "\\.fish\\'")
 
+;; EmacsConf stuff
+(use-package mpv)
+(use-package waveform)
+
 (use-package bicycle
   :after outline
   :bind (:map outline-minor-mode-map
-              ([C-tab] . bicycle-cycle)
-              ([S-tab] . bicycle-cycle-global)))
+         ([C-tab] . bicycle-cycle)
+         ([C-S-tab] . bicycle-cycle-global)))
 
 (use-package prog-mode
   ;; Force fringe indicators
