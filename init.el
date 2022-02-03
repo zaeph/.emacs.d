@@ -92,7 +92,9 @@
 (add-to-list 'load-path "/usr/share/emacs/site-lisp/")
 (add-to-list 'load-path "~/projects/org-mode/lisp/")
 ;; (add-to-list 'load-path "~/projects/magit/lisp/")
-;; (add-to-list 'load-path "~/projects/magit/crdt.el/")
+(add-to-list 'load-path "~/projects/crdt.el/")
+(add-to-list 'load-path "~/projects/mpv.el/")
+(add-to-list 'load-path "~/projects/waveform-el/")
 
 ;; Point to my Emacs fork for studying built-in functions
 (setq source-directory "~/projects/emacs/")
