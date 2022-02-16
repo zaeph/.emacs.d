@@ -2859,7 +2859,7 @@ indirect-buffers."
           ("G" . zp/org-agenda-wipe-local-config)
           ("y" . zp/toggle-org-agenda-split-subtasks)
           ("i" . zp/toggle-org-agenda-sorting-strategy-special-first)
-          ("o" . zp/toggle-org-agenda-sort-by-rev-fifo)
+          ("o" . zp/toggle-org-agenda-sort-by-lifo)
           ("F" . zp/toggle-org-agenda-todo-ignore-future)
           ("W" . zp/toggle-org-agenda-projects-include-waiting)
           ("C-c C-x r" . zp/org-agenda-set-appt-warntime)

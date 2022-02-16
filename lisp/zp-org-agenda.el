@@ -1180,7 +1180,7 @@ This function also checks for priority because only one
 ‘org-agenda-cmp-user-defined’ can be specified at a time.  When
 sorting with this function, make sure not to use use ‘priority’
 afterwards."
-  (let ((reverse zp/org-agenda-sort-by-rev-fifo))
+  (let ((reverse zp/org-agenda-sort-by-lifo))
     (or (zp/org-cmp-time-all (if reverse b a)
                              (if reverse a b))
         (when zp/org-agenda-sorting-strategy-special-first
@@ -1256,8 +1256,8 @@ agenda settings after them."
     ;;     (push "-dimmed" word-list))
     (when zp/org-agenda-todo-ignore-future
       (push "-future" word-list))
-    (when zp/org-agenda-sort-by-rev-fifo
-      (push "+rev-fifo" word-list))
+    (when zp/org-agenda-sort-by-lifo
+      (push "+lifo" word-list))
     (unless zp/org-agenda-include-routine
       (push "-routine" word-list))
     (when zp/org-agenda-split-subtasks
@@ -1713,14 +1713,14 @@ due today, and showing all of them."
          (org-agenda-redo)
          (message "Ignore items in the future."))))
 
-(defvar zp/org-agenda-sort-by-rev-fifo nil
+(defvar zp/org-agenda-sort-by-lifo nil
   "When non-nil, sort by reverse FIFO order.")
 
-(defun zp/toggle-org-agenda-sort-by-rev-fifo ()
+(defun zp/toggle-org-agenda-sort-by-lifo ()
   (interactive)
-  (if (prog1 (zp/set-agenda-local 'zp/org-agenda-sort-by-rev-fifo
+  (if (prog1 (zp/set-agenda-local 'zp/org-agenda-sort-by-lifo
                                   (not (zp/get-agenda-local
-                                        'zp/org-agenda-sort-by-rev-fifo)))
+                                        'zp/org-agenda-sort-by-lifo)))
         (org-agenda-redo))
       (message "Show items in reverse FIFO order.")
     (message "Show items in FIFO order.")))
