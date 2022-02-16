@@ -1294,26 +1294,15 @@ With numeric prefix arg DEC, decrement the integer by DEC amount."
   ;; Use aspell as the backend
   (setq-default ispell-program-name "aspell")
 
-  ;; Allow `’` to be part of a word
-  ;; Otherwise, apostrophes typed with ‘electric-quote-mode’ are not
-  ;; recognised as such
-  (setq ispell-local-dictionary-alist
-        `((nil "[[:alpha:]]" "[^[:alpha:]]" "['\x2019]" nil ("-B") nil utf-8)
-          ("english" "[[:alpha:]]" "[^[:alpha:]]" "['’]" t ("-d" "en_US") nil utf-8)
-          ("british" "[[:alpha:]]" "[^[:alpha:]]" "['’]" t ("-d" "en_GB") nil utf-8)
-          ("french" "[[:alpha:]]" "[^[:alpha:]]" "['’]" t ("-d" "fr_FR") nil utf-8)))
-
   ;; Allow curvy quotes to be considered as regular apostrophe
   (setq ispell-local-dictionary-alist
-        (quote
-         (("english" "[[:alpha:]]" "[^[:alpha:]]" "['’]" t ("-d" "en_US") nil utf-8)
-          ("british" "[[:alpha:]]" "[^[:alpha:]]" "['’]" t ("-d" "en_GB") nil utf-8)
-          ("french" "[[:alpha:]]" "[^[:alpha:]]" "['’]" t ("-d" "fr_FR") nil utf-8)))))
+        `(("english" "[[:alpha:]]" "[^[:alpha:]]" "['’]" t ("-d" "en_GB-ize-w_accents") nil utf-8)
+          ("french" "[[:alpha:]]" "[^[:alpha:]]" "['’]" t ("-d" "fr_FR") nil utf-8))))
 
 (use-package zp-ispell
   :custom
-  (ispell-dictionary "british")
-  (zp/ispell-completion-data '(("en" . "british")
+  (ispell-dictionary "english")
+  (zp/ispell-completion-data '(("en" . "english")
                                ("fr" . "french"))))
 
 (use-package flyspell
