@@ -1461,7 +1461,7 @@ SEARCH is a string to be interpreted by notmuch-search."
          :map notmuch-message-mode-map
          (("C-c C-c" . zp/notmuch-confirm-before-sending)
           ("C-c C-s" . zp/notmuch-confirm-before-sending)
-          ("C-c C-b" . zp/message-goto-body)
+          ("C-c C-b" . message-goto-body)
           ("C-c C-." . zp/message-goto-body-end)
           ("M-<" . zp/message-goto-top)
           ("M->" . zp/message-goto-bottom)
