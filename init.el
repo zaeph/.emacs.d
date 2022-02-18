@@ -1323,7 +1323,7 @@ With numeric prefix arg DEC, decrement the integer by DEC amount."
 ;;----------------------------------------------------------------------------
 (use-package message
   :hook ((message-setup . zp/message-flyspell-auto)
-         (message-setup . electric-quote-local-mode)
+         ;; (message-setup . electric-quote-local-mode)
          ;; (message-mode-hook . footnote-mode)
          )
   :custom
@@ -1361,7 +1361,8 @@ With numeric prefix arg DEC, decrement the integer by DEC amount."
          :map notmuch-show-mode-map
          ("C-c C-o" . goto-address-at-point))
   :hook ((notmuch-hello-refresh . zp/color-all-inboxes)
-         (notmuch-message-mode . electric-quote-local-mode))
+         ;; (notmuch-message-mode . electric-quote-local-mode)
+         )
   :config
   (setq notmuch-always-prompt-for-sender t)
 
@@ -2202,7 +2203,7 @@ return `nil'."
          ("C-c R" . org-display-inline-images))
   :hook ((org-mode . org-indent-mode)
          (org-mode . visual-line-mode)
-         (org-mode . electric-quote-local-mode)
+         ;; (org-mode . electric-quote-local-mode)
          (before-save . zp/org-set-last-modified)
          (org-todo-repeat . zp/org-comment-logbook-notes))
   :config
