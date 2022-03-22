@@ -3861,9 +3861,8 @@ command will offer you to create one."
              zp/hydra-org-refile)
   :bind ("C-c C-j" . zp/org-jump-dwim)
   ;; :after (:any org org-capture)
-  :custom
-  (zp/org-agenda-files-primary "~/org/life.org")
   :init
+  (setq zp/org-agenda-files-primary "~/org/life.org")
   ;; ‘hydra-org-refile’ needs to modify the keymaps of ‘org-mode’,
   ;; ‘org-agenda-mode’, and ‘org-capture-mode’, but since those packages are
   ;; loaded lazily, we can’t simply add new key-bindings to their keymaps
