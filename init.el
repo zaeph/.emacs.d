@@ -1118,14 +1118,16 @@ numerical arguments."
   (interactive)
   (save-buffers-kill-terminal t))
 
-(define-minor-mode save-silently-mode
+(define-minor-mode zp/edit-in-emacs-mode
   "Save buffers silently when exiting."
-  :lighter " SS"
+  :lighter " EiE"
   :keymap (let ((map (make-sparse-keymap)))
             (define-key map (kbd "C-x C-c") 'zp/save-buffers-kill-terminal-silently)
             (define-key map (kbd "C-c C-k") 'zp/kanji-add-furigana)
             (define-key map (kbd "M-n") 'zp/kanji-add-furigana)
-            map))
+            map)
+  (when zp/edit-in-emacs-mode
+      (setq-local require-final-newline nil)))
 
 ;; Way to enable minor modes based on filenames
 ;; Added with the package ‘auto-minor-mode-alist’
@@ -1133,7 +1135,7 @@ numerical arguments."
 ;; TODO: Adapt this block
 (add-to-list 'auto-minor-mode-alist '("edit-in-emacs.txt" . visual-line-mode))
 (add-to-list 'auto-minor-mode-alist '("edit-in-emacs.txt" . flyspell-mode))
-(add-to-list 'auto-minor-mode-alist '("edit-in-emacs.txt" . save-silently-mode))
+(add-to-list 'auto-minor-mode-alist '("edit-in-emacs.txt" . zp/edit-in-emacs-mode))
 
 ;; (add-to-list 'auto-minor-mode-alist '("edit-in-emacs.html" . visual-line-mode))
 ;; (add-to-list 'auto-minor-mode-alist '("edit-in-emacs.html" . olivetti-mode))
