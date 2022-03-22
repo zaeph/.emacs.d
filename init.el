@@ -3782,6 +3782,7 @@ command will offer you to create one."
 (use-package org-roam-bibtex
   :config
   (org-roam-bibtex-mode 1)
+  (setq orb-insert-interface 'helm-bibtex)
   (setq orb-file-field-extensions '("pdf" "epub")))
 
 ;; (use-package org-roam-bibtex
