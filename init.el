@@ -3160,7 +3160,7 @@ KEY is the key to use to access the template"
            "* DONE Training%^{SWIM_DISTANCE}p%^{SWIM_DURATION}p\n%t\n%?")
           ("sd" "Dryland training" entry (file+weektree+prompt "~/org/sports/swimming/dryland.org")
            ;; "* DONE Training%^{SWIM_DISTANCE}p%^{SWIM_DURATION}p\n%t%(print zp/swimming-workout-default)"
-           "* DONE Training\n%?" :clock-in t)
+           "* DONE Training\n:LOGBOOK-CLOCK:\n:END:\n%?" :clock-in t)
 
           ("j" "Journal")
           ,(zp/org-capture-journal-create-template "jj" "Life")
