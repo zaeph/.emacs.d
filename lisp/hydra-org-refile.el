@@ -32,6 +32,7 @@
 
 ;;; Code:
 
+(require 'org)
 (require 'org-macs)
 
 (defvar zp/hydra-org-refile-chain nil
@@ -80,8 +81,9 @@ When JUMP is non-nil, jump to that other heading instead."
         (org-refile-use-outline-path t)
         (org-refile-history nil)
         file
-        pos
-        target)
+        pos)
+    (ignore org-refile-use-outline-path
+            org-refile-history)
     (when (and (not in-agenda)
                (org-before-first-heading-p))
       (outline-next-heading))
@@ -95,7 +97,8 @@ When JUMP is non-nil, jump to that other heading instead."
       (switch-to-buffer buffer)
       (zp/org-refile-to file pos print-message jump)
       (set-marker pos nil)
-      (setq target (point)))))
+      ;; Return target
+      (point))))
 
 (defun zp/org-jump (&optional print-message)
   "Jump to another heading."
@@ -192,8 +195,9 @@ If JUMP is non-nil, jump instead."
          (max (point-max))
          (org-refile-target-verify-function
           (lambda ()
-            (zp/org-refile-target-verify-restriction min max)))
-         target)
+            (zp/org-refile-target-verify-restriction min max))))
+    (ignore org-refile-targets
+            org-refile-target-verify-function)
     (zp/org-refile print-message jump)))
 
 (defun zp/org-jump-restricted (&optional print-message)
