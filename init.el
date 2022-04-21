@@ -86,6 +86,9 @@
 ;; Enable `global-hl-line-mode'
 (global-hl-line-mode 1)
 
+;; Suppress cl deprecation warnings
+(setq byte-compile-warnings '(cl-functions))
+
 ;; Add folders to load-path
 (add-to-list 'load-path "~/.emacs.d/lisp/")
 (add-to-list 'load-path "~/.emacs.d/extra/")
