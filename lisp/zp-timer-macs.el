@@ -129,6 +129,7 @@ FORMS on each iteration."
 A message including the given TITLE and the corresponding elapsed
 time is displayed."
   (declare (indent 1))
+  ;; TODO: Refactor with `progress-reporter'
   (message "%s..." title)
   `(let* ((results (time-internal ,@forms))
           (return-value (pop results))
