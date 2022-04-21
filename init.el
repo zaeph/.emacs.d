@@ -469,7 +469,9 @@ For details on DATA, CONTEXT, and SIGNAL, see
 (use-package slime)
 
 (use-package ibuffer
-  :bind ("C-x C-b" . ibuffer-jump))
+  :init
+  (unbind-key "M-o" 'ibuffer-mode-map)
+  :bind (("C-x C-b" . ibuffer-jump)))
 
 (use-package init-server)
 
