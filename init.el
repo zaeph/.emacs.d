@@ -558,14 +558,16 @@ For details on DATA, CONTEXT, and SIGNAL, see
   :config
   (defun zp/whitespace-mode-lines-tail ()
     (interactive)
-    (if (bound-and-true-p whitespace-mode)
-        (progn
-          (whitespace-mode -1)
-          (message "Whitespace mode disabled in current buffer"))
-      (let ((whitespace-style '(face trailing lines-tail))
-            (whitespace-line-column nil))
-        (whitespace-mode t)
-        (message "Whitespace mode enabled in current buffer")))))
+    (unless (string-match " markdown-code-fontification:" (buffer-name))
+      ;; TODO: Clean up
+      (if (bound-and-true-p whitespace-mode)
+          (progn
+            (whitespace-mode -1)
+            (message "Whitespace mode disabled in current buffer"))
+        (let ((whitespace-style '(face trailing lines-tail))
+              (whitespace-line-column nil))
+          (whitespace-mode t)
+          (message "Whitespace mode enabled in current buffer"))))))
 
 (use-package interaction-log
   :bind (:map zp/toggle-map
