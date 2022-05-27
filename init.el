@@ -2906,6 +2906,7 @@ indirect-buffers."
   :hook ((org-agenda-finalize . zp/org-font-lock-add-energy-faces))
   :config
   (setq org-agenda-show-future-repeats t
+        org-agenda-show-log nil
         org-agenda-skip-scheduled-if-done 1
         org-agenda-skip-timestamp-if-done 1
         org-agenda-skip-deadline-if-done 1
