@@ -2349,6 +2349,10 @@ return `nil'."
   ;; generated an image
   (add-hook 'org-babel-after-execute-hook #'org-display-inline-images 'append))
 
+(use-package org-persist
+  :config
+  (setq org-persist-remote-files nil))
+
 (use-package zp-org
   :config
   ;; Formatting options for LaTeX preview-blocks
