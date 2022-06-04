@@ -469,7 +469,9 @@ For details on DATA, CONTEXT, and SIGNAL, see
 
 (use-package init-cl)
 
-(use-package slime)
+(use-package slime
+  :init
+  (setq inferior-lisp-program "sbcl"))
 
 (use-package ibuffer
   :init
