@@ -295,7 +295,7 @@
 
 (defun zp/mode-line-dark-theme ()
   (set-face-attribute 'mode-line nil
-                      :background "#293233"
+                      :background "#33224d"
                       :foreground "#bfe9bd"
                       :weight 'bold)
   (set-face-attribute 'mode-line-active nil
@@ -314,7 +314,7 @@
 
 (defun zp/mode-line-light-theme ()
   (set-face-attribute 'mode-line nil
-                      :background "#d4c692"
+                      :background "#cebee6"
                       :foreground "#333"
                       :weight 'bold)
   (set-face-attribute 'mode-line-active nil
