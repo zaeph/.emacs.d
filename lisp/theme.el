@@ -1,6 +1,6 @@
 ;;; theme.el --- Custom theme with day/night cycle -*- fill-column: 78; lexical-binding: t; -*-
 
-;; Copyright © 2020 Leo Vivier <leo.vivier+dev@gmail.com>
+;; Copyright © 2020-2022 Leo Vivier <leo.vivier+dev@gmail.com>
 
 ;; Author: Leo Vivier <leo.vivier+dev@gmail.com>
 ;; URL: https://github.com/zaeph/.emacs.d
