@@ -791,11 +791,14 @@ For details on DATA, CONTEXT, and SIGNAL, see
 
 (use-package lispy
   :load-path "~/projects/lispy"
-  :hook (emacs-lisp-mode . lispy-mode)
+  :hook ((emacs-lisp-mode . lispy-mode)
+         (lisp-mode . lispy-mode)
+         (slime-repl-mode . lispy-mode))
   :config
   (defun lispy-mode-unbind-keys ()
     "Modify keymaps used by ‘lispy-mode’."
     (define-key lispy-mode-map (kbd "M-o") nil))
+
   (lispy-mode-unbind-keys)
 
   (setq lispy-avy-keys
