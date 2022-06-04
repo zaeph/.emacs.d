@@ -108,6 +108,9 @@
 ;; Avoid loading older byte-compiled version
 (setq load-prefer-newer t)
 
+;; Pixel-accurate resize
+(setq frame-resize-pixelwise t)
+
 ;; Turn off background when Emacs is run with -nt
 (defun on-after-init ()
   "Turn off background."
