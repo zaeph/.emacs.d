@@ -1491,14 +1491,17 @@ SEARCH is a string to be interpreted by notmuch-search."
         zp/message-ispell-alist (zp/notmuch-make-ispell-alist)
         zp/message-sigs-alist (zp/notmuch-make-sigs-alist)
         zp/notmuch-saved-queries
-        '(("pro"        . "tag:pro and not tag:auto")
-          ("etalab"     . "tag:etalab and not tag:auto")
-          ("dev"        . "tag:dev and not tag:auto")
-          ("beta"       . "(tag:list or tag:auto or tag:news)")
-          ("lists"      . "tag:list and not tag:auto")
-          ("news"      . "tag:news and not tag:auto")
-          ("dev-github" . "tag:dev and tag:github and tag:auto")
-          ("dev-forum"  . "tag:dev and tag:forum and tag:auto"))
+        '(("pro"              . "tag:pro and not tag:auto")
+          ("etalab"           . "tag:etalab and not tag:auto")
+          ("dev"              . "tag:dev and not tag:auto")
+          ("beta"             . "(tag:list or tag:auto or tag:news)")
+          ("lists"            . "tag:list and not tag:auto")
+          ("list-emacs-devel" . "(tag:list and tag:emacs-devel) and not tag:auto")
+          ("list-emacs-fr" . "(tag:list and tag:emacs-fr) and not tag:auto")
+          ("list-org"         . "(tag:list and tag:org) and not tag:auto")
+          ("news"             . "tag:news and not tag:auto")
+          ("dev-github"       . "tag:dev and tag:github and tag:auto")
+          ("dev-forum"        . "tag:dev and tag:forum and tag:auto"))
         notmuch-saved-searches
         `((:name "inbox" :key "i" :query "tag:inbox and not (tag:auto or tag:list or tag:news)")
           (:name "unread" :key "u" :query "tag:unread and not tag:auto")
@@ -1521,7 +1524,10 @@ SEARCH is a string to be interpreted by notmuch-search."
           ,@(zp/notmuch-format-search "news" "n")
 
           ;; Lists
-          ,@(zp/notmuch-format-search "lists" "l")
+          ,@(zp/notmuch-format-search "lists" "la")
+          ,@(zp/notmuch-format-search "list-emacs-devel" "le")
+          ,@(zp/notmuch-format-search "list-emacs-fr" "lf")
+          ,@(zp/notmuch-format-search "list-org" "lo")
 
           ;; GitHub
           ,@(zp/notmuch-format-search "dev-github" "g")
