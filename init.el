@@ -313,8 +313,8 @@ For details on DATA, CONTEXT, and SIGNAL, see
 (define-key ctl-x-map "t" 'zp/toggle-map)
 
 (define-key zp/toggle-map (kbd "d") #'toggle-debug-on-error)
-(define-key zp/toggle-map (kbd "Q") #'toggle-debug-on-quit)
-(define-key zp/toggle-map (kbd "q") #'electric-quote-local-mode)
+(define-key zp/toggle-map (kbd "q") #'toggle-debug-on-quit)
+(define-key zp/toggle-map (kbd "Q") #'electric-quote-local-mode)
 (define-key zp/toggle-map (kbd "F") #'flyspell-mode)
 (define-key zp/toggle-map (kbd "a") #'auto-fill-mode)
 (define-key zp/toggle-map (kbd "l") #'display-line-numbers-mode)
