@@ -1714,7 +1714,7 @@ due today, and showing all of them."
          (message "Ignore items in the future."))))
 
 (defvar zp/org-agenda-sort-by-lifo nil
-  "When non-nil, sort by reverse FIFO order.")
+  "When non-nil, sort by LIFO order.")
 
 (defun zp/toggle-org-agenda-sort-by-lifo ()
   (interactive)
@@ -1723,7 +1723,7 @@ due today, and showing all of them."
                                         'zp/org-agenda-sort-by-lifo)))
         (org-agenda-redo))
       (message "Show items in reverse FIFO order.")
-    (message "Show items in FIFO order.")))
+    (message "Show items in LIFO order.")))
 
 (defvar zp/org-agenda-include-projects t
   "When non-nil, include projects in the org-agenda task view.")
