@@ -1722,8 +1722,8 @@ due today, and showing all of them."
                                   (not (zp/get-agenda-local
                                         'zp/org-agenda-sort-by-lifo)))
         (org-agenda-redo))
-      (message "Show items in reverse FIFO order.")
-    (message "Show items in LIFO order.")))
+      (message "Show items in LIFO order.")
+    (message "Show items in FIFO order.")))
 
 (defvar zp/org-agenda-include-projects t
   "When non-nil, include projects in the org-agenda task view.")
