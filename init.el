@@ -1380,7 +1380,8 @@ With numeric prefix arg DEC, decrement the integer by DEC amount."
   (setq send-mail-function 'sendmail-send-it))
 
 (use-package notmuch
-  :bind (:map notmuch-search-mode-map
+  :bind (("s-M-l" . notmuch)
+         :map notmuch-search-mode-map
          ("g" . notmuch-refresh-this-buffer)
          :map notmuch-show-mode-map
          ("C-c C-o" . goto-address-at-point))
@@ -1388,6 +1389,7 @@ With numeric prefix arg DEC, decrement the integer by DEC amount."
          ;; (notmuch-message-mode . electric-quote-local-mode)
          )
   :config
+  (use-package zp-notmuch)
   (setq notmuch-always-prompt-for-sender t)
 
   (setq-default notmuch-search-oldest-first nil)
@@ -1407,10 +1409,6 @@ With numeric prefix arg DEC, decrement the integer by DEC amount."
       (interactive (notmuch-interactive-region))
       (notmuch-show-tag (list "+deleted" "-inbox" "-draft"))
       (notmuch-show-next-thread-show)))
-
-
-  (define-key notmuch-hello-mode-map "q" #'zp/notmuch-hello-quit)
-  (define-key notmuch-search-mode-map "g" #'notmuch-refresh-this-buffer)
 
   (setq mail-host-address "hidden")
 
@@ -1453,33 +1451,11 @@ SEARCH is a string to be interpreted by notmuch-search."
     (zp/color-inbox-if-unread "pro-inbox" "tag:pro")
     (zp/color-inbox-if-unread "lists-inbox" "tag:list")
     (zp/color-inbox-if-unread "dev-github-inbox" "tag:github")
-    (zp/color-inbox-if-unread "dev-forum-inbox" "tag:forum"))
-
-  ;;----------------------
-  ;; Switching to notmuch
-  ;;----------------------
-
-  (defun zp/notmuch-hello-quit ()
-    (interactive)
-    (notmuch-bury-or-kill-this-buffer)
-    (set-window-configuration zp/notmuch-before-config))
-
-  (defun zp/switch-to-notmuch ()
-    (interactive)
-    (cond ((string-match "\\*notmuch-hello\\*" (buffer-name))
-           (zp/notmuch-hello-quit))
-          ((string-match "\\*notmuch-.*\\*" (buffer-name))
-           (notmuch-bury-or-kill-this-buffer))
-          (t
-           (setq zp/notmuch-before-config (current-window-configuration))
-           (delete-other-windows)
-           (notmuch)))))
+    (zp/color-inbox-if-unread "dev-forum-inbox" "tag:forum")))
 
 (use-package zp-notmuch
-  :bind (("s-M-l" . zp/switch-to-notmuch)
-         :map notmuch-hello-mode-map
-         ("q" . zp/notmuch-hello-quit)
-         :map notmuch-show-mode-map
+  :after notmuch
+  :bind (:map notmuch-show-mode-map
          ("v" . zp/notmuch-view-html)
          :map notmuch-search-mode-map
          ("v" . zp/notmuch-search-view-html)
@@ -1491,7 +1467,8 @@ SEARCH is a string to be interpreted by notmuch-search."
           ("M-<" . zp/message-goto-top)
           ("M->" . zp/message-goto-bottom)
           ("C-c C-z" . zp/message-kill-to-signature)))
-  :commands (zp/notmuch-identities-get)
+  :commands (notmuch
+             zp/notmuch-identities-get)
   :custom
   (zp/notmuch-fcc-tags-default "-inbox +sent -unread")
   :config
