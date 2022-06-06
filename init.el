@@ -4033,7 +4033,7 @@ Check their respective dosctrings for more info."
   (setq appt-delete-window-function (lambda () t))
 
   ;; Notification script to handle appt
-  (setq zp/appt-notification-app "~/.bin/appt-notify")
+  (setq zp/appt-notification-app "~/bin/appt-notify")
 
   (defun zp/appt-display (min-to-app _new-time msg)
     (if (atom min-to-app)
