@@ -1,6 +1,6 @@
 ;;; zp-lispy.el --- Customisation for Lispy  -*- fill-column: 78; lexical-binding: t; -*-
 
-;; Copyright © 2021 Leo Vivier <zaeph@zaeph.net>
+;; Copyright © 2021-2022 Leo Vivier <zaeph@zaeph.net>
 
 ;; Author: Leo Vivier <zaeph@zaeph.net>
 ;; Keywords: lispy
@@ -31,6 +31,7 @@
 ;;; Code:
 ;;;; Library Requires
 (require 'lispy)
+(require 'map)
 
 (defgroup zp/lispy nil
   "Extra customisation for `lispy'."
