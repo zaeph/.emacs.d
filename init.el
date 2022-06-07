@@ -504,7 +504,9 @@ For details on DATA, CONTEXT, and SIGNAL, see
 (use-package gif-screencast
   :commands (gif-screencast)
   :bind (("<f8>" . gif-screencast-toggle-pause)
-         ("<f9>" . gif-screencast-stop)))
+         ("<f9>" . gif-screencast-stop))
+  :config
+  (setq gif-screencast-output-directory "/home/zaeph/capture/emacs/"))
 
 (use-package init-undo-tree)
 
