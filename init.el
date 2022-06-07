@@ -844,7 +844,21 @@ For details on DATA, CONTEXT, and SIGNAL, see
 (use-package yasnippet
   :config
   (yas-global-mode 1)
-  (global-set-key (kbd "s-<backspace>") 'yas-prev-field))
+  (global-set-key (kbd "s-<backspace>") 'yas-prev-field)
+
+  ;; Helpers
+  (defun zp/yasnippet-sh-getopts (yas-text)
+    "Snippet for expanding getopts statements."
+    (let ((format-string
+           (string-join '("%c)\n#TODO: Implement"
+                          "echo \"Unimplemented\""
+                          "exit 0"
+                          ";;")
+                        "\n")))
+      (mapconcat (lambda (c)
+                   (format format-string c))
+                 (replace-regexp-in-string ":" "" yas-text)
+                 "\n"))))
 
 (use-package winner
   :bind (("s-u" . winner-undo)
