@@ -1570,10 +1570,18 @@ SEARCH is a string to be interpreted by notmuch-search."
   :init
   (setq lsp-keymap-prefix "s-l")
   :hook ((lsp-mode . lsp-enable-which-key-integration)
-         (python-mode . lsp))
+         (python-mode . lsp)
+         (go-mode . lsp))
   :bind-keymap ("s-l" . lsp-command-map)
   :config
-  (setq lsp-completion-enable-additional-text-edit nil))
+  (setq lsp-completion-enable-additional-text-edit nil)
+  (setq lsp-enabled-clients '(pyright gopls)))
+
+(use-package zp-lsp
+  :config
+  (setq zp/lsp-before-save-functions '(lsp-format-buffer
+                                       lsp-organize-imports)
+        zp/lsp-before-save-modes '(go-mode)))
 
 (use-package lsp-ui
   :config
@@ -1659,11 +1667,7 @@ SEARCH is a string to be interpreted by notmuch-search."
   :ensure t
   :hook (python-mode . (lambda ()
                          (require 'lsp-pyright)
-                         (lsp)))
-  :config
-  (with-eval-after-load "lsp-mode"
-    ;; (add-to-list 'lsp-disabled-clients 'jedi)
-    (add-to-list 'lsp-enabled-clients 'pyright)))
+                         (lsp))))
 
 ;; (use-package elpy
 ;;   :bind (:map elpy-mode-map
@@ -1676,6 +1680,12 @@ SEARCH is a string to be interpreted by notmuch-search."
 ;;   (elpy-enable)
 ;;   :config
 ;;   (setq elpy-modules (delq 'elpy-module-flymake elpy-modules)))
+
+;;----------------------------------------------------------------------------
+;;; Racket
+;;----------------------------------------------------------------------------
+
+(use-package go-mode)
 
 ;;----------------------------------------------------------------------------
 ;;; Racket
