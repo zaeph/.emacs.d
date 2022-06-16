@@ -726,7 +726,8 @@ For details on DATA, CONTEXT, and SIGNAL, see
 (use-package flycheck-pos-tip
   :requires flycheck
   :config
-  (flycheck-pos-tip-mode))
+  ;; (flycheck-pos-tip-mode)
+  )
 
 (use-package flycheck-posframe
   :ensure t
