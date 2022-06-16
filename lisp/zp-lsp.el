@@ -36,10 +36,6 @@
   "Alist of modes and LSP functions to run with `before-save'.
 See `zp/lsp-before-save' for more details.")
 
-(defvar zp/lsp-before-save-modes nil
-  "List of major-modes on which to apply `zp/lsp-before-save-functions'.
-See `zp/lsp-before-save' for more details.")
-
 (defun zp/lsp-before-save ()
   "Run `zp/lsp-before-save-functions' in supported buffer.
 Meant to be used with `before-save-hook'."
