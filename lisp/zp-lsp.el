@@ -33,7 +33,7 @@
 (require 'lsp)
 
 (defvar zp/lsp-before-save-functions nil
-  "List of LSP functions to run with the `before-save' hook.
+  "Alist of modes and LSP functions to run with `before-save'.
 See `zp/lsp-before-save' for more details.")
 
 (defvar zp/lsp-before-save-modes nil
@@ -43,8 +43,10 @@ See `zp/lsp-before-save' for more details.")
 (defun zp/lsp-before-save ()
   "Run `zp/lsp-before-save-functions' in supported buffer.
 Meant to be used with `before-save-hook'."
-  (when (apply #'derived-mode-p zp/lsp-before-save-modes)
-    (mapc #'funcall zp/lsp-before-save-functions)))
+  (let ((modes (mapcar #'car zp/lsp-before-save-functions)))
+    (when-let ((mode (apply #'derived-mode-p modes)))
+      (let ((functions (alist-get mode zp/lsp-before-save-functions)))
+        (mapc #'funcall functions)))))
 
 (provide 'zp-lsp)
 ;;; zp-lsp.el ends here

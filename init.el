@@ -1579,11 +1579,11 @@ SEARCH is a string to be interpreted by notmuch-search."
   (setq lsp-enabled-clients '(pyright gopls)))
 
 (use-package zp-lsp
+  :hook (lsp-mode . zp/lsp-before-save-functions)
   :config
-  (setq zp/lsp-before-save-functions '(lsp-format-buffer
-                                       lsp-organize-imports)
-        zp/lsp-before-save-modes '(python-mode
-                                   go-mode)))
+  (setq zp/lsp-before-save-functions
+        '((go-mode . (lsp-format-buffer
+                      lsp-organize-imports)))))
 
 (use-package lsp-ui
   :config
