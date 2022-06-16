@@ -1582,7 +1582,8 @@ SEARCH is a string to be interpreted by notmuch-search."
   :config
   (setq zp/lsp-before-save-functions '(lsp-format-buffer
                                        lsp-organize-imports)
-        zp/lsp-before-save-modes '(go-mode)))
+        zp/lsp-before-save-modes '(python-mode
+                                   go-mode)))
 
 (use-package lsp-ui
   :config
