@@ -44,5 +44,9 @@ Meant to be used with `before-save-hook'."
       (let ((functions (alist-get mode zp/lsp-before-save-functions)))
         (mapc #'funcall functions)))))
 
+(defun zp/lsp-before-save-install ()
+  "Install `zp/lsp-before-save' for `before-save-hook'."
+  (add-hook 'before-save-hook #'zp/lsp-before-save nil t))
+
 (provide 'zp-lsp)
 ;;; zp-lsp.el ends here
