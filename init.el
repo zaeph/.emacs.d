@@ -364,10 +364,6 @@ For details on DATA, CONTEXT, and SIGNAL, see
 ;; Set fringe sizes
 (fringe-mode 20)
 
-;;----------------------------------------------------------------------------
-;; Electric
-;;----------------------------------------------------------------------------
-(setq electric-quote-context-sensitive 1)
 
 ;;----------------------------------------------------------------------------
 ;; Backups
@@ -454,6 +450,10 @@ For details on DATA, CONTEXT, and SIGNAL, see
       epg-user-id (zp/get-string-from-file "~/org/pp/gpg/gpg-key-id")
       mml-secure-openpgp-sign-with-sender t
       mml-secure-openpgp-encrypt-to-self t)
+
+(use-package electric
+  :init
+  (electric-pair-mode +1))
 
 (use-package crdt
   :commands (crdt-connect
