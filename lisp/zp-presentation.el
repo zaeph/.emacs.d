@@ -28,21 +28,31 @@
 ;; Basic presentation mode.
 
 ;;; Code:
-(defvar zp/presentation-mode-height 200
+;;;; Library Requires
+(require 'doom-modeline)
+
+(defvar zp/presentation-height 200
   "Height to use for default face when in `zp/presentation-mode'.")
 
-(defvar zp/presentation-mode-height-default nil
+(defvar zp/presentation-height-default nil
   "Height of default face before entering `zp/presentation-mode'.")
+
+(defvar zp/presentation-mode-line-height-default nil
+  "Height of default mode-line before entering `zp/presentation-mode'.")
 
 (define-minor-mode zp/presentation-mode
   "Save buffers silently when exiting."
   :group 'zp/presentation
   :lighter " Pres"
   :global t
-  (if (not zp/presentation-mode)
-      (set-face-attribute 'default nil :height zp/presentation-mode-height-default)
-    (setq zp/presentation-mode-height-default (face-attribute 'default :height))
-    (set-face-attribute 'default nil :height zp/presentation-mode-height)))
+  (cond (zp/presentation-mode
+         (setq zp/presentation-height-default (face-attribute 'default :height)
+               zp/presentation-mode-line-height-default doom-modeline-height)
+         (set-face-attribute 'default nil :height zp/presentation-height))
+        (t
+         (set-face-attribute 'default nil :height zp/presentation-height-default)))
+  (doom-modeline-refresh-bars))
+
 
 (provide 'zp-presentation)
 ;;; zp-presentation.el ends here
