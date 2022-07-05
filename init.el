@@ -4615,6 +4615,7 @@ the beginning of the line."
 
   ;; Day/night cycle
   (setq zp/time-of-day-sections '("04:00" "05:00" "15:00" "16:00" "00:00"))
+  (zp/emacs-dark-theme)
   (zp/switch-theme-auto))
 
 ;;----------------------------------------------------------------------------
