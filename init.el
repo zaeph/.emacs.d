@@ -494,9 +494,9 @@ For details on DATA, CONTEXT, and SIGNAL, see
   (setq inferior-lisp-program "sbcl"))
 
 (use-package ibuffer
-  :init
-  (unbind-key "M-o" 'ibuffer-mode-map)
-  :bind (("C-x C-b" . ibuffer-jump)))
+  :bind (("C-x C-b" . ibuffer-jump))
+  :config
+  (unbind-key "M-o" 'ibuffer-mode-map))
 
 (use-package init-server)
 
