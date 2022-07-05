@@ -707,6 +707,10 @@ For details on DATA, CONTEXT, and SIGNAL, see
 (use-package mpv)
 (use-package waveform)
 
+(use-package burly
+  :bind (("C-x r W" . burly-bookmark-windows)
+         ("C-x r F" . burly-bookmark-frames)))
+
 (use-package bicycle
   :after outline
   :bind (:map outline-minor-mode-map
