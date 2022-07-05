@@ -528,15 +528,6 @@ For details on DATA, CONTEXT, and SIGNAL, see
   :config
   (setq gif-screencast-output-directory "/home/zaeph/capture/emacs/"))
 
-(use-package undo-tree
-  :bind (("C-\\" . undo-tree-redo))
-  :config
-  ;; Disable undo-tree for regions since it often corrupts the history
-  (setq undo-tree-enable-undo-in-region nil)
-
-  ;; Fire undo-tree's global mode
-  (global-undo-tree-mode))
-
 (use-package init-evil)
 
 (use-package rg
