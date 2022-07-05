@@ -62,6 +62,9 @@
 ;; Increase buffer-size subprocesses
 (setq read-process-output-max (* 1024 1024))		;Default: 4096
 
+;; Undo parameters
+(setq undo-limit 16000000)
+
 ;; (toggle-debug-on-error)
 ;; (toggle-debug-on-quit)
 ;; (setq garbage-collection-messages t)
