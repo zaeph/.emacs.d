@@ -89,6 +89,21 @@
 ;; Suppress cl deprecation warnings
 (setq byte-compile-warnings '(cl-functions))
 
+;; Supress some warnings
+(setq warning-minimum-level :error)
+(add-to-list 'warning-suppress-types '(yasnippet backquote-change))
+
+;; Toggle for `warning-minimum-level'
+(defun zp/toggle-warning-minimum-level ()
+  (interactive)
+  (setq warning-minimum-level
+        (pcase warning-minimum-level
+          (:error
+           :warning)
+          (:warning
+           :error)))
+  (message (format "warning-minimum-level set to %s" warning-minimum-level)))
+
 ;; Add folders to load-path
 (add-to-list 'load-path "~/.emacs.d/lisp/")
 (add-to-list 'load-path "~/.emacs.d/extra/")
@@ -322,6 +337,7 @@ For details on DATA, CONTEXT, and SIGNAL, see
 (define-key zp/toggle-map (kbd "P") #'print-circle-mode)
 (define-key zp/toggle-map (kbd "s") #'so-long-mode)
 (define-key zp/toggle-map (kbd "S") #'scroll-bar-mode)
+(define-key zp/toggle-map (kbd "w") #'zp/toggle-warning-minimum-level)
 
 (define-key help-map (kbd "h") #'zp/switch-to-help)
 
@@ -1841,8 +1857,6 @@ SEARCH is a string to be interpreted by notmuch-search."
                 TeX-parse-self t
                 TeX-auto-save t
                 LaTeX-includegraphics-read-file 'LaTeX-includegraphics-read-file-relative)
-  (setq warning-suppress-types nil)
-  (add-to-list 'warning-suppress-types '(yasnippet backquote-change))
   (add-to-list 'TeX-command-list '("Make" "make" TeX-run-compile nil t))
 
   ;; Used to prevent radio tables from having trailing $
