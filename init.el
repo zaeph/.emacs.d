@@ -1839,8 +1839,6 @@ SEARCH is a string to be interpreted by notmuch-search."
 ;;----------------------------------------------------------------------------
 ;; AUCTeX
 ;;----------------------------------------------------------------------------
-(use-package tex-buf)
-
 (use-package latex
   :bind (:map LaTeX-mode-map
          (("C-x n e" . zp/LaTeX-narrow-to-environment)
