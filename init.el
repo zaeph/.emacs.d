@@ -192,7 +192,7 @@
         ;; Let `display-buffer' reuse visible frames for all buffers. This must
         ;; be the last entry in `display-buffer-alist', because it overrides any
         ;; previous entry with more specific actions.
-        ("." nil (reusable-frames . visible))))
+        ("." nil (reusable-frames . nil))))
 
 ;; Enable disabled commands
 (setq disabled-command-function nil)
