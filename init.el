@@ -356,6 +356,7 @@ For details on DATA, CONTEXT, and SIGNAL, see
 (global-set-key (kbd "C-x C-c") #'zp/delete-frame-ask)
 
 ;; Actions
+(global-set-key (kbd "M-\\") #'undo-redo)
 (global-set-key (kbd "M-SPC") #'delete-horizontal-space)
 (global-set-key (kbd "M-S-SPC") #'just-one-space)
 (global-set-key (kbd "s-.") #'zp/echo-buffer-name)
