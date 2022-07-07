@@ -1,8 +1,8 @@
 ;;; zp-ispell.el --- Expansion for ispell  -*- fill-column: 78; lexical-binding: t; -*-
 
-;; Copyright © 2020 Leo Vivier <leo.vivier+dev@gmail.com>
+;; Copyright © 2020 Leo Vivier <zaeph@zaeph.net>
 
-;; Author: Leo Vivier <leo.vivier+dev@gmail.com>
+;; Author: Leo Vivier <zaeph@zaeph.net>
 ;; URL: https://github.com/zaeph/.emacs.d
 ;; Keywords: ispell
 ;; Version: 0.1.0

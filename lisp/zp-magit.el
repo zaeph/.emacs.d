@@ -1,8 +1,8 @@
 ;;; zp-magit.el --- Expansion for Magit  -*- fill-column: 78; lexical-binding: t; -*-
 
-;; Copyright © 2020 Leo Vivier <leo.vivier+dev@gmail.com>
+;; Copyright © 2020 Leo Vivier <zaeph@zaeph.net>
 
-;; Author: Leo Vivier <leo.vivier+dev@gmail.com>
+;; Author: Leo Vivier <zaeph@zaeph.net>
 ;; Keywords: git, magit
 ;; Version: 0.1.0
 ;; Package-Requires: magit

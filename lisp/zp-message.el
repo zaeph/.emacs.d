@@ -1,8 +1,8 @@
 ;;; zp-message.el --- Expansion for message-mode  -*- fill-column: 78; lexical-binding: t; -*-
 
-;; Copyright © 2020 Leo Vivier <leo.vivier+dev@gmail.com>
+;; Copyright © 2020 Leo Vivier <zaeph@zaeph.net>
 
-;; Author: Leo Vivier <leo.vivier+dev@gmail.com>
+;; Author: Leo Vivier <zaeph@zaeph.net>
 ;; URL: https://github.com/zaeph/.emacs.d
 ;; Keywords: emacs, message-mode
 ;; Version: 0.1.0

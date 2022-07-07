@@ -1,8 +1,8 @@
 ;;; zp-org.el --- Personal expansion to Org-mode  -*- fill-column: 78; lexical-binding: t; -*-
 
-;; Copyright © 2013-2020 Leo Vivier <leo.vivier+dev@gmail.com>
+;; Copyright © 2013-2020 Leo Vivier <zaeph@zaeph.net>
 
-;; Author: Leo Vivier <leo.vivier+dev@gmail.com>
+;; Author: Leo Vivier <zaeph@zaeph.net>
 ;; Keywords: org
 ;; Version: 0.1.0
 ;; Package-Requires: org
