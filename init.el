@@ -554,6 +554,7 @@ For details on DATA, CONTEXT, and SIGNAL, see
 (use-package consult
   ;; :ensure t
   :bind (([remap goto-line] . consult-goto-line)
+         ("M-g M-g" . consult-line)
          ;; ([remap yank-pop] . consult-yank-pop)
          ))
 
@@ -1131,10 +1132,6 @@ numerical arguments."
   ;;----------
   ;; Bindings
   ;;----------
-
-  ;; Use normal isearch
-  (define-key pdf-view-mode-map (kbd "C-s") 'isearch-forward)
-  (define-key pdf-view-mode-map (kbd "C-r") 'isearch-backward)
 
   (define-key pdf-view-mode-map (kbd "C-x C-s") 'zp/pdf-view-save-buffer)
 
@@ -2654,8 +2651,8 @@ with effort estimates and total time."
 
 (use-package counsel
   :after swiper
-  :bind (("C-s" . zp/counsel-grep-or-swiper)
-         ("C-r" . counsel-grep-or-swiper-backward)
+  :bind (;; ("C-s" . zp/counsel-grep-or-swiper)
+         ;; ("C-r" . counsel-grep-or-swiper-backward)
          ;; Commented because I use the Helm equivalents
          ;; ("M-x" . counsel-M-x)
          ;; ("<menu>" . counsel-M-x)
