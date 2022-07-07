@@ -519,4 +519,4 @@ Ensures that the toggles are set to their default variable."
        ,name ,docstring ,targets ,heads ,back)))
 
 (provide 'hydra-org-refile)
-;;; test.el ends here
+;;; hydra-org-refile.el ends here
