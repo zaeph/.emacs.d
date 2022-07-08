@@ -4806,3 +4806,5 @@ See ‘~/.bin/terminator-dwim’ for more info."
 (put 'narrow-to-region 'disabled nil)
 (put 'LaTeX-narrow-to-environment 'disabled nil)
 (put 'TeX-narrow-to-group 'disabled nil)
+
+;;; init.el ends here
