@@ -2603,10 +2603,10 @@ with effort estimates and total time."
 
   (setq completion-styles '(orderless))
 
-  (defun vifon/orderless-without-if-bang (pattern index total)
+  (defun vifon/orderless-without-if-bang (pattern _index _total)
     (when (string-prefix-p "!" pattern)
       `(orderless-without-literal . ,(substring pattern 1))))
-  (defun vifon/orderless-literal-if-equal (pattern index total)
+  (defun vifon/orderless-literal-if-equal (pattern _index _total)
     (when (string-suffix-p "=" pattern)
       `(orderless-literal . ,(substring pattern 0 -1))))
   (setq orderless-style-dispatchers '(vifon/orderless-without-if-bang
@@ -2732,7 +2732,7 @@ with effort estimates and total time."
 
   (setq consult-narrow-key "<")
 
-  (defun vifon/orderless-fix-consult-tofu (pattern index total)
+  (defun vifon/orderless-fix-consult-tofu (pattern _index _total)
     "Ignore the last character which is hidden and used only internally."
     (when (string-suffix-p "$" pattern)
       `(orderless-regexp . ,(concat (substring pattern 0 -1)
@@ -3949,7 +3949,7 @@ command will offer you to create one."
   :config
   (org-roam-bibtex-mode 1)
   (setq orb-insert-interface 'helm-bibtex)
-  (setq orb-file-field-extensions '("pdf" "epub")))
+  (setq orb-attached-file-extensions '("pdf" "epub")))
 
 ;; (use-package org-roam-bibtex
 ;;   :requires bibtex-completion
