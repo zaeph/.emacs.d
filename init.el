@@ -1304,7 +1304,7 @@ If text is selected, adds furigana to the selected kanji instead."
 
   (defun thing-at-point-goto-beginning-of-integer ()
     "Go to end of integer at point."
-    (let ((inhibit-changing-match-data t))
+    (save-match-data
       ;; Skip backward over digits
       (skip-chars-backward "[[:digit:]]")
       ;; Check for digits and optional sign
