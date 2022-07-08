@@ -339,7 +339,7 @@ For details on DATA, CONTEXT, and SIGNAL, see
 ;;; Hotfixes
 ;;----------------------------------------------------------------------------
 ;; Cancelling the indent-region curse
-(defun zp/advice-noop (&rest args)
+(defun zp/advice-noop (&rest _args)
   "Noop for advices.
 Catches all ARGS and does nothing with them."
   nil)
@@ -794,7 +794,8 @@ Catches all ARGS and does nothing with them."
   ;; Taken from https://github.com/CeleritasCelery/emacs.d/blob/master/emacs.org#indent
   ;; TODO: Use el-patch to catch upstream modifications
   (defun zp/lisp-indent-function (indent-point state)
-    "Override `lisp-indent-function' to properly handle plists. See the original function fo full description"
+    "Override `lisp-indent-function' to properly handle plists.
+For a full description, see the original function."
     (let ((normal-indent (current-column))
           (orig-point (point)))
       (goto-char (1+ (elt state 1)))
@@ -898,7 +899,7 @@ Catches all ARGS and does nothing with them."
   (global-set-key (kbd "s-<backspace>") 'yas-prev-field)
 
   ;; Helpers
-  (defun zp/yasnippet-sh-getopts (yas-text)
+  (defun zp/yasnippet-sh-getopts (text)
     "Snippet for expanding getopts statements."
     (let ((format-string
            (string-join '("%c)\n#TODO: Implement"
@@ -908,7 +909,7 @@ Catches all ARGS and does nothing with them."
                         "\n")))
       (mapconcat (lambda (c)
                    (format format-string c))
-                 (replace-regexp-in-string ":" "" yas-text)
+                 (replace-regexp-in-string ":" "" text)
                  "\n"))))
 
 (use-package winner
@@ -1290,7 +1291,7 @@ If text is selected, adds furigana to the selected kanji instead."
   :config
   (defun thing-at-point-goto-end-of-integer ()
     "Go to end of integer at point."
-    (let ((inhibit-changing-match-data t))
+    (save-match-data
       ;; Skip over optional sign
       (when (looking-at "[+-]")
         (forward-char 1))
@@ -1303,7 +1304,7 @@ If text is selected, adds furigana to the selected kanji instead."
 
   (defun thing-at-point-goto-beginning-of-integer ()
     "Go to end of integer at point."
-    (let ((inhibit-changing-match-data t))
+    (save-match-data
       ;; Skip backward over digits
       (skip-chars-backward "[[:digit:]]")
       ;; Check for digits and optional sign
@@ -2161,7 +2162,7 @@ return `nil'."
   (setq org-latex-hyperref-template nil)
 
   ;; Use Minted for src-blocks
-  (setq org-latex-listings 'minted)
+  (setq org-latex-src-block-backend 'minted)
 
   ;; Disable defaut packages
   (setq org-latex-default-packages-alist nil)
@@ -2326,7 +2327,7 @@ return `nil'."
         org-ellipsis "…"
         org-track-ordered-property-with-tag "ORDERED"
         org-tags-exclude-from-inheritance nil
-        org-catch-invisible-edits 'error
+        org-fold-catch-invisible-edits 'error
 
         org-tags-column -77)
 
@@ -2602,10 +2603,10 @@ with effort estimates and total time."
 
   (setq completion-styles '(orderless))
 
-  (defun vifon/orderless-without-if-bang (pattern index total)
+  (defun vifon/orderless-without-if-bang (pattern _index _total)
     (when (string-prefix-p "!" pattern)
       `(orderless-without-literal . ,(substring pattern 1))))
-  (defun vifon/orderless-literal-if-equal (pattern index total)
+  (defun vifon/orderless-literal-if-equal (pattern _index _total)
     (when (string-suffix-p "=" pattern)
       `(orderless-literal . ,(substring pattern 0 -1))))
   (setq orderless-style-dispatchers '(vifon/orderless-without-if-bang
@@ -2731,7 +2732,7 @@ with effort estimates and total time."
 
   (setq consult-narrow-key "<")
 
-  (defun vifon/orderless-fix-consult-tofu (pattern index total)
+  (defun vifon/orderless-fix-consult-tofu (pattern _index _total)
     "Ignore the last character which is hidden and used only internally."
     (when (string-suffix-p "$" pattern)
       `(orderless-regexp . ,(concat (substring pattern 0 -1)
@@ -3948,7 +3949,7 @@ command will offer you to create one."
   :config
   (org-roam-bibtex-mode 1)
   (setq orb-insert-interface 'helm-bibtex)
-  (setq orb-file-field-extensions '("pdf" "epub")))
+  (setq orb-attached-file-extensions '("pdf" "epub")))
 
 ;; (use-package org-roam-bibtex
 ;;   :requires bibtex-completion
@@ -4732,7 +4733,7 @@ the beginning of the line."
   "Run terminator in the CWD.
 
 Trim unnecessary TRAMP information from the path (e.g. /sudo:…),
-and forward it to terminator. ARGUMENTS can be any argument
+and forward it to terminator.  ARGUMENTS can be any argument
 accepted by terminator (e.g. ‘-x command’).
 
 See ‘~/.bin/terminator-dwim’ for more info."
@@ -4806,3 +4807,5 @@ See ‘~/.bin/terminator-dwim’ for more info."
 (put 'narrow-to-region 'disabled nil)
 (put 'LaTeX-narrow-to-environment 'disabled nil)
 (put 'TeX-narrow-to-group 'disabled nil)
+
+;;; init.el ends here
