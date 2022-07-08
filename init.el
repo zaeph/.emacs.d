@@ -335,7 +335,8 @@ For details on DATA, CONTEXT, and SIGNAL, see
 ;;----------------------------------------------------------------------------
 ;; Cancelling the indent-region curse
 (defun zp/advice-noop (&rest args)
-  "Noop for advices."
+  "Noop for advices.
+Catches all ARGS and does nothing with them."
   nil)
 
 (defun zp/hotfix-indent-region ()
