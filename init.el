@@ -2763,6 +2763,11 @@ with effort estimates and total time."
 ;;------------
 ;; Projectile
 ;;------------
+(use-package project
+  :bind-keymap ("C-c p" . project-prefix-map)
+  :config
+  (setq project-switch-commands #'project-dired)))
+
 (use-package projectile
   :bind-keymap ("C-c p" . projectile-command-map)
   :custom
