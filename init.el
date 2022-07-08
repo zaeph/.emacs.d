@@ -38,6 +38,7 @@
 
 ;; Catch the curse
 (when zp/original-init-finished
+  (message "[CURSE TRIGGERED]")
   (debug))
 
 ;; Change default face to prevent flashing
