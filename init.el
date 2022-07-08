@@ -2538,30 +2538,30 @@ with effort estimates and total time."
 
 (use-package orderless
   :after vertico
-  :config (progn
-            (setq orderless-matching-styles '(orderless-regexp
-                                              orderless-initialism
-                                              orderless-prefixes)
-                  orderless-component-separator #'orderless-escapable-split-on-space)
+  :config
+  (setq orderless-matching-styles '(orderless-regexp
+                                    orderless-initialism
+                                    orderless-prefixes)
+        orderless-component-separator #'orderless-escapable-split-on-space)
 
-            ;; Use the built-in "partial-completion" style to complete
-            ;; file inputs such as "/e/ni/co.nix" into
-            ;; "/etc/nixos/configuration.nix".  The "basic" style is
-            ;; needed to support the hostname completion in the TRAMP
-            ;; inputs such as "/sshx:HOSTNAME".
-            (setq completion-category-defaults nil
-                  completion-category-overrides '((file (styles basic partial-completion))))
+  ;; Use the built-in "partial-completion" style to complete
+  ;; file inputs such as "/e/ni/co.nix" into
+  ;; "/etc/nixos/configuration.nix".  The "basic" style is
+  ;; needed to support the hostname completion in the TRAMP
+  ;; inputs such as "/sshx:HOSTNAME".
+  (setq completion-category-defaults nil
+        completion-category-overrides '((file (styles basic partial-completion))))
 
-            (setq completion-styles '(orderless))
+  (setq completion-styles '(orderless))
 
-            (defun vifon/orderless-without-if-bang (pattern index total)
-              (when (string-prefix-p "!" pattern)
-                `(orderless-without-literal . ,(substring pattern 1))))
-            (defun vifon/orderless-literal-if-equal (pattern index total)
-              (when (string-suffix-p "=" pattern)
-                `(orderless-literal . ,(substring pattern 0 -1))))
-            (setq orderless-style-dispatchers '(vifon/orderless-without-if-bang
-                                                vifon/orderless-literal-if-equal))))
+  (defun vifon/orderless-without-if-bang (pattern index total)
+    (when (string-prefix-p "!" pattern)
+      `(orderless-without-literal . ,(substring pattern 1))))
+  (defun vifon/orderless-literal-if-equal (pattern index total)
+    (when (string-suffix-p "=" pattern)
+      `(orderless-literal . ,(substring pattern 0 -1))))
+  (setq orderless-style-dispatchers '(vifon/orderless-without-if-bang
+                                      vifon/orderless-literal-if-equal)))
 
 (use-package embark
   :bind (("C-c o" . embark-act)
@@ -2575,39 +2575,39 @@ with effort estimates and total time."
          ;; \\[keyboard-quit].
          ("g" . nil)
          ("l" . nil))
-  :config (progn
-            (setq embark-mixed-indicator-delay 0.2)
+  :config
+  (setq embark-mixed-indicator-delay 0.2)
 
-            ;; Make the eval action editable.  Evaluating code
-            ;; in-place is simple enough without Embark, if I invoke
-            ;; it with Embark, I almost definitely want to edit the
-            ;; expression beforehand.  And even if not, I can
-            ;; just confirm.
-            (cl-pushnew 'embark--allow-edit
-                        (alist-get 'pp-eval-expression embark-target-injection-hooks))
+  ;; Make the eval action editable.  Evaluating code
+  ;; in-place is simple enough without Embark, if I invoke
+  ;; it with Embark, I almost definitely want to edit the
+  ;; expression beforehand.  And even if not, I can
+  ;; just confirm.
+  (cl-pushnew 'embark--allow-edit
+              (alist-get 'pp-eval-expression embark-target-injection-hooks))
 
-            ;; Reload the project list after using
-            ;; C-u `embark-act' with `project-forget-project'.
-            ;; (cl-pushnew 'embark--restart
-            ;;             (alist-get 'project-forget-project embark-post-action-hooks))
+  ;; Reload the project list after using
+  ;; C-u `embark-act' with `project-forget-project'.
+  ;; (cl-pushnew 'embark--restart
+  ;;             (alist-get 'project-forget-project embark-post-action-hooks))
 
-            (defun embark-act-with-eval (expression)
-              "Evaluate EXPRESSION and call `embark-act' on the result."
-              (interactive "sExpression: ")
-              (with-temp-buffer
-                (insert (eval (read expression)))
-                (embark-act)))
+  (defun embark-act-with-eval (expression)
+    "Evaluate EXPRESSION and call `embark-act' on the result."
+    (interactive "sExpression: ")
+    (with-temp-buffer
+      (insert (eval (read expression)))
+      (embark-act)))
 
-            (dolist (keymap (list embark-variable-map embark-expression-map))
-              (define-key keymap (kbd "v") #'embark-act-with-eval))
+  (dolist (keymap (list embark-variable-map embark-expression-map))
+    (define-key keymap (kbd "v") #'embark-act-with-eval))
 
-            ;; Source: https://github.com/oantolin/embark/wiki/Additional-Actions#attaching-file-to-an-email-message
-            (autoload 'gnus-dired-attach "gnus-dired" nil t)
-            (defun embark-attach-file (file)
-              "Attach FILE to an email message."
-              (interactive "fAttach: ")
-              (gnus-dired-attach (list file)))
-            (bind-key "a" #'embark-attach-file embark-file-map)))
+  ;; Source: https://github.com/oantolin/embark/wiki/Additional-Actions#attaching-file-to-an-email-message
+  (autoload 'gnus-dired-attach "gnus-dired" nil t)
+  (defun embark-attach-file (file)
+    "Attach FILE to an email message."
+    (interactive "fAttach: ")
+    (gnus-dired-attach (list file)))
+  (bind-key "a" #'embark-attach-file embark-file-map))
 
 (use-package embark-consult
   :after (embark consult))
