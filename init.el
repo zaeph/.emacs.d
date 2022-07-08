@@ -899,7 +899,7 @@ For a full description, see the original function."
   (global-set-key (kbd "s-<backspace>") 'yas-prev-field)
 
   ;; Helpers
-  (defun zp/yasnippet-sh-getopts (yas-text)
+  (defun zp/yasnippet-sh-getopts (text)
     "Snippet for expanding getopts statements."
     (let ((format-string
            (string-join '("%c)\n#TODO: Implement"
@@ -909,7 +909,7 @@ For a full description, see the original function."
                         "\n")))
       (mapconcat (lambda (c)
                    (format format-string c))
-                 (replace-regexp-in-string ":" "" yas-text)
+                 (replace-regexp-in-string ":" "" text)
                  "\n"))))
 
 (use-package winner
