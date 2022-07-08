@@ -898,6 +898,7 @@ For details on DATA, CONTEXT, and SIGNAL, see
 (use-package ace-window
   :bind ("s-y" . ace-window)
   :config
+  (setq aw-dispatch-always t)
   (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)
         aw-scope 'frame))
 
