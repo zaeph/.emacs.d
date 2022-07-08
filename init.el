@@ -2625,6 +2625,7 @@ with effort estimates and total time."
          ([remap bookmark-jump] . consult-bookmark)
          ([remap apropos-command] . consult-apropos)
          ([remap imenu] . consult-imenu)
+         ("M-g M-i" . consult-imenu)
          ([remap apropos] . consult-apropos)
          ([remap switch-to-buffer] . consult-buffer)
          ([remap yank-pop] . consult-yank-pop)
