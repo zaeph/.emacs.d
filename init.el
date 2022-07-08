@@ -36,6 +36,10 @@
 
 ;;; Code:
 
+;; Catch the curse
+(when zp/original-init-finished
+  (debug))
+
 ;; Change default face to prevent flashing
 (set-face-attribute 'default nil :foreground "#bcaf8e" :background "#141414")
 
@@ -4787,6 +4791,11 @@ See ‘~/.bin/terminator-dwim’ for more info."
   (diminish 'whitespace-mode)
   (diminish 'magit-wip-mode)
   (diminish 'ws-butler-mode))
+
+;;----------------------------------------------------------------------------
+;;; Late hotfixes
+;;----------------------------------------------------------------------------
+(setq zp/original-init-finished t)
 
 ;;----------------------------------------------------------------------------
 ;; Custom
