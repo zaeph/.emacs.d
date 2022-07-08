@@ -915,8 +915,8 @@ For details on DATA, CONTEXT, and SIGNAL, see
              (call-interactively (symbol-function ',fn)))))))
 
   (with-eval-after-load 'embark
-    (define-key embark-file-map     (kbd "o") (zp/embark-ace-action find-file))
-    (define-key embark-buffer-map   (kbd "o") (zp/embark-ace-action switch-to-buffer))
+    (define-key embark-file-map (kbd "o") (zp/embark-ace-action find-file))
+    (define-key embark-buffer-map (kbd "o") (zp/embark-ace-action switch-to-buffer))
     (define-key embark-bookmark-map (kbd "o") (zp/embark-ace-action bookmark-jump))))
 
 (use-package avy
@@ -2640,12 +2640,12 @@ with effort estimates and total time."
          (funcall #',split-type)
          (call-interactively #',fn))))
 
-  (define-key embark-file-map     (kbd "2") (zp/embark-split-action find-file split-window-below))
-  (define-key embark-buffer-map   (kbd "2") (zp/embark-split-action switch-to-buffer split-window-below))
+  (define-key embark-file-map (kbd "2") (zp/embark-split-action find-file split-window-below))
+  (define-key embark-buffer-map (kbd "2") (zp/embark-split-action switch-to-buffer split-window-below))
   (define-key embark-bookmark-map (kbd "2") (zp/embark-split-action bookmark-jump split-window-below))
 
-  (define-key embark-file-map     (kbd "3") (zp/embark-split-action find-file split-window-right))
-  (define-key embark-buffer-map   (kbd "3") (zp/embark-split-action switch-to-buffer split-window-right))
+  (define-key embark-file-map (kbd "3") (zp/embark-split-action find-file split-window-right))
+  (define-key embark-buffer-map (kbd "3") (zp/embark-split-action switch-to-buffer split-window-right))
   (define-key embark-bookmark-map (kbd "3") (zp/embark-split-action bookmark-jump split-window-right)))
 
 (use-package embark-consult
