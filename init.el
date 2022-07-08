@@ -2533,6 +2533,9 @@ with effort estimates and total time."
 
 (use-package orderless
   :after vertico
+  :bind (:map zp/toggle-map
+         (("vf" . vertico-flat-mode)
+          ("vb" . vertico-buffer-mode)))
   :config (progn
             (setq orderless-matching-styles '(orderless-regexp
                                               orderless-initialism
