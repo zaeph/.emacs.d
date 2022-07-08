@@ -2238,7 +2238,7 @@ return `nil'."
          ("C-c i" . org-indent-mode)
          ("C-c [" . nil)
          ("C-c ]" . nil)
-         ("C-c C-q" . counsel-org-tag)
+         ("C-c C-q" . org-set-tags-command)
          ("C-c C-." . org-time-stamp)
          ("C-c C-x r" . zp/org-set-appt-warntime)
          ("C-c C-x l" . zp/org-set-location)
