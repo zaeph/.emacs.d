@@ -4732,7 +4732,7 @@ the beginning of the line."
   "Run terminator in the CWD.
 
 Trim unnecessary TRAMP information from the path (e.g. /sudo:…),
-and forward it to terminator. ARGUMENTS can be any argument
+and forward it to terminator.  ARGUMENTS can be any argument
 accepted by terminator (e.g. ‘-x command’).
 
 See ‘~/.bin/terminator-dwim’ for more info."
