@@ -331,6 +331,20 @@ For details on DATA, CONTEXT, and SIGNAL, see
   (advice-mapc (lambda (advice _props) (advice-remove sym advice)) sym))
 
 ;;----------------------------------------------------------------------------
+;;; Hotfixes
+;;----------------------------------------------------------------------------
+;; Cancelling the indent-region curse
+(defun zp/advice-noop (&rest args)
+  "Noop for advices."
+  nil)
+
+(defun zp/hotfix-indent-region ()
+  "Fix `indent-region' when it’s been nuked by The Curse™."
+  (interactive)
+  (advice-add 'indent-according-to-mode :before #'zp/advice-noop)
+  (advice-remove 'indent-according-to-mode #'zp/advice-noop))
+
+;;----------------------------------------------------------------------------
 ;; Keys
 ;;----------------------------------------------------------------------------
 ;; Define keymap for minor mode toggles
