@@ -794,7 +794,8 @@ Catches all ARGS and does nothing with them."
   ;; Taken from https://github.com/CeleritasCelery/emacs.d/blob/master/emacs.org#indent
   ;; TODO: Use el-patch to catch upstream modifications
   (defun zp/lisp-indent-function (indent-point state)
-    "Override `lisp-indent-function' to properly handle plists. See the original function fo full description"
+    "Override `lisp-indent-function' to properly handle plists.
+For a full description, see the original function."
     (let ((normal-indent (current-column))
           (orig-point (point)))
       (goto-char (1+ (elt state 1)))
