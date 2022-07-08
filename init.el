@@ -516,7 +516,9 @@ For details on DATA, CONTEXT, and SIGNAL, see
          ("C-c g" . magit-file-dispatch)))
 
 (use-package zp-magit
-  :bind ("s-M-m" . zp/magit-stage-file-and-commit))
+  :bind (("s-M-m" . zp/magit-stage-file-and-commit)
+         :map git-rebase-mode-map
+         ("h" . zp/change-commit-author)))
 
 (use-package forge
   :after magit)

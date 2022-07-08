@@ -1,6 +1,6 @@
 ;;; zp-magit.el --- Expansion for Magit  -*- fill-column: 78; lexical-binding: t; -*-
 
-;; Copyright © 2020 Leo Vivier <zaeph@zaeph.net>
+;; Copyright © 2020-2022 Leo Vivier <zaeph@zaeph.net>
 
 ;; Author: Leo Vivier <zaeph@zaeph.net>
 ;; Keywords: git, magit
@@ -31,18 +31,40 @@
 ;;; Code:
 ;;;; Library Requires
 (require 'magit)
+(require 'git-rebase)
 
 (defun zp/magit-stage-file-and-commit (&optional arg)
-    "Stage the current file and commit the changes.
+  "Stage the current file and commit the changes.
 
 With a ‘C-u’ prefix ARG, amend the last commit instead."
-    (interactive "p")
-    (when (buffer-modified-p)
-      (save-buffer))
-    (magit-stage-file (magit-file-relative-name))
-    (pcase arg
-      (4 (magit-commit-amend))
-      (_ (magit-commit-create))))
+  (interactive "p")
+  (when (buffer-modified-p)
+    (save-buffer))
+  (magit-stage-file (magit-file-relative-name))
+  (pcase arg
+    (4 (magit-commit-amend))
+    (_ (magit-commit-create))))
+
+;; Source: https://gist.github.com/danielmartin/34bc36dafd8f900de483394087230f48
+(defun zp/change-commit-author (arg)
+  "Change the commit author during an interactive rebase in Magit.
+With a prefix argument, insert a new change commit author command
+even when there is already another rebase command on the current
+line.  With empty input, remove the change commit author action
+on the current line, if any."
+  (interactive "P")
+  (let ((author
+         (magit-transient-read-person "Select a new author for this commit"
+                               nil
+                               nil)))
+    (git-rebase-set-noncommit-action
+     "exec"
+     (lambda (_) (if author
+                     (format "git commit --amend --author='%s'" author)
+                   ""))
+     arg)))
+
+(define-key git-rebase-mode-map (kbd "h") #'zp/change-commit-author)
 
 (provide 'zp-magit)
 ;;; zp-magit.el ends here
