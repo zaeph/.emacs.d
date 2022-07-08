@@ -2521,7 +2521,11 @@ with effort estimates and total time."
          :map vertico-map
          ("C-l" . vertico-directory-delete-word)
          ("M-g" . vertico-multiform-grid)
-         ("M-q" . vertico-multiform-flat))
+         ("M-q" . vertico-multiform-flat)
+         :map zp/toggle-map
+         (("vf" . vertico-flat-mode)
+          ("vb" . vertico-buffer-mode)
+          ("vg" . vertico-grid-mode)))
   :init (vertico-mode 1)
   :config
   (add-hook 'minibuffer-setup-hook #'vertico-repeat-save)
@@ -2534,10 +2538,6 @@ with effort estimates and total time."
 
 (use-package orderless
   :after vertico
-  :bind (:map zp/toggle-map
-         (("vf" . vertico-flat-mode)
-          ("vb" . vertico-buffer-mode)
-          ("vg" . vertico-grid-mode)))
   :config (progn
             (setq orderless-matching-styles '(orderless-regexp
                                               orderless-initialism
