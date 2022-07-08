@@ -2571,7 +2571,7 @@ with effort estimates and total time."
          ("g" . nil)
          ("l" . nil))
   :config (progn
-            (setq embark-mixed-indicator-delay 1)
+            (setq embark-mixed-indicator-delay 0.2)
 
             ;; Make the eval action editable.  Evaluating code
             ;; in-place is simple enough without Embark, if I invoke
