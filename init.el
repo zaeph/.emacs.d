@@ -900,7 +900,24 @@ For details on DATA, CONTEXT, and SIGNAL, see
   :config
   (setq aw-dispatch-always t)
   (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)
-        aw-scope 'frame))
+        aw-scope 'frame)
+
+  ;; Source: https://karthinks.com/software/fifteen-ways-to-use-embark/#open-any-buffer-by-splitting-any-window
+  (eval-when-compile
+    (defmacro zp/embark-ace-action (fn)
+      `(defun ,(intern (concat "zp/embark-ace-" (symbol-name fn))) ()
+         "Dispatch buffer with `ace-window'."
+         (interactive)
+         (with-demoted-errors "%s"
+           (require 'ace-window)
+           (let ((aw-dispatch-always t))
+             (aw-switch-to-window (aw-select nil))
+             (call-interactively (symbol-function ',fn)))))))
+
+  (with-eval-after-load 'embark
+    (define-key embark-file-map     (kbd "o") (zp/embark-ace-action find-file))
+    (define-key embark-buffer-map   (kbd "o") (zp/embark-ace-action switch-to-buffer))
+    (define-key embark-bookmark-map (kbd "o") (zp/embark-ace-action bookmark-jump))))
 
 (use-package avy
   :bind (;; ("s-n" . avy-goto-goto-word-1)
