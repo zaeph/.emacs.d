@@ -38,7 +38,7 @@
 
 ;; Catch the curse
 (defvar zp/original-init-finished nil
-  "t when init has finished loading.")
+  "True when init has finished loading.")
 (when zp/original-init-finished
   (message "[CURSE TRIGGERED]")
   (debug))
