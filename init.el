@@ -1291,7 +1291,7 @@ If text is selected, adds furigana to the selected kanji instead."
   :config
   (defun thing-at-point-goto-end-of-integer ()
     "Go to end of integer at point."
-    (let ((inhibit-changing-match-data t))
+    (save-match-data
       ;; Skip over optional sign
       (when (looking-at "[+-]")
         (forward-char 1))
