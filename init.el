@@ -2327,7 +2327,7 @@ return `nil'."
         org-ellipsis "…"
         org-track-ordered-property-with-tag "ORDERED"
         org-tags-exclude-from-inheritance nil
-        org-catch-invisible-edits 'error
+        org-fold-catch-invisible-edits 'error
 
         org-tags-column -77)
 
