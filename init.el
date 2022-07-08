@@ -2646,6 +2646,7 @@ with effort estimates and total time."
   (consult-customize
    consult-ripgrep consult-grep
    consult-buffer consult-recent-file
+   consult-bookmark
    :preview-key (kbd "M-."))
 
   (defun vifon/orderless-fix-consult-tofu (pattern index total)
