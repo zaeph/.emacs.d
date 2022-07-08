@@ -250,7 +250,7 @@ For details on DATA, CONTEXT, and SIGNAL, see
   (setq x-wait-for-event-timeout nil))
 
 ;; Enable recursive minibuffers
-;; Necessary for for some Ivy/Helm commands
+;; Necessary for some Ivy/Helm commands
 (setq enable-recursive-minibuffers t)
 
 ;; Make M-U equivalent to C-u
