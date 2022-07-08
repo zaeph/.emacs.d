@@ -2649,6 +2649,8 @@ with effort estimates and total time."
    consult-bookmark
    :preview-key (kbd "M-."))
 
+  (setq consult-narrow-key "<")
+
   (defun vifon/orderless-fix-consult-tofu (pattern index total)
     "Ignore the last character which is hidden and used only internally."
     (when (string-suffix-p "$" pattern)
