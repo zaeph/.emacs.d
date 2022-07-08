@@ -965,7 +965,10 @@ With a C-u argument, point to the commit instead."
     (interactive "P")
     (let ((git-link-use-commit (if arg nil t))
           (current-prefix-arg nil))
-      (call-interactively #'git-link))))
+      (call-interactively #'git-link)))
+
+  (with-eval-after-load 'magit
+    (define-key magit-status-mode-map (kbd "C-c C-l") #'git-link-commit )))
 
 (use-package pdf-tools
   :init
