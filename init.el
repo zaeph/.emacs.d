@@ -2765,7 +2765,7 @@ with effort estimates and total time."
 ;;------------
 (use-package project
   :config
-  (setq project-switch-commands #'project-dired)))
+  (setq project-switch-commands #'project-dired))
 
 ;;----------------------------------------------------------------------------
 ;; Hydra
