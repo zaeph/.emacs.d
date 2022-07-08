@@ -2622,6 +2622,7 @@ with effort estimates and total time."
          ("M-g o" . consult-outline)
          ("M-g r" . consult-ripgrep)
          ("C-x C-r" . consult-recent-file)
+         ([remap bookmark-jump] . consult-bookmark)
          ([remap apropos-command] . consult-apropos)
          ([remap imenu] . consult-imenu)
          ([remap apropos] . consult-apropos)
