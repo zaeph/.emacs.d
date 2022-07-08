@@ -325,6 +325,11 @@ For details on DATA, CONTEXT, and SIGNAL, see
 ;;     `(when (eq :debug warning-minimum-log-level)
 ;;        (display-warning ',fn-name (format ,string ,@args) ,level ,buffer))))
 
+(defun advice-unadvice (sym)
+  "Remove all advices from symbol SYM."
+  (interactive "aFunction symbol: ")
+  (advice-mapc (lambda (advice _props) (advice-remove sym advice)) sym))
+
 ;;----------------------------------------------------------------------------
 ;; Keys
 ;;----------------------------------------------------------------------------
