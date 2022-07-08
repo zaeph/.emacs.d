@@ -2644,10 +2644,14 @@ with effort estimates and total time."
   :config
   ;; (setq consult-project-root-function #'vc-root-dir)
   (consult-customize
-   consult-ripgrep consult-grep
-   consult-buffer consult-recent-file
+   consult-ripgrep
+   consult-grep
+   consult-buffer
+   consult-recent-file
    consult-bookmark
-   :preview-key (kbd "M-."))
+   :preview-key (kbd "M-.")
+   consult-bookmark
+   :sort nil)
 
   (setq consult-narrow-key "<")
 
