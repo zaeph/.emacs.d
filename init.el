@@ -2625,7 +2625,28 @@ with effort estimates and total time."
     "Attach FILE to an email message."
     (interactive "fAttach: ")
     (gnus-dired-attach (list file)))
-  (bind-key "a" #'embark-attach-file embark-file-map))
+  (bind-key "a" #'embark-attach-file embark-file-map)
+
+  ;; Source: https://karthinks.com/software/fifteen-ways-to-use-embark/#open-any-buffer-by-splitting-any-window
+  (eval-when-compile
+    (defmacro zp/embark-split-action (fn split-type)
+      `(defun ,(intern (concat "zp/embark-"
+                               (symbol-name fn)
+                               "-"
+                               (car (last  (split-string
+                                            (symbol-name split-type) "-"))))) ()
+         ,(format "Split window with `%s'" split-type)
+         (interactive)
+         (funcall #',split-type)
+         (call-interactively #',fn))))
+
+  (define-key embark-file-map     (kbd "2") (zp/embark-split-action find-file split-window-below))
+  (define-key embark-buffer-map   (kbd "2") (zp/embark-split-action switch-to-buffer split-window-below))
+  (define-key embark-bookmark-map (kbd "2") (zp/embark-split-action bookmark-jump split-window-below))
+
+  (define-key embark-file-map     (kbd "3") (zp/embark-split-action find-file split-window-right))
+  (define-key embark-buffer-map   (kbd "3") (zp/embark-split-action switch-to-buffer split-window-right))
+  (define-key embark-bookmark-map (kbd "3") (zp/embark-split-action bookmark-jump split-window-right)))
 
 (use-package embark-consult
   :after (embark consult))
