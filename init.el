@@ -356,6 +356,7 @@ For details on DATA, CONTEXT, and SIGNAL, see
 (global-set-key (kbd "C-x C-c") #'zp/delete-frame-ask)
 
 ;; Actions
+(global-set-key (kbd "M-g M-i") #'imenu)
 (global-set-key (kbd "M-\\") #'undo-redo)
 (global-set-key (kbd "M-SPC") #'delete-horizontal-space)
 (global-set-key (kbd "M-S-SPC") #'just-one-space)
@@ -2628,7 +2629,6 @@ with effort estimates and total time."
          ([remap bookmark-jump] . consult-bookmark)
          ([remap apropos-command] . consult-apropos)
          ([remap imenu] . consult-imenu)
-         ("M-g M-i" . consult-imenu)
          ([remap apropos] . consult-apropos)
          ([remap switch-to-buffer] . consult-buffer)
          ([remap yank-pop] . consult-yank-pop)
