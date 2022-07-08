@@ -2522,13 +2522,14 @@ with effort estimates and total time."
          ("M-g" . vertico-multiform-grid)
          ("M-q" . vertico-multiform-flat))
   :init (vertico-mode 1)
-  :config (progn
-            (add-hook 'minibuffer-setup-hook #'vertico-repeat-save)
-            (vertico-mouse-mode 1)
-            (vertico-multiform-mode 1)
-            (setq vertico-multiform-categories '((consult-grep buffer))
-                  vertico-multiform-commands '((tmm-menubar flat)
-                                               (tmm-shortcut flat)))))
+  :config
+  (add-hook 'minibuffer-setup-hook #'vertico-repeat-save)
+  (vertico-mouse-mode 1)
+  (vertico-multiform-mode 1)
+  (setq vertico-count 10)
+  (setq vertico-multiform-categories '((consult-grep buffer))
+        vertico-multiform-commands '((tmm-menubar flat)
+                                     (tmm-shortcut flat))))
 
 (use-package orderless
   :after vertico
