@@ -2162,7 +2162,7 @@ return `nil'."
   (setq org-latex-hyperref-template nil)
 
   ;; Use Minted for src-blocks
-  (setq org-latex-listings 'minted)
+  (setq org-latex-src-block-backend 'minted)
 
   ;; Disable defaut packages
   (setq org-latex-default-packages-alist nil)
