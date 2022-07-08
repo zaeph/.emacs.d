@@ -2613,7 +2613,10 @@ with effort estimates and total time."
     "Evaluate EXPRESSION and call `embark-act' on the result."
     (interactive "sExpression: ")
     (with-temp-buffer
-      (insert (eval (read expression)))
+      (let ((expr-value (eval (read expression))))
+        (insert (if (stringp expr-value)
+                    expr-value
+                  (format "%S" expr-value))))
       (embark-act)))
 
   (dolist (keymap (list embark-variable-map embark-expression-map))
