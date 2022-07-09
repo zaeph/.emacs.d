@@ -1092,11 +1092,12 @@ With a C-u argument, point to the commit instead."
     "Add custom annotation with ICON and COLOR."
     (let* ((icon (or icon "Note"))
            (color (or color zp/pdf-annot-default-annotation-color))
-           (pdf-annot-default-annotation-properties
-            `((t (label . ,user-full-name))
-              ,(pcase type
-                 ('text `(text (icon . ,icon) (color . ,color)))
-                 ('highlight `(highlight (color . ,color)))))))
+           ;; (pdf-annot-default-annotation-properties
+           ;;  `((t (label . ,user-full-name))
+           ;;    ,(pcase type
+           ;;       ('text `(text (icon . ,icon) (color . ,color)))
+           ;;       ('highlight `(highlight (color . ,color))))))
+           )
       (call-interactively (pcase type
                             ('text #'pdf-annot-add-text-annotation)
                             ('highlight #'pdf-annot-add-highlight-markup-annotation)))))

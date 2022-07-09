@@ -446,8 +446,10 @@ See ‘zp/time-of-day-sections’ for more info."
         ((string= zp/mode-line-theme "light")
          (zp/mode-line-dark-theme))))
 
+;;;###autoload
 (defun zp/switch-theme-dwim (&optional print-message)
   "Switch theme based on time-of-day.
+PRINT-MESSAGE is used to differentiate interactive calls.
 See ‘zp/time-of-day-sections’ and ‘zp/daytimep’ for more info."
   (interactive "p")
   (let* ((daytime (zp/daytimep)))
@@ -464,6 +466,7 @@ See ‘zp/time-of-day-sections’ and ‘zp/daytimep’ for more info."
              (message "Nothing to do."))))
     (zp/pdf-view-update-midnight-mode)))
 
+;;;###autoload
 (defun zp/switch-theme-auto ()
   "Automatically switch theme based on time-of-day.
 See ‘zp/time-of-day-sections’ and ‘zp/daytimep’ for more info."
