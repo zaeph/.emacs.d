@@ -355,6 +355,28 @@ Catches all ARGS and does nothing with them."
 ;;----------------------------------------------------------------------------
 ;; Keys
 ;;----------------------------------------------------------------------------
+;; Swap some keys on modified Qwerty layout
+;; ; <=> ’
+(global-set-key (kbd "M-;") #'nil)
+(global-set-key (kbd "M-’") #'comment-dwim)
+(global-set-key (kbd "C-;") #'nil)
+(global-set-key (kbd "C-’") #'iedit-mode)
+(global-set-key (kbd "C-M-;") #'nil)
+(global-set-key (kbd "C-M-’") #'iedit-execute-last-modification)
+(global-set-key (kbd "C-x ;") #'nil)
+(global-set-key (kbd "C-x ’") #'comment-set-column)
+(global-set-key (kbd "C-x C-;") #'nil)
+(global-set-key (kbd "C-x C-’") #'comment-line)
+;; ' <=> _
+(global-set-key (kbd "M-_") #'abbrev-prefix-mark)
+(global-set-key (kbd "M-'") #'nil)
+(global-set-key (kbd "C-_") #'nil)
+(global-set-key (kbd "C-'") #'undo)
+(global-set-key (kbd "C-M-_") #'nil)
+(global-set-key (kbd "C-M-'") #'undo-redo)
+(global-set-key (kbd "C-x _") #'expand-abbrev)
+(global-set-key (kbd "C-x '") #'nil)
+
 ;; Define keymap for minor mode toggles
 (define-prefix-command 'zp/toggle-map)
 (define-key ctl-x-map "t" 'zp/toggle-map)
@@ -384,7 +406,7 @@ Catches all ARGS and does nothing with them."
 
 ;; Actions
 (global-set-key (kbd "M-g M-i") #'imenu)
-(global-set-key (kbd "C-\\") #'undo-redo)
+(global-set-key (kbd "C-;") #'undo-redo)
 (global-set-key (kbd "M-SPC") #'delete-horizontal-space)
 (global-set-key (kbd "M-S-SPC") #'just-one-space)
 (global-set-key (kbd "s-.") #'zp/echo-buffer-name)
@@ -849,6 +871,8 @@ For a full description, see the original function."
 
 (use-package lispy
   :load-path "~/projects/lispy"
+  :bind (:map lispy-mode-map
+         ("’" . lispy-comment))
   :hook ((emacs-lisp-mode . lispy-mode)
          (lisp-mode . lispy-mode)
          (slime-repl-mode . lispy-mode))
@@ -3937,7 +3961,7 @@ command will offer you to create one."
 (use-package company
   :bind (("M-/" . company-complete)
          ;; (:map company-mode-map
-         ;;  (([remap indent-for-tab-command] . #'company-complete-common-or-cycle)))
+         ;;  (([remap indent-for-tab-command] . #'company-indent-or-complete-common)))
          )
   :custom
   (company-idle-delay . nil)
