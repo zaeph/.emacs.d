@@ -356,25 +356,25 @@ Catches all ARGS and does nothing with them."
 ;; Keys
 ;;----------------------------------------------------------------------------
 ;; Swap some keys on modified Qwerty layout
-;; ; <=> ’
+;; ; <=> _
 (global-set-key (kbd "M-;") #'nil)
-(global-set-key (kbd "M-’") #'comment-dwim)
+(global-set-key (kbd "M-_") #'comment-dwim)
 (global-set-key (kbd "C-;") #'nil)
-(global-set-key (kbd "C-’") #'iedit-mode)
+(global-set-key (kbd "C-_") #'iedit-mode)
 (global-set-key (kbd "C-M-;") #'nil)
-(global-set-key (kbd "C-M-’") #'iedit-execute-last-modification)
+(global-set-key (kbd "C-M-_") #'iedit-execute-last-modification)
 (global-set-key (kbd "C-x ;") #'nil)
-(global-set-key (kbd "C-x ’") #'comment-set-column)
+(global-set-key (kbd "C-x _") #'comment-set-column)
 (global-set-key (kbd "C-x C-;") #'nil)
-(global-set-key (kbd "C-x C-’") #'comment-line)
-;; ' <=> _
-(global-set-key (kbd "M-_") #'abbrev-prefix-mark)
+(global-set-key (kbd "C-x C-_") #'comment-line)
+;; ’ <=> ’
+(global-set-key (kbd "M-’") #'abbrev-prefix-mark)
 (global-set-key (kbd "M-'") #'nil)
-(global-set-key (kbd "C-_") #'nil)
+(global-set-key (kbd "C-’") #'nil)
 (global-set-key (kbd "C-'") #'undo)
-(global-set-key (kbd "C-M-_") #'nil)
+(global-set-key (kbd "C-M-’") #'nil)
 (global-set-key (kbd "C-M-'") #'undo-redo)
-(global-set-key (kbd "C-x _") #'expand-abbrev)
+(global-set-key (kbd "C-x ’") #'expand-abbrev)
 (global-set-key (kbd "C-x '") #'nil)
 
 ;; Define keymap for minor mode toggles
@@ -872,7 +872,7 @@ For a full description, see the original function."
 (use-package lispy
   :load-path "~/projects/lispy"
   :bind (:map lispy-mode-map
-         ("’" . lispy-comment))
+         ("_" . lispy-comment))
   :hook ((emacs-lisp-mode . lispy-mode)
          (lisp-mode . lispy-mode)
          (slime-repl-mode . lispy-mode))
