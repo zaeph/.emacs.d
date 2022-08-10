@@ -1778,10 +1778,11 @@ SEARCH is a string to be interpreted by notmuch-search."
 ;;   (setq elpy-modules (delq 'elpy-module-flymake elpy-modules)))
 
 ;;----------------------------------------------------------------------------
-;;; Racket
+;;; Go
 ;;----------------------------------------------------------------------------
 
-(use-package go-mode)
+(use-package go-mode
+  :hook ((go-mode . subword-mode)))
 
 ;;----------------------------------------------------------------------------
 ;;; Racket
