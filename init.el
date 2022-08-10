@@ -497,6 +497,7 @@ Catches all ARGS and does nothing with them."
          ([remap count-words-region] . #'count-words)))
 
 (use-package glasses
+  :hook ((prog-mode . glasses-mode))
   :config
   (defun zp/glasses-init ()
     "Initialize `glasses-mode' with default config."
