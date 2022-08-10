@@ -391,6 +391,7 @@ Catches all ARGS and does nothing with them."
 (define-key zp/toggle-map (kbd "P") #'print-circle-mode)
 (define-key zp/toggle-map (kbd "s") #'so-long-mode)
 (define-key zp/toggle-map (kbd "S") #'scroll-bar-mode)
+(define-key zp/toggle-map (kbd "g") #'glasses-mode)
 (define-key zp/toggle-map (kbd "w") #'zp/toggle-warning-minimum-level)
 
 (define-key help-map (kbd "h") #'zp/switch-to-help)
