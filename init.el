@@ -508,10 +508,8 @@ Catches all ARGS and does nothing with them."
 
   (defun zp/super-glasses-init ()
     "Initialize `zp/super-glasses-mode' with default config."
-    (setq glasses-face 'bold
-          glasses-original-separator "_"
-          glasses-separator "_"
-          glasses-separate-parentheses-p t)
+    (setq glasses-original-separator "_"
+          glasses-separator "_")
     (glasses-set-overlay-properties))
 
   (zp/glasses-init)
@@ -520,15 +518,10 @@ Catches all ARGS and does nothing with them."
     "Custom `glasses-mode' with stronger emphasis than default settings."
     :global
     :lighter " s^s"
-    (let ((mode-live-p (and (boundp 'glasses-mode)
-                            glasses-mode)))
-      (cond (zp/global-super-glasses-mode
-             (zp/super-glasses-init))
-            (t
-             (zp/glasses-init)))
-      ;; Refresh buffer if `glasses-mode' was already on
-      (when mode-live-p
-        (glasses-change (point-min) (point-max))))))
+    (cond (zp/global-super-glasses-mode
+           (zp/super-glasses-init))
+          (t
+           (zp/glasses-init)))))
 
 ;;----------------------------------------------------------------------------
 ;; Miscellaneous
