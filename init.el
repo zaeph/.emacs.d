@@ -395,6 +395,7 @@ Catches all ARGS and does nothing with them."
 (define-key zp/toggle-map (kbd "s") #'so-long-mode)
 (define-key zp/toggle-map (kbd "S") #'scroll-bar-mode)
 (define-key zp/toggle-map (kbd "g") #'glasses-mode)
+(define-key zp/toggle-map (kbd "G") #'zp/global-super-glasses-mode)
 (define-key zp/toggle-map (kbd "w") #'zp/toggle-warning-minimum-level)
 
 (define-key help-map (kbd "h") #'zp/switch-to-help)
@@ -497,8 +498,37 @@ Catches all ARGS and does nothing with them."
 
 (use-package glasses
   :config
-  (setq glasses-face 'bold)
-  (setq glasses-separator ""))
+  (defun zp/glasses-init ()
+    "Initialize `glasses-mode' with default config."
+    (setq glasses-face 'bold
+          glasses-original-separator ""
+          glasses-separator ""
+          glasses-separate-parentheses-p nil)
+    (glasses-set-overlay-properties))
+
+  (defun zp/super-glasses-init ()
+    "Initialize `zp/super-glasses-mode' with default config."
+    (setq glasses-face 'bold
+          glasses-original-separator "_"
+          glasses-separator "_"
+          glasses-separate-parentheses-p t)
+    (glasses-set-overlay-properties))
+
+  (zp/glasses-init)
+
+  (define-minor-mode zp/global-super-glasses-mode
+    "Custom `glasses-mode' with stronger emphasis than default settings."
+    :global
+    :lighter " s^s"
+    (let ((mode-live-p (and (boundp 'glasses-mode)
+                            glasses-mode)))
+      (cond (zp/global-super-glasses-mode
+             (zp/super-glasses-init))
+            (t
+             (zp/glasses-init)))
+      ;; Refresh buffer if `glasses-mode' was already on
+      (when mode-live-p
+        (glasses-change (point-min) (point-max))))))
 
 ;;----------------------------------------------------------------------------
 ;; Miscellaneous
