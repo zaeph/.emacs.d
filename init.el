@@ -491,6 +491,11 @@ Catches all ARGS and does nothing with them."
          ([remap capitalize-word] . #'capitalize-dwim)
          ([remap count-words-region] . #'count-words)))
 
+(use-package glasses
+  :config
+  (setq glasses-face 'bold)
+  (setq glasses-separator ""))
+
 ;;----------------------------------------------------------------------------
 ;; Miscellaneous
 ;;----------------------------------------------------------------------------
