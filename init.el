@@ -98,6 +98,9 @@
 ;; Enable `global-hl-line-mode'
 (global-hl-line-mode 1)
 
+;; Enable `subword-mode'
+(global-subword-mode 1)
+
 ;; Suppress cl deprecation warnings
 (setq byte-compile-warnings '(cl-functions))
 
@@ -1787,15 +1790,13 @@ SEARCH is a string to be interpreted by notmuch-search."
 ;;; C
 ;;----------------------------------------------------------------------------
 
-(use-package c
-  :hook ((c-mode . subword-mode)))
+(use-package c)
 
 ;;----------------------------------------------------------------------------
 ;;; Go
 ;;----------------------------------------------------------------------------
 
-(use-package go-mode
-  :hook ((go-mode . subword-mode)))
+(use-package go-mode)
 
 ;;----------------------------------------------------------------------------
 ;;; Racket
