@@ -1259,9 +1259,9 @@ numerical arguments."
 ;; Added with the package ‘auto-minor-mode-alist’
 ;; But they can also be added via file-fariables or minor-modes
 ;; TODO: Adapt this block
-(add-to-list 'auto-minor-mode-alist '("edit-in-emacs.txt" . visual-line-mode))
-(add-to-list 'auto-minor-mode-alist '("edit-in-emacs.txt" . flyspell-mode))
-(add-to-list 'auto-minor-mode-alist '("edit-in-emacs.txt" . zp/edit-in-emacs-mode))
+(add-to-list 'auto-minor-mode-alist '("^edit-in-emacs.*\\.txt$" . visual-line-mode))
+(add-to-list 'auto-minor-mode-alist '("^edit-in-emacs.*\\.txt$" . flyspell-mode))
+(add-to-list 'auto-minor-mode-alist '("^edit-in-emacs.*\\.txt$" . zp/edit-in-emacs-mode))
 
 ;; (add-to-list 'auto-minor-mode-alist '("edit-in-emacs.html" . visual-line-mode))
 ;; (add-to-list 'auto-minor-mode-alist '("edit-in-emacs.html" . olivetti-mode))
