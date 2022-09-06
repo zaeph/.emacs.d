@@ -560,6 +560,10 @@ Catches all ARGS and does nothing with them."
   :init
   (electric-pair-mode +1))
 
+(use-package re-builder
+  :config
+  (setq reb-re-syntax 'string))
+
 (use-package zp-presentation
   :bind (:map zp/toggle-map
          ("p" . zp/presentation-mode)))
