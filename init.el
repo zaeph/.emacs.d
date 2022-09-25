@@ -3988,7 +3988,6 @@ command will offer you to create one."
   ;;            #'org-roam-unlinked-references-insert-section))
   )
 
-
 (use-package org-roam-dailies
   :load-path "~/projects/org-roam/extensions/"
   :bind (("C-c m d" . org-roam-dailies-map))
