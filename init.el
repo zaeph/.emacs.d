@@ -4002,6 +4002,9 @@ command will offer you to create one."
 
 (use-package org-roam-protocol)
 
+(use-package org-roam-ui
+  :load-path "~/projects/org-roam-ui")
+
 (use-package company
   :bind (("M-/" . company-complete)
          ;; (:map company-mode-map
