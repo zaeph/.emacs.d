@@ -2366,7 +2366,6 @@ return `nil'."
          ("C-a" . org-beginning-of-line)
          ("C-e" . org-end-of-line)
          ("M-I" . org-indent-mode)
-         ("M-*" . zp/org-toggle-fontifications)
          ("C-c C-x C-l" . zp/org-latex-preview-dwim)
          ("C-c R" . org-display-inline-images))
   :hook ((org-mode . org-indent-mode)
@@ -2499,7 +2498,11 @@ return `nil'."
   ;; Show images after executing a src-block that generated one
   ;; TODO: Limit the scope of the hook by testing if the block actually
   ;; generated an image
-  (add-hook 'org-babel-after-execute-hook #'org-display-inline-images 'append))
+  (add-hook 'org-babel-after-execute-hook #'org-display-inline-images 'append)
+
+  (use-package zp-org
+    :bind (:map org-mode-map
+           ("M-*" . zp/org-toggle-fontifications))))
 
 (use-package org-persist
   :config
