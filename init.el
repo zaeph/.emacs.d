@@ -923,6 +923,7 @@ For a full description, see the original function."
          ("_" . lispy-comment))
   :hook ((emacs-lisp-mode . lispy-mode)
          (lisp-mode . lispy-mode)
+         (lisp-data-mode . lispy-mode)
          (slime-repl-mode . lispy-mode))
   :config
   (defun lispy-mode-unbind-keys ()
