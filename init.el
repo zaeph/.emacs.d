@@ -1715,11 +1715,12 @@ SEARCH is a string to be interpreted by notmuch-search."
   (setq lsp-keymap-prefix "s-l")
   :hook ((lsp-mode . lsp-enable-which-key-integration)
          (python-mode . lsp)
-         (go-mode . lsp))
+         (go-mode . lsp)
+         (typescript-mode . lsp))
   :bind-keymap ("s-l" . lsp-command-map)
   :config
   (setq lsp-completion-enable-additional-text-edit nil)
-  (setq lsp-enabled-clients '(pyright gopls)))
+  (setq lsp-enabled-clients '(pyright gopls ts-ls)))
 
 (use-package zp-lsp
   :hook (lsp-mode . zp/lsp-before-save-install)
