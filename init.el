@@ -1490,7 +1490,10 @@ With numeric prefix arg DEC, decrement the integer by DEC amount."
                                ("fr" . "french"))))
 
 (use-package flyspell
-  :bind ("C-c f" . flyspell-mode)
+  :bind (("C-c f" . flyspell-mode)
+         :map flyspell-mode-map
+         ;; Unbind `flyspell-auto-correct-previous-word'
+         (("C-;" . nil)))
   :hook ((message-setup . flyspell-mode)
          (org-mode . flyspell-mode)
          (latex-mode . flyspell-mode)
