@@ -525,6 +525,17 @@ Catches all ARGS and does nothing with them."
            (zp/glasses-init)))))
 
 ;;----------------------------------------------------------------------------
+;;; EmacsConf
+;;----------------------------------------------------------------------------
+(use-package emacsconf
+  :load-path "~/projects/emacsconf-el/"
+  :config
+  (setq emacsconf-org-file "~/projects/emacsconf-2022-private/conf.org"))
+
+(use-package subed
+  :load-path "~/projects/subed/subed/")
+
+;;----------------------------------------------------------------------------
 ;; Miscellaneous
 ;;----------------------------------------------------------------------------
 ;; windmove
