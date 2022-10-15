@@ -530,7 +530,8 @@ Catches all ARGS and does nothing with them."
 (use-package emacsconf
   :load-path "~/projects/emacsconf-el/"
   :config
-  (setq emacsconf-org-file "~/projects/emacsconf-2022-private/conf.org"))
+  (setq emacsconf-org-file "~/projects/emacsconf-2022-private/conf.org")
+  (setq emacsconf-ansible-directory "~/projects/emacsconf-ansible/"))
 
 (use-package subed
   :load-path "~/projects/subed/subed/")
