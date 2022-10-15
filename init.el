@@ -391,7 +391,7 @@ Catches all ARGS and does nothing with them."
 (define-key zp/toggle-map (kbd "a") #'auto-fill-mode)
 (define-key zp/toggle-map (kbd "l") #'display-line-numbers-mode)
 (define-key zp/toggle-map (kbd "h") #'global-hl-line-mode)
-(define-key zp/toggle-map (kbd "P") #'print-circle-mode)
+(define-key zp/toggle-map (kbd "p") #'print-circle-mode)
 (define-key zp/toggle-map (kbd "s") #'so-long-mode)
 (define-key zp/toggle-map (kbd "S") #'scroll-bar-mode)
 (define-key zp/toggle-map (kbd "g") #'glasses-mode)
@@ -578,7 +578,7 @@ Catches all ARGS and does nothing with them."
 
 (use-package zp-presentation
   :bind (:map zp/toggle-map
-         ("p" . zp/presentation-mode)))
+         ("P" . zp/presentation-mode)))
 
 (use-package crdt
   :commands (crdt-connect
