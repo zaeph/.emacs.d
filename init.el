@@ -47,8 +47,6 @@
 (set-face-attribute 'default nil :foreground "#bcaf8e" :background "#141414")
 
 ;; EmacsConf
-(setenv "PROTECTEDUSER" "emacsconf")
-(setenv "PROTECTEDPASSWORD" "stcgX5n7tF3")
 ;; (setq org-link-shell-confirm-function
 ;;       'yes-or-no-p)
 (setq org-link-shell-confirm-function
