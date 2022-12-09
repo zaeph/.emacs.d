@@ -1045,7 +1045,16 @@ Modifies ‘diff-command’ and ‘diff-switches’ to use ‘git diff’."
   (setq linum-format " %d "))
 
 (use-package vterm
-  :ensure t)
+  :ensure t
+  :config
+  (defun zp/vterm-named (&optional arg)
+    "Create a named interactive Vterm buffer.
+ARG is to gauge interactivity.
+See `vterm' for more info."
+    (interactive "P")
+    (let* ((name (file-name-directory (buffer-file-name)))
+           (vterm-buffer-name (format "*vterm %s*" name)))
+      (vterm--internal #'pop-to-buffer-same-window arg))))
 
 (use-package markdown-mode
   :hook ((markdown-mode . visual-line-mode)
