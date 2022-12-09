@@ -1751,6 +1751,9 @@ SEARCH is a string to be interpreted by notmuch-search."
 (use-package dap-mode
   :after lsp-mode)
 
+(use-package dap-dlv-go
+  :after dap-mode)
+
 (use-package dap-firefox
   :config
   (dap-firefox-setup))
