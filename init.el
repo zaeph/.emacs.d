@@ -1351,6 +1351,9 @@ If text is selected, adds furigana to the selected kanji instead."
                   (when (stringp method)
                     (member method '("su" "sudo")))))))))
 
+(use-package sgml-mode
+  :mode ("\\.tmpl\\'" . mhtml-mode))
+
 ;; (use-package realgud
 ;;   :config
 ;;   (setq realgud-safe-mode nil))
