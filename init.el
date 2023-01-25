@@ -1,6 +1,6 @@
 ;;; init.el --- Initialisation file for Emacs -*- fill-column: 78; lexical-binding: t; byte-compile-warnings: (not free-vars); auto-compile-display-buffer: nil -*-
 
-;; Copyright © 2013-2022 Leo Vivier <zaeph@zaeph.net>
+;; Copyright © 2013-2023 Leo Vivier <zaeph@zaeph.net>
 
 ;; Author: Leo Vivier <zaeph@zaeph.net>
 ;; URL: https://github.com/zaeph/.emacs.d
