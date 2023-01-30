@@ -487,6 +487,16 @@ Catches all ARGS and does nothing with them."
 (use-package dash)
 (use-package s)
 
+(use-package repeat
+  :init
+  (repeat-mode 1)
+  :config
+  (defvar transpose-lines-repeat-map
+    (let ((map (make-sparse-keymap)))
+      (define-key map (kbd "C-t") #'transpose-lines)
+      map))
+  (put 'transpose-lines 'repeat-map 'transpose-lines-repeat-map))
+
 (use-package simple
   :bind (([remap just-one-space] . #'cycle-spacing)
          ([remap upcase-word] . #'upcase-dwim)
