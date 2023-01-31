@@ -1362,7 +1362,9 @@ If text is selected, adds furigana to the selected kanji instead."
                     (member method '("su" "sudo")))))))))
 
 (use-package sgml-mode
-  :mode ("\\.tmpl\\'" . mhtml-mode))
+  :mode ("\\.tmpl\\'" . mhtml-mode)
+  :config
+  (unbind-key "M-o" 'mhtml-mode-map))
 
 ;; (use-package realgud
 ;;   :config
