@@ -4091,7 +4091,7 @@ commas and space."
            :target (file+head "%<%Y%m%d%H%M%S>-${slug}.org"
                               "#+title: ${title}\n#+created: %U\n#+last_modified: %U\n\n")
            :unnarrowed t)
-         ("b" "bristol" plain
+          ("b" "bristol" plain
            "%?"
            :target (file+head "%<%Y%m%d%H%M%S>-${slug}.org"
                               "#+title: ${title}\n#+created: %U\n#+filetags: :bristol:group-%^{Group?||1|2|3|4}:%^{Type?||litany|system|worldview|myth}:group-%\\1-%\\2\n\n")
