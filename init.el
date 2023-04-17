@@ -2957,6 +2957,7 @@ with effort estimates and total time."
 (use-package consult
   :bind (("M-s f" . consult-line)
          ("M-g M-g" . consult-line)
+         ("M-g f" . consult-focus-lines)
          ("M-g o" . consult-outline)
          ("M-g r" . consult-ripgrep)
          ("C-x C-r" . consult-recent-file)
