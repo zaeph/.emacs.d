@@ -443,16 +443,16 @@ it should be an outline path OLP."
 ;; Custom exported timestamp
 ;;----------------------------------------------------------------------------
 ;; TODO: Check if I still need this.
-(add-to-list 'org-export-filter-timestamp-functions
-             #'endless/filter-timestamp)
+;; (add-to-list 'org-export-filter-timestamp-functions
+;;              #'endless/filter-timestamp)
 
-(defun endless/filter-timestamp (trans back _comm)
-  "Remove <> around time-stamps."
-  (pcase back
-    ((or `jekyll `html)
-     (replace-regexp-in-string "&[lg]t;" "" trans))
-    (`latex
-     (replace-regexp-in-string "[<>]" "" trans))))
+;; (defun endless/filter-timestamp (trans back _comm)
+;;   "Remove <> around time-stamps."
+;;   (pcase back
+;;     ((or `jekyll `html)
+;;      (replace-regexp-in-string "&[lg]t;" "" trans))
+;;     (`latex
+;;      (replace-regexp-in-string "[<>]" "" trans))))
 
 (setq org-time-stamp-custom-formats
       '("<%d %b %Y>" . "<%d/%m/%y %a %H:%M>"))
