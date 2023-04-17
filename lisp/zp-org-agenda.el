@@ -1,6 +1,6 @@
 ;;; zp-org-agenda.el --- Custom config for org-agenda -*- fill-column: 78; lexical-binding: t; -*-
 
-;; Copyright © 2014-2022 Leo Vivier <zaeph@zaeph.net>
+;; Copyright © 2014-2023 Leo Vivier <zaeph@zaeph.net>
 
 ;; Author: Leo Vivier <zaeph@zaeph.net>
 ;; URL: https://github.com/zaeph/.emacs.d
@@ -43,6 +43,7 @@
 ;; Require other packages
 ;;----------------------------------------------------------------------------
 (require 'org-agenda)
+(require 'org-super-agenda)
 (require 'org-habit)
 (require 'zp-timer-macs)
 
@@ -82,6 +83,9 @@ If `zp/org-agenda-main-file' is nil, use the first file in
 
 (defvar zp/org-agenda-local-settings nil
   "Settings to use for local agenda views.")
+
+(defvar zp/org-agenda-local-config nil
+  "Configuration to use for local agenda views.")
 
 (defvar zp/org-agenda-load-local-config-post-hook nil
   "Hooks to run after the local org-agenda config has been
@@ -270,6 +274,10 @@ Uses `org-agenda-show-new-time' as its backend."
 ;;----------------------------------------------------------------------------
 ;; Calendar interaction
 ;;----------------------------------------------------------------------------
+(declare-function zp/org-super-agenda-groups-all ())
+
+(declare-function zp/org-super-agenda-scheduled ())
+
 (defun zp/org-agenda-block-agenda-calendar (header date)
   "Create an agenda-view to be opened on the current agenda day."
   `(agenda ""
@@ -285,7 +293,7 @@ Uses `org-agenda-show-new-time' as its backend."
             (org-agenda-start-day ,date)
             (org-super-agenda-groups
              '((:name "Grid"
-                      :time-grid t)
+                :time-grid t)
                ,@(zp/org-super-agenda-groups-all))))))
 
 (defun zp/org-agenda-goto-calendar ()
