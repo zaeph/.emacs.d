@@ -1740,8 +1740,113 @@ SEARCH is a string to be interpreted by notmuch-search."
   :after (:any org notmuch))
 
 (use-package orgalist
+  ;; :disabled
   :after message
-  :hook (message-setup . orgalist-mode))
+  :hook (message-setup . orgalist-mode)
+  :config/el-patch
+  (define-minor-mode orgalist-mode
+  "Toggle Org-like lists and their relative commands.
+
+With a prefix argument ARG, enable Auto Fill mode if ARG is
+positive, and disable it otherwise.  If called from Lisp, enable
+the mode if ARG is omitted or nil.
+
+When Orgalist mode is enabled, any line beginning with \"-\",
+\"+\", \"1.\" or \"a.\" followed by a space starts a list.  You
+can then operate locally on the list, e.g., to insert new items,
+move items or sort them.  See below for details.
+
+Moreover, you can add check-boxes to items
+
+  - [ ] A checkbox, toggled with `C-c C-c'
+
+turn an unordered list into a description list
+
+  - term :: description
+
+and control numbering in an ordered list
+
+  4. [@4] a forced numbered item
+
+key             binding
+---             -------
+M-<RET>         `orgalist-insert-item'
+M-<UP>          `orgalist-previous-item'
+M-<DOWN>        `orgalist-next-item'
+M-S-<UP>        `orgalist-move-item-up'
+M-S-<DOWN>      `orgalist-move-item-down'
+M-<LEFT>        `orgalist-outdent-item'
+M-<RIGHT>       `orgalist-indent-item'
+M-S-<LEFT>      `orgalist-outdent-item-tree'
+M-S-<RIGHT>     `orgalist-indent-item-tree'
+C-c -           `orgalist-cycle-bullet'
+C-c ^           `orgalist-sort-items'
+C-c C-c         `orgalist-check-item'"
+  :lighter " olst"
+  (cond
+   (orgalist-mode
+    (when (derived-mode-p 'org-mode)
+      (user-error "Cannot activate Orgalist mode in an Org buffer"))
+    (setq-local org-blank-before-new-entry
+                `((plain-list-item . ,orgalist-separated-items)))
+    (setq-local org-list-allow-alphabetical t)
+    (setq-local org-list-automatic-rules nil)
+    (setq-local org-list-demote-modify-bullet nil)
+    (setq-local org-list-description-max-indent 5)
+    (setq-local org-list-indent-offset 0)
+    (setq-local org-list-two-spaces-after-bullet-regexp nil)
+    (setq-local org-list-use-circular-motion nil)
+    (setq-local org-plain-list-ordered-item-terminator ?.)
+    (add-function :around (local 'fill-forward-paragraph-function)
+                  #'orgalist--fill-forward-wrapper)
+    (add-function :around (local 'fill-paragraph-function)
+                  #'orgalist--fill-item)
+    ;; Unless `indent-line-function' is buffer-local before it is
+    ;; advised with `add-function', the workaround for bug#31361 below
+    ;; will not work, as (advice--cd*r indent-line-function) will not
+    ;; compare `eq' to `indent-relative' in
+    ;; `indent-according-to-mode'.
+    (make-local-variable 'indent-line-function)
+    (add-function :before-until
+                  (local 'indent-line-function)
+                  #'orgalist--indent-line)
+    ;; If Auto fill mode is not enabled when we initialize Orgalist
+    ;; mode, `auto-fill-function' is nil and we just advise
+    ;; `normal-auto-fill-function'.
+    (add-function :around
+                  (local 'normal-auto-fill-function)
+                  #'orgalist--auto-fill)
+    (when auto-fill-function
+      (add-function :around (local 'auto-fill-function) #'orgalist--auto-fill))
+    ;; Prevent Auto fill mode from creating new items.
+    (push 'orgalist--item-nobreak-p fill-nobreak-predicate)
+    ;; FIXME: Workaround bug#31361.
+    (unless (advice-member-p 'orgalist-fix-bug:31361 'indent-according-to-mode)
+      (advice-add 'indent-according-to-mode
+                  :around (lambda (old (el-patch-add &rest r))
+                            "Workaround bug#31361."
+                            (or (orgalist--indent-line)
+                                (let ((indent-line-function
+                                       (advice--cd*r indent-line-function)))
+                                  (funcall old (el-patch-add r)))))
+                  '((name . orgalist-fix-bug:31361)))))
+   (t
+    (remove-function (local 'fill-forward-paragraph-function)
+                     #'orgalist--fill-forward-wrapper)
+    (remove-function (local 'fill-paragraph-function) #'orgalist--fill-item)
+    (remove-function (local 'indent-line-function) #'orgalist--indent-line)
+    (setq fill-nobreak-predicate
+          (delq 'orgalist--item-nobreak-p fill-nobreak-predicate))
+    (remove-function (local 'normal-auto-fill-function) #'orgalist--auto-fill)
+    (when auto-fill-function
+      (remove-function (local 'auto-fill-function) #'orgalist--auto-fill))
+    ;; FIXME: When there is no Orgalist minor mode active in any
+    ;; buffer, remove workaround for bug#31361.
+    (unless (cl-some (lambda (b) (with-current-buffer b orgalist-mode))
+                     (buffer-list))
+      (advice-remove 'indent-according-to-mode 'orgalist-fix-bug:31361)))))
+  :config
+  (message "orgalist was just loaded"))
 
 ;; Disabled because not used
 ;; (use-package footnote
