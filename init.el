@@ -3998,7 +3998,7 @@ commas and space."
 ;;----------------------------------------------------------------------------
 (use-package org-ref
   :requires org
-  :load-path "~/projects/org-ref/"
+  ;; :load-path "~/projects/org-ref/"
   :config
   (setq org-ref-bibliography-notes "~/org/bib/notes.org"
         reftex-default-bibliography '("~/org/bib/monty-python.bib")
