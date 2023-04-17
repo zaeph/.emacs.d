@@ -121,7 +121,7 @@
 (add-to-list 'load-path "~/.emacs.d/lisp/")
 (add-to-list 'load-path "~/.emacs.d/extra/")
 (add-to-list 'load-path "/usr/share/emacs/site-lisp/")
-(add-to-list 'load-path "~/projects/org-mode/lisp/")
+;; (add-to-list 'load-path "~/projects/org-mode/lisp/")
 ;; (add-to-list 'load-path "~/projects/magit/lisp/")
 (add-to-list 'load-path "~/projects/crdt.el/")
 (add-to-list 'load-path "~/projects/mpv.el/")
