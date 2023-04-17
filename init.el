@@ -841,7 +841,7 @@ Catches all ARGS and does nothing with them."
          (lispy-mode . flycheck-mode)
          (typescript-mode . flycheck-mode)
          (haskell-mode . flycheck-mode)
-         (rust-mode . flycheck-mode)
+         (rustic-mode . flycheck-mode)
          ;; Enable flycheck everywhere
          ;; Disabled because of slow-downs in large files
          ;; (after-init . global-flycheck-mode)
