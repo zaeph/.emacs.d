@@ -1362,9 +1362,23 @@ If text is selected, adds furigana to the selected kanji instead."
                     (member method '("su" "sudo")))))))))
 
 (use-package sgml-mode
-  :mode ("\\.tmpl\\'" . mhtml-mode)
+  :bind (("C-c C-=" . increment-integer-at-point)
+         ("C-c C--" . decrement-integer-at-point))
+  :bind (:map mhtml-mode-map
+         ("M-o" . nil)))
+
+(use-package mgml-mode
   :config
-  (unbind-key "M-o" 'mhtml-mode-map))
+  (unbind-key "M-o" ))
+
+(use-package web-mode
+  :mode (("\\.tmpl\\'" . web-mode))
+  :config
+  (setq web-mode-enable-engine-detection t)
+  (setq web-mode-engines-alist nil)
+  ;; (setq web-mode-engines-alist
+  ;;       '(("go" . "\\.tmpl\\'")))
+  )
 
 ;; (use-package realgud
 ;;   :config
