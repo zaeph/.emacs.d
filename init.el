@@ -532,14 +532,17 @@ Catches all ARGS and does nothing with them."
           (t
            (zp/glasses-init)))))
 
+(use-package hs-mode
+  :hook ((prog-mode . hs-minor-mode)))
+
 ;;----------------------------------------------------------------------------
 ;;; EmacsConf
 ;;----------------------------------------------------------------------------
-(use-package emacsconf
-  :load-path "~/projects/emacsconf-el/"
-  :config
-  (setq emacsconf-org-file "~/projects/emacsconf-2022-private/conf.org")
-  (setq emacsconf-ansible-directory "~/projects/emacsconf-ansible/"))
+;; (use-package emacsconf
+;;   :load-path "~/projects/emacsconf-el/"
+;;   :config
+;;   (setq emacsconf-org-file "~/projects/emacsconf-2022-private/conf.org")
+;;   (setq emacsconf-ansible-directory "~/projects/emacsconf-ansible/"))
 
 (use-package subed
   :load-path "~/projects/subed/subed/")
