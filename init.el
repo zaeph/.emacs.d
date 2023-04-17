@@ -2987,7 +2987,7 @@ with effort estimates and total time."
                      consult-buffer
                      consult-recent-file
                      consult-bookmark
-                     :preview-key (kbd "M-.")
+                     :preview-key "M-."
                      consult-bookmark
                      :sort nil)
 
