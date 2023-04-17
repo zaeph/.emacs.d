@@ -4201,7 +4201,9 @@ command will offer you to create one."
 (use-package org-roam-protocol)
 
 (use-package org-roam-ui
-  :load-path "~/projects/org-roam-ui")
+  ;; :load-path "~/projects/org-roam-ui"
+  :config
+  (setq org-roam-ui-open-on-start nil))
 
 (use-package company
   :bind (("M-/" . company-complete)
