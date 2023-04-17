@@ -2120,7 +2120,7 @@ C-c C-c         `orgalist-check-item'"
   :bind (:map rustic-mode-map
          (("M-RET" . zp/rust-eval-buffer)))
   :config
-  (setq rustic-lsp-server 'rls)
+  (setq rustic-lsp-server 'rustic-analyzer)
 
   (defun zp/rust-eval-buffer (arg)
     "Run current buffer as Rust code"
