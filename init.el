@@ -4078,6 +4078,10 @@ commas and space."
          (("C-c m i" . org-roam-node-insert)))
   :custom
   (org-roam-directory "~/org/slip-box/")
+  ;; (org-roam-directory "~/projects/exp2exp.github.io/src/")
+  ;; (org-roam-db "~/projects/exp2exp.github.io/src/org-roam.db")
+  ;; (org-roam-directory "~/org/slip-box-bristol/")
+  (org-roam-db-location (concat org-roam-directory "org-roam.db"))
   :config
   (org-roam-db-autosync-mode)
 
