@@ -752,6 +752,7 @@ Catches all ARGS and does nothing with them."
   (global-set-key (kbd "C-c L") #'org-store-link))
 
 (use-package ox
+  :requires org
   :config
   (setq org-export-in-background t
         org-export-with-sub-superscripts nil)
@@ -776,12 +777,15 @@ Catches all ARGS and does nothing with them."
     (yank)
     (zp/unfill-region)))
 
-(use-package ox-org)
+(use-package ox-org
+  :requires ox)
 
 (use-package ox-texinfo+
+  :requires ox
   :load-path "~/projects/ox-texinfo-plus/")
 
-(use-package org-mind-map)
+(use-package org-mind-map
+  :disabled)
 
 (use-package exwm-config)
 
@@ -807,8 +811,8 @@ Catches all ARGS and does nothing with them."
   :mode "\\.fish\\'")
 
 ;; EmacsConf stuff
-(use-package mpv)
-(use-package waveform)
+;; (use-package mpv)
+;; (use-package waveform)
 
 (use-package burly
   :bind (("C-x r W" . burly-bookmark-windows)
@@ -954,6 +958,7 @@ For a full description, see the original function."
         (list (lambda () (not (eq major-mode org-mode))))))
 
 (use-package zp-lispy
+  :requires lispy
   :config
   ;; (use-package lispy
   ;;   :bind (:map lispy-mode-map
@@ -1867,9 +1872,12 @@ C-c C-c         `orgalist-check-item'"
          (python-mode . lsp)
          (rustic-mode . lsp)
          (go-mode . lsp)
-         (typescript-mode . lsp))
+         (typescriptmode . lsp)
+         (js-mode . lsp)
+         (js-jsx-mode . lsp))
   :bind-keymap ("s-l" . lsp-command-map)
   :config
+  ;; (setq lsp-log-max 100000)
   (setq lsp-completion-enable-additional-text-edit nil)
   (setq lsp-enabled-clients '(pyright gopls ts-ls rust-analyzer)))
 
@@ -2503,6 +2511,7 @@ return `nil'."
   :load-path "~/projects/org-appear/")
 
 (use-package org
+  :demand t
   :bind (:map org-mode-map
          ("C-c i" . org-indent-mode)
          ("C-c [" . nil)
@@ -2678,6 +2687,7 @@ return `nil'."
   (setq org-persist-remote-files nil))
 
 (use-package zp-org
+  :after org
   :config
   ;; Formatting options for LaTeX preview-blocks
   (setq org-format-latex-options
