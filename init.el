@@ -2040,8 +2040,16 @@ C-c C-c         `orgalist-check-item'"
 ;; TypeScript
 ;;----------------------------------------------------------------------------
 
+(use-package js
+  :mode (("\\.js\\'" . js-mode)
+         ("\\.[tj]sx\\'" . js-jsx-mode)))
+
+(use-package typescript
+  :mode (("\\.ts\\'" . typescript-mode)))
+
 (use-package tide
-  :ensure t
+  :disabled
+  ;; :ensure t
   :after (typescript-mode company flycheck)
   :hook ((typescript-mode . tide-setup)
          (typescript-mode . tide-hl-identifier-mode)
@@ -2049,6 +2057,7 @@ C-c C-c         `orgalist-check-item'"
   :bind (:map tide-mode-map
          ("M-RET" . zp/typescript-eval-buffer))
   :config
+  (tide-setup)
   ;; (defun setup-tide-mode ()
   ;;   (interactive)
   ;;   (tide-setup)
