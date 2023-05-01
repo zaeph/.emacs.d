@@ -4997,7 +4997,7 @@ the beginning of the line."
   (zp/set-font-variable "equity")
 
   ;; Day/night cycle
-  (setq zp/time-of-day-sections '("04:00" "05:00" "15:00" "16:00" "00:00"))
+  (setq zp/time-of-day-sections '("04:00" "05:00" "18:00" "19:00" "00:00"))
   (zp/emacs-dark-theme)
   (zp/switch-theme-auto))
 
