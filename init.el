@@ -1686,8 +1686,7 @@ SEARCH is a string to be interpreted by notmuch-search."
         zp/message-ispell-alist (zp/notmuch-make-ispell-alist)
         zp/message-sigs-alist (zp/notmuch-make-sigs-alist)
         zp/notmuch-saved-queries
-        '(("pro"              . "tag:pro and not tag:auto")
-          ("etalab"           . "tag:etalab and not tag:auto")
+        '(("qomon"              . "tag:qomon and not tag:auto")
           ("dev"              . "tag:dev and not tag:auto")
           ("beta"             . "(tag:list or tag:auto or tag:news)")
           ("lists"            . "tag:list and not tag:auto")
@@ -1703,11 +1702,8 @@ SEARCH is a string to be interpreted by notmuch-search."
           (:name "archive-week" :key "a" :query "date:\"7d..today\" and not tag:auto")
           (:name "archive" :key "A" :query "not tag:auto")
 
-          ;; Pro
-          ,@(zp/notmuch-format-search "pro" "p")
-
-          ;; Etalab
-          ,@(zp/notmuch-format-search "etalab" "e")
+          ;; Qomon
+          ,@(zp/notmuch-format-search "qomon" "q")
 
           ;; Dev
           ,@(zp/notmuch-format-search "dev" "d")
