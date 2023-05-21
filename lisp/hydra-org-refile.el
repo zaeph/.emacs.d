@@ -502,7 +502,7 @@ Ensures that the toggles are set to their default variable."
                   ("W" zp/org-refile-with-paths "refile+paths")
                   ("0" (zp/org-refile-with-paths '(64)) "reset cache" :exit nil))))
        ,@(when name `(("<backspace>" ,hydra-back "back" :exit t)))
-       ("q" (progn
+       ("C-g" (progn
               (zp/hydra-org-refile-cleanup)
               (message "Cancelled")) "cancel" :exit t))))
 
