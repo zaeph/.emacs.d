@@ -83,11 +83,10 @@ It should be a symbol representing the signature-model to use.")
 ;;----------------------------------------------------------------------------
 ;; TODO: Improve
 (defun zp/message-goto-bottom-1 ()
-  (let ((newline message-signature-insert-empty-line))
-    (goto-char (point-max))
-    (when (re-search-backward message-signature-separator nil t)
-      (end-of-line (if newline -1 0)))
-    (point)))
+  (goto-char (point-max))
+  (when (re-search-backward message-signature-separator nil t)
+    (end-of-line 0))
+  (point))
 
 (defun zp/message-goto-bottom ()
   "Go to the end of the message or buffer.
