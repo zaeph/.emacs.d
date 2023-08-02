@@ -2691,7 +2691,9 @@ return `nil'."
                                  (java . t)
                                  (latex . t)
                                  (ledger . t)
-                                 (shell . t)))
+                                 (shell . t)
+                                 (sql . t)
+                                 (restclient . t)))
 
   ;; Show images after executing a src-block that generated one
   ;; TODO: Limit the scope of the hook by testing if the block actually
@@ -2818,6 +2820,8 @@ with effort estimates and total time."
   (defface org-tag-french '((t :inherit 'org-tag)) nil :group 'org-faces))
 
 ;; Babel
+(use-package ob-sql)
+
 (use-package ob-async
   :config
   (add-hook 'ob-async-pre-execute-src-block-hook
