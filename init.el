@@ -211,6 +211,7 @@
 
 ;; Enable line-restricted horizontal scrolling
 (setq auto-hscroll-mode 'current-line)
+(setq auto-hscroll-mode 't)
 ;; (setq auto-hscroll-mode 't)
 
 ;; Disable final newline insertion
@@ -418,8 +419,8 @@ Catches all ARGS and does nothing with them."
 (global-set-key (kbd "M-Q") #'zp/unfill-dwim)
 (global-set-key (kbd "C-x B") #'rename-buffer)
 (global-set-key (kbd "M-o") #'mode-line-other-buffer)
-(global-set-key (kbd "s-j") #'other-window-reverse)
-(global-set-key (kbd "s-k") #'other-window)
+(global-set-key (kbd "s-j") #'other-window)
+(global-set-key (kbd "s-k") #'other-window-reverse)
 (global-set-key (kbd "s-J") #'toggle-window-split)
 (global-set-key (kbd "C-x %") #'map-query-replace-regexp)
 (global-set-key (kbd "C-x 4 1") #'zp/kill-other-buffer-and-window)
