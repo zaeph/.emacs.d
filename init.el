@@ -2490,6 +2490,9 @@ return `nil'."
   :config
   (setq org-src-preserve-indentation t))
 
+(use-package hyperlist-mode
+  :load-path "~/projects/hyperlist-mode/")
+
 ;;----------------------------------------------------------------------------
 ;; org-mode
 ;;----------------------------------------------------------------------------
