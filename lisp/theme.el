@@ -173,7 +173,10 @@
     (set-face-attribute 'magit-tag nil :foreground "SpringGreen4"))
 
   (with-eval-after-load "highlight-indent-guides"
-    (highlight-indent-guides-auto-set-faces))
+    (setq highlight-indent-guides-auto-enabled nil)
+    (set-face-background 'highlight-indent-guides-odd-face "#242424")
+    (set-face-background 'highlight-indent-guides-even-face "#343434")
+    (set-face-foreground 'highlight-indent-guides-character-face "#545454"))
 
   (zp/mode-line-dark-theme)
   (zp/pdf-view-midnight-mode-theme))
@@ -281,6 +284,7 @@
     (set-face-attribute 'magit-tag nil :foreground "SpringGreen4"))
 
   (with-eval-after-load "highlight-indent-guides"
+    (setq highlight-indent-guides-auto-enabled t)
     (highlight-indent-guides-auto-set-faces))
 
   (zp/mode-line-light-theme)
