@@ -89,6 +89,7 @@
 
 ;; Use spaces instead of tabs
 (setq-default indent-tabs-mode nil)
+(setq-default tab-width 4)
 
 ;; Set default fill column to 78
 (setq-default fill-column 78)
