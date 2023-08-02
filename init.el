@@ -2488,7 +2488,8 @@ return `nil'."
 
 (use-package org-src
   :config
-  (setq org-src-preserve-indentation t))
+  (setq org-src-preserve-indentation t
+        org-edit-src-content-indentation 2))
 
 (use-package hyperlist-mode
   :load-path "~/projects/hyperlist-mode/")
