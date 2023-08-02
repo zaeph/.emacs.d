@@ -1476,13 +1476,20 @@ With numeric prefix arg DEC, decrement the integer by DEC amount."
     (increment-integer-at-point (- (or dec 1)))))
 
 (use-package highlight-indent-guides
-  :disabled
   :bind (:map zp/toggle-map
          ("c" . highlight-indent-guides-mode))
   :hook (prog-mode . highlight-indent-guides-mode)
   :config
+  ;; Theme configuration is done handled by theme.el
   (setq highlight-indent-guides-method 'column
-        highlight-indent-guides-auto-character-face-perc 50))
+        highlight-indent-guides-responsive 'top
+        highlight-indent-guides-auto-character-face-perc 20)
+
+  ;; (setq highlight-indent-guides-method 'character
+  ;;       highlight-indent-guides-responsive 'top
+  ;;       highlight-indent-guides-character ?·
+  ;;       highlight-indent-guides-auto-character-face-perc 30)
+  )
 
 ;;----------------------------------------------------------------------------
 ;; Shortcuts
