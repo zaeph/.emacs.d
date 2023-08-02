@@ -2579,7 +2579,7 @@ return `nil'."
         org-attach-preferred-new-method 'ask
         org-log-state-notes-insert-after-drawers nil
         ;; org-special-ctrl-a/e t
-        org-special-ctrl-a/e t
+        org-special-ctrl-a/e 'reversed
         org-log-done 'time
         org-log-refile nil
         org-enforce-todo-dependencies nil
