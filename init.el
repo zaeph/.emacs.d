@@ -605,6 +605,8 @@ Catches all ARGS and does nothing with them."
 
 (use-package secret)
 
+(use-package secret-qomon)
+
 (use-package init-cl)
 
 (use-package slime
