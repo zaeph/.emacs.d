@@ -434,7 +434,7 @@ Catches all ARGS and does nothing with them."
 (tool-bar-mode -1)
 (menu-bar-mode -1)
 (scroll-bar-mode -1)
-(blink-cursor-mode -1)
+(blink-cursor-mode 1)
 (show-paren-mode 1)
 (column-number-mode 1)
 
