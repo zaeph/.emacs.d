@@ -1,6 +1,6 @@
 ;;; zp-org.el --- Personal expansion to Org-mode  -*- fill-column: 78; lexical-binding: t; -*-
 
-;; Copyright © 2013-2020 Leo Vivier <zaeph@zaeph.net>
+;; Copyright © 2013-2020, 2023 Leo Vivier <zaeph@zaeph.net>
 
 ;; Author: Leo Vivier <zaeph@zaeph.net>
 ;; Keywords: org
@@ -36,48 +36,48 @@
 ;; Archiving
 ;;----------------------------------------------------------------------------
 ;; Keep hierarchy when archiving
-  ;; Source: https://fuco1.github.io/2017-04-20-Archive-subtrees-under-the-same-hierarchy-as-original-in-the-archive-files.html
-  (defadvice org-archive-subtree (around fix-hierarchy activate)
-    (let* ((fix-archive-p (and (not current-prefix-arg)
-                               (not (use-region-p))))
-           (location (org-archive--compute-location
-                      (or (org-entry-get nil "ARCHIVE" 'inherit)
-                          org-archive-location)))
-           (afile (car location))
-           (buffer (or (find-buffer-visiting afile) (find-file-noselect afile))))
-      ad-do-it
-      (when fix-archive-p
-        (with-current-buffer buffer
-          (goto-char (point-max))
-          (while (org-up-heading-safe))
-          (let* ((olpath (org-entry-get (point) "ARCHIVE_OLPATH"))
-                 (path (and olpath (split-string olpath "/")))
-                 (level 1)
-                 tree-text)
-            (when olpath
-              (org-mark-subtree)
-              (setq tree-text (buffer-substring (region-beginning) (region-end)))
-              (let (this-command) (org-cut-subtree))
-              (goto-char (point-min))
-              (save-restriction
-                (widen)
-                (-each path
-                  (lambda (heading)
-                    (if (re-search-forward
-                         (rx-to-string
-                          `(: bol (repeat ,level "*") (1+ " ") ,heading)) nil t)
-                        (org-narrow-to-subtree)
-                      (goto-char (point-max))
-                      (unless (looking-at "^")
-                        (insert "\n"))
-                      (insert (make-string level ?*)
-                              " "
-                              heading
-                              "\n"))
-                    (cl-incf level)))
-                (widen)
-                (org-end-of-subtree t t)
-                (org-paste-subtree level tree-text))))))))
+;; Source: https://fuco1.github.io/2017-04-20-Archive-subtrees-under-the-same-hierarchy-as-original-in-the-archive-files.html
+(defadvice org-archive-subtree (around fix-hierarchy activate)
+  (let* ((fix-archive-p (and (not current-prefix-arg)
+                             (not (use-region-p))))
+         (location (org-archive--compute-location
+                    (or (org-entry-get nil "ARCHIVE" 'inherit)
+                        org-archive-location)))
+         (afile (car location))
+         (buffer (or (find-buffer-visiting afile) (find-file-noselect afile))))
+    ad-do-it
+    (when fix-archive-p
+      (with-current-buffer buffer
+        (goto-char (point-max))
+        (while (org-up-heading-safe))
+        (let* ((olpath (org-entry-get (point) "ARCHIVE_OLPATH"))
+               (path (and olpath (split-string olpath "/")))
+               (level 1)
+               tree-text)
+          (when olpath
+            (org-mark-subtree)
+            (setq tree-text (buffer-substring (region-beginning) (region-end)))
+            (let (this-command) (org-cut-subtree))
+            (goto-char (point-min))
+            (save-restriction
+              (widen)
+              (-each path
+                (lambda (heading)
+                  (if (re-search-forward
+                       (rx-to-string
+                        `(: bol (repeat ,level "*") (1+ " ") ,heading)) nil t)
+                      (org-narrow-to-subtree)
+                    (goto-char (point-max))
+                    (unless (looking-at "^")
+                      (insert "\n"))
+                    (insert (make-string level ?*)
+                            " "
+                            heading
+                            "\n"))
+                  (cl-incf level)))
+              (widen)
+              (org-end-of-subtree t t)
+              (org-paste-subtree level tree-text))))))))
 
 ;;----------------------------------------------------------------------------
 ;; State flow
@@ -140,7 +140,7 @@
 ;; ‘CREATED’ property
 ;;----------------------------------------------------------------------------
 (defvar zp/org-created-property-name "CREATED"
-    "The name of the org-mode property that stores the creation date of the entry")
+  "The name of the org-mode property that stores the creation date of the entry")
 
 ;; TODO: Find the source for this because I’ve improved something which
 ;; already existed
@@ -218,201 +218,201 @@ it can be passed in POS."
 ;; Narrowing and movements
 ;;----------------------------------------------------------------------------
 (defvar zp/org-after-view-change-hook nil
-    "Hook run after a significant view change in org-mode.")
+  "Hook run after a significant view change in org-mode.")
 
-  (defun zp/org-overview (&optional arg keep-position keep-restriction)
-    "Switch to overview mode, showing only top-level headlines.
+(defun zp/org-overview (&optional arg keep-position keep-restriction)
+  "Switch to overview mode, showing only top-level headlines.
 
 With a ‘C-u’ prefix, do not move point.
 
 When KEEP-RESTRICTION is non-nil, do not widen the buffer."
-    (interactive "p")
-    (let ((pos-before (point))
-          (indirect (not (buffer-file-name)))
-          (narrowed (buffer-narrowed-p)))
-      (setq-local zp/org-narrow-previous-position pos-before)
-      ;; Do not widen buffer if in indirect buffer
-      (save-excursion
-        (goto-char (point-min))
-        (widen)
-        (when (or (and indirect
-                       narrowed)
-                  keep-restriction)
-          (org-narrow-to-subtree))
-        (unless indirect
-          (org-display-inline-images)))
-      (zp/org-fold (or keep-position
-                       (and arg
-                            (> arg 1))))
-      (when arg
-        (message "Showing overview.")
-        (run-hooks 'zp/org-after-view-change-hook))))
-
-  (defun zp/org-fold (&optional keep-position)
-    (let ((indirectp (not (buffer-file-name)))
-          (org-startup-folded 'overview))
-      ;; Fold drawers
-      (org-set-startup-visibility)
-      ;; Fold trees
-      (org-overview)
-      (unless keep-position
-        (goto-char (point-min)))
-      (recenter)
-      (save-excursion
-        (goto-char (point-min))
-        (org-show-entry)
-        (when (org-at-heading-p)
-          (org-show-children)))))
-
-  (defun zp/org-show-all (arg)
-    (interactive "p")
-    (let ((pos-before (point))
-          (indirect (not (buffer-file-name))))
-      (setq-local zp/org-narrow-previous-position pos-before)
-      ;; Do not widen buffer if in indirect buffer
-      (unless indirect
-        (widen)
-        (org-display-inline-images))
-      ;; Unfold everything
-      (org-show-all)
-      (unless (eq arg 4)
-        (goto-char (point-min)))
-      (recenter-top-bottom)
-      (when arg
-        (message "Showing everything.")
-        (run-hooks 'zp/org-after-view-change-hook))))
-
-  ;; org-narrow movements
-
-  (defun zp/org-narrow-to-subtree ()
-    "Move to the next subtree at same level, and narrow the buffer to it."
-    (interactive)
-    (org-narrow-to-subtree)
-    (zp/org-fold nil)
-    (when (called-interactively-p 'any)
-      (message "Narrowing to tree at point.")
-      (run-hooks 'zp/org-after-view-change-hook)))
-
-  (defun zp/org-widen ()
-    "Move to the next subtree at same level, and narrow the buffer to it."
-    (interactive)
-    (let ((pos-before (point)))
-      (setq-local zp/org-narrow-previous-position pos-before))
-    (widen)
-    (when (called-interactively-p 'any)
-      (message "Removing narrowing.")
-      (run-hooks 'zp/org-after-view-change-hook)))
-
-  (defvar zp/presentation-mode nil)
-
-  (defun zp/org-narrow-forwards ()
-    "Move to the next subtree at same level, and narrow the buffer to it."
-    (interactive)
-    (widen)
-    (org-forward-heading-same-level 1)
-    (org-narrow-to-subtree)
-    (unless zp/presentation-mode
-      (zp/org-fold nil))
-    (when (called-interactively-p 'any)
-      (message "Narrowing to next tree.")
-      (run-hooks 'zp/org-after-view-change-hook)))
-
-  (defun zp/org-narrow-backwards ()
-    "Move to the next subtree at same level, and narrow the buffer to it."
-    (interactive)
-    (widen)
-    (org-backward-heading-same-level 1)
-    (org-narrow-to-subtree)
-    (unless zp/presentation-mode
-      (zp/org-fold nil))
-    (when (called-interactively-p 'any)
-      (message "Narrowing to previous tree.")
-      (run-hooks 'zp/org-after-view-change-hook)))
-
-  (defun zp/org-narrow-up-heading (&optional arg keep-position)
-    "Move to the upper subtree, and narrow the buffer to it."
-    (interactive "p")
-    (unless (buffer-narrowed-p)
-      (user-error "No narrowing"))
-    (let ((pos-before (point)))
-      (setq-local zp/org-narrow-previous-position pos-before)
+  (interactive "p")
+  (let ((pos-before (point))
+        (indirect (not (buffer-file-name)))
+        (narrowed (buffer-narrowed-p)))
+    (setq-local zp/org-narrow-previous-position pos-before)
+    ;; Do not widen buffer if in indirect buffer
+    (save-excursion
+      (goto-char (point-min))
       (widen)
-      (org-reveal)
-      (outline-up-heading 1)
-      (org-narrow-to-subtree)
-      (when (or (eq arg 4)
-                keep-position)
-        (goto-char pos-before)
-        (recenter-top-bottom))
-      (zp/org-fold (or (eq arg 4)
-                       keep-position))
-      (when arg
-        (message "Narrowing to tree above.")
-        (run-hooks 'zp/org-after-view-change-hook))))
+      (when (or (and indirect
+                     narrowed)
+                keep-restriction)
+        (org-narrow-to-subtree))
+      (unless indirect
+        (org-display-inline-images)))
+    (zp/org-fold (or keep-position
+                     (and arg
+                          (> arg 1))))
+    (when arg
+      (message "Showing overview.")
+      (run-hooks 'zp/org-after-view-change-hook))))
 
-  (defun zp/org-narrow-up-heading-dwim (arg)
-    "Narrow to the upper subtree, and narrow the buffer to it.
+(defun zp/org-fold (&optional keep-position)
+  (let ((indirectp (not (buffer-file-name)))
+        (org-startup-folded 'overview))
+    ;; Fold drawers
+    (org-set-startup-visibility)
+    ;; Fold trees
+    (org-overview)
+    (unless keep-position
+      (goto-char (point-min)))
+    (recenter)
+    (save-excursion
+      (goto-char (point-min))
+      (org-show-entry)
+      (when (org-at-heading-p)
+        (org-show-children)))))
+
+(defun zp/org-show-all (arg)
+  (interactive "p")
+  (let ((pos-before (point))
+        (indirect (not (buffer-file-name))))
+    (setq-local zp/org-narrow-previous-position pos-before)
+    ;; Do not widen buffer if in indirect buffer
+    (unless indirect
+      (widen)
+      (org-display-inline-images))
+    ;; Unfold everything
+    (org-show-all)
+    (unless (eq arg 4)
+      (goto-char (point-min)))
+    (recenter-top-bottom)
+    (when arg
+      (message "Showing everything.")
+      (run-hooks 'zp/org-after-view-change-hook))))
+
+;; org-narrow movements
+
+(defun zp/org-narrow-to-subtree ()
+  "Move to the next subtree at same level, and narrow the buffer to it."
+  (interactive)
+  (org-narrow-to-subtree)
+  (zp/org-fold nil)
+  (when (called-interactively-p 'any)
+    (message "Narrowing to tree at point.")
+    (run-hooks 'zp/org-after-view-change-hook)))
+
+(defun zp/org-widen ()
+  "Move to the next subtree at same level, and narrow the buffer to it."
+  (interactive)
+  (let ((pos-before (point)))
+    (setq-local zp/org-narrow-previous-position pos-before))
+  (widen)
+  (when (called-interactively-p 'any)
+    (message "Removing narrowing.")
+    (run-hooks 'zp/org-after-view-change-hook)))
+
+(defvar zp/presentation-mode nil)
+
+(defun zp/org-narrow-forwards ()
+  "Move to the next subtree at same level, and narrow the buffer to it."
+  (interactive)
+  (widen)
+  (org-forward-heading-same-level 1)
+  (org-narrow-to-subtree)
+  (unless zp/presentation-mode
+    (zp/org-fold nil))
+  (when (called-interactively-p 'any)
+    (message "Narrowing to next tree.")
+    (run-hooks 'zp/org-after-view-change-hook)))
+
+(defun zp/org-narrow-backwards ()
+  "Move to the next subtree at same level, and narrow the buffer to it."
+  (interactive)
+  (widen)
+  (org-backward-heading-same-level 1)
+  (org-narrow-to-subtree)
+  (unless zp/presentation-mode
+    (zp/org-fold nil))
+  (when (called-interactively-p 'any)
+    (message "Narrowing to previous tree.")
+    (run-hooks 'zp/org-after-view-change-hook)))
+
+(defun zp/org-narrow-up-heading (&optional arg keep-position)
+  "Move to the upper subtree, and narrow the buffer to it."
+  (interactive "p")
+  (unless (buffer-narrowed-p)
+    (user-error "No narrowing"))
+  (let ((pos-before (point)))
+    (setq-local zp/org-narrow-previous-position pos-before)
+    (widen)
+    (org-reveal)
+    (outline-up-heading 1)
+    (org-narrow-to-subtree)
+    (when (or (eq arg 4)
+              keep-position)
+      (goto-char pos-before)
+      (recenter-top-bottom))
+    (zp/org-fold (or (eq arg 4)
+                     keep-position))
+    (when arg
+      (message "Narrowing to tree above.")
+      (run-hooks 'zp/org-after-view-change-hook))))
+
+(defun zp/org-narrow-up-heading-dwim (arg)
+  "Narrow to the upper subtree, and narrow the buffer to it.
 
 If the buffer is already narrowed to level-1 heading, overview
 the entire buffer."
-    (interactive "p")
-    (if (save-excursion
-          ;; Narrowed to a level-1 heading?
-          (goto-char (point-min))
-          (and (buffer-narrowed-p)
-               (equal (org-outline-level) 1)))
-        (zp/org-overview arg)
-      (zp/org-narrow-up-heading arg)))
+  (interactive "p")
+  (if (save-excursion
+        ;; Narrowed to a level-1 heading?
+        (goto-char (point-min))
+        (and (buffer-narrowed-p)
+             (equal (org-outline-level) 1)))
+      (zp/org-overview arg)
+    (zp/org-narrow-up-heading arg)))
 
-  (defun zp/org-narrow-previous-heading (arg)
-    "Move to the previously narrowed tree, and narrow the buffer to it."
-    (interactive "p")
-    (if (bound-and-true-p zp/org-narrow-previous-position)
-        (let ((pos-before zp/org-narrow-previous-position))
-          (goto-char zp/org-narrow-previous-position)
-          (org-reveal)
-          (org-cycle)
-          (org-narrow-to-subtree)
-          (setq zp/org-narrow-previous-position nil)
-          (message "Narrowing to previously narrowed tree."))
-      (message "Couldn’t find a previous position.")))
+(defun zp/org-narrow-previous-heading (arg)
+  "Move to the previously narrowed tree, and narrow the buffer to it."
+  (interactive "p")
+  (if (bound-and-true-p zp/org-narrow-previous-position)
+      (let ((pos-before zp/org-narrow-previous-position))
+        (goto-char zp/org-narrow-previous-position)
+        (org-reveal)
+        (org-cycle)
+        (org-narrow-to-subtree)
+        (setq zp/org-narrow-previous-position nil)
+        (message "Narrowing to previously narrowed tree."))
+    (message "Couldn’t find a previous position.")))
 
-  ;; Toggle fontifications
-  (defun zp/org-toggle-emphasis-markers (&optional arg)
-    "Toggle emphasis markers."
-    (interactive "p")
-    (let ((markers org-hide-emphasis-markers))
-      (if markers
-          (setq-local org-hide-emphasis-markers nil)
-        (setq-local org-hide-emphasis-markers t))
-      (when arg
-        (font-lock-fontify-buffer))))
-
-  (defun zp/org-toggle-link-display (&optional arg)
-    "Toggle the literal or descriptive display of links in the current buffer."
-    (interactive "p")
-    (if org-link-descriptive (remove-from-invisibility-spec '(org-link))
-      (add-to-invisibility-spec '(org-link)))
-    (setq-local org-link-descriptive (not org-link-descriptive))
+;; Toggle fontifications
+(defun zp/org-toggle-emphasis-markers (&optional arg)
+  "Toggle emphasis markers."
+  (interactive "p")
+  (let ((markers org-hide-emphasis-markers))
+    (if markers
+        (setq-local org-hide-emphasis-markers nil)
+      (setq-local org-hide-emphasis-markers t))
     (when arg
-      (font-lock-fontify-buffer)))
+      (font-lock-fontify-buffer))))
 
-  (defun zp/org-toggle-fontifications (&optional arg)
-    "Toggle emphasis markers or the link display.
+(defun zp/org-toggle-link-display (&optional arg)
+  "Toggle the literal or descriptive display of links in the current buffer."
+  (interactive "p")
+  (if org-link-descriptive (remove-from-invisibility-spec '(org-link))
+    (add-to-invisibility-spec '(org-link)))
+  (setq-local org-link-descriptive (not org-link-descriptive))
+  (when arg
+    (font-lock-fontify-buffer)))
+
+(defun zp/org-toggle-fontifications (&optional arg)
+  "Toggle emphasis markers or the link display.
 
 Without a C-u argument, toggle the emphasis markers.
 
 With a C-u argument, toggle the link display."
-    (interactive "P")
-    (let ((markers org-hide-emphasis-markers)
-          (links org-link-descriptive))
-      (if arg
-          (zp/org-toggle-link-display)
-        (zp/org-toggle-emphasis-markers))
-      (font-lock-fontify-buffer)))
+  (interactive "P")
+  (let ((markers org-hide-emphasis-markers)
+        (links org-link-descriptive))
+    (if arg
+        (zp/org-toggle-link-display)
+      (zp/org-toggle-emphasis-markers))
+    (font-lock-fontify-buffer)))
 
-  (defun zp/org-find-olp (target &optional move)
-    "Find TARGET in the current buffer.
+(defun zp/org-find-olp (target &optional move)
+  "Find TARGET in the current buffer.
 
 When there is a match and MOVE is nil, return a marker pointing
 to the beginning of the matched headline.  When there is a match
@@ -422,22 +422,22 @@ nil.
 TARGET can either be a string or a list.  If it is a string, it
 should be the name of the top-headline to find.  If it is a list,
 it should be an outline path OLP."
-    (let* ((olp (pcase target
-                  ((pred stringp) (list target))
-                  ((pred listp) target)
-                  (wrong-type (signal 'wrong-type-argument
-                                      `((stringp listp)
-                                        ,wrong-type)))))
-           (marker (condition-case msg
-                       (org-find-olp olp t)
-                     (error))))
-      (cond ((and marker
-                  (not move))
-             marker)
-            (marker
-             (goto-char marker)
-             (set-marker marker nil)
-             t))))
+  (let* ((olp (pcase target
+                ((pred stringp) (list target))
+                ((pred listp) target)
+                (wrong-type (signal 'wrong-type-argument
+                                    `((stringp listp)
+                                      ,wrong-type)))))
+         (marker (condition-case msg
+                     (org-find-olp olp t)
+                   (error))))
+    (cond ((and marker
+                (not move))
+           marker)
+          (marker
+           (goto-char marker)
+           (set-marker marker nil)
+           t))))
 
 ;;----------------------------------------------------------------------------
 ;; Custom exported timestamp
