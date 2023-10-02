@@ -252,7 +252,7 @@ When KEEP-RESTRICTION is non-nil, do not widen the buffer."
   (let ((indirectp (not (buffer-file-name)))
         (org-startup-folded 'overview))
     ;; Fold drawers
-    (org-set-startup-visibility)
+    (org-fold-hide-drawer-all)
     ;; Fold trees
     (org-overview)
     (unless keep-position
@@ -260,9 +260,9 @@ When KEEP-RESTRICTION is non-nil, do not widen the buffer."
     (recenter)
     (save-excursion
       (goto-char (point-min))
-      (org-show-entry)
+      (org-fold-show-entry)
       (when (org-at-heading-p)
-        (org-show-children)))))
+        (org-fold-show-children)))))
 
 (defun zp/org-show-all (arg)
   (interactive "p")
