@@ -1,6 +1,6 @@
 ;;; init-magit.el --- Settings and helpers for magit  -*- fill-column: 78; lexical-binding: t; -*-
 
-;; Copyright © 2021 Leo Vivier <zaeph@zaeph.net>
+;; Copyright © 2021-2024 Leo Vivier <zaeph@zaeph.net>
 
 ;; Author: Leo Vivier <zaeph@zaeph.net>
 ;; Version: 0.1.0
@@ -38,6 +38,9 @@
   '("-m" "Hide merges" "--no-merges"))
 (transient-append-suffix 'magit-log-refresh "-f"
   '("-m" "Hide merges" "--no-merges"))
+(transient-append-suffix 'magit-push "-u"
+  '("=s" "Skip gitlab pipeline" "--push-option=ci.skip"))
+
 
 ;;; Options
 

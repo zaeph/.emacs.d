@@ -1,6 +1,6 @@
 ;;; init.el --- Initialisation file for Emacs -*- fill-column: 78; lexical-binding: t; byte-compile-warnings: (not free-vars); auto-compile-display-buffer: nil -*-
 
-;; Copyright © 2013-2023 Leo Vivier <zaeph@zaeph.net>
+;; Copyright © 2013-2024 Leo Vivier <zaeph@zaeph.net>
 
 ;; Author: Leo Vivier <zaeph@zaeph.net>
 ;; URL: https://github.com/zaeph/.emacs.d
@@ -277,6 +277,13 @@ For details on DATA, CONTEXT, and SIGNAL, see
 ;; Command history
 (setq list-command-history-max 256)
 
+(defun tab-to-tab-stop-prev ()
+  "Go to previous tab stop and delete horizontal space."
+  (interactive)
+  (let ((nexttab (indent-next-tab-stop (current-column) t)))
+    (delete-horizontal-space t)
+    (indent-to nexttab)))
+
 ;; Safe local-variables
 ;; (setq safe-local-variable-values '((org-confirm-babel-evaluate)
 ;;                                    (eval require 'org-roam-dev)
@@ -397,6 +404,7 @@ Catches all ARGS and does nothing with them."
 (define-key zp/toggle-map (kbd "g") #'glasses-mode)
 (define-key zp/toggle-map (kbd "G") #'zp/global-super-glasses-mode)
 (define-key zp/toggle-map (kbd "w") #'zp/toggle-warning-minimum-level)
+(define-key zp/toggle-map (kbd "v") #'visual-line-mode)
 
 (define-key help-map (kbd "h") #'zp/switch-to-help)
 
@@ -410,6 +418,8 @@ Catches all ARGS and does nothing with them."
 (global-set-key (kbd "C-x C-c") #'zp/delete-frame-ask)
 
 ;; Actions
+
+(global-set-key (kbd "M-I") #'tab-to-tab-stop-prev)
 (global-set-key (kbd "M-g M-i") #'imenu)
 (global-set-key (kbd "C-;") #'undo-redo)
 (global-set-key (kbd "M-SPC") #'delete-horizontal-space)
@@ -539,6 +549,7 @@ Catches all ARGS and does nothing with them."
 
 ;;----------------------------------------------------------------------------
 ;;; EmacsConf
+
 ;;----------------------------------------------------------------------------
 ;; (use-package emacsconf
 ;;   :load-path "~/projects/emacsconf-el/"
@@ -634,7 +645,9 @@ Catches all ARGS and does nothing with them."
          ("h" . zp/change-commit-author)))
 
 (use-package forge
-  :after magit)
+  :after magit
+  :config
+  (add-to-list 'forge-alist '("gitlab.it.imagino.com" "gitlab.it.imagino.com/api/v4" "gitlab.it.imagino.com" forge-gitlab-repository)))
 
 ;;----------------------------------------------------------------------------
 ;; Packages
@@ -712,7 +725,7 @@ Catches all ARGS and does nothing with them."
 
 (use-package interaction-log
   :bind (:map zp/toggle-map
-         ("i" . interaction-log-mode)))
+         ("I" . interaction-log-mode)))
 
 ;; (use-package info+
 ;;   :load-path "~/.emacs.d/pkg/emacswiki.org/info+.el"
@@ -977,7 +990,8 @@ For a full description, see the original function."
   :mode ("\\.\\(epub\\|mobi\\)\\'" . nov-mode))
 
 (use-package olivetti
-  :bind ("M-O" . olivetti-mode)
+  :bind (:map zp/toggle-map
+         ("M-O" . olivetti-mode))
   :config
   (setq-default olivetti-body-width 0.6
                 olivetti-minimum-body-width 80))
@@ -1478,7 +1492,8 @@ With numeric prefix arg DEC, decrement the integer by DEC amount."
 (use-package highlight-indent-guides
   :bind (:map zp/toggle-map
          ("c" . highlight-indent-guides-mode))
-  :hook (prog-mode . highlight-indent-guides-mode)
+  :hook ((prog-mode . highlight-indent-guides-mode)
+         (hyperlist-mode . highlight-indent-guides-mode))
   :config
   ;; Theme configuration is done handled by theme.el
   (setq highlight-indent-guides-method 'column
@@ -1697,7 +1712,8 @@ SEARCH is a string to be interpreted by notmuch-search."
         zp/message-ispell-alist (zp/notmuch-make-ispell-alist)
         zp/message-sigs-alist (zp/notmuch-make-sigs-alist)
         zp/notmuch-saved-queries
-        '(("qomon"              . "tag:qomon and not tag:auto")
+        '(("imagino"          . "tag:imagino and not tag:auto")
+          ;; ("qomon"              . "tag:qomon and not tag:auto")
           ("dev"              . "tag:dev and not tag:auto")
           ("beta"             . "(tag:list or tag:auto or tag:news)")
           ("lists"            . "tag:list and not tag:auto")
@@ -1713,8 +1729,11 @@ SEARCH is a string to be interpreted by notmuch-search."
           (:name "archive-week" :key "a" :query "date:\"7d..today\" and not tag:auto")
           (:name "archive" :key "A" :query "not tag:auto")
 
+          ;; imagino
+          ,@(zp/notmuch-format-search "imagino" "w")
+
           ;; Qomon
-          ,@(zp/notmuch-format-search "qomon" "q")
+          ;; ,@(zp/notmuch-format-search "qomon" "q")
 
           ;; Dev
           ,@(zp/notmuch-format-search "dev" "d")
@@ -1884,9 +1903,17 @@ C-c C-c         `orgalist-check-item'"
          (js-jsx-mode . lsp))
   :bind-keymap ("s-l" . lsp-command-map)
   :config
+  ;; Hack to configure server with .dir-locals.el
+  ;; (add-hook 'hack-local-variables-hook
+  ;;           (lambda ()
+  ;;             (when (or (derived-mode-p 'go-mode))) (lsp)))
+
   ;; (setq lsp-log-max 100000)
   (setq lsp-completion-enable-additional-text-edit nil)
-  (setq lsp-enabled-clients '(pyright gopls ts-ls rust-analyzer)))
+  (setq lsp-enabled-clients '(pyright gopls ts-ls rust-analyzer))
+
+  ;; For imagino
+  (setq lsp-go-env '((GOFLAGS . "-tags=testing,longTests,needApiServer,devOnly,oracle"))))
 
 (use-package zp-lsp
   :hook (lsp-mode . zp/lsp-before-save-install)
@@ -1910,6 +1937,11 @@ C-c C-c         `orgalist-check-item'"
 (use-package dap-firefox
   :config
   (dap-firefox-setup))
+
+;;----------------------------------------------------------------------------
+;;; Nix
+;;----------------------------------------------------------------------------
+(use-package nix-mode)
 
 ;;----------------------------------------------------------------------------
 ;;; Perl
@@ -2533,7 +2565,7 @@ return `nil'."
 (use-package org
   :demand t
   :bind (:map org-mode-map
-         ("C-c i" . org-indent-mode)
+         ;; ("C-c i" . org-indent-mode)
          ("C-c [" . nil)
          ("C-c ]" . nil)
          ("C-c C-q" . org-set-tags-command)
@@ -2570,7 +2602,8 @@ return `nil'."
          (org-mode . visual-line-mode)
          ;; (org-mode . electric-quote-local-mode)
          (before-save . zp/org-set-last-modified)
-         (org-todo-repeat . zp/org-comment-logbook-notes))
+         ;; (org-todo-repeat . zp/org-comment-logbook-notes)
+         )
   :config
   (setq org-agenda-inhibit-startup nil
         org-log-into-drawer "LOGBOOK-NOTES"
@@ -2593,7 +2626,7 @@ return `nil'."
         org-ellipsis "…"
         org-track-ordered-property-with-tag "ORDERED"
         org-tags-exclude-from-inheritance nil
-        org-fold-catch-invisible-edits 'error
+        org-fold-catch-invisible-edits 'smart
 
         org-tags-column -77)
 
@@ -2840,6 +2873,8 @@ with effort estimates and total time."
                                                            (ditaa .t)
                                                            (awk .t))))
 
+(use-package zp-ob)
+
 (use-package vertico
   :bind (("C-x M-r" . vertico-repeat)
          :map vertico-map
@@ -2847,9 +2882,9 @@ with effort estimates and total time."
          ("M-g" . vertico-multiform-grid)
          ("M-q" . vertico-multiform-flat)
          :map zp/toggle-map
-         (("vf" . vertico-flat-mode)
-          ("vb" . vertico-buffer-mode)
-          ("vg" . vertico-grid-mode)))
+         (("of" . vertico-flat-mode)
+          ("ob" . vertico-buffer-mode)
+          ("og" . vertico-grid-mode)))
   :init (vertico-mode 1)
   :config
   (add-hook 'minibuffer-setup-hook #'vertico-repeat-save)
@@ -3622,6 +3657,9 @@ KEY is the key to use to access the template"
 
           ("OPc" "Capture with completion" entry (file+headline "~/org/life.org" "Inbox")
            "* TODO %(zp/org-protocol-process \"%:link\" \"%:description\" nil t)%? :online:\n%(zp/org-protocol-insert-selection-dwim \"%i\")" :add-created t)
+
+          ("OPq" "Capture Qomon task" entry (file+headline "~/org/life.org" "Qomon")
+           "* TODO [Ticket] %:description :clickup:online:\n[[%:link][Link to ClickUp ticket]]\n%?\n%(zp/org-protocol-insert-selection-dwim \"%i\")" :add-created t)
 
           ("OPe" "Explore" entry (file+headline "~/org/life.org" "Inbox")
            "* TODO %(zp/org-protocol-process \"%:link\" \"%:description\" \"Explore\")%? :online:\n%(zp/org-protocol-insert-selection-dwim \"%i\")" :add-created t)
